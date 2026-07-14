@@ -1,29 +1,20 @@
-# Patch manifest — Part 02B
+# Patch manifest — CP04B FIX01
 
-## Purpose
+## Modified files
 
-Create a safe Git/GitHub baseline from the verified CP03 native desktop checkpoint before beginning CP04.
+- `apps/desktop/src/styles/primitives.css`
+  - Hides WebView2's browser-native search cancel decoration.
+  - Prevents form-field grid content from stretching vertically.
+- `apps/desktop/src/app/runtime/RuntimeBaseline.tsx`
+  - Makes the CEFR selector controlled.
+  - Updates the CEFR metadata badge from the selected value.
+- `apps/desktop/tests/runtime/RuntimeBaseline.test.tsx`
+  - Verifies the initial controlled CEFR metadata output.
 
-## Added
+## Added dependencies
 
-- `.gitattributes`
-- `docs/development/GIT_WORKFLOW.md`
-- `scripts/check-git-hygiene.mjs`
+None.
 
-## Replaced
+## Lockfile changes
 
-- `.gitignore`
-- `package.json`
-- `CHECKPOINT.md`
-- `PROJECT_STATUS.md`
-- `PATCH_MANIFEST.md`
-- `TEST_PLAN.md`
-- `DELETE_FILES.txt`
-
-## Dependencies
-
-None added or removed. `package-lock.json` and `node_modules` must remain unchanged.
-
-## Product behavior
-
-No UI, Tauri, routing, domain, storage, or feature behavior changes.
+None.

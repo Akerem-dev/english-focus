@@ -1,7 +1,42 @@
-/**
- * Final skeleton UI boundary: SearchInput
- * Production implementation is intentionally pending.
- */
-export function SearchInput() {
-  return null;
+import { AppIcon } from "../../design-system";
+import { IconButton } from "../actions";
+import { TextField, type TextFieldProps } from "./TextField";
+
+export interface SearchInputProps extends Omit<
+  TextFieldProps,
+  "leadingIcon" | "trailingAction" | "type"
+> {
+  readonly onClear?: () => void;
+  readonly clearLabel?: string;
+}
+
+export function SearchInput({
+  clearLabel = "Clear search",
+  label = "Search",
+  onClear,
+  value,
+  ...inputProps
+}: SearchInputProps) {
+  const hasValue = typeof value === "string" ? value.length > 0 : value !== undefined;
+
+  return (
+    <TextField
+      {...inputProps}
+      hideLabel={inputProps.hideLabel ?? true}
+      label={label}
+      leadingIcon={<AppIcon name="search" size={18} />}
+      trailingAction={
+        onClear !== undefined && hasValue ? (
+          <IconButton
+            icon={<AppIcon name="close" size={16} />}
+            label={clearLabel}
+            onClick={onClear}
+            size="small"
+          />
+        ) : undefined
+      }
+      type="search"
+      value={value}
+    />
+  );
 }

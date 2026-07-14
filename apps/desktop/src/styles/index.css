@@ -3,4 +3,5 @@
 @import "./typography.css";
 @import "./globals.css";
 @import "./utilities.css";
+@import "./primitives.css";
 @import "./runtime-baseline.css";

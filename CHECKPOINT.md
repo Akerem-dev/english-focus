@@ -1,19 +1,11 @@
-# CP03-GIT — GitHub baseline
+# CP04B FIX01 — Primitive interaction polish
 
-Status: TESTING
+Status: **TESTING**
 
-CP03 native Tauri runtime is locked based on the successful Windows launch and visual proof supplied by the user.
+This corrective checkpoint closes three issues found during the CP04B visual review:
 
-This process checkpoint records the verified native foundation in Git and GitHub before CP04 changes the visual architecture.
+1. WebView2 rendered its native search clear control in addition to the app's accessible clear button.
+2. A select field stretched vertically when placed beside a field with helper text.
+3. The CEFR demonstration select was not connected to the metadata badge.
 
-The checkpoint is complete when:
-
-- the local repository uses `main`;
-- the first stable commit exists;
-- the remote repository is `Akerem-dev/english-focus`;
-- `main` is pushed successfully;
-- the annotated tag `cp03-native-baseline` is pushed;
-- generated dependencies, Rust build output, databases, backups, exports, logs, and secrets are not tracked;
-- `npm run check:git` has no FAIL result.
-
-No product feature or application behavior changes in this patch.
+No new feature checkpoint starts until this fix passes the short native regression test.
