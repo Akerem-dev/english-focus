@@ -9,3 +9,5 @@ export * from "./SearchHistoryRepository";
 export * from "./SettingsRepository";
 export * from "./VocabularyRepository";
 export * from "./VocabularySearchIndex";
+
+export * from "./VocabularyContentSource";

@@ -1,4 +1,6 @@
-/**
- * Final V1 domain boundary for Tag.
- */
-export interface Tag {}
+export interface Tag {
+  id: string;
+  name: string;
+  normalizedName: string;
+  createdAt: string;
+}

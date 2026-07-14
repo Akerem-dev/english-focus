@@ -1,5 +1,7 @@
-/**
- * Final skeleton boundary: migrations/schema-version.ts
- * Production implementation is intentionally pending.
- */
-export {};
+import { VOCABULARY_SCHEMA_VERSION } from "@platform/domain";
+
+export const CURRENT_VOCABULARY_SCHEMA_VERSION = VOCABULARY_SCHEMA_VERSION;
+export const SUPPORTED_VOCABULARY_SCHEMA_VERSIONS = [VOCABULARY_SCHEMA_VERSION] as const;
+
+export type SupportedVocabularySchemaVersion =
+  (typeof SUPPORTED_VOCABULARY_SCHEMA_VERSIONS)[number];

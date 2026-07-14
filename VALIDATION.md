@@ -1,19 +1,39 @@
-# Skeleton Validation
+# CP05B Validation Report
 
-- JSON configuration files parsed successfully: 26
-- Required final-product landmarks found: 20
-- Primary screens represented: Vocabulary, Library, Settings
-- API-provider and local-model modules intentionally absent
-- `node_modules`, build output, binaries, credentials, and generated artifacts are excluded
+Validation was performed on the full project state after applying CP05B and the locked
+CP05A runtime bridge correction.
 
-Run on the target development machine:
+## Results
 
-```bash
-npm install
-npm run check:structure
-npm run check:forbidden
-npm run quality
-npm run desktop
+```text
+Strict TypeScript                         PASS
+Domain contract tests                    1 passed
+Vocabulary schema tests                  11 passed, 2 skipped
+Testing builder tests                    3 passed
+Desktop tests                            19 passed, 26 skipped
+Desktop production build                 PASS
+Changed-file ESLint                      PASS
+Changed-file Prettier                    PASS
+Forbidden API/internal registry scan     PASS
 ```
 
-A lockfile is intentionally not included. Create and commit it after the first successful dependency installation.
+## Content checks
+
+```text
+Canonical word                           maintain
+Schema version                           1.0.0
+Primary examples                         exactly 10
+Every primary example translated         yes
+Reviewed meanings                        4
+Phrasal verbs fabricated                 no
+Idioms fabricated                        no
+Content source runtime validation         yes
+Deep runtime freezing                    yes
+Duplicate id/normalized-word rejection   yes
+User metadata stored in content fixture  no
+```
+
+## Not performed
+
+A native visual launch is optional for this checkpoint because CP05B intentionally
+changes no rendered UI. The previous CP04 shell remains the expected visual output.

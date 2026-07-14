@@ -1,4 +1,1 @@
-/**
- * Final V1 domain boundary for VocabularyUserMetadata.
- */
-export interface VocabularyUserMetadata {}
+export type { VocabularyUserMetadata } from "../library/VocabularyUserMetadata";

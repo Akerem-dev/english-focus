@@ -1,4 +1,9 @@
-/**
- * Final V1 domain boundary for PrepositionPattern.
- */
-export interface PrepositionPattern {}
+import type { GrammarPatternExample } from "./GrammarPattern";
+
+export interface PrepositionPattern {
+  pattern: string;
+  preposition: string;
+  explanationEn: string;
+  explanationTr: string;
+  examples: readonly GrammarPatternExample[];
+}

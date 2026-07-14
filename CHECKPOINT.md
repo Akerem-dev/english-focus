@@ -1,22 +1,21 @@
-# CHECKPOINT — CP04C
+# CP05B FIX01 — Restore CP04B Runtime Baseline
 
 ## Status
 
 TESTING
 
-## Goal
+## Purpose
 
-Validate the persistent application shell, exactly three primary routes, and responsive sidebar/topbar behavior inside the native Tauri window.
+Restore the CP04B accessible-component checkpoint implementation that was accidentally overwritten by the older CP03 runtime screen during manual file relocation.
 
-## Previous locked checkpoints
+## Scope
 
-- CP01 — Public npm baseline
-- CP02 — Browser runtime
-- CP03 — Native Tauri runtime
-- CP03-GIT — GitHub native baseline
-- CP04A — Design tokens and SVG foundation
-- CP04B — Accessible primitive foundation
+- Replaces only `apps/desktop/src/app/runtime/RuntimeBaseline.tsx`.
+- Does not change the active CP04C application shell.
+- Does not change vocabulary schemas, fixture data, content sources, Tauri, or dependencies.
 
-## Stop condition
+## Expected result
 
-Do not continue to vocabulary domain modeling until the three-route shell passes functional and visual testing.
+- The stale `RuntimeBaseline.test.tsx` regression contract passes again.
+- Desktop test total returns to 19 passed / 26 skipped.
+- TypeScript and production build continue to pass.

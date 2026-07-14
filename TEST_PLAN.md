@@ -1,64 +1,36 @@
-# Test Plan — CP04C Application Shell
+# Test Plan — CP05B FIX01
 
-## Automated checks
-
-Run from the repository root:
+Run every command from the project root. The commands are intentionally provided as one PowerShell block.
 
 ```powershell
 npm run check:environment
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 npm run typecheck
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+npm run test --workspace=@platform/domain
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+npm run test --workspace=@platform/schemas
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+npm run test --workspace=@platform/testing
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 npm run test --workspace=@app/desktop
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 npm run build --workspace=@app/desktop
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 ```
 
-Expected new route tests: four passing tests. Existing future-feature tests remain skipped.
+## Expected totals
 
-## Native test
+- Domain: 1 passed
+- Schemas: 11 passed, 2 skipped
+- Testing builders: 3 passed
+- Desktop: 19 passed, 26 skipped
+- Production build: successful
 
-```powershell
-npm run desktop
-```
-
-### Vocabulary
-
-- Vocabulary is selected on launch.
-- The page shows `Look up an English word`.
-- Typing and clearing the search field works.
-- Search submission does not navigate or crash; repository search is intentionally deferred.
-- Recent-search and recent-addition cards remain aligned.
-
-### Library
-
-- Select Library in the sidebar.
-- URL hash becomes `#/library`.
-- Active sidebar state moves to Library.
-- Empty state and `0 entries` appear.
-- Disabled actions do not fire.
-
-### Settings
-
-- Select Settings in the sidebar.
-- URL hash becomes `#/settings`.
-- Active sidebar state moves to Settings.
-- Content, Data, Appearance & accessibility, and Diagnostics panels appear.
-- Switches and selects respond locally without crashes.
-- Refreshing the app may reset them; persistence is deferred.
-
-### Responsive behavior
-
-- At normal width the EF name and navigation labels are visible.
-- Near 960 px the sidebar becomes icon-only.
-- Tooltip/title text identifies icon-only navigation items.
-- No horizontal scrollbar appears.
-- Route content remains vertically scrollable.
-
-### Accessibility
-
-- Tab reaches all three navigation items.
-- Enter activates the focused route.
-- Focus rings are visible.
-- The skip-to-content link appears when focused.
-
-## Git
-
-Do not commit until this checkpoint is approved.
+No visual change is expected in the active Vocabulary, Library, or Settings routes.
