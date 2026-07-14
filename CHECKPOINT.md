@@ -1,22 +1,21 @@
-# Checkpoint CP05A
+# CP05B FIX01 — Restore CP04B Runtime Baseline
 
-Status: TESTING
+## Status
 
-## Goal
+TESTING
 
-Lock the V1 vocabulary content model, separate user metadata model, schema version, strict runtime Zod validation, and JSON Schema export.
+## Purpose
 
-## Acceptance gate
+Restore the CP04B accessible-component checkpoint implementation that was accidentally overwritten by the older CP03 runtime screen during manual file relocation.
 
-- TypeScript strict mode passes across every workspace.
-- Domain contract tests pass.
-- Vocabulary-entry schema tests pass.
-- User-metadata schema tests pass.
-- Schema-version detection tests pass.
-- Existing CP04 application-shell tests remain green.
-- Desktop production build remains green.
-- No visible UI change is expected in this checkpoint.
+## Scope
 
-## Next checkpoint
+- Replaces only `apps/desktop/src/app/runtime/RuntimeBaseline.tsx`.
+- Does not change the active CP04C application shell.
+- Does not change vocabulary schemas, fixture data, content sources, Tauri, or dependencies.
 
-CP05B — canonical `maintain` fixture, test builders, and a validated read-only content source.
+## Expected result
+
+- The stale `RuntimeBaseline.test.tsx` regression contract passes again.
+- Desktop test total returns to 19 passed / 26 skipped.
+- TypeScript and production build continue to pass.

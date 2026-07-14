@@ -1,35 +1,23 @@
-# Patch Manifest — CP05A
+# Patch Manifest — CP05B FIX01
 
-## Patch type
+## Replaced
 
-Domain and schema foundation. No UI, npm dependency, lockfile, database, or Rust changes.
+- `apps/desktop/src/app/runtime/RuntimeBaseline.tsx`
+  - Restores the CP04B accessible component foundation screen.
+  - Reverses the accidental replacement with the older CP03 native-runtime screen.
 
-## Added
+## Added documentation
 
-- CEFR, inflection, schema-version, and vocabulary enum contracts
-- concrete vocabulary content interfaces
-- separate user metadata interfaces
-- strict Zod component and entry schemas
-- user metadata schema
-- JSON Schema export
-- schema-version detection
-- domain and schema tests
-- vocabulary contract documentation
+- `CHECKPOINT.md`
+- `PATCH_MANIFEST.md`
+- `PROJECT_STATUS.md`
+- `TEST_PLAN.md`
+- `DELETE_FILES.txt`
 
-## Replaced skeleton stubs
+## Dependency changes
 
-- `packages/domain/src/vocabulary/*`
-- learning/review/tag/user-metadata boundaries in `packages/domain/src/library`
-- vocabulary schemas in `packages/schemas/src/vocabulary`
-- current schema-version detection boundaries
-- vocabulary entry, metadata, and schema-version tests
+None.
 
-## Not included
+## Lockfile changes
 
-- `package.json`
-- `package-lock.json`
-- npm dependencies
-- React page changes
-- Tauri or Rust changes
-- SQLite changes
-- production vocabulary fixture content
+None.

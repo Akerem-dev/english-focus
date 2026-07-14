@@ -1,14 +1,39 @@
-# Validation — CP05A
+# CP05B Validation Report
 
-Validated on the cumulative CP04C project state.
+Validation was performed on the full project state after applying CP05B and the locked
+CP05A runtime bridge correction.
 
-- TypeScript strict workspace check: PASS
-- Domain tests: 1 PASS
-- Schema tests: 11 PASS, 2 future tests SKIPPED
-- Desktop regression tests: 13 PASS, 26 future tests SKIPPED
-- Desktop production build: PASS
-- Changed-file ESLint: PASS
-- Changed-file Prettier: PASS
-- Forbidden API and internal-registry patterns: PASS
+## Results
 
-No native UI change is introduced by this patch.
+```text
+Strict TypeScript                         PASS
+Domain contract tests                    1 passed
+Vocabulary schema tests                  11 passed, 2 skipped
+Testing builder tests                    3 passed
+Desktop tests                            19 passed, 26 skipped
+Desktop production build                 PASS
+Changed-file ESLint                      PASS
+Changed-file Prettier                    PASS
+Forbidden API/internal registry scan     PASS
+```
+
+## Content checks
+
+```text
+Canonical word                           maintain
+Schema version                           1.0.0
+Primary examples                         exactly 10
+Every primary example translated         yes
+Reviewed meanings                        4
+Phrasal verbs fabricated                 no
+Idioms fabricated                        no
+Content source runtime validation         yes
+Deep runtime freezing                    yes
+Duplicate id/normalized-word rejection   yes
+User metadata stored in content fixture  no
+```
+
+## Not performed
+
+A native visual launch is optional for this checkpoint because CP05B intentionally
+changes no rendered UI. The previous CP04 shell remains the expected visual output.
