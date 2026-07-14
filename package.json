@@ -1,0 +1,46 @@
+{
+  "name": "english-learning-platform",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=22.12.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "check:environment": "node scripts/check-environment.mjs",
+    "dev": "npm run dev --workspace=@app/desktop",
+    "desktop": "npm run tauri --workspace=@app/desktop -- dev",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:structure": "node scripts/check-structure.mjs",
+    "check:forbidden": "node scripts/check-forbidden-patterns.mjs",
+    "quality": "npm run check:structure && npm run check:forbidden && npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
+    "check:native-environment": "node scripts/check-native-environment.mjs",
+    "check:git": "node scripts/check-git-hygiene.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.4.0",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.48.0",
+    "vite": "^7.2.0",
+    "vitest": "^4.0.0"
+  }
+}

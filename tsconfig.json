@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/desktop" },
+    { "path": "./packages/domain" },
+    { "path": "./packages/schemas" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/testing" }
+  ]
+}

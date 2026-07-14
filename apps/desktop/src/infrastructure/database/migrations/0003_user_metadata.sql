@@ -1,0 +1,1 @@
+-- Final V1 user metadata migration location.

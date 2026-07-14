@@ -1,0 +1,2 @@
+-- Final V1 database baseline.
+-- Production table definitions are intentionally pending.

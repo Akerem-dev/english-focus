@@ -1,0 +1,14 @@
+{
+  "name": "English Learning Platform Final V1 Skeleton",
+  "version": "1.0",
+  "purpose": "Complete intended final V1 file and module skeleton with pending production implementation",
+  "primaryScreens": [
+    "Vocabulary",
+    "Library",
+    "Settings"
+  ],
+  "externalAiIntegration": "Copy instruction and paste validated JSON; no API provider",
+  "fileCount": 608,
+  "validatedJsonFiles": 26,
+  "requiredLandmarks": 20
+}

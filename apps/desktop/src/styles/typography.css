@@ -1,0 +1,11 @@
+body {
+  font-family: var(--font-family-ui);
+  font-size: var(--font-size-3);
+  line-height: var(--line-height-normal);
+  text-rendering: optimizeLegibility;
+}
+
+.word-title {
+  font-family: var(--font-family-display);
+  line-height: var(--line-height-tight);
+}

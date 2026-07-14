@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+target
+src-tauri/gen
+package-lock.json
+PROJECT_TREE.txt
