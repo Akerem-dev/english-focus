@@ -4,6 +4,10 @@ body,
   min-height: 100%;
 }
 
+html {
+  background: var(--color-background);
+}
+
 body {
   min-width: 20rem;
   background: var(--color-background);
@@ -15,15 +19,30 @@ a,
 input,
 textarea,
 select {
-  outline-offset: 0.2rem;
+  outline: none;
 }
 
 :focus-visible {
-  outline: 0.125rem solid var(--color-focus);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
 }
 
 .app-shell {
   min-height: 100vh;
+}
+
+[data-reduced-motion="true"] *,
+[data-reduced-motion="true"] *::before,
+[data-reduced-motion="true"] *::after {
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

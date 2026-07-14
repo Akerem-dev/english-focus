@@ -1,19 +1,22 @@
-# CP03-GIT — GitHub baseline
+# CHECKPOINT — CP04C
 
-Status: TESTING
+## Status
 
-CP03 native Tauri runtime is locked based on the successful Windows launch and visual proof supplied by the user.
+TESTING
 
-This process checkpoint records the verified native foundation in Git and GitHub before CP04 changes the visual architecture.
+## Goal
 
-The checkpoint is complete when:
+Validate the persistent application shell, exactly three primary routes, and responsive sidebar/topbar behavior inside the native Tauri window.
 
-- the local repository uses `main`;
-- the first stable commit exists;
-- the remote repository is `Akerem-dev/english-focus`;
-- `main` is pushed successfully;
-- the annotated tag `cp03-native-baseline` is pushed;
-- generated dependencies, Rust build output, databases, backups, exports, logs, and secrets are not tracked;
-- `npm run check:git` has no FAIL result.
+## Previous locked checkpoints
 
-No product feature or application behavior changes in this patch.
+- CP01 — Public npm baseline
+- CP02 — Browser runtime
+- CP03 — Native Tauri runtime
+- CP03-GIT — GitHub native baseline
+- CP04A — Design tokens and SVG foundation
+- CP04B — Accessible primitive foundation
+
+## Stop condition
+
+Do not continue to vocabulary domain modeling until the three-route shell passes functional and visual testing.

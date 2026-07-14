@@ -1,122 +1,64 @@
-# CP03-GIT test plan
+# Test Plan — CP04C Application Shell
 
-## Stop conditions
+## Automated checks
 
-Do not begin CP04 until the initial commit, remote push, and checkpoint tag all succeed.
-
-## 1. Apply the patch
-
-Copy the patch contents directly into the project root and replace matching files.
-
-Do not run `npm install`. Do not delete `package-lock.json`, `node_modules`, or the Rust `target` directory.
-
-## 2. Create the GitHub repository
-
-On GitHub, create:
-
-- Owner: `Akerem-dev`
-- Repository name: `english-focus`
-- Description: `Offline-first desktop vocabulary library built with Tauri, React, TypeScript, Rust, and SQLite.`
-- Visibility: Private during development
-- Do not add a README
-- Do not add a `.gitignore`
-- Do not add a license
-
-The repository must be empty because the local project already contains these files.
-
-## 3. Initialize local Git
-
-Run from the project root:
+Run from the repository root:
 
 ```powershell
-git --version
-git init
-git branch -M main
+npm run check:environment
+npm run typecheck
+npm run test --workspace=@app/desktop
+npm run build --workspace=@app/desktop
 ```
 
-Set your Git identity only if Git reports that it is missing:
+Expected new route tests: four passing tests. Existing future-feature tests remain skipped.
+
+## Native test
 
 ```powershell
-git config --global user.name "Ahmet Kerem Kuku"
-git config --global user.email "YOUR_GITHUB_VERIFIED_EMAIL"
+npm run desktop
 ```
 
-Use an email already verified by GitHub or your GitHub-provided no-reply email.
+### Vocabulary
 
-## 4. Inspect what will be committed
+- Vocabulary is selected on launch.
+- The page shows `Look up an English word`.
+- Typing and clearing the search field works.
+- Search submission does not navigate or crash; repository search is intentionally deferred.
+- Recent-search and recent-addition cards remain aligned.
 
-```powershell
-git status --short
-git check-ignore -v node_modules
-git check-ignore -v apps/desktop/src-tauri/target
-npm run check:git
-```
+### Library
 
-Expected:
+- Select Library in the sidebar.
+- URL hash becomes `#/library`.
+- Active sidebar state moves to Library.
+- Empty state and `0 entries` appear.
+- Disabled actions do not fire.
 
-- `node_modules` is ignored.
-- the Rust `target` folder is ignored.
-- no `.env`, database, backup, export, log, or generated build directory is staged.
-- `npm run check:git` has no FAIL line. Remote and uncommitted-change warnings are expected before the first commit.
+### Settings
 
-## 5. Create the stable baseline commit
+- Select Settings in the sidebar.
+- URL hash becomes `#/settings`.
+- Active sidebar state moves to Settings.
+- Content, Data, Appearance & accessibility, and Diagnostics panels appear.
+- Switches and selects respond locally without crashes.
+- Refreshing the app may reset them; persistence is deferred.
 
-```powershell
-git add .
-git status --short
-npm run check:git
-git commit -m "chore: establish CP03 native desktop baseline"
-```
+### Responsive behavior
 
-After `git add .`, confirm again that `node_modules` and any Rust `target` path do not appear in `git status --short`.
+- At normal width the EF name and navigation labels are visible.
+- Near 960 px the sidebar becomes icon-only.
+- Tooltip/title text identifies icon-only navigation items.
+- No horizontal scrollbar appears.
+- Route content remains vertically scrollable.
 
-## 6. Connect and push
+### Accessibility
 
-```powershell
-git remote add origin https://github.com/Akerem-dev/english-focus.git
-git push -u origin main
-```
+- Tab reaches all three navigation items.
+- Enter activates the focused route.
+- Focus rings are visible.
+- The skip-to-content link appears when focused.
 
-If `origin` already exists, inspect it instead of adding a second remote:
+## Git
 
-```powershell
-git remote -v
-```
-
-## 7. Create the checkpoint tag
-
-```powershell
-git tag -a cp03-native-baseline -m "CP03 native desktop foundation"
-git push origin cp03-native-baseline
-```
-
-## 8. Final verification
-
-```powershell
-git status
-git remote -v
-git tag --list
-npm run check:git
-```
-
-Expected:
-
-- branch: `main`;
-- working tree: clean;
-- `origin` points to `Akerem-dev/english-focus`;
-- tag list contains `cp03-native-baseline`;
-- Git hygiene check passes without FAIL.
-
-## Report
-
-```text
-Checkpoint: CP03-GIT
-Repository created: PASS / FAIL
-Initial commit: PASS / FAIL
-Main push: PASS / FAIL
-Tag push: PASS / FAIL
-Git hygiene: PASS / FAIL
-Working tree clean: PASS / FAIL
-Repository URL:
-Error output:
-```
+Do not commit until this checkpoint is approved.

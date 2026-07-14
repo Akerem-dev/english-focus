@@ -1,7 +1,9 @@
-/**
- * Final skeleton UI boundary: AppContent
- * Production implementation is intentionally pending.
- */
-export function AppContent() {
-  return null;
+import type { PropsWithChildren } from "react";
+
+export function AppContent({ children }: PropsWithChildren) {
+  return (
+    <main className="app-content" id="main-content" tabIndex={-1}>
+      {children}
+    </main>
+  );
 }

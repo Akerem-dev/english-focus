@@ -1,24 +1,61 @@
 :root {
   color-scheme: light;
 
-  --color-background: #f4f1ea;
-  --color-surface: #fbfaf7;
-  --color-surface-subtle: #f0ece4;
-  --color-text: #252421;
-  --color-text-muted: #716f69;
-  --color-border: #dedad1;
-  --color-accent: #713b3b;
-  --color-accent-soft: #eee3e1;
-  --color-success: #3f6f53;
-  --color-warning: #956c2f;
-  --color-danger: #a33f3f;
-  --color-focus: #315c85;
+  /* Foundation palette */
+  --ef-color-canvas: #f6f3ed;
+  --ef-color-sidebar: #f1ede6;
+  --ef-color-surface: #fffdfa;
+  --ef-color-surface-muted: #f7f3ec;
+  --ef-color-surface-strong: #eee8df;
+  --ef-color-text: #24211f;
+  --ef-color-text-secondary: #625d57;
+  --ef-color-text-muted: #837c74;
+  --ef-color-border: #ddd6cc;
+  --ef-color-border-strong: #c9c0b5;
+  --ef-color-accent: #7b1722;
+  --ef-color-accent-hover: #68121b;
+  --ef-color-accent-pressed: #551017;
+  --ef-color-accent-soft: #f3e6e7;
+  --ef-color-success: #39714f;
+  --ef-color-success-soft: #e7f1ea;
+  --ef-color-warning: #9a6926;
+  --ef-color-warning-soft: #f6ecdc;
+  --ef-color-danger: #a3383f;
+  --ef-color-danger-soft: #f6e4e5;
+  --ef-color-focus: #315f8a;
+  --ef-color-overlay: rgb(31 28 26 / 46%);
 
+  /* Semantic compatibility aliases */
+  --color-background: var(--ef-color-canvas);
+  --color-sidebar: var(--ef-color-sidebar);
+  --color-surface: var(--ef-color-surface);
+  --color-surface-subtle: var(--ef-color-surface-muted);
+  --color-surface-strong: var(--ef-color-surface-strong);
+  --color-text: var(--ef-color-text);
+  --color-text-secondary: var(--ef-color-text-secondary);
+  --color-text-muted: var(--ef-color-text-muted);
+  --color-border: var(--ef-color-border);
+  --color-border-strong: var(--ef-color-border-strong);
+  --color-accent: var(--ef-color-accent);
+  --color-accent-hover: var(--ef-color-accent-hover);
+  --color-accent-pressed: var(--ef-color-accent-pressed);
+  --color-accent-soft: var(--ef-color-accent-soft);
+  --color-success: var(--ef-color-success);
+  --color-success-soft: var(--ef-color-success-soft);
+  --color-warning: var(--ef-color-warning);
+  --color-warning-soft: var(--ef-color-warning-soft);
+  --color-danger: var(--ef-color-danger);
+  --color-danger-soft: var(--ef-color-danger-soft);
+  --color-focus: var(--ef-color-focus);
+  --color-overlay: var(--ef-color-overlay);
+
+  /* Typography */
   --font-family-display: Georgia, "Times New Roman", serif;
   --font-family-ui:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-family-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 
+  --font-size-0: 0.6875rem;
   --font-size-1: 0.75rem;
   --font-size-2: 0.875rem;
   --font-size-3: 1rem;
@@ -27,10 +64,18 @@
   --font-size-6: 2.5rem;
   --font-size-7: 3.5rem;
 
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
   --line-height-tight: 1.2;
   --line-height-normal: 1.5;
   --line-height-reading: 1.72;
+  --letter-spacing-label: 0.08em;
 
+  /* Spacing */
+  --space-0: 0;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -41,16 +86,46 @@
   --space-8: 4rem;
   --space-9: 6rem;
 
+  /* Shape */
+  --border-width-hairline: 0.0625rem;
+  --border-width-control: 0.0625rem;
   --radius-small: 0.375rem;
   --radius-medium: 0.625rem;
   --radius-large: 0.875rem;
+  --radius-extra-large: 1.125rem;
+  --radius-pill: 999rem;
 
+  /* Elevation */
+  --shadow-low: 0 0.125rem 0.5rem rgb(37 31 28 / 6%);
+  --shadow-medium: 0 0.75rem 2rem rgb(37 31 28 / 10%);
+  --shadow-high: 0 1.5rem 4rem rgb(37 31 28 / 14%);
+  --shadow-overlay: 0 1.75rem 5rem rgb(26 22 20 / 20%);
+
+  /* Motion */
   --duration-fast: 120ms;
   --duration-normal: 180ms;
   --duration-slow: 240ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --easing-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
 
+  /* Focus */
+  --focus-ring-width: 0.125rem;
+  --focus-ring-offset: 0.1875rem;
+  --focus-ring: var(--focus-ring-width) solid var(--color-focus);
+
+  /* Layering */
+  --layer-base: 0;
+  --layer-sticky: 20;
+  --layer-dropdown: 40;
+  --layer-overlay: 60;
+  --layer-modal: 80;
+  --layer-toast: 100;
+
+  /* Layout */
   --sidebar-width: 14.5rem;
   --sidebar-width-collapsed: 4.5rem;
   --content-width-reading: 48rem;
   --content-width-app: 80rem;
+  --window-min-width: 60rem;
+  --window-min-height: 40rem;
 }

@@ -1,29 +1,41 @@
-# Patch manifest — Part 02B
+# Patch Manifest — CP04C Application Shell
 
-## Purpose
+## Modified
 
-Create a safe Git/GitHub baseline from the verified CP03 native desktop checkpoint before beginning CP04.
+- `apps/desktop/src/app/App.tsx`
+- `apps/desktop/src/app/layout/AppContent.tsx`
+- `apps/desktop/src/app/layout/AppLayout.tsx`
+- `apps/desktop/src/app/layout/AppSidebar.tsx`
+- `apps/desktop/src/app/layout/AppTopBar.tsx`
+- `apps/desktop/src/app/layout/index.ts`
+- `apps/desktop/src/app/router/AppRouter.tsx`
+- `apps/desktop/src/app/router/index.ts`
+- `apps/desktop/src/app/router/routeIds.ts`
+- `apps/desktop/src/app/router/routes.tsx`
+- `apps/desktop/src/components/navigation/SidebarNavItem.tsx`
+- `apps/desktop/src/modules/vocabulary/pages/VocabularyPage.tsx`
+- `apps/desktop/src/modules/vocabulary/pages/index.ts`
+- `apps/desktop/src/modules/library/pages/index.ts`
+- `apps/desktop/src/modules/settings/pages/index.ts`
+- `apps/desktop/src/modules/library/pages/LibraryPage.tsx`
+- `apps/desktop/src/modules/settings/pages/SettingsPage.tsx`
+- `apps/desktop/src/styles/index.css`
 
 ## Added
 
-- `.gitattributes`
-- `docs/development/GIT_WORKFLOW.md`
-- `scripts/check-git-hygiene.mjs`
+- `apps/desktop/src/styles/app-shell.css`
+- `apps/desktop/src/styles/route-pages.css`
+- `apps/desktop/tests/app/AppRoutes.test.tsx`
+- `docs/roadmap/APPLICATION_SHELL_FOUNDATION.md`
 
-## Replaced
+## Root checkpoint documents updated
 
-- `.gitignore`
-- `package.json`
 - `CHECKPOINT.md`
-- `PROJECT_STATUS.md`
 - `PATCH_MANIFEST.md`
+- `PROJECT_STATUS.md`
 - `TEST_PLAN.md`
 - `DELETE_FILES.txt`
 
 ## Dependencies
 
-None added or removed. `package-lock.json` and `node_modules` must remain unchanged.
-
-## Product behavior
-
-No UI, Tauri, routing, domain, storage, or feature behavior changes.
+No npm or Rust dependencies changed. Do not run `npm install`.

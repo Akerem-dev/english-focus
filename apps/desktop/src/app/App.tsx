@@ -1,12 +1,19 @@
+import { HashRouter } from "react-router-dom";
+
 import { AppErrorBoundary } from "./errors/AppErrorBoundary";
+import { AppLayout } from "./layout";
 import { AppProviders } from "./providers/AppProviders";
-import { RuntimeBaseline } from "./runtime";
+import { AppRouter } from "./router";
 
 export function App() {
   return (
     <AppErrorBoundary>
       <AppProviders>
-        <RuntimeBaseline />
+        <HashRouter>
+          <AppLayout>
+            <AppRouter />
+          </AppLayout>
+        </HashRouter>
       </AppProviders>
     </AppErrorBoundary>
   );
