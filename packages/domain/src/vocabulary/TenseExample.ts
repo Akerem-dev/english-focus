@@ -1,4 +1,7 @@
-/**
- * Final V1 domain boundary for TenseExample.
- */
-export interface TenseExample {}
+export interface TenseExample {
+  tense: string;
+  sentenceEn: string;
+  translationTr: string;
+  usageNoteEn?: string | undefined;
+  usageNoteTr?: string | undefined;
+}

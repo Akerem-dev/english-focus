@@ -1,3 +1,4 @@
+export * from "./CefrLevel";
 export * from "./Collocation";
 export * from "./CommonMistake";
 export * from "./Etymology";
@@ -6,6 +7,7 @@ export * from "./GenerationMetadata";
 export * from "./GrammarAnalysis";
 export * from "./GrammarPattern";
 export * from "./Idiom";
+export * from "./InflectedForm";
 export * from "./Meaning";
 export * from "./Morphology";
 export * from "./PartOfSpeech";
@@ -18,4 +20,5 @@ export * from "./SentenceFormExample";
 export * from "./TenseExample";
 export * from "./VocabularyEntry";
 export * from "./VocabularyEntrySource";
+export * from "./VocabularySchemaVersion";
 export * from "./WordFamilyItem";

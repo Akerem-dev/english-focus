@@ -1,4 +1,6 @@
-/**
- * Final V1 domain boundary for CommonMistake.
- */
-export interface CommonMistake {}
+export interface CommonMistake {
+  incorrect: string;
+  correct: string;
+  explanationEn: string;
+  explanationTr: string;
+}

@@ -1,22 +1,22 @@
-# CHECKPOINT — CP04C
+# Checkpoint CP05A
 
-## Status
-
-TESTING
+Status: TESTING
 
 ## Goal
 
-Validate the persistent application shell, exactly three primary routes, and responsive sidebar/topbar behavior inside the native Tauri window.
+Lock the V1 vocabulary content model, separate user metadata model, schema version, strict runtime Zod validation, and JSON Schema export.
 
-## Previous locked checkpoints
+## Acceptance gate
 
-- CP01 — Public npm baseline
-- CP02 — Browser runtime
-- CP03 — Native Tauri runtime
-- CP03-GIT — GitHub native baseline
-- CP04A — Design tokens and SVG foundation
-- CP04B — Accessible primitive foundation
+- TypeScript strict mode passes across every workspace.
+- Domain contract tests pass.
+- Vocabulary-entry schema tests pass.
+- User-metadata schema tests pass.
+- Schema-version detection tests pass.
+- Existing CP04 application-shell tests remain green.
+- Desktop production build remains green.
+- No visible UI change is expected in this checkpoint.
 
-## Stop condition
+## Next checkpoint
 
-Do not continue to vocabulary domain modeling until the three-route shell passes functional and visual testing.
+CP05B — canonical `maintain` fixture, test builders, and a validated read-only content source.

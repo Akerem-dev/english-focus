@@ -1,41 +1,35 @@
-# Patch Manifest — CP04C Application Shell
+# Patch Manifest — CP05A
 
-## Modified
+## Patch type
 
-- `apps/desktop/src/app/App.tsx`
-- `apps/desktop/src/app/layout/AppContent.tsx`
-- `apps/desktop/src/app/layout/AppLayout.tsx`
-- `apps/desktop/src/app/layout/AppSidebar.tsx`
-- `apps/desktop/src/app/layout/AppTopBar.tsx`
-- `apps/desktop/src/app/layout/index.ts`
-- `apps/desktop/src/app/router/AppRouter.tsx`
-- `apps/desktop/src/app/router/index.ts`
-- `apps/desktop/src/app/router/routeIds.ts`
-- `apps/desktop/src/app/router/routes.tsx`
-- `apps/desktop/src/components/navigation/SidebarNavItem.tsx`
-- `apps/desktop/src/modules/vocabulary/pages/VocabularyPage.tsx`
-- `apps/desktop/src/modules/vocabulary/pages/index.ts`
-- `apps/desktop/src/modules/library/pages/index.ts`
-- `apps/desktop/src/modules/settings/pages/index.ts`
-- `apps/desktop/src/modules/library/pages/LibraryPage.tsx`
-- `apps/desktop/src/modules/settings/pages/SettingsPage.tsx`
-- `apps/desktop/src/styles/index.css`
+Domain and schema foundation. No UI, npm dependency, lockfile, database, or Rust changes.
 
 ## Added
 
-- `apps/desktop/src/styles/app-shell.css`
-- `apps/desktop/src/styles/route-pages.css`
-- `apps/desktop/tests/app/AppRoutes.test.tsx`
-- `docs/roadmap/APPLICATION_SHELL_FOUNDATION.md`
+- CEFR, inflection, schema-version, and vocabulary enum contracts
+- concrete vocabulary content interfaces
+- separate user metadata interfaces
+- strict Zod component and entry schemas
+- user metadata schema
+- JSON Schema export
+- schema-version detection
+- domain and schema tests
+- vocabulary contract documentation
 
-## Root checkpoint documents updated
+## Replaced skeleton stubs
 
-- `CHECKPOINT.md`
-- `PATCH_MANIFEST.md`
-- `PROJECT_STATUS.md`
-- `TEST_PLAN.md`
-- `DELETE_FILES.txt`
+- `packages/domain/src/vocabulary/*`
+- learning/review/tag/user-metadata boundaries in `packages/domain/src/library`
+- vocabulary schemas in `packages/schemas/src/vocabulary`
+- current schema-version detection boundaries
+- vocabulary entry, metadata, and schema-version tests
 
-## Dependencies
+## Not included
 
-No npm or Rust dependencies changed. Do not run `npm install`.
+- `package.json`
+- `package-lock.json`
+- npm dependencies
+- React page changes
+- Tauri or Rust changes
+- SQLite changes
+- production vocabulary fixture content

@@ -1,19 +1,14 @@
-# Skeleton Validation
+# Validation — CP05A
 
-- JSON configuration files parsed successfully: 26
-- Required final-product landmarks found: 20
-- Primary screens represented: Vocabulary, Library, Settings
-- API-provider and local-model modules intentionally absent
-- `node_modules`, build output, binaries, credentials, and generated artifacts are excluded
+Validated on the cumulative CP04C project state.
 
-Run on the target development machine:
+- TypeScript strict workspace check: PASS
+- Domain tests: 1 PASS
+- Schema tests: 11 PASS, 2 future tests SKIPPED
+- Desktop regression tests: 13 PASS, 26 future tests SKIPPED
+- Desktop production build: PASS
+- Changed-file ESLint: PASS
+- Changed-file Prettier: PASS
+- Forbidden API and internal-registry patterns: PASS
 
-```bash
-npm install
-npm run check:structure
-npm run check:forbidden
-npm run quality
-npm run desktop
-```
-
-A lockfile is intentionally not included. Create and commit it after the first successful dependency installation.
+No native UI change is introduced by this patch.
