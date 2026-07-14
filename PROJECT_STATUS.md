@@ -1,9 +1,19 @@
-# Project status
+# Project Status
 
-- CP01 — npm baseline: LOCKED
-- CP02 — browser runtime: LOCKED
-- CP03 — native Tauri baseline: LOCKED
-- CP03-GIT — GitHub baseline: LOCKED
-- CP04A — design tokens and SVG foundation: COMPLETED ON BRANCH
-- CP04B — accessible primitive components: FIX01 TESTING
-- CP04C — application shell and three routes: BLOCKED UNTIL CP04B FIX01 PASSES
+## Current
+
+CP04C — Persistent application shell and exactly three primary routes — TESTING
+
+## Locked
+
+- CP00 — Roadmap and patch protocol
+- CP01 — Public npm baseline
+- CP02 — Browser runtime
+- CP03 — Native Tauri runtime
+- CP03-GIT — GitHub native baseline
+- CP04A — Design tokens and SVG foundation
+- CP04B — Accessible component foundation
+
+## Next after approval
+
+CP05A — Vocabulary domain model and versioned schema foundation

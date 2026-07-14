@@ -1,11 +1,22 @@
-# CP04B FIX01 — Primitive interaction polish
+# CHECKPOINT — CP04C
 
-Status: **TESTING**
+## Status
 
-This corrective checkpoint closes three issues found during the CP04B visual review:
+TESTING
 
-1. WebView2 rendered its native search clear control in addition to the app's accessible clear button.
-2. A select field stretched vertically when placed beside a field with helper text.
-3. The CEFR demonstration select was not connected to the metadata badge.
+## Goal
 
-No new feature checkpoint starts until this fix passes the short native regression test.
+Validate the persistent application shell, exactly three primary routes, and responsive sidebar/topbar behavior inside the native Tauri window.
+
+## Previous locked checkpoints
+
+- CP01 — Public npm baseline
+- CP02 — Browser runtime
+- CP03 — Native Tauri runtime
+- CP03-GIT — GitHub native baseline
+- CP04A — Design tokens and SVG foundation
+- CP04B — Accessible primitive foundation
+
+## Stop condition
+
+Do not continue to vocabulary domain modeling until the three-route shell passes functional and visual testing.
