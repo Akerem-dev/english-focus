@@ -1,21 +1,35 @@
-# Patch manifest — CP08-FIX01
+# Patch Manifest — CP09 JSON Paste and Parse Foundation
 
-## Modified
+## Patch type
 
-- `apps/desktop/src/modules/settings/components/InstructionSettingsSection.tsx`
-  - Uses event-safe instruction preference handlers.
+Incremental overlay patch for the approved CP08 project state.
 
-## Added
+## Application and services
 
-- `apps/desktop/src/modules/settings/components/instructionSettingsHandlers.ts`
-  - Snapshots DOM values before deferred React state updates.
-- `apps/desktop/tests/components/settings/InstructionSettingsHandlers.test.ts`
-  - Guards Maximum, C1, and switch changes against event-lifetime regressions.
+- completes pasted-text cleaning;
+- completes Markdown fence removal;
+- completes balanced JSON object extraction;
+- completes smart quote normalization fallback;
+- completes safe syntax parsing and user-facing parse errors;
+- exports the real import/export application and service boundaries.
 
-## Dependencies
+## UI
 
-No dependency or lockfile changes.
+- implements `PasteGeneratedJsonDialog`;
+- activates `Paste generated JSON` from the vocabulary not-found state;
+- wires the dialog into `VocabularyPage` without creating another primary route;
+- adds responsive JSON paste, result, warning, and counter styling.
 
-## Deletions
+## Tests
 
-None.
+- replaces the skipped pasted-JSON cleaner test;
+- replaces the skipped paste-dialog test;
+- adds parser tests;
+- updates vocabulary not-found regression coverage.
+
+## Dependency impact
+
+- no new npm package;
+- no `package.json` change;
+- no `package-lock.json` supplied;
+- no Rust or Tauri dependency change.
