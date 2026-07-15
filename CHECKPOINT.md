@@ -1,21 +1,15 @@
-# CP05B FIX01 — Restore CP04B Runtime Baseline
+# CP06A FIX01 — Sticky Section Navigation
 
-## Status
+Status: TESTING
 
-TESTING
+This patch corrects the vocabulary detail section navigation inside the existing CP06A checkpoint.
 
-## Purpose
+## Fixed
 
-Restore the CP04B accessible-component checkpoint implementation that was accidentally overwritten by the older CP03 runtime screen during manual file relocation.
+- Removes the false 4.75rem gap between the application top bar and the sticky detail navigation.
+- Uses an opaque navigation surface so card content no longer shows through while scrolling.
+- Adds a restrained elevation while the navigation overlays long content.
+- Reduces anchor clearance to the actual sticky navigation height.
+- Adds a regression contract test for the sticky navigation CSS.
 
-## Scope
-
-- Replaces only `apps/desktop/src/app/runtime/RuntimeBaseline.tsx`.
-- Does not change the active CP04C application shell.
-- Does not change vocabulary schemas, fixture data, content sources, Tauri, or dependencies.
-
-## Expected result
-
-- The stale `RuntimeBaseline.test.tsx` regression contract passes again.
-- Desktop test total returns to 19 passed / 26 skipped.
-- TypeScript and production build continue to pass.
+No vocabulary data, routes, schemas, dependencies, Rust code, or database behavior changed.
