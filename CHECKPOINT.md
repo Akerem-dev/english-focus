@@ -1,5 +1,5 @@
-# CP15 FIX01 — Import and Library Alignment Polish
+# CP16 — Single-entry file transfer
 
 Status: TESTING
 
-Apply this patch after both CP14 FIX01 and CP15 Library Workspace have already been applied.
+This checkpoint activates top-bar JSON file import and direct single-entry export while reusing the locked schema, semantic, preview, duplicate, and SQLite persistence workflow.

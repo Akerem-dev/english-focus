@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { VocabularyRepositoryProvider } from "../../../src/app/providers";
@@ -12,9 +13,11 @@ import { VocabularyPage } from "../../../src/modules/vocabulary/pages";
 describe("VocabularyPage search states", () => {
   it("renders the initial local-search experience", () => {
     const markup = renderToStaticMarkup(
-      <VocabularyRepositoryProvider>
-        <VocabularyPage />
-      </VocabularyRepositoryProvider>
+      <MemoryRouter>
+        <VocabularyRepositoryProvider>
+          <VocabularyPage />
+        </VocabularyRepositoryProvider>
+      </MemoryRouter>
     );
 
     expect(markup).toContain("Look up an English word");

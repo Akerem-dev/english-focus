@@ -8,6 +8,7 @@ const markup = renderToStaticMarkup(
   <VocabularyFoundState
     entry={maintainVocabularyEntry}
     onBack={() => undefined}
+    onExport={() => undefined}
     onImportReplacement={() => undefined}
   />
 );

@@ -35,6 +35,8 @@ import {
 export interface PasteGeneratedJsonDialogProps {
   readonly open: boolean;
   readonly expectedWord: string;
+  readonly initialInput?: string | undefined;
+  readonly sourceFileName?: string | undefined;
   readonly onClose: () => void;
   readonly onOpenSavedEntry?: ((word: string) => void) | undefined;
 }
@@ -64,12 +66,14 @@ function describeTransformation(transformation: string): string {
 
 export function PasteGeneratedJsonDialog({
   expectedWord,
+  initialInput,
   onClose,
   onOpenSavedEntry,
-  open
+  open,
+  sourceFileName
 }: PasteGeneratedJsonDialogProps) {
   const { contentSource, saveEntry } = useVocabularyRepository();
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialInput ?? "");
   const [parseResult, setParseResult] = useState<ParseVocabularyJsonResult | undefined>();
   const [validationResult, setValidationResult] = useState<
     ValidateVocabularySchemaResult | undefined
@@ -408,6 +412,7 @@ export function PasteGeneratedJsonDialog({
       <div className="json-paste-dialog__metadata" aria-label="JSON import metadata">
         <StatusBadge tone="accent">Expected word: {expectedWord}</StatusBadge>
         <StatusBadge>Local processing</StatusBadge>
+        {sourceFileName === undefined ? null : <StatusBadge>File: {sourceFileName}</StatusBadge>}
         <StatusBadge tone={parsedJson === undefined ? "neutral" : "success"}>
           {parsedJson === undefined ? "Syntax check first" : "Schema validation ready"}
         </StatusBadge>
@@ -423,8 +428,8 @@ export function PasteGeneratedJsonDialog({
           Paste one vocabulary JSON object. The safety limit is{" "}
           {MAX_PASTED_JSON_CHARACTERS.toLocaleString("en-US")} characters.
         </p>
-        <Button disabled title="File import arrives with vocabulary-pack ingestion" variant="ghost">
-          Import from file
+        <Button disabled variant="ghost">
+          {sourceFileName === undefined ? "Use top-bar Import for files" : `Loaded: ${sourceFileName}`}
         </Button>
       </div>
 
