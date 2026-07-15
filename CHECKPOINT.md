@@ -1,25 +1,46 @@
-# CP08-FIX01 — Instruction settings event snapshot
+# Checkpoint CP09 — JSON Paste and Parse Foundation
 
-Status: TESTING
+## Status
 
-## Purpose
+TESTING
 
-Prevent the application-wide error boundary from activating when the user changes provider-independent instruction preferences such as `Maximum`, `C1`, or any instruction switch.
+## Locked baseline
 
-## Root cause
+- CP01 — public npm installation
+- CP02 — browser runtime
+- CP03 — native Tauri runtime
+- CP04 — design system and three-route application shell
+- CP05 — vocabulary contract, schemas, fixture, and content source
+- CP06 — read-only vocabulary detail experience
+- CP07 — local search vertical slice
+- CP08 — external-AI instruction and clipboard bridge
 
-The previous handlers referenced `event.currentTarget` from inside React state-updater callbacks. A React event's `currentTarget` is only guaranteed while the event handler itself is executing. When React evaluated the deferred updater, the event target was no longer reliable and the update threw during render.
+## Objective
 
-## Fix
+Turn the not-found flow into a safe local JSON paste experience that cleans common wrappers and verifies JSON syntax without importing data prematurely.
 
-- Snapshot select values and switch states synchronously inside each event handler.
-- Pass only immutable primitive values into deferred state updaters.
-- Add regression tests for `Maximum`, `C1`, and switch changes.
+## Included
 
-## Acceptance
+- active `Paste generated JSON` action;
+- accessible JSON paste dialog;
+- 524,288-character safety limit;
+- BOM, whitespace, line-ending, Markdown-fence, and surrounding-text cleanup;
+- balanced first-object extraction;
+- smart double-quote fallback;
+- safe top-level-object parsing;
+- detected-word and mismatch reporting;
+- cleanup summary and syntax-result UI;
+- regression tests for the cleaner, parser, dialog, and vocabulary not-found state.
 
-- Changing detail level does not crash the application.
-- Changing target proficiency does not crash the application.
-- Instruction switches do not crash the application.
-- Preferences remain synchronized with the instruction dialog.
-- Typecheck, desktop tests, production build, and forbidden-pattern check pass.
+## Explicitly not included
+
+- vocabulary Zod schema validation;
+- semantic or quality validation;
+- correction instructions;
+- vocabulary preview;
+- duplicate resolution;
+- file import, pack import, or persistence.
+
+## Exit criteria
+
+CP09 locks after all automated checks pass and the user verifies valid, fenced, wrapped, malformed, mismatched, clear, and close flows in the native window.

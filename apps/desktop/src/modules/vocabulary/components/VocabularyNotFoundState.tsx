@@ -6,6 +6,7 @@ export interface VocabularyNotFoundStateProps {
   readonly normalizedQuery: string;
   readonly onEditSearch: () => void;
   readonly onOpenInstruction: () => void;
+  readonly onOpenPasteGeneratedJson: () => void;
   readonly onSelectSuggestion: (word: string) => void;
   readonly suggestions: readonly string[];
 }
@@ -14,6 +15,7 @@ export function VocabularyNotFoundState({
   normalizedQuery,
   onEditSearch,
   onOpenInstruction,
+  onOpenPasteGeneratedJson,
   onSelectSuggestion,
   suggestions
 }: VocabularyNotFoundStateProps) {
@@ -43,13 +45,13 @@ export function VocabularyNotFoundState({
           >
             Copy AI instruction
           </Button>
-          <Button disabled title="Available in the JSON ingestion checkpoint" variant="secondary">
+          <Button onClick={onOpenPasteGeneratedJson} variant="secondary">
             Paste generated JSON
           </Button>
         </div>
         <small>
-          The instruction is generated locally and can be pasted into any external AI account. JSON
-          ingestion arrives in the next approved roadmap phase.
+          The instruction and pasted JSON remain local. This checkpoint checks pasted JSON syntax;
+          schema validation and saving arrive in the next approved phase.
         </small>
       </div>
     </section>

@@ -4,6 +4,7 @@ import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { createCoreVocabularyContentSource } from "../../../infrastructure/content";
 import { AiInstructionDialog } from "../../instruction";
+import { PasteGeneratedJsonDialog } from "../../import-export";
 import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
 import {
   VocabularyFoundState,
@@ -91,6 +92,7 @@ export function VocabularyPage() {
   const [query, setQuery] = useState("");
   const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
   const [instructionWord, setInstructionWord] = useState<string | undefined>();
+  const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
   const searchSequence = useRef(0);
   const searchVocabulary = useMemo(
     () => new SearchVocabulary(createCoreVocabularyContentSource()),
@@ -203,6 +205,9 @@ export function VocabularyPage() {
           onOpenInstruction={() => {
             setInstructionWord(searchState.normalizedQuery);
           }}
+          onOpenPasteGeneratedJson={() => {
+            setPasteJsonWord(searchState.normalizedQuery);
+          }}
           onSelectSuggestion={executeSearch}
           suggestions={searchState.suggestions}
         />
@@ -232,6 +237,16 @@ export function VocabularyPage() {
           }}
           open
           targetWord={instructionWord}
+        />
+      )}
+
+      {pasteJsonWord === undefined ? null : (
+        <PasteGeneratedJsonDialog
+          expectedWord={pasteJsonWord}
+          onClose={() => {
+            setPasteJsonWord(undefined);
+          }}
+          open
         />
       )}
 

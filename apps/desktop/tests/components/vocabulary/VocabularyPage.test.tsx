@@ -42,6 +42,7 @@ describe("VocabularyPage search states", () => {
         normalizedQuery="maintan"
         onEditSearch={() => undefined}
         onOpenInstruction={() => undefined}
+        onOpenPasteGeneratedJson={() => undefined}
         onSelectSuggestion={() => undefined}
         suggestions={["maintain"]}
       />
@@ -51,6 +52,7 @@ describe("VocabularyPage search states", () => {
     expect(markup).toContain("Did you mean");
     expect(markup).toContain("maintain");
     expect(markup).toContain("Copy AI instruction");
-    expect(markup).not.toContain('title="Available in the external-AI instruction checkpoint"');
+    expect(markup).toContain("Paste generated JSON");
+    expect(markup).not.toContain('title="Available in the JSON ingestion checkpoint"');
   });
 });
