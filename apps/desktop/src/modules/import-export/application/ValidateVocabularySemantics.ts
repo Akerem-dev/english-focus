@@ -1,6 +1,9 @@
 import type { ImportIssue, VocabularyEntry } from "@platform/domain";
 
-import { VocabularySemanticValidator } from "../services";
+import {
+  VocabularySemanticValidator,
+  type VocabularySemanticValidationContext
+} from "../services";
 
 export type ValidateVocabularySemanticsResult =
   | {
@@ -20,9 +23,10 @@ const defaultValidator = new VocabularySemanticValidator();
 export function validateVocabularySemantics(
   entry: VocabularyEntry,
   expectedWord: string,
+  context: VocabularySemanticValidationContext = "external-ai-import",
   validator: VocabularySemanticValidator = defaultValidator
 ): ValidateVocabularySemanticsResult {
-  const issues = validator.validate(entry, expectedWord);
+  const issues = validator.validate(entry, expectedWord, context);
 
   if (issues.length === 0) {
     return Object.freeze({ kind: "success", entry, issues: [] as const });

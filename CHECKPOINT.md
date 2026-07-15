@@ -1,5 +1,5 @@
-# CP16 — Single-entry file transfer
+# CP17 FIX01 — Vocabulary Pack Round-Trip Validation
 
 Status: TESTING
 
-This checkpoint activates top-bar JSON file import and direct single-entry export while reusing the locked schema, semantic, preview, duplicate, and SQLite persistence workflow.
+This fix separates external-AI import provenance rules from English Focus vocabulary-pack transfer rules. Packs exported by English Focus can now be imported again without being incorrectly rejected for reviewed validation status, core provenance, or non-external generation method.

@@ -98,8 +98,16 @@ function pushDuplicateIssues(
  * This validator never evaluates whether a language claim is factually true; it checks internal
  * consistency, import provenance, target alignment, and bilingual pairing.
  */
+export type VocabularySemanticValidationContext =
+  | "external-ai-import"
+  | "vocabulary-pack-transfer";
+
 export class VocabularySemanticValidator {
-  validate(entry: VocabularyEntry, expectedWord: string): readonly ImportIssue[] {
+  validate(
+    entry: VocabularyEntry,
+    expectedWord: string,
+    context: VocabularySemanticValidationContext = "external-ai-import"
+  ): readonly ImportIssue[] {
     const issues: ImportIssue[] = [];
     const normalizedExpectedWord = normalizeText(expectedWord);
     const normalizedEntryWord = normalizeText(entry.word);
@@ -135,34 +143,36 @@ export class VocabularySemanticValidator {
       );
     }
 
-    if (entry.source.kind !== "user") {
-      issues.push(
-        semanticIssue(
-          "external_import_source_kind",
-          ["source", "kind"],
-          'Generated JSON pasted by the user must use source.kind "user".'
-        )
-      );
-    }
+    if (context === "external-ai-import") {
+      if (entry.source.kind !== "user") {
+        issues.push(
+          semanticIssue(
+            "external_import_source_kind",
+            ["source", "kind"],
+            'Generated JSON pasted by the user must use source.kind "user".'
+          )
+        );
+      }
 
-    if (entry.generation.method !== "external-ai") {
-      issues.push(
-        semanticIssue(
-          "external_import_generation_method",
-          ["generation", "method"],
-          'Generated JSON pasted from an external AI must use generation.method "external-ai".'
-        )
-      );
-    }
+      if (entry.generation.method !== "external-ai") {
+        issues.push(
+          semanticIssue(
+            "external_import_generation_method",
+            ["generation", "method"],
+            'Generated JSON pasted from an external AI must use generation.method "external-ai".'
+          )
+        );
+      }
 
-    if (entry.generation.validationStatus !== "unvalidated") {
-      issues.push(
-        semanticIssue(
-          "premature_validation_status",
-          ["generation", "validationStatus"],
-          'Imported AI content must arrive as "unvalidated"; English Focus assigns later statuses.'
-        )
-      );
+      if (entry.generation.validationStatus !== "unvalidated") {
+        issues.push(
+          semanticIssue(
+            "premature_validation_status",
+            ["generation", "validationStatus"],
+            'Imported AI content must arrive as "unvalidated"; English Focus assigns later statuses.'
+          )
+        );
+      }
     }
 
     const createdAt = Date.parse(entry.createdAt);
