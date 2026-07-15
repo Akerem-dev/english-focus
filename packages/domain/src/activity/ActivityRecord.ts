@@ -11,6 +11,7 @@ export const activityKinds = [
   "backup-restored",
   "backup-deleted",
   "diagnostics-run",
+  "local-data-reset",
   "operation-warning",
   "operation-failed"
 ] as const;

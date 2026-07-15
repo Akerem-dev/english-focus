@@ -43,6 +43,7 @@ fn is_allowed_kind(value: &str) -> bool {
             | "backup-restored"
             | "backup-deleted"
             | "diagnostics-run"
+            | "local-data-reset"
             | "operation-warning"
             | "operation-failed"
     )

@@ -6,6 +6,7 @@ export * from "./DiagnosticsRepository";
 export * from "./FilePicker";
 export * from "./IdGenerator";
 export * from "./Logger";
+export * from "./LocalDataRepository";
 export * from "./NetworkStatus";
 export * from "./SearchHistoryRepository";
 export * from "./SettingsRepository";

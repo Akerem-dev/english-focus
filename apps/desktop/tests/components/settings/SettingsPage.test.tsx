@@ -24,6 +24,8 @@ describe("SettingsPage", () => {
     expect(markup).toContain("Privacy &amp; activity");
     expect(markup).toContain("Recent activity");
     expect(markup).toContain("excluded from exports and backups");
+    expect(markup).toContain("Local data reset");
+    expect(markup).toContain("Review full local reset");
     expect(markup).toContain("Loading settings");
   });
 });

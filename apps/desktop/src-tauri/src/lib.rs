@@ -25,6 +25,8 @@ pub fn run() {
             commands::database::get_vocabulary_user_metadata,
             commands::database::save_vocabulary_user_metadata,
             commands::database::record_vocabulary_view,
+            commands::data_reset::get_local_data_snapshot,
+            commands::data_reset::reset_local_data,
             commands::settings::get_app_settings,
             commands::settings::save_app_settings,
             commands::backup::list_backups,

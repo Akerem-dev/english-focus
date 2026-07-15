@@ -480,7 +480,7 @@ fn apply_retention(directory: &Path) -> Result<(), String> {
     Ok(())
 }
 
-fn create_backup_from_connection(
+pub(crate) fn create_backup_from_connection(
     connection: &Connection,
     app: &AppHandle,
     reason: &str,
@@ -492,6 +492,27 @@ fn create_backup_from_connection(
     let descriptor = write_manifest(&directory, &manifest)?;
     apply_retention(&directory)?;
     Ok(descriptor)
+}
+
+
+pub(crate) fn count_backups(app: &AppHandle) -> Result<usize, String> {
+    let directory = backup_directory(app)?;
+    Ok(list_descriptors(&directory)?.len())
+}
+
+pub(crate) fn delete_all_backups(app: &AppHandle) -> Result<usize, String> {
+    let directory = backup_directory(app)?;
+    let descriptors = list_descriptors(&directory)?;
+    let mut deleted = 0;
+
+    for descriptor in descriptors {
+        let path = directory.join(descriptor.file_name);
+        fs::remove_file(path)
+            .map_err(|error| format!("A retained backup could not be deleted: {error}"))?;
+        deleted += 1;
+    }
+
+    Ok(deleted)
 }
 
 #[tauri::command]
