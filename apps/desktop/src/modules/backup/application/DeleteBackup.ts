@@ -1,5 +1,5 @@
-/**
- * Final skeleton boundary: application/DeleteBackup.ts
- * Production implementation is intentionally pending.
- */
-export {};
+import type { BackupRepository } from "@platform/domain";
+
+export function deleteBackup(repository: BackupRepository, fileName: string): Promise<void> {
+  return repository.deleteBackup(fileName);
+}

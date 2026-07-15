@@ -37,40 +37,33 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const [error, setError] = useState<string | undefined>();
   const saveSequence = useRef(0);
 
-  useEffect(() => {
-    let active = true;
+  const refreshSettings = useCallback(async () => {
+    setStatus("loading");
+    setError(undefined);
 
-    void repository
-      .getSettings()
-      .then(async (stored) => {
-        if (!active) {
-          return;
-        }
+    try {
+      const stored = await repository.getSettings();
+      const resolved = stored ?? createDefaultAppSettings();
+      setSettings(resolved);
 
-        const resolved = stored ?? createDefaultAppSettings();
-        setSettings(resolved);
+      if (stored === undefined) {
+        await repository.saveSettings(resolved);
+      }
 
-        if (stored === undefined) {
-          await repository.saveSettings(resolved);
-        }
-
-        if (active) {
-          setStatus("ready");
-        }
-      })
-      .catch((cause) => {
-        if (!active) {
-          return;
-        }
-
-        setError(cause instanceof Error ? cause.message : "Application settings could not be loaded.");
-        setStatus("error");
-      });
-
-    return () => {
-      active = false;
-    };
+      setStatus("ready");
+      return resolved;
+    } catch (cause) {
+      const message =
+        cause instanceof Error ? cause.message : "Application settings could not be loaded.";
+      setError(message);
+      setStatus("error");
+      throw cause;
+    }
   }, [repository]);
+
+  useEffect(() => {
+    void refreshSettings();
+  }, [refreshSettings]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
@@ -107,7 +100,8 @@ export function SettingsProvider({ children }: PropsWithChildren) {
 
         return saved;
       } catch (cause) {
-        const message = cause instanceof Error ? cause.message : "Application settings could not be saved.";
+        const message =
+          cause instanceof Error ? cause.message : "Application settings could not be saved.";
         setError(message);
         setStatus("error");
         throw cause;
@@ -122,8 +116,15 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   }, [updateSettings]);
 
   const value = useMemo<SettingsContextValue>(
-    () => ({ settings, status, error, updateSettings, resetSettings }),
-    [error, resetSettings, settings, status, updateSettings]
+    () => ({
+      settings,
+      status,
+      error,
+      updateSettings,
+      resetSettings,
+      refreshSettings
+    }),
+    [error, refreshSettings, resetSettings, settings, status, updateSettings]
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

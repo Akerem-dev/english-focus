@@ -18,15 +18,14 @@
 - CP16: single-entry file import and export
 - CP17: vocabulary-pack transfer, strategies, progress, and summary
 
-## Applied and awaiting combined native verification
-
 - CP18: personal vocabulary metadata editing and SQLite persistence
+- CP19: persistent application settings and appearance behavior
 
 ## Current
 
-- **CP19: persistent application settings and appearance behavior — TESTING**
+- **CP20: backup creation, restore validation, and retention — TESTING**
 
 ## Next
 
-- CP20: backup creation, restore validation, and retention
-- CP21+: productivity, diagnostics, accessibility, performance, and release
+- CP21: diagnostics, data health checks, and repair guidance
+- CP22+: productivity, accessibility, performance, and release

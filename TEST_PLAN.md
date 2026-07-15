@@ -1,23 +1,21 @@
-# CP19 Test Plan
+# CP20 Test Plan
 
 ## Automated
 
-- Environment check
-- Strict TypeScript typecheck
-- Domain tests
-- Schema tests
-- Testing utility tests
-- Desktop tests
-- Production build
-- Forbidden-pattern scan
+- environment check
+- TypeScript strict typecheck
+- domain, schema, testing, and desktop tests
+- production frontend build
+- forbidden-pattern scan
 
 ## Native manual
 
-1. Change theme between Light, Dark, and System.
-2. Enable reduced motion.
-3. Change interface size.
-4. Disable etymology and common mistakes, then inspect a vocabulary detail page.
-5. Change example display count from ten to five.
-6. Change instruction settings.
-7. Restart English Focus and confirm every preference remains.
-8. Reset all settings and confirm defaults return.
+1. Create a manual backup.
+2. Confirm it appears in Manage backups.
+3. Validate it and confirm integrity passes.
+4. Change one piece of study metadata and one setting.
+5. Restore the earlier backup.
+6. Confirm vocabulary, metadata, and settings return to the backed-up state.
+7. Confirm a pre-restore safety backup appears.
+8. Restart the application and confirm restored state persists.
+9. Delete a selected backup only after the deletion checkbox is enabled.

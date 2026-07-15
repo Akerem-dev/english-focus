@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 
+import { BackupProvider } from "./BackupProvider";
 import { InstructionPreferencesProvider } from "./InstructionPreferencesProvider";
 import { SettingsProvider } from "./SettingsProvider";
 import { VocabularyMetadataProvider } from "./VocabularyMetadataProvider";
@@ -10,7 +11,9 @@ export function AppProviders({ children }: PropsWithChildren) {
     <SettingsProvider>
       <VocabularyRepositoryProvider>
         <VocabularyMetadataProvider>
-          <InstructionPreferencesProvider>{children}</InstructionPreferencesProvider>
+          <BackupProvider>
+            <InstructionPreferencesProvider>{children}</InstructionPreferencesProvider>
+          </BackupProvider>
         </VocabularyMetadataProvider>
       </VocabularyRepositoryProvider>
     </SettingsProvider>
