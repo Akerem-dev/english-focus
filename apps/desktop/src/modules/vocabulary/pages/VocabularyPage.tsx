@@ -1,10 +1,11 @@
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { useVocabularyRepository } from "../../../app/providers";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { AiInstructionDialog } from "../../instruction";
-import { PasteGeneratedJsonDialog } from "../../import-export";
+import { PasteGeneratedJsonDialog, exportVocabularyEntry } from "../../import-export";
 import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
 import {
   VocabularyFoundState,
@@ -90,11 +91,13 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
 
 export function VocabularyPage() {
   const { contentSource } = useVocabularyRepository();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
   const [instructionWord, setInstructionWord] = useState<string | undefined>();
   const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
   const searchSequence = useRef(0);
+  const deepLinkHandled = useRef<string | undefined>(undefined);
   const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
 
   function executeSearch(nextQuery: string) {
@@ -121,6 +124,18 @@ export function VocabularyPage() {
     });
   }
 
+  useEffect(() => {
+    const routeWord = searchParams.get("word")?.trim();
+
+    if (routeWord === undefined || routeWord.length === 0 || deepLinkHandled.current === routeWord) {
+      return;
+    }
+
+    deepLinkHandled.current = routeWord;
+    executeSearch(routeWord);
+    setSearchParams({}, { replace: true });
+  }, [searchParams, searchVocabulary, setSearchParams]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     executeSearch(query);
@@ -143,6 +158,18 @@ export function VocabularyPage() {
         <VocabularyFoundState
           entry={searchState.entry}
           onBack={returnToInitial}
+          onExport={() => {
+            const exported = exportVocabularyEntry(searchState.entry);
+            const blob = new Blob([exported.json], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = exported.fileName;
+            document.body.append(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+          }}
           onImportReplacement={() => {
             setPasteJsonWord(searchState.entry.normalizedWord);
           }}

@@ -21,3 +21,9 @@ export {
   type VocabularyPersistenceDialogProps,
   type VocabularyPersistenceStatus
 } from "./VocabularyPersistenceDialog";
+
+export {
+  SingleEntryFileImportDialog,
+  type SingleEntryFileImportDialogProps,
+  type SingleEntryFileImportPayload
+} from "./SingleEntryFileImportDialog";

@@ -1,15 +1,17 @@
 import type { VocabularyEntry } from "@platform/domain";
 
 import { Button, StatusBadge, TagChip } from "../../../components";
+import { AppIcon } from "../../../design-system";
 import { presentVocabularyEntry } from "../presenters/VocabularyEntryPresenter";
 
 interface VocabularyHeaderProps {
   readonly entry: VocabularyEntry;
   readonly onBack: () => void;
   readonly onImportReplacement: () => void;
+  readonly onExport: () => void;
 }
 
-export function VocabularyHeader({ entry, onBack, onImportReplacement }: VocabularyHeaderProps) {
+export function VocabularyHeader({ entry, onBack, onExport, onImportReplacement }: VocabularyHeaderProps) {
   const presentation = presentVocabularyEntry(entry);
 
   return (
@@ -27,9 +29,19 @@ export function VocabularyHeader({ entry, onBack, onImportReplacement }: Vocabul
         <div className="vocabulary-detail-header__source">
           <StatusBadge tone="success">{presentation.reviewLabel}</StatusBadge>
           <span>{presentation.sourceLabel}</span>
-          <Button onClick={onImportReplacement} size="small" variant="secondary">
-            Import replacement JSON
-          </Button>
+          <div className="vocabulary-detail-header__actions">
+            <Button
+              leadingIcon={<AppIcon name="download" size={16} />}
+              onClick={onExport}
+              size="small"
+              variant="secondary"
+            >
+              Export JSON
+            </Button>
+            <Button onClick={onImportReplacement} size="small" variant="secondary">
+              Import replacement JSON
+            </Button>
+          </div>
         </div>
       </div>
 

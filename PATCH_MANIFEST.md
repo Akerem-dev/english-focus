@@ -1,25 +1,22 @@
-# CP15 FIX01 Patch Manifest
+# CP16 Patch Manifest
 
-## Import and preview fixes
+## Included
 
-- Removes default browser `<dd>` indentation from preview provenance values.
-- Removes list indentation from Import Readiness and preview content lists.
-- Left-aligns vocabulary preview statistics.
-- Left-aligns Existing Entry and Imported Entry stat values in duplicate comparison.
-- Removes the checkpoint-only Restart proof paragraph from the production save-success dialog.
+- Active Import button in the persistent top bar.
+- Local `.json` file picker with extension, character-limit, syntax, and detected-word gates.
+- File contents are handed to the existing validated import wizard without uploading anything.
+- File name is shown inside the import workflow.
+- Successful imported entries can deep-link to Vocabulary detail.
+- Vocabulary detail includes direct `Export JSON`.
+- Export filenames are deterministic and human-readable.
 
-## Library fixes
+## Excluded
 
-- Shows the Search library label so the search field aligns with all filters.
-- Makes Clear selection a visible secondary button.
-- Prevents toolbar text styling from recoloring button labels.
-- Restores white text on Export selected JSON.
-- Moves row checkboxes left to align with the Pick column.
+- Multi-entry packs.
+- Pack progress and cancellation.
+- Import history.
+- Backup and restore.
 
-## Files
+## Dependencies
 
-- `apps/desktop/src/modules/import-export/overlays/VocabularyPersistenceDialog.tsx`
-- `apps/desktop/src/modules/library/pages/LibraryPage.tsx`
-- `apps/desktop/src/styles/json-import.css`
-- `apps/desktop/src/styles/library.css`
-- `apps/desktop/tests/components/import/VocabularyPersistenceDialog.test.tsx`
+No new npm or Rust dependency.

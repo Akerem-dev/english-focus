@@ -1,20 +1,9 @@
-# CP15 FIX01 Test Plan
+# CP16 Test Plan
 
-## Automated
-
-- Environment check
-- TypeScript strict check
-- Domain, schemas, testing, and desktop tests
-- Desktop production build
-- Forbidden-pattern check
-
-## Manual
-
-1. Preview provenance values must be flush-left under their labels.
-2. Import Readiness content must not have browser-list indentation.
-3. Duplicate Existing/Imported stat values must be flush-left.
-4. Saved-success modal must not show Restart proof copy.
-5. Search and filter controls must share one baseline.
-6. Clear selection must be visibly outlined.
-7. Export selected JSON text must be white.
-8. Row checkboxes must align with the Pick heading.
+1. Run the complete automated checkpoint block supplied in chat.
+2. Export `maintain` from Vocabulary detail and verify the downloaded JSON.
+3. Use top-bar Import on Vocabulary, Library, and Settings.
+4. Reject a non-JSON file and malformed JSON without crashing.
+5. Import a valid single-entry JSON file through validation, preview, duplicate, and save.
+6. Confirm `Open vocabulary entry` opens the saved word.
+7. Restart the application and verify the imported entry remains searchable.

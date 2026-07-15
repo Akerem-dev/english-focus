@@ -20,6 +20,7 @@ interface VocabularyFoundStateProps {
   readonly entry: VocabularyEntry;
   readonly onBack: () => void;
   readonly onImportReplacement: () => void;
+  readonly onExport: () => void;
 }
 
 const DETAIL_LINKS = [
@@ -37,6 +38,7 @@ const DETAIL_LINKS = [
 export function VocabularyFoundState({
   entry,
   onBack,
+  onExport,
   onImportReplacement
 }: VocabularyFoundStateProps) {
   return (
@@ -44,7 +46,12 @@ export function VocabularyFoundState({
       className="route-page vocabulary-detail-page"
       aria-label={`${entry.word} vocabulary entry`}
     >
-      <VocabularyHeader entry={entry} onBack={onBack} onImportReplacement={onImportReplacement} />
+      <VocabularyHeader
+        entry={entry}
+        onBack={onBack}
+        onExport={onExport}
+        onImportReplacement={onImportReplacement}
+      />
 
       <nav className="vocabulary-detail-nav" aria-label="Vocabulary entry sections">
         {DETAIL_LINKS.map(([target, label]) => (

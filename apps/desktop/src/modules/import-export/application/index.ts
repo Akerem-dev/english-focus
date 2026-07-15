@@ -47,3 +47,8 @@ export {
   type VocabularyPersistenceOutcome,
   type VocabularyPersistencePlan
 } from "./PrepareVocabularyPersistence";
+
+export {
+  exportVocabularyEntry,
+  type VocabularyEntryExport
+} from "./ExportVocabularyEntry";
