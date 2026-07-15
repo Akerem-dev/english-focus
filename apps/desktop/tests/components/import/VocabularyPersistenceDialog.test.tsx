@@ -42,7 +42,7 @@ describe("VocabularyPersistenceDialog", () => {
     expect(markup).toContain("Preserved separately");
   });
 
-  it("renders restart proof after a successful save", () => {
+  it("renders the product-ready success state after a successful save", () => {
     const markup = renderToStaticMarkup(
       <VocabularyPersistenceDialog
         {...callbacks}
@@ -60,7 +60,7 @@ describe("VocabularyPersistenceDialog", () => {
     );
 
     expect(markup).toContain("Saved to local library");
-    expect(markup).toContain("Restart proof");
+    expect(markup).not.toContain("Restart proof");
     expect(markup).toContain("Open vocabulary entry");
   });
 });
