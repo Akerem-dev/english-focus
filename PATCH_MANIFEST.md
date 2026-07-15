@@ -1,28 +1,30 @@
-# CP21 Patch Manifest
+# CP22 Patch Manifest
 
 ## Product behavior
 
-- Adds a native SQLite `quick_check` health scan.
-- Verifies required schema tables and database schema version.
-- Checks foreign-key enforcement and WAL journaling.
-- Scans stored vocabulary JSON, metadata tag JSON, settings JSON, and normalized-word identity consistency.
-- Reports local vocabulary, metadata, settings, and retained-backup counts.
-- Adds a copyable plain-text diagnostic summary with no vocabulary content.
-- Adds explicit recovery recommendations.
-- Adds non-destructive safe maintenance that:
-  - reapplies current migrations,
-  - re-enables recommended SQLite pragmas,
-  - runs `PRAGMA optimize`,
-  - reruns diagnostics.
-- Safe maintenance never deletes or rewrites vocabulary, metadata, settings, or backups.
+- Activates the top-bar `Ctrl+K` control.
+- Adds a searchable, keyboard-operable command bar.
+- Adds route-aware commands for Vocabulary, Library, and Settings.
+- Adds global shortcuts:
+  - `Ctrl+K` command bar
+  - `Ctrl+L` Library
+  - `Ctrl+,` Settings
+  - `Ctrl+I` import
+  - `Ctrl+E` context export
+  - `Ctrl+S` favorite/save
+  - `/` focus search
+  - `?` shortcut help
+  - `Esc` close overlay
+- Adds a keyboard shortcut reference dialog.
+- Adds arrow-key and Enter command execution.
+- Adds modal Tab focus containment and explicit autofocus support.
+- Adds contextual command wiring to Vocabulary and Library.
+- Keeps shortcuts inactive while typing in form controls.
 
-## New native commands
+## Safety boundaries
 
-- `run_diagnostics`
-- `run_safe_maintenance`
-
-## Dependency impact
-
-- No new npm dependency.
-- No new Rust crate.
-- No lockfile changes.
+- No database or persistence changes.
+- No network access.
+- No API integration.
+- No new primary route.
+- Existing import/export, backup, settings, diagnostics, and metadata flows remain unchanged.

@@ -1,5 +1,7 @@
-# CP21 — Diagnostics, Health Scan & Safe Maintenance
+# CP22 — Command Bar and Keyboard Navigation
 
 Status: TESTING
 
-This checkpoint adds native local diagnostics for SQLite integrity, schema health, stored JSON consistency, recovery readiness, and explicit non-destructive maintenance guidance.
+This checkpoint activates the global command bar, approved keyboard shortcuts, shortcut help, context-aware export/favorite actions, search focus commands, and modal focus containment.
+
+No new route, npm package, Rust crate, database table, or migration is introduced.

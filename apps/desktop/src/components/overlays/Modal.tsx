@@ -45,9 +45,12 @@ export function Modal({
     document.body.style.overflow = "hidden";
 
     const focusFrame = window.requestAnimationFrame(() => {
-      const focusable = dialogRef.current?.querySelector<HTMLElement>(
-        'button:not([disabled]), select:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
+      const preferred = dialogRef.current?.querySelector<HTMLElement>("[data-autofocus='true']");
+      const focusable =
+        preferred ??
+        dialogRef.current?.querySelector<HTMLElement>(
+          'button:not([disabled]), select:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
       focusable?.focus();
     });
 
@@ -55,6 +58,38 @@ export function Modal({
       if (event.key === "Escape") {
         event.preventDefault();
         onClose();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusable = Array.from(
+        dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], select:not([disabled]), textarea:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ) ?? []
+      ).filter((element) => !element.hasAttribute("hidden") && element.offsetParent !== null);
+
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialogRef.current?.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last?.focus();
+        return;
+      }
+
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first?.focus();
       }
     }
 
@@ -88,6 +123,7 @@ export function Modal({
         className="modal"
         data-size={size}
         role="dialog"
+        tabIndex={-1}
       >
         <header className="modal__header">
           <div>
