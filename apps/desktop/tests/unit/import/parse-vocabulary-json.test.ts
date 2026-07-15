@@ -45,4 +45,25 @@ describe("parseVocabularyJson", () => {
       expect(Object.isFrozen(result.parsed.value)).toBe(true);
     }
   });
+  it("repairs mojibake in parsed string values and normalizes the retained JSON", () => {
+    const result = parseVocabularyJson(
+      JSON.stringify({
+        schemaVersion: "1.0.0",
+        word: "allocate",
+        meanings: [{ translationsTr: ["tahsis etmek", "ayÄ±rmak"] }],
+        grammar: { summaryTr: "hedef kiÅŸi veya amaÃ§" }
+      })
+    );
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.parsed.transformations).toContain("repaired-mojibake-text");
+      expect(result.parsed.value).toMatchObject({
+        meanings: [{ translationsTr: ["tahsis etmek", "ayırmak"] }],
+        grammar: { summaryTr: "hedef kişi veya amaç" }
+      });
+      expect(result.parsed.cleanedText).toContain("ayırmak");
+      expect(result.parsed.cleanedText).not.toContain("ayÄ±rmak");
+    }
+  });
 });

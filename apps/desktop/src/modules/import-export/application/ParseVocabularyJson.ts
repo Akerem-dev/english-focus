@@ -1,10 +1,13 @@
 import { cleanPastedJsonText, type JsonTextTransformation } from "./CleanPastedJsonText";
-import { normalizeSmartJsonQuotes } from "../services";
+import { normalizeSmartJsonQuotes, repairMojibakeJsonValue } from "../services";
+
+export type ParsedJsonTransformation =
+  JsonTextTransformation | "normalized-smart-quotes" | "repaired-mojibake-text";
 
 export interface ParsedVocabularyJson {
   readonly value: Readonly<Record<string, unknown>>;
   readonly cleanedText: string;
-  readonly transformations: readonly (JsonTextTransformation | "normalized-smart-quotes")[];
+  readonly transformations: readonly ParsedJsonTransformation[];
   readonly topLevelKeys: readonly string[];
   readonly detectedWord?: string;
 }
@@ -82,6 +85,33 @@ function parseRecord(
   }
 }
 
+function createSuccessResult(
+  value: Record<string, unknown>,
+  cleanedText: string,
+  transformations: readonly ParsedJsonTransformation[]
+): ParseVocabularyJsonResult {
+  const repairResult = repairMojibakeJsonValue(value);
+  const repairedValue = repairResult.value;
+  const finalTransformations = repairResult.changed
+    ? [...transformations, "repaired-mojibake-text" as const]
+    : transformations;
+  const finalCleanedText = repairResult.changed
+    ? JSON.stringify(repairedValue, null, 2)
+    : cleanedText;
+  const detectedWord = typeof repairedValue.word === "string" ? repairedValue.word : undefined;
+
+  return {
+    kind: "success",
+    parsed: {
+      value: Object.freeze(repairedValue),
+      cleanedText: finalCleanedText,
+      transformations: finalTransformations,
+      topLevelKeys: Object.keys(repairedValue),
+      ...(detectedWord === undefined ? {} : { detectedWord })
+    }
+  };
+}
+
 export function parseVocabularyJson(input: string): ParseVocabularyJsonResult {
   const cleaned = cleanPastedJsonText(input);
 
@@ -96,19 +126,7 @@ export function parseVocabularyJson(input: string): ParseVocabularyJsonResult {
   const firstAttempt = parseRecord(cleaned.cleanedText);
 
   if (firstAttempt.kind === "success") {
-    const detectedWord =
-      typeof firstAttempt.value.word === "string" ? firstAttempt.value.word : undefined;
-
-    return {
-      kind: "success",
-      parsed: {
-        value: Object.freeze(firstAttempt.value),
-        cleanedText: cleaned.cleanedText,
-        transformations: cleaned.transformations,
-        topLevelKeys: Object.keys(firstAttempt.value),
-        ...(detectedWord === undefined ? {} : { detectedWord })
-      }
-    };
+    return createSuccessResult(firstAttempt.value, cleaned.cleanedText, cleaned.transformations);
   }
 
   const smartQuoteResult = normalizeSmartJsonQuotes(cleaned.cleanedText);
@@ -117,19 +135,10 @@ export function parseVocabularyJson(input: string): ParseVocabularyJsonResult {
     const fallbackAttempt = parseRecord(smartQuoteResult.text);
 
     if (fallbackAttempt.kind === "success") {
-      const detectedWord =
-        typeof fallbackAttempt.value.word === "string" ? fallbackAttempt.value.word : undefined;
-
-      return {
-        kind: "success",
-        parsed: {
-          value: Object.freeze(fallbackAttempt.value),
-          cleanedText: smartQuoteResult.text,
-          transformations: [...cleaned.transformations, "normalized-smart-quotes"],
-          topLevelKeys: Object.keys(fallbackAttempt.value),
-          ...(detectedWord === undefined ? {} : { detectedWord })
-        }
-      };
+      return createSuccessResult(fallbackAttempt.value, smartQuoteResult.text, [
+        ...cleaned.transformations,
+        "normalized-smart-quotes"
+      ]);
     }
   }
 

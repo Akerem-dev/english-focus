@@ -2,27 +2,36 @@ import { useState } from "react";
 
 import { Button, Modal, StatusBadge, TextAreaField } from "../../../components";
 import { AppIcon } from "../../../design-system";
+import { createCoreVocabularyContentSource } from "../../../infrastructure/content";
 import { CorrectionInstructionDialog } from "../../instruction";
 import {
   MAX_PASTED_JSON_CHARACTERS,
+  compareDuplicateEntries,
   inspectVocabularyContent,
   parseVocabularyJson,
+  previewVocabularyImport,
+  resolveDuplicateEntry,
   validateVocabularySchema,
+  type DuplicateCheckResult,
+  type DuplicateResolutionPlan,
   type InspectVocabularyContentResult,
   type ParseVocabularyJsonResult,
-  type ValidateVocabularySchemaResult
+  type ValidateVocabularySchemaResult,
+  type VocabularyImportPreview
 } from "../application";
+import type { CorrectionReturnStage, ImportWizardStage, PreviewApprovalState } from "../state";
 import { ContentValidationResultDialog } from "./ContentValidationResultDialog";
+import { DuplicateComparisonDialog } from "./DuplicateComparisonDialog";
 import { ValidationResultDialog } from "./ValidationResultDialog";
+import { VocabularyPreviewDialog } from "./VocabularyPreviewDialog";
+
+const coreVocabularySource = createCoreVocabularyContentSource();
 
 export interface PasteGeneratedJsonDialogProps {
   readonly open: boolean;
   readonly expectedWord: string;
   readonly onClose: () => void;
 }
-
-type ImportDialogStage = "paste" | "validation" | "content" | "correction";
-type CorrectionReturnStage = "validation" | "content";
 
 function describeTransformation(transformation: string): string {
   switch (transformation) {
@@ -40,6 +49,8 @@ function describeTransformation(transformation: string): string {
       return "normalized line endings";
     case "normalized-smart-quotes":
       return "normalized smart quotes";
+    case "repaired-mojibake-text":
+      return "repaired broken UTF-8 text";
     default:
       return transformation;
   }
@@ -56,7 +67,13 @@ export function PasteGeneratedJsonDialog({
     ValidateVocabularySchemaResult | undefined
   >();
   const [contentResult, setContentResult] = useState<InspectVocabularyContentResult | undefined>();
-  const [stage, setStage] = useState<ImportDialogStage>("paste");
+  const [preview, setPreview] = useState<VocabularyImportPreview | undefined>();
+  const [previewApproval, setPreviewApproval] = useState<PreviewApprovalState>("pending");
+  const [duplicateResult, setDuplicateResult] = useState<DuplicateCheckResult | undefined>();
+  const [duplicateResolution, setDuplicateResolution] = useState<
+    DuplicateResolutionPlan | undefined
+  >();
+  const [stage, setStage] = useState<ImportWizardStage>("paste");
   const [correctionReturnStage, setCorrectionReturnStage] =
     useState<CorrectionReturnStage>("validation");
   const isOverLimit = input.length > MAX_PASTED_JSON_CHARACTERS;
@@ -80,6 +97,10 @@ export function PasteGeneratedJsonDialog({
     setParseResult(undefined);
     setValidationResult(undefined);
     setContentResult(undefined);
+    setPreview(undefined);
+    setPreviewApproval("pending");
+    setDuplicateResult(undefined);
+    setDuplicateResolution(undefined);
     setStage("paste");
   }
 
@@ -92,6 +113,10 @@ export function PasteGeneratedJsonDialog({
     setParseResult(parseVocabularyJson(input));
     setValidationResult(undefined);
     setContentResult(undefined);
+    setPreview(undefined);
+    setPreviewApproval("pending");
+    setDuplicateResult(undefined);
+    setDuplicateResolution(undefined);
   }
 
   function validateSchema() {
@@ -101,6 +126,10 @@ export function PasteGeneratedJsonDialog({
 
     setValidationResult(validateVocabularySchema(parsedJson.value));
     setContentResult(undefined);
+    setPreview(undefined);
+    setPreviewApproval("pending");
+    setDuplicateResult(undefined);
+    setDuplicateResolution(undefined);
     setStage("validation");
   }
 
@@ -110,7 +139,35 @@ export function PasteGeneratedJsonDialog({
     }
 
     setContentResult(inspectVocabularyContent(validationResult.entry, expectedWord));
+    setPreview(undefined);
+    setPreviewApproval("pending");
+    setDuplicateResult(undefined);
+    setDuplicateResolution(undefined);
     setStage("content");
+  }
+
+  function openPreview() {
+    if (contentResult?.canContinue !== true) {
+      return;
+    }
+
+    setPreview(
+      previewVocabularyImport(contentResult.entry, expectedWord, contentResult.qualityWarnings)
+    );
+    setPreviewApproval("pending");
+    setDuplicateResult(undefined);
+    setDuplicateResolution(undefined);
+    setStage("preview");
+  }
+
+  function openDuplicateCheck() {
+    if (preview === undefined || previewApproval !== "approved") {
+      return;
+    }
+
+    setDuplicateResult(compareDuplicateEntries(coreVocabularySource, preview.entry));
+    setDuplicateResolution(undefined);
+    setStage("duplicate");
   }
 
   if (stage === "validation" && validationResult !== undefined) {
@@ -148,8 +205,58 @@ export function PasteGeneratedJsonDialog({
             setStage("correction");
           }
         }}
+        onPreview={openPreview}
         open={open}
         result={contentResult}
+      />
+    );
+  }
+
+  if (stage === "preview" && preview !== undefined) {
+    return (
+      <VocabularyPreviewDialog
+        approvalState={previewApproval}
+        onApprove={() => {
+          setPreviewApproval("approved");
+        }}
+        onBack={() => {
+          setStage("content");
+        }}
+        onClose={onClose}
+        onContinue={openDuplicateCheck}
+        onEditJson={() => {
+          setPreviewApproval("pending");
+          setDuplicateResult(undefined);
+          setDuplicateResolution(undefined);
+          setStage("paste");
+        }}
+        open={open}
+        preview={preview}
+      />
+    );
+  }
+
+  if (stage === "duplicate" && duplicateResult !== undefined) {
+    return (
+      <DuplicateComparisonDialog
+        onBack={() => {
+          setStage("preview");
+        }}
+        onClose={onClose}
+        onEditJson={() => {
+          setPreviewApproval("pending");
+          setDuplicateResult(undefined);
+          setDuplicateResolution(undefined);
+          setStage("paste");
+        }}
+        onResolve={(choice) => {
+          if (duplicateResult.kind === "duplicate") {
+            setDuplicateResolution(resolveDuplicateEntry(duplicateResult.comparison, choice));
+          }
+        }}
+        open={open}
+        {...(duplicateResolution === undefined ? {} : { resolution: duplicateResolution })}
+        result={duplicateResult}
       />
     );
   }

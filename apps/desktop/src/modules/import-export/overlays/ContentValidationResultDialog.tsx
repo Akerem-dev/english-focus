@@ -9,6 +9,7 @@ export interface ContentValidationResultDialogProps {
   readonly onClose: () => void;
   readonly onEditJson: () => void;
   readonly onOpenCorrectionInstruction: () => void;
+  readonly onPreview: () => void;
 }
 
 export function ContentValidationResultDialog({
@@ -16,6 +17,7 @@ export function ContentValidationResultDialog({
   onClose,
   onEditJson,
   onOpenCorrectionInstruction,
+  onPreview,
   open,
   result
 }: ContentValidationResultDialogProps) {
@@ -54,7 +56,7 @@ export function ContentValidationResultDialog({
             </Button>
           ) : null}
           {result.semanticPassed ? (
-            <Button disabled title="Preview arrives in CP12" variant="primary">
+            <Button onClick={onPreview} variant="primary">
               Preview next
             </Button>
           ) : null}
@@ -107,7 +109,7 @@ export function ContentValidationResultDialog({
         <h3>{result.canContinue ? "Ready for preview" : "Correction required"}</h3>
         <p>
           {result.canContinue
-            ? "Quality warnings are advisory and do not block the next gate. Preview, duplicate handling, and saving arrive in later checkpoints."
+            ? "Quality warnings are advisory and do not block the next gate. The complete entry is ready for explicit preview and approval; nothing is saved yet."
             : "Blocking semantic issues must be corrected and revalidated before preview or saving can begin."}
         </p>
       </div>

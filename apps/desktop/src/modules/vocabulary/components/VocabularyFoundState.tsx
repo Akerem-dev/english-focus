@@ -19,6 +19,7 @@ import { WordFamilySection } from "./WordFamilySection";
 interface VocabularyFoundStateProps {
   readonly entry: VocabularyEntry;
   readonly onBack: () => void;
+  readonly onImportReplacement: () => void;
 }
 
 const DETAIL_LINKS = [
@@ -33,13 +34,17 @@ const DETAIL_LINKS = [
   ["etymology", "Etymology"]
 ] as const;
 
-export function VocabularyFoundState({ entry, onBack }: VocabularyFoundStateProps) {
+export function VocabularyFoundState({
+  entry,
+  onBack,
+  onImportReplacement
+}: VocabularyFoundStateProps) {
   return (
     <article
       className="route-page vocabulary-detail-page"
       aria-label={`${entry.word} vocabulary entry`}
     >
-      <VocabularyHeader entry={entry} onBack={onBack} />
+      <VocabularyHeader entry={entry} onBack={onBack} onImportReplacement={onImportReplacement} />
 
       <nav className="vocabulary-detail-nav" aria-label="Vocabulary entry sections">
         {DETAIL_LINKS.map(([target, label]) => (
