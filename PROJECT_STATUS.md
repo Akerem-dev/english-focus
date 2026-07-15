@@ -1,15 +1,10 @@
 # Project Status
 
-- CP00 Roadmap: LOCKED
-- CP01 Public npm baseline: LOCKED
-- CP02 Browser runtime: LOCKED
-- CP03 Native Tauri runtime: LOCKED
-- CP03 GitHub baseline: LOCKED
-- CP04A Design tokens and SVG foundation: LOCKED
-- CP04B Accessible primitives: LOCKED
-- CP04C Application shell and routes: LOCKED
-- CP05A Vocabulary contract and schemas: LOCKED
-- CP05B Maintain fixture and read-only content source: TESTING
-- CP05B FIX01 Runtime baseline restoration: TESTING
+- CP01 — Environment baseline: LOCKED
+- CP02 — Browser runtime: LOCKED
+- CP03 — Native Tauri baseline: LOCKED
+- CP04 — Design system and application shell: LOCKED
+- CP05 — Vocabulary contract and reviewed content: LOCKED
+- CP06A — Read-only maintain detail screen: FIX01 TESTING
 
-Do not begin CP06 until every command in `TEST_PLAN.md` passes.
+Next after approval: continue CP06 vocabulary presentation/search roadmap from the same branch and checkpoint history.

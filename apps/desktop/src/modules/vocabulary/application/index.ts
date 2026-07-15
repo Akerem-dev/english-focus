@@ -1,5 +1,2 @@
-/**
- * Final skeleton boundary: application/index.ts
- * Production implementation is intentionally pending.
- */
-export {};
+export { GetVocabularyEntry } from "./GetVocabularyEntry";
+export type { GetVocabularyEntryRequest } from "./GetVocabularyEntry";

@@ -1,5 +1,21 @@
-/**
- * Final skeleton boundary: components/index.ts
- * Production implementation is intentionally pending.
- */
-export {};
+export { CollocationsSection } from "./CollocationsSection";
+export { CommonMistakesSection } from "./CommonMistakesSection";
+export { EtymologySection } from "./EtymologySection";
+export { ExampleSentenceList } from "./ExampleSentenceList";
+export { ExampleSentenceRow } from "./ExampleSentenceRow";
+export { GrammarSection } from "./GrammarSection";
+export { MeaningsSection } from "./MeaningsSection";
+export { MorphologySection } from "./MorphologySection";
+export { PrepositionPatternsSection } from "./PrepositionPatternsSection";
+export { PronunciationSection } from "./PronunciationSection";
+export { RelatedWordsSection } from "./RelatedWordsSection";
+export { SentenceFormsSection } from "./SentenceFormsSection";
+export { TenseExamplesSection } from "./TenseExamplesSection";
+export { VocabularyFoundState } from "./VocabularyFoundState";
+export { VocabularyHeader } from "./VocabularyHeader";
+export { VocabularyInitialState } from "./VocabularyInitialState";
+export { VocabularyInvalidSearchState } from "./VocabularyInvalidSearchState";
+export { VocabularyNotFoundState } from "./VocabularyNotFoundState";
+export { VocabularyQuickSummary } from "./VocabularyQuickSummary";
+export { VocabularySearchingState } from "./VocabularySearchingState";
+export { WordFamilySection } from "./WordFamilySection";
