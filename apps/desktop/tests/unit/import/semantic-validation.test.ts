@@ -183,4 +183,29 @@ describe("validateVocabularySemantics", () => {
       ])
     );
   });
+  it("keeps external-AI provenance strict but relaxes transfer-only provenance for packs", () => {
+    const transferredEntry = {
+      ...createExternalEntry(),
+      source: {
+        ...createExternalEntry().source,
+        kind: "core" as const
+      },
+      generation: {
+        ...createExternalEntry().generation,
+        method: "manual" as const,
+        validationStatus: "reviewed" as const
+      }
+    };
+
+    const externalResult = validateVocabularySemantics(transferredEntry, "maintain");
+    const packResult = validateVocabularySemantics(
+      transferredEntry,
+      "maintain",
+      "vocabulary-pack-transfer"
+    );
+
+    expect(externalResult.kind).toBe("failure");
+    expect(packResult.kind).toBe("success");
+  });
+
 });

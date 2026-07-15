@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useVocabularyRepository } from "../../../app/providers";
 import { Button, EmptyState, SearchInput, SelectField, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
+import { exportVocabularyPack } from "../../import-export";
 import type { StoredVocabularyEntry, VocabularyStorageLayer } from "@platform/domain";
 
 type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
@@ -71,11 +72,6 @@ function compareRecords(
     default:
       return right.entry.updatedAt.localeCompare(left.entry.updatedAt);
   }
-}
-
-function createExportFilename(count: number): string {
-  const stamp = new Date().toISOString().slice(0, 10);
-  return `english-focus-library-selection-${count}-${stamp}.json`;
 }
 
 export function LibraryPage() {
@@ -163,21 +159,37 @@ export function LibraryPage() {
     }
   }
 
+  function exportLibraryPack() {
+    if (storedEntries.length === 0) {
+      return;
+    }
+
+    const pack = exportVocabularyPack(storedEntries.map((record) => record.entry));
+    const blob = new Blob([pack.json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = pack.fileName;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   function exportSelectedEntries() {
     if (selectedEntries.length === 0) {
       return;
     }
 
-    const payload = JSON.stringify(
-      selectedEntries.map((record) => record.entry),
-      null,
-      2
-    );
-    const blob = new Blob([payload], { type: "application/json" });
+    const pack = exportVocabularyPack(selectedEntries.map((record) => record.entry));
+    const blob = new Blob([pack.json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = createExportFilename(selectedEntries.length);
+    link.download = pack.fileName.replace(
+      "vocabulary-pack",
+      `vocabulary-pack-selected-${selectedEntries.length}`
+    );
     document.body.append(link);
     link.click();
     link.remove();
@@ -236,7 +248,17 @@ export function LibraryPage() {
                 <p className="route-page__eyebrow">CP15 workspace</p>
                 <h2 id="library-controls-title">Search and manage saved vocabulary</h2>
               </div>
-              <StatusBadge tone="success">SQLite-backed library</StatusBadge>
+              <div className="library-panel__header-actions">
+                <StatusBadge tone="success">SQLite-backed library</StatusBadge>
+                <Button
+                  leadingIcon={<AppIcon name="download" size={17} />}
+                  onClick={exportLibraryPack}
+                  size="small"
+                  variant="secondary"
+                >
+                  Export library pack
+                </Button>
+              </div>
             </header>
 
             <div className="library-summary-grid">
@@ -349,7 +371,7 @@ export function LibraryPage() {
                   onClick={exportSelectedEntries}
                   variant="primary"
                 >
-                  Export selected JSON
+                  Export selected pack
                 </Button>
               </div>
             </div>

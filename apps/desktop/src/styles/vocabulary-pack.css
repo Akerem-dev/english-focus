@@ -1,0 +1,347 @@
+.import-source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.import-source-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-3);
+  align-items: start;
+  min-height: 10rem;
+  padding: var(--space-5);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-easing-standard),
+    background var(--motion-duration-fast) var(--motion-easing-standard),
+    transform var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.import-source-card:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  transform: translateY(-0.0625rem);
+}
+
+.import-source-card:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.import-source-card > span {
+  display: inline-grid;
+  grid-row: 1 / span 2;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: var(--radius-medium);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.import-source-card strong {
+  font-size: var(--font-size-4);
+}
+
+.import-source-card small {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.vocabulary-pack__error,
+.vocabulary-pack__file-summary,
+.vocabulary-pack__issues,
+.vocabulary-pack__confirmation,
+.vocabulary-pack__progress,
+.vocabulary-pack__summary-hero {
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+}
+
+.vocabulary-pack__error {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border));
+  background: var(--color-danger-soft);
+}
+
+.vocabulary-pack__error p {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.vocabulary-pack__review,
+.vocabulary-pack__summary {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.vocabulary-pack__file-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface-subtle);
+}
+
+.vocabulary-pack__file-summary h3 {
+  margin-top: var(--space-1);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-5);
+  font-weight: var(--font-weight-regular);
+  overflow-wrap: anywhere;
+}
+
+.vocabulary-pack__file-summary p:last-child {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.vocabulary-pack__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.vocabulary-pack__stats article {
+  display: grid;
+  gap: var(--space-2);
+  min-height: 6.5rem;
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface);
+}
+
+.vocabulary-pack__stats span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.vocabulary-pack__stats strong {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-7);
+  font-weight: var(--font-weight-regular);
+}
+
+.vocabulary-pack__issues {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--color-warning) 38%, var(--color-border));
+}
+
+.vocabulary-pack__issues header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-warning-soft);
+}
+
+.vocabulary-pack__issues ul,
+.vocabulary-pack__failure-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vocabulary-pack__issues li {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+}
+
+.vocabulary-pack__issues li + li {
+  border-top: var(--border-width-hairline) solid var(--color-border);
+}
+
+.vocabulary-pack__issues li span {
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.vocabulary-pack__strategy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.vocabulary-pack__strategy-grid fieldset {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+}
+
+.vocabulary-pack__strategy-grid legend {
+  padding-inline: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.vocabulary-pack__strategy-grid label,
+.vocabulary-pack__confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.vocabulary-pack__strategy-grid label {
+  padding: var(--space-3);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-subtle);
+}
+
+.vocabulary-pack__strategy-grid input,
+.vocabulary-pack__confirmation input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.2rem;
+  accent-color: var(--color-accent);
+}
+
+.vocabulary-pack__strategy-grid label > span,
+.vocabulary-pack__confirmation > span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.vocabulary-pack__strategy-grid small,
+.vocabulary-pack__confirmation small {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.vocabulary-pack__confirmation {
+  padding: var(--space-4);
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  background: var(--color-accent-soft);
+}
+
+.vocabulary-pack__blocked-note {
+  padding: var(--space-3) var(--space-4);
+  border-left: 0.1875rem solid var(--color-warning);
+  background: var(--color-warning-soft);
+  color: var(--color-text-secondary);
+}
+
+.vocabulary-pack__progress {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface-subtle);
+}
+
+.vocabulary-pack__progress > span,
+.vocabulary-pack__summary-hero > span {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.vocabulary-pack__progress > div {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.vocabulary-pack__progress h3,
+.vocabulary-pack__summary-hero h3 {
+  font-size: var(--font-size-4);
+}
+
+.vocabulary-pack__progress p,
+.vocabulary-pack__summary-hero p {
+  color: var(--color-text-secondary);
+}
+
+.vocabulary-pack__progress progress {
+  width: 100%;
+  height: 0.65rem;
+  accent-color: var(--color-accent);
+}
+
+.vocabulary-pack__summary-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
+  background: var(--color-success-soft);
+}
+
+.vocabulary-pack__summary dl {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.vocabulary-pack__summary dl > div {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface);
+}
+
+.vocabulary-pack__summary dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.vocabulary-pack__summary dd {
+  margin: 0;
+  font-size: var(--font-size-4);
+  font-weight: var(--font-weight-semibold);
+}
+
+.vocabulary-pack__failure-list {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-danger);
+  border-radius: var(--radius-medium);
+  background: var(--color-danger-soft);
+}
+
+.library-panel__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+@media (max-width: 56rem) {
+  .import-source-grid,
+  .vocabulary-pack__strategy-grid,
+  .vocabulary-pack__stats,
+  .vocabulary-pack__summary dl {
+    grid-template-columns: 1fr;
+  }
+
+  .vocabulary-pack__file-summary,
+  .library-panel__header-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

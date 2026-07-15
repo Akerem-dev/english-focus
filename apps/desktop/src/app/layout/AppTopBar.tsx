@@ -4,8 +4,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../components";
 import { AppIcon } from "../../design-system";
 import {
+  ImportSourceDialog,
   PasteGeneratedJsonDialog,
   SingleEntryFileImportDialog,
+  VocabularyPackImportDialog,
   type SingleEntryFileImportPayload
 } from "../../modules/import-export";
 import { getRouteByPath } from "../router";
@@ -14,7 +16,9 @@ export function AppTopBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const route = getRouteByPath(location.pathname);
-  const [fileDialogOpen, setFileDialogOpen] = useState(false);
+  const [sourceDialogOpen, setSourceDialogOpen] = useState(false);
+  const [singleEntryDialogOpen, setSingleEntryDialogOpen] = useState(false);
+  const [packDialogOpen, setPackDialogOpen] = useState(false);
   const [importPayload, setImportPayload] = useState<SingleEntryFileImportPayload | undefined>();
 
   return (
@@ -25,10 +29,10 @@ export function AppTopBar() {
           <Button
             leadingIcon={<AppIcon name="upload" size={17} />}
             onClick={() => {
-              setFileDialogOpen(true);
+              setSourceDialogOpen(true);
             }}
             size="small"
-            title="Import one vocabulary JSON file"
+            title="Import one entry or a vocabulary pack"
             variant="secondary"
           >
             Import
@@ -45,15 +49,41 @@ export function AppTopBar() {
         </div>
       </header>
 
+      <ImportSourceDialog
+        onClose={() => {
+          setSourceDialogOpen(false);
+        }}
+        onSelectPack={() => {
+          setSourceDialogOpen(false);
+          setPackDialogOpen(true);
+        }}
+        onSelectSingleEntry={() => {
+          setSourceDialogOpen(false);
+          setSingleEntryDialogOpen(true);
+        }}
+        open={sourceDialogOpen}
+      />
+
       <SingleEntryFileImportDialog
         onClose={() => {
-          setFileDialogOpen(false);
+          setSingleEntryDialogOpen(false);
         }}
         onContinue={(payload) => {
-          setFileDialogOpen(false);
+          setSingleEntryDialogOpen(false);
           setImportPayload(payload);
         }}
-        open={fileDialogOpen}
+        open={singleEntryDialogOpen}
+      />
+
+      <VocabularyPackImportDialog
+        onClose={() => {
+          setPackDialogOpen(false);
+        }}
+        onOpenLibrary={() => {
+          setPackDialogOpen(false);
+          navigate("/library");
+        }}
+        open={packDialogOpen}
       />
 
       {importPayload === undefined ? null : (

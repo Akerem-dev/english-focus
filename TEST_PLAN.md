@@ -1,9 +1,17 @@
-# CP16 Test Plan
+# CP17 FIX01 Test Plan
 
-1. Run the complete automated checkpoint block supplied in chat.
-2. Export `maintain` from Vocabulary detail and verify the downloaded JSON.
-3. Use top-bar Import on Vocabulary, Library, and Settings.
-4. Reject a non-JSON file and malformed JSON without crashing.
-5. Import a valid single-entry JSON file through validation, preview, duplicate, and save.
-6. Confirm `Open vocabulary entry` opens the saved word.
-7. Restart the application and verify the imported entry remains searchable.
+Automated:
+
+- typecheck desktop workspace
+- full desktop test suite
+- desktop production build
+- forbidden-pattern check
+
+Manual:
+
+1. Export the full library pack.
+2. Import that exported pack again.
+3. Expect every exported entry to be structurally/semantically ready for transfer.
+4. With `Keep existing entries`, expect all existing items to be skipped rather than invalid.
+5. Import `testing/manual/cp17-mixed-vocabulary-pack.json`.
+6. Expect exactly one valid and one invalid entry.

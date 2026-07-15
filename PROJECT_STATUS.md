@@ -14,13 +14,14 @@
 - CP12: vocabulary preview, approval, and UTF-8 normalization
 - CP13: duplicate detection and resolution
 - CP14: SQLite persistence and imported-entry retrieval
-- CP15: Library search, filtering, sorting, preview, selection, and bulk export
+- CP15: Library search, filtering, sorting, preview, selection, and bulk actions
+- CP16: single-entry file import and export
 
 ## Current
 
-- **CP16: Single-entry file import and export — TESTING**
+- **CP17: Vocabulary-pack import/export, progress, strategies, and summary — TESTING**
 
 ## Next
 
-- CP17: vocabulary-pack import/export and import summary
-- CP18+: metadata editing, settings persistence, backups, productivity, and release
+- CP18: user metadata editing and persistence
+- CP19+: settings persistence, backup/restore, productivity, diagnostics, and release

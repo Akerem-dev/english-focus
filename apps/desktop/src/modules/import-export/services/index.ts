@@ -9,5 +9,8 @@ export {
   repairMojibakeText,
   type MojibakeRepairResult
 } from "./MojibakeRepair";
-export { VocabularySemanticValidator } from "./VocabularySemanticValidator";
+export {
+  VocabularySemanticValidator,
+  type VocabularySemanticValidationContext
+} from "./VocabularySemanticValidator";
 export { VocabularyQualityInspector } from "./VocabularyQualityInspector";

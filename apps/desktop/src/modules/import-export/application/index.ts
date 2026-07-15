@@ -48,7 +48,20 @@ export {
   type VocabularyPersistencePlan
 } from "./PrepareVocabularyPersistence";
 
+export { exportVocabularyEntry, type VocabularyEntryExport } from "./ExportVocabularyEntry";
+
 export {
-  exportVocabularyEntry,
-  type VocabularyEntryExport
-} from "./ExportVocabularyEntry";
+  analyzeVocabularyPack,
+  exportVocabularyPack,
+  parseVocabularyPackJson,
+  MAX_VOCABULARY_PACK_CHARACTERS,
+  MAX_VOCABULARY_PACK_ENTRIES,
+  VOCABULARY_PACK_KIND,
+  VOCABULARY_PACK_VERSION,
+  type ParseVocabularyPackResult,
+  type VocabularyPackAnalysis,
+  type VocabularyPackDocument,
+  type VocabularyPackEntryAnalysis,
+  type VocabularyPackEntryStatus,
+  type VocabularyPackExport
+} from "./VocabularyPack";
