@@ -1,19 +1,15 @@
-# CP09 Validation
+# CP10 Validation
 
-Validated on the reconstructed approved CP08 baseline.
-
-## Results
+Validated on the reconstructed CP09 baseline:
 
 - TypeScript strict workspace check: PASS
-- Domain tests: 2 passed
-- Schema tests: 14 passed, 2 skipped
-- Testing utilities: 4 passed
-- Desktop tests: 75 passed, 20 skipped
-- Desktop production build: PASS
+- Domain tests: 2 PASS
+- Schema tests: 14 PASS / 2 SKIPPED
+- Testing utility tests: 4 PASS
+- Desktop tests: 89 PASS / 19 SKIPPED
+- Production build: PASS
+- Forbidden API/registry pattern check: PASS
 - Changed-file ESLint: PASS
 - Changed-file Prettier: PASS
-- Forbidden registry/API patterns: PASS
 
-## Manual checkpoint still required
-
-The Windows Tauri/WebView dialog, native paste behavior, close interactions, mismatch warning, responsive layout, and regression flows must be approved by the user before CP09 is locked.
+No package-lock generated in the validation environment is included in this patch.

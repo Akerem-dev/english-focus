@@ -133,3 +133,7 @@
     width: 100%;
   }
 }
+
+.correction-instruction-dialog__text {
+  margin-top: var(--space-4);
+}
