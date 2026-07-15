@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
+import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
 import { useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
 import { Button, EmptyState, SearchInput, SelectField, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
@@ -108,6 +109,7 @@ export function LibraryPage() {
   const [selectedWords, setSelectedWords] = useState<readonly string[]>([]);
   const [previewWord, setPreviewWord] = useState<string | undefined>();
   const [clipboardNotice, setClipboardNotice] = useState<string | undefined>();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredEntries = useMemo(() => {
     return [...storedEntries]
@@ -242,6 +244,31 @@ export function LibraryPage() {
     link.remove();
     URL.revokeObjectURL(url);
   }
+
+  useEffect(() => {
+    function handleAppCommand(event: Event) {
+      const { action } = (event as CustomEvent<AppCommandEventDetail>).detail;
+
+      if (action === "focus-search") {
+        searchInputRef.current?.focus();
+        return;
+      }
+
+      if (action === "export-current") {
+        if (selectedEntries.length > 0) {
+          exportSelectedEntries();
+        } else {
+          exportLibraryPack();
+        }
+      }
+    }
+
+    window.addEventListener(APP_COMMAND_EVENT, handleAppCommand);
+
+    return () => {
+      window.removeEventListener(APP_COMMAND_EVENT, handleAppCommand);
+    };
+  }, [selectedEntries, storedEntries]);
 
   return (
     <div className="route-page route-page--library">

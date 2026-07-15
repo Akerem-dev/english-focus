@@ -1,23 +1,25 @@
-# CP21 Test Plan
+# CP22 Test Plan
 
 ## Automated
 
-- `npm run check:environment`
-- `npm run typecheck`
-- `npm run test --workspace=@platform/domain`
-- `npm run test --workspace=@platform/schemas`
-- `npm run test --workspace=@platform/testing`
-- `npm run test --workspace=@app/desktop`
-- `npm run build --workspace=@app/desktop`
-- `npm run check:forbidden`
+- Environment check
+- TypeScript strict check
+- Domain tests
+- Schema tests
+- Testing utility tests
+- Desktop tests
+- Production build
+- Forbidden-pattern check
 
-## Native manual
+## Manual
 
-1. Open Settings → Diagnostics.
-2. Run diagnostics.
-3. Confirm SQLite integrity, schema, safety settings, data consistency, and backup readiness appear.
-4. Copy the summary and verify it contains counts and statuses but not vocabulary definitions or personal notes.
-5. Confirm safe maintenance is disabled when there is no repairable issue.
-6. If a repairable warning appears, acknowledge the non-destructive boundary and run safe maintenance.
-7. Rerun diagnostics and confirm the report refreshes.
-8. Restart the app and verify vocabulary, metadata, settings, and backups remain unchanged.
+1. Open command bar using the top-bar control and `Ctrl+K`.
+2. Search commands and execute them with Arrow Up/Down and Enter.
+3. Test `Ctrl+L`, `Ctrl+,`, and route navigation commands.
+4. Test `Ctrl+I` and verify the existing import chooser opens.
+5. Test `/` on Vocabulary, Library, and Settings.
+6. Test `Ctrl+E` on a vocabulary detail and in Library.
+7. Test `Ctrl+S` on an open vocabulary entry and inside Study details.
+8. Test `?` shortcut help.
+9. Test `Esc` and Tab focus containment in dialogs.
+10. Verify shortcuts do not fire while typing in inputs, textareas, or selects.

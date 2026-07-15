@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
 import { useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
@@ -14,6 +15,7 @@ import {
   VocabularyNotFoundState,
   VocabularySearchingState
 } from "../components";
+import { createVocabularyUserMetadata } from "../application";
 import type { VocabularySearchState } from "../../search/state";
 
 const RECENT_WORDS = ["maintain", "allocate", "vivid", "derive"] as const;
@@ -100,6 +102,7 @@ export function VocabularyPage() {
   const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
   const [metadataWord, setMetadataWord] = useState<string | undefined>();
   const searchSequence = useRef(0);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const deepLinkHandled = useRef<string | undefined>(undefined);
   const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
 
@@ -159,6 +162,77 @@ export function VocabularyPage() {
     setSearchState(query.trim().length === 0 ? { kind: "initial" } : { kind: "typing", query });
   }
 
+  function exportCurrentEntry() {
+    if (searchState.kind !== "found") {
+      return;
+    }
+
+    const exported = exportVocabularyEntry(searchState.entry);
+    const blob = new Blob([exported.json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = exported.fileName;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function toggleCurrentFavorite() {
+    if (searchState.kind !== "found" || metadataStatus === "saving") {
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const current =
+      getMetadata(searchState.entry.normalizedWord) ??
+      createVocabularyUserMetadata(searchState.entry.normalizedWord, now);
+
+    await saveMetadata({
+      ...current,
+      favorite: !current.favorite,
+      updatedAt: now
+    });
+  }
+
+  useEffect(() => {
+    function handleAppCommand(event: Event) {
+      const { action } = (event as CustomEvent<AppCommandEventDetail>).detail;
+
+      switch (action) {
+        case "focus-search":
+          if (searchState.kind === "found") {
+            returnToInitial();
+          }
+
+          window.requestAnimationFrame(() => {
+            searchInputRef.current?.focus();
+          });
+          return;
+        case "export-current":
+          exportCurrentEntry();
+          return;
+        case "save-current":
+          void toggleCurrentFavorite();
+          return;
+        case "edit-study-details":
+          if (searchState.kind === "found") {
+            setMetadataWord(searchState.entry.normalizedWord);
+          }
+          return;
+        case "open-import":
+          return;
+      }
+    }
+
+    window.addEventListener(APP_COMMAND_EVENT, handleAppCommand);
+
+    return () => {
+      window.removeEventListener(APP_COMMAND_EVENT, handleAppCommand);
+    };
+  }, [getMetadata, metadataStatus, saveMetadata, searchState]);
+
   if (searchState.kind === "found") {
     const entryMetadata = getMetadata(searchState.entry.normalizedWord);
 
@@ -171,18 +245,7 @@ export function VocabularyPage() {
           onEditMetadata={() => {
             setMetadataWord(searchState.entry.normalizedWord);
           }}
-          onExport={() => {
-            const exported = exportVocabularyEntry(searchState.entry);
-            const blob = new Blob([exported.json], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = exported.fileName;
-            document.body.append(link);
-            link.click();
-            link.remove();
-            URL.revokeObjectURL(url);
-          }}
+          onExport={exportCurrentEntry}
           onImportReplacement={() => {
             setPasteJsonWord(searchState.entry.normalizedWord);
           }}
@@ -230,6 +293,7 @@ export function VocabularyPage() {
         </p>
         <form className="vocabulary-search" onSubmit={handleSubmit}>
           <SearchInput
+            ref={searchInputRef}
             aria-label="Search vocabulary"
             label="Search vocabulary"
             onChange={(event) => {

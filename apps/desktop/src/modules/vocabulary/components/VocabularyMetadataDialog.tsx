@@ -116,6 +116,29 @@ export function VocabularyMetadataDialog({
     }
   }
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    function handleSaveShortcut(event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase("en-US") === "s") {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!saving) {
+          void save();
+        }
+      }
+    }
+
+    document.addEventListener("keydown", handleSaveShortcut, true);
+
+    return () => {
+      document.removeEventListener("keydown", handleSaveShortcut, true);
+    };
+  }, [favorite, learningStatus, note, open, reviewStatus, saving, tagsInput]);
+
   return (
     <Modal
       description={`Personal study details for “${entry.word}” are stored separately from vocabulary content.`}

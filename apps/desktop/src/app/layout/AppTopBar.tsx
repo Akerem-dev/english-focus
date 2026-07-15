@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components";
@@ -10,9 +10,14 @@ import {
   VocabularyPackImportDialog,
   type SingleEntryFileImportPayload
 } from "../../modules/import-export";
+import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../command-bar";
 import { getRouteByPath } from "../router";
 
-export function AppTopBar() {
+interface AppTopBarProps {
+  readonly onOpenCommandBar: () => void;
+}
+
+export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const route = getRouteByPath(location.pathname);
@@ -20,6 +25,22 @@ export function AppTopBar() {
   const [singleEntryDialogOpen, setSingleEntryDialogOpen] = useState(false);
   const [packDialogOpen, setPackDialogOpen] = useState(false);
   const [importPayload, setImportPayload] = useState<SingleEntryFileImportPayload | undefined>();
+
+  useEffect(() => {
+    function handleAppCommand(event: Event) {
+      const detail = (event as CustomEvent<AppCommandEventDetail>).detail;
+
+      if (detail.action === "open-import") {
+        setSourceDialogOpen(true);
+      }
+    }
+
+    window.addEventListener(APP_COMMAND_EVENT, handleAppCommand);
+
+    return () => {
+      window.removeEventListener(APP_COMMAND_EVENT, handleAppCommand);
+    };
+  }, []);
 
   return (
     <>
@@ -38,10 +59,10 @@ export function AppTopBar() {
             Import
           </Button>
           <button
-            aria-label="Command bar arrives in a later checkpoint"
+            aria-label="Open command bar"
             className="app-topbar__keycap"
-            disabled
-            title="Command bar arrives in a later checkpoint"
+            onClick={onOpenCommandBar}
+            title="Open command bar (Ctrl+K)"
             type="button"
           >
             Ctrl+K

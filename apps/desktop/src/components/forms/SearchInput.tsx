@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+
 import { AppIcon } from "../../design-system";
 import { IconButton } from "../actions";
 import { TextField, type TextFieldProps } from "./TextField";
@@ -10,18 +12,22 @@ export interface SearchInputProps extends Omit<
   readonly clearLabel?: string;
 }
 
-export function SearchInput({
-  clearLabel = "Clear search",
-  label = "Search",
-  onClear,
-  value,
-  ...inputProps
-}: SearchInputProps) {
+export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(function SearchInput(
+  {
+    clearLabel = "Clear search",
+    label = "Search",
+    onClear,
+    value,
+    ...inputProps
+  },
+  ref
+) {
   const hasValue = typeof value === "string" ? value.length > 0 : value !== undefined;
 
   return (
     <TextField
       {...inputProps}
+      ref={ref}
       hideLabel={inputProps.hideLabel ?? true}
       label={label}
       leadingIcon={<AppIcon name="search" size={18} />}
@@ -39,4 +45,4 @@ export function SearchInput({
       value={value}
     />
   );
-}
+});

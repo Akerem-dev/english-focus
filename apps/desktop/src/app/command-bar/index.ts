@@ -1,5 +1,3 @@
-/**
- * Final skeleton boundary: command-bar/index.ts
- * Production implementation is intentionally pending.
- */
-export {};
+export * from "./CommandBar";
+export * from "./commandRegistry";
+export * from "./useCommandBar";
