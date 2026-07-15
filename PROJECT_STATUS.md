@@ -1,28 +1,21 @@
 # English Focus Project Status
 
-## Current checkpoint
-
-CP09 — JSON paste and parse foundation — TESTING
-
 ## Locked
 
-- CP00 planning baseline
-- CP01 public npm baseline
-- CP02 browser runtime
-- CP03 native Tauri runtime
-- CP04 design system and three-route application shell
-- CP05 vocabulary contract and reviewed content source
-- CP06 read-only vocabulary detail experience
-- CP07 local vocabulary search vertical slice
-- CP08 external-AI instruction and clipboard bridge
+- CP00–CP03: runtime and Git baseline
+- CP04: design system and three-route shell
+- CP05: vocabulary contract and reviewed local content
+- CP06: read-only vocabulary detail
+- CP07: local search vertical slice
+- CP08: external-AI instruction bridge
+- CP09: safe JSON paste and syntax parsing
 
-## Current scope
+## Current
 
-- paste generated JSON from a not-found word;
-- clean safe wrappers locally;
-- parse one top-level JSON object;
-- report syntax results without saving.
+- **CP10: Zod schema validation and correction-instruction foundation — TESTING**
 
-## Next planned checkpoint
+## Next
 
-CP10 — vocabulary schema validation, validation-result presentation, and correction-instruction foundation.
+- CP11: semantic validation, target-word consistency, and quality inspection
+- CP12: vocabulary preview and approval flow
+- CP13+: SQLite persistence, duplicate resolution, Library workflows

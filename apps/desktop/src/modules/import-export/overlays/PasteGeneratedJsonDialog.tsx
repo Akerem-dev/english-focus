@@ -2,17 +2,23 @@ import { useState } from "react";
 
 import { Button, Modal, StatusBadge, TextAreaField } from "../../../components";
 import { AppIcon } from "../../../design-system";
+import { CorrectionInstructionDialog } from "../../instruction";
 import {
   MAX_PASTED_JSON_CHARACTERS,
   parseVocabularyJson,
-  type ParseVocabularyJsonResult
+  validateVocabularySchema,
+  type ParseVocabularyJsonResult,
+  type ValidateVocabularySchemaResult
 } from "../application";
+import { ValidationResultDialog } from "./ValidationResultDialog";
 
 export interface PasteGeneratedJsonDialogProps {
   readonly open: boolean;
   readonly expectedWord: string;
   readonly onClose: () => void;
 }
+
+type ImportDialogStage = "paste" | "validation" | "correction";
 
 function describeTransformation(transformation: string): string {
   switch (transformation) {
@@ -41,29 +47,79 @@ export function PasteGeneratedJsonDialog({
   open
 }: PasteGeneratedJsonDialogProps) {
   const [input, setInput] = useState("");
-  const [result, setResult] = useState<ParseVocabularyJsonResult | undefined>();
+  const [parseResult, setParseResult] = useState<ParseVocabularyJsonResult | undefined>();
+  const [validationResult, setValidationResult] = useState<
+    ValidateVocabularySchemaResult | undefined
+  >();
+  const [stage, setStage] = useState<ImportDialogStage>("paste");
   const isOverLimit = input.length > MAX_PASTED_JSON_CHARACTERS;
-  const detectedWord = result?.kind === "success" ? result.parsed.detectedWord : undefined;
+  const parsedJson = parseResult?.kind === "success" ? parseResult.parsed : undefined;
+  const detectedWord = parsedJson?.detectedWord;
   const inputError = isOverLimit
     ? `The pasted text exceeds the ${MAX_PASTED_JSON_CHARACTERS.toLocaleString("en-US")} character safety limit.`
-    : result?.kind === "failure"
-      ? result.message
+    : parseResult?.kind === "failure"
+      ? parseResult.message
       : undefined;
   const hasWordMismatch =
     detectedWord !== undefined && detectedWord.trim().toLocaleLowerCase("en-US") !== expectedWord;
 
   function clearInput() {
     setInput("");
-    setResult(undefined);
+    setParseResult(undefined);
+    setValidationResult(undefined);
   }
 
   function checkJsonSyntax() {
-    setResult(parseVocabularyJson(input));
+    setParseResult(parseVocabularyJson(input));
+    setValidationResult(undefined);
+  }
+
+  function validateSchema() {
+    if (parsedJson === undefined) {
+      return;
+    }
+
+    setValidationResult(validateVocabularySchema(parsedJson.value));
+    setStage("validation");
+  }
+
+  if (stage === "validation" && validationResult !== undefined) {
+    return (
+      <ValidationResultDialog
+        expectedWord={expectedWord}
+        onClose={onClose}
+        onEditJson={() => {
+          setStage("paste");
+        }}
+        onOpenCorrectionInstruction={() => {
+          if (validationResult.kind === "failure") {
+            setStage("correction");
+          }
+        }}
+        open={open}
+        result={validationResult}
+      />
+    );
+  }
+
+  if (stage === "correction" && validationResult?.kind === "failure" && parsedJson !== undefined) {
+    return (
+      <CorrectionInstructionDialog
+        issues={validationResult.issues}
+        onBack={() => {
+          setStage("validation");
+        }}
+        onClose={onClose}
+        open={open}
+        originalJson={parsedJson.cleanedText}
+        targetWord={expectedWord}
+      />
+    );
   }
 
   return (
     <Modal
-      description={`Paste the JSON generated for “${expectedWord}”. English Focus will clean common wrappers and check JSON syntax locally.`}
+      description={`Paste the JSON generated for “${expectedWord}”. English Focus will clean common wrappers, parse it, and validate the versioned vocabulary structure locally.`}
       footer={
         <>
           <Button onClick={onClose} variant="ghost">
@@ -75,10 +131,10 @@ export function PasteGeneratedJsonDialog({
           <Button
             disabled={isOverLimit}
             leadingIcon={<AppIcon name="check" size={17} />}
-            onClick={checkJsonSyntax}
+            onClick={parsedJson === undefined ? checkJsonSyntax : validateSchema}
             variant="primary"
           >
-            Check JSON syntax
+            {parsedJson === undefined ? "Check JSON syntax" : "Validate schema"}
           </Button>
         </>
       }
@@ -90,12 +146,14 @@ export function PasteGeneratedJsonDialog({
       <div className="json-paste-dialog__metadata" aria-label="JSON import metadata">
         <StatusBadge tone="accent">Expected word: {expectedWord}</StatusBadge>
         <StatusBadge>Local processing</StatusBadge>
-        <StatusBadge>Schema check next</StatusBadge>
+        <StatusBadge tone={parsedJson === undefined ? "neutral" : "success"}>
+          {parsedJson === undefined ? "Syntax check first" : "Schema validation ready"}
+        </StatusBadge>
       </div>
 
       <p className="json-paste-dialog__privacy">
         Nothing is uploaded. Markdown fences and explanatory text around the first JSON object can
-        be removed locally before parsing.
+        be removed locally before parsing and schema validation.
       </p>
 
       <div className="json-paste-dialog__toolbar">
@@ -119,7 +177,8 @@ export function PasteGeneratedJsonDialog({
         onChange={(event) => {
           const nextInput = event.currentTarget.value;
           setInput(nextInput);
-          setResult(undefined);
+          setParseResult(undefined);
+          setValidationResult(undefined);
         }}
         placeholder={'{\n  "schemaVersion": "1.0.0",\n  "word": "' + expectedWord + '"\n}'}
         rows={18}
@@ -127,7 +186,7 @@ export function PasteGeneratedJsonDialog({
         value={input}
       />
 
-      {result?.kind === "success" ? (
+      {parsedJson === undefined ? null : (
         <section className="json-paste-result" aria-live="polite" data-tone="success">
           <div className="json-paste-result__heading">
             <span aria-hidden="true" className="json-paste-result__icon">
@@ -136,7 +195,7 @@ export function PasteGeneratedJsonDialog({
             <div>
               <h3>JSON syntax passed</h3>
               <p>
-                A top-level object with {result.parsed.topLevelKeys.length} keys was parsed safely.
+                A top-level object with {parsedJson.topLevelKeys.length} keys was parsed safely.
               </p>
             </div>
           </div>
@@ -148,31 +207,32 @@ export function PasteGeneratedJsonDialog({
             </div>
             <div>
               <dt>Schema validation</dt>
-              <dd>Not checked yet</dd>
+              <dd>Ready to validate</dd>
             </div>
           </dl>
 
-          {result.parsed.transformations.length === 0 ? (
+          {parsedJson.transformations.length === 0 ? (
             <p className="json-paste-result__note">No cleanup was needed before parsing.</p>
           ) : (
             <p className="json-paste-result__note">
-              Local cleanup: {result.parsed.transformations.map(describeTransformation).join(", ")}.
+              Local cleanup: {parsedJson.transformations.map(describeTransformation).join(", ")}.
             </p>
           )}
 
           {hasWordMismatch ? (
             <p className="json-paste-result__warning" role="alert">
               This object says “{detectedWord}”, but the current request expects “{expectedWord}”.
-              The schema and semantic validation checkpoint will block mismatched imports.
+              Structural validation can still run; semantic validation will block this mismatch in
+              the next checkpoint.
             </p>
           ) : null}
         </section>
-      ) : null}
+      )}
 
-      {result === undefined ? (
+      {parseResult === undefined ? (
         <p className="json-paste-dialog__stage-note">
-          This checkpoint checks text cleanup, object extraction, size, and JSON syntax only. No
-          entry will be saved yet.
+          Syntax must pass before the versioned Zod vocabulary contract can run. No entry will be
+          saved yet.
         </p>
       ) : null}
     </Modal>

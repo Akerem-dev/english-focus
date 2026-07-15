@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { PasteGeneratedJsonDialog } from "../../../src/modules/import-export";
 
 describe("PasteGeneratedJsonDialog", () => {
-  it("renders the local syntax-check workflow for the expected word", () => {
+  it("renders the local syntax and schema-validation workflow for the expected word", () => {
     const markup = renderToStaticMarkup(
       <PasteGeneratedJsonDialog expectedWord="allocate" onClose={() => undefined} open />
     );
@@ -13,7 +13,8 @@ describe("PasteGeneratedJsonDialog", () => {
     expect(markup).toContain("Expected word: allocate");
     expect(markup).toContain("Generated vocabulary JSON");
     expect(markup).toContain("Check JSON syntax");
-    expect(markup).toContain("Schema check next");
+    expect(markup).toContain("Syntax check first");
+    expect(markup).toContain("versioned Zod vocabulary contract");
     expect(markup).toContain("Nothing is uploaded");
   });
 

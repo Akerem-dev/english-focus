@@ -9,3 +9,7 @@ export {
   type ParsedVocabularyJson,
   type ParseVocabularyJsonResult
 } from "./ParseVocabularyJson";
+export {
+  validateVocabularySchema,
+  type ValidateVocabularySchemaResult
+} from "./ValidateVocabularySchema";
