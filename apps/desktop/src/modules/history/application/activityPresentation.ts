@@ -26,6 +26,8 @@ export function activityKindLabel(kind: ActivityKind): string {
       return "Backup deleted";
     case "diagnostics-run":
       return "Diagnostics run";
+    case "local-data-reset":
+      return "Local data removed";
     case "operation-warning":
       return "Operation warning";
     case "operation-failed":

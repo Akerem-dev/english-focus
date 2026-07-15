@@ -6,7 +6,7 @@ import type {
   ThemePreference
 } from "@platform/domain";
 
-import { Button, SelectField, StatusBadge, SwitchField } from "../../../components";
+import { SelectField, StatusBadge, SwitchField } from "../../../components";
 import { useSettings } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
 import {
@@ -18,12 +18,13 @@ import {
   ActivitySection,
   BackupSettingsSection,
   DiagnosticsSection,
-  InstructionSettingsSection
+  InstructionSettingsSection,
+  LocalDataControlsSection
 } from "../components";
 
 interface SettingsPanelProps {
   readonly className?: string | undefined;
-  readonly icon: "book-open" | "command" | "settings" | "upload";
+  readonly icon: "book-open" | "command" | "settings" | "upload" | "warning";
   readonly title: string;
   readonly description: string;
   readonly children: ReactNode;
@@ -47,7 +48,7 @@ function SettingsPanel({ children, className, description, icon, title }: Settin
 }
 
 export function SettingsPage() {
-  const { error, resetSettings, settings, status, updateSettings } = useSettings();
+  const { error, settings, status, updateSettings } = useSettings();
   const isBusy = status === "loading" || status === "saving";
 
   return (
@@ -64,16 +65,6 @@ export function SettingsPage() {
           {status === "saved" ? <StatusBadge tone="success">Saved locally</StatusBadge> : null}
           {status === "ready" ? <StatusBadge tone="success">SQLite settings ready</StatusBadge> : null}
           {status === "error" ? <StatusBadge tone="danger">Save needs attention</StatusBadge> : null}
-          <Button
-            disabled={isBusy}
-            onClick={() => {
-              void resetSettings();
-            }}
-            size="small"
-            variant="secondary"
-          >
-            Reset all settings
-          </Button>
         </div>
       </header>
 
@@ -244,6 +235,15 @@ export function SettingsPage() {
           title="Privacy & activity"
         >
           <ActivitySection />
+        </SettingsPanel>
+
+        <SettingsPanel
+          className="settings-panel--wide"
+          description="Remove only selected local records or perform a guarded full reset while keeping bundled core vocabulary."
+          icon="warning"
+          title="Local data reset"
+        >
+          <LocalDataControlsSection />
         </SettingsPanel>
       </div>
     </div>
