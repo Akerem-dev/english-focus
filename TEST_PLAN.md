@@ -1,13 +1,20 @@
-# CP14 FIX01 Test Plan
+# CP15 FIX01 Test Plan
 
-Run:
+## Automated
 
-- `npm run test --workspace=@app/desktop -- VocabularyPersistenceDialog.test.tsx`
-- `npm run build --workspace=@app/desktop`
+- Environment check
+- TypeScript strict check
+- Domain, schemas, testing, and desktop tests
+- Desktop production build
+- Forbidden-pattern check
 
-Manual checks:
+## Manual
 
-1. Open the JSON import dialog and confirm `Detected word` / `Schema validation` values are flush-left inside their cards.
-2. Walk through a new-entry save flow and confirm the save dialog has proper card alignment, bold values, and label colons.
-3. Walk through a duplicate-replace save flow and confirm the same modal styling appears there too.
-4. Confirm no persistence behavior changed.
+1. Preview provenance values must be flush-left under their labels.
+2. Import Readiness content must not have browser-list indentation.
+3. Duplicate Existing/Imported stat values must be flush-left.
+4. Saved-success modal must not show Restart proof copy.
+5. Search and filter controls must share one baseline.
+6. Clear selection must be visibly outlined.
+7. Export selected JSON text must be white.
+8. Row checkboxes must align with the Pick heading.

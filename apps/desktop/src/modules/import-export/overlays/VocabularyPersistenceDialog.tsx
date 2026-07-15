@@ -141,13 +141,6 @@ export function VocabularyPersistenceDialog({
           <dd>Preserved separately</dd>
         </div>
       </dl>
-
-      {succeeded && outcome.kind === "saved" ? (
-        <p className="persistence-dialog__restart-note">
-          Restart proof: close English Focus, open it again, and search for “{word}”. The entry must
-          still be available.
-        </p>
-      ) : null}
     </Modal>
   );
 }

@@ -387,6 +387,8 @@
 .vocabulary-preview__compact-list,
 .vocabulary-preview__meaning-list,
 .vocabulary-preview__example-list {
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
@@ -447,8 +449,10 @@
 }
 
 .vocabulary-preview__stats dd {
+  margin: 0;
   font-family: var(--font-family-display);
   font-size: var(--font-size-4);
+  text-align: left;
 }
 
 .vocabulary-preview__summary-copy {
@@ -501,8 +505,12 @@
 }
 
 .vocabulary-preview__provenance dd {
+  margin: 0;
   overflow-wrap: anywhere;
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-ui);
+  text-align: left;
 }
 
 .vocabulary-preview__meaning-list,
@@ -794,7 +802,12 @@
 }
 
 .duplicate-check__entry-stats dd {
+  margin: 0;
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-ui);
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .duplicate-check__field-table {
@@ -939,7 +952,6 @@
   }
 }
 
-
 .persistence-dialog__metadata {
   display: flex;
   flex-wrap: wrap;
@@ -1028,15 +1040,6 @@
   line-height: var(--line-height-ui);
   text-align: left;
   overflow-wrap: anywhere;
-}
-
-.persistence-dialog__restart-note {
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  border-left: 0.1875rem solid var(--color-accent);
-  background: var(--color-accent-soft);
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-reading);
 }
 
 @media (max-width: 40rem) {
