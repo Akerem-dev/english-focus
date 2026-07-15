@@ -149,3 +149,322 @@ pub fn save_vocabulary_entry(
         layer: request.layer,
     })
 }
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SaveVocabularyUserMetadataRequest {
+    normalized_word: String,
+    favorite: bool,
+    tags: Value,
+    note: String,
+    learning_status: String,
+    review_status: String,
+    last_viewed_at: Option<String>,
+    view_count: i64,
+    created_at: String,
+    updated_at: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VocabularyUserMetadataRecord {
+    normalized_word: String,
+    favorite: bool,
+    tags: Value,
+    note: String,
+    learning_status: String,
+    review_status: String,
+    last_viewed_at: Option<String>,
+    view_count: i64,
+    created_at: String,
+    updated_at: String,
+}
+
+type MetadataDatabaseRow = (
+    String,
+    i64,
+    String,
+    String,
+    String,
+    String,
+    Option<String>,
+    i64,
+    String,
+    String,
+);
+
+fn parse_metadata_record(row: MetadataDatabaseRow) -> Result<VocabularyUserMetadataRecord, String> {
+    let (
+        normalized_word,
+        favorite,
+        tags_json,
+        note,
+        learning_status,
+        review_status,
+        last_viewed_at,
+        view_count,
+        created_at,
+        updated_at,
+    ) = row;
+    let tags = serde_json::from_str(&tags_json)
+        .map_err(|error| format!("Stored vocabulary tags are invalid: {error}"))?;
+
+    Ok(VocabularyUserMetadataRecord {
+        normalized_word,
+        favorite: favorite != 0,
+        tags,
+        note,
+        learning_status,
+        review_status,
+        last_viewed_at,
+        view_count,
+        created_at,
+        updated_at,
+    })
+}
+
+fn validate_metadata_request(request: &SaveVocabularyUserMetadataRequest) -> Result<(), String> {
+    if request.normalized_word.trim().is_empty() {
+        return Err("A normalized word is required for vocabulary metadata.".to_string());
+    }
+
+    if request.note.chars().count() > 5_000 {
+        return Err("The personal note cannot exceed 5,000 characters.".to_string());
+    }
+
+    if request.view_count < 0 {
+        return Err("Vocabulary view count cannot be negative.".to_string());
+    }
+
+    if request.learning_status != "new"
+        && request.learning_status != "learning"
+        && request.learning_status != "known"
+    {
+        return Err("Learning status must be 'new', 'learning', or 'known'.".to_string());
+    }
+
+    if request.review_status != "imported"
+        && request.review_status != "validated"
+        && request.review_status != "reviewed"
+    {
+        return Err("Review status must be 'imported', 'validated', or 'reviewed'.".to_string());
+    }
+
+    let tags = request
+        .tags
+        .as_array()
+        .ok_or_else(|| "Vocabulary tags must be an array.".to_string())?;
+    if tags.len() > 30 {
+        return Err("A vocabulary entry can contain at most 30 tags.".to_string());
+    }
+
+    Ok(())
+}
+
+fn read_metadata_by_word(
+    connection: &rusqlite::Connection,
+    normalized_word: &str,
+) -> Result<Option<VocabularyUserMetadataRecord>, String> {
+    let row = connection
+        .query_row(
+            r#"
+            SELECT
+                normalized_word,
+                favorite,
+                tags_json,
+                note,
+                learning_status,
+                review_status,
+                last_viewed_at,
+                view_count,
+                created_at,
+                updated_at
+            FROM vocabulary_user_metadata
+            WHERE normalized_word = ?1
+            "#,
+            params![normalized_word],
+            |row| {
+                Ok((
+                    row.get(0)?,
+                    row.get(1)?,
+                    row.get(2)?,
+                    row.get(3)?,
+                    row.get(4)?,
+                    row.get(5)?,
+                    row.get(6)?,
+                    row.get(7)?,
+                    row.get(8)?,
+                    row.get(9)?,
+                ))
+            },
+        )
+        .optional()
+        .map_err(|error| format!("Vocabulary metadata could not be read: {error}"))?;
+
+    row.map(parse_metadata_record).transpose()
+}
+
+#[tauri::command]
+pub fn list_vocabulary_user_metadata(
+    state: State<'_, AppState>,
+) -> Result<Vec<VocabularyUserMetadataRecord>, String> {
+    let connection = state
+        .database
+        .lock()
+        .map_err(|_| "The local vocabulary database lock is unavailable.".to_string())?;
+    let mut statement = connection
+        .prepare(
+            r#"
+            SELECT
+                normalized_word,
+                favorite,
+                tags_json,
+                note,
+                learning_status,
+                review_status,
+                last_viewed_at,
+                view_count,
+                created_at,
+                updated_at
+            FROM vocabulary_user_metadata
+            ORDER BY updated_at DESC, normalized_word ASC
+            "#,
+        )
+        .map_err(|error| format!("Vocabulary metadata could not be prepared: {error}"))?;
+    let rows = statement
+        .query_map([], |row| {
+            Ok((
+                row.get(0)?,
+                row.get(1)?,
+                row.get(2)?,
+                row.get(3)?,
+                row.get(4)?,
+                row.get(5)?,
+                row.get(6)?,
+                row.get(7)?,
+                row.get(8)?,
+                row.get(9)?,
+            ))
+        })
+        .map_err(|error| format!("Vocabulary metadata could not be queried: {error}"))?;
+
+    rows.map(|row| {
+        let database_row = row
+            .map_err(|error| format!("Vocabulary metadata row could not be read: {error}"))?;
+        parse_metadata_record(database_row)
+    })
+    .collect()
+}
+
+#[tauri::command]
+pub fn get_vocabulary_user_metadata(
+    normalized_word: String,
+    state: State<'_, AppState>,
+) -> Result<Option<VocabularyUserMetadataRecord>, String> {
+    let connection = state
+        .database
+        .lock()
+        .map_err(|_| "The local vocabulary database lock is unavailable.".to_string())?;
+    read_metadata_by_word(&connection, &normalized_word)
+}
+
+#[tauri::command]
+pub fn save_vocabulary_user_metadata(
+    request: SaveVocabularyUserMetadataRequest,
+    state: State<'_, AppState>,
+) -> Result<VocabularyUserMetadataRecord, String> {
+    validate_metadata_request(&request)?;
+    let tags_json = serde_json::to_string(&request.tags)
+        .map_err(|error| format!("Vocabulary tags could not be serialized: {error}"))?;
+    let mut connection = state
+        .database
+        .lock()
+        .map_err(|_| "The local vocabulary database lock is unavailable.".to_string())?;
+    let transaction = connection
+        .transaction()
+        .map_err(|error| format!("The metadata transaction could not start: {error}"))?;
+
+    transaction
+        .execute(
+            r#"
+            INSERT INTO vocabulary_user_metadata(
+                normalized_word,
+                favorite,
+                tags_json,
+                note,
+                learning_status,
+                review_status,
+                last_viewed_at,
+                view_count,
+                created_at,
+                updated_at
+            ) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
+            ON CONFLICT(normalized_word) DO UPDATE SET
+                favorite = excluded.favorite,
+                tags_json = excluded.tags_json,
+                note = excluded.note,
+                learning_status = excluded.learning_status,
+                review_status = excluded.review_status,
+                last_viewed_at = excluded.last_viewed_at,
+                view_count = excluded.view_count,
+                updated_at = excluded.updated_at
+            "#,
+            params![
+                request.normalized_word,
+                if request.favorite { 1 } else { 0 },
+                tags_json,
+                request.note,
+                request.learning_status,
+                request.review_status,
+                request.last_viewed_at,
+                request.view_count,
+                request.created_at,
+                request.updated_at,
+            ],
+        )
+        .map_err(|error| format!("Vocabulary metadata could not be saved: {error}"))?;
+
+    transaction
+        .commit()
+        .map_err(|error| format!("The metadata transaction could not commit: {error}"))?;
+
+    read_metadata_by_word(&connection, &request.normalized_word)?
+        .ok_or_else(|| "Saved vocabulary metadata could not be reloaded.".to_string())
+}
+
+#[tauri::command]
+pub fn record_vocabulary_view(
+    normalized_word: String,
+    viewed_at: String,
+    state: State<'_, AppState>,
+) -> Result<VocabularyUserMetadataRecord, String> {
+    if normalized_word.trim().is_empty() {
+        return Err("A normalized word is required before recording a view.".to_string());
+    }
+
+    let connection = state
+        .database
+        .lock()
+        .map_err(|_| "The local vocabulary database lock is unavailable.".to_string())?;
+    connection
+        .execute(
+            r#"
+            INSERT INTO vocabulary_user_metadata(
+                normalized_word,
+                last_viewed_at,
+                view_count,
+                created_at,
+                updated_at
+            ) VALUES (?1, ?2, 1, ?2, ?2)
+            ON CONFLICT(normalized_word) DO UPDATE SET
+                last_viewed_at = excluded.last_viewed_at,
+                view_count = vocabulary_user_metadata.view_count + 1,
+                updated_at = excluded.updated_at
+            "#,
+            params![normalized_word, viewed_at],
+        )
+        .map_err(|error| format!("Vocabulary view history could not be recorded: {error}"))?;
+
+    read_metadata_by_word(&connection, &normalized_word)?
+        .ok_or_else(|| "Recorded vocabulary metadata could not be reloaded.".to_string())
+}

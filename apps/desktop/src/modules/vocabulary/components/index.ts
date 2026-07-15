@@ -19,3 +19,4 @@ export { VocabularyNotFoundState } from "./VocabularyNotFoundState";
 export { VocabularyQuickSummary } from "./VocabularyQuickSummary";
 export { VocabularySearchingState } from "./VocabularySearchingState";
 export { WordFamilySection } from "./WordFamilySection";
+export { VocabularyMetadataDialog } from "./VocabularyMetadataDialog";

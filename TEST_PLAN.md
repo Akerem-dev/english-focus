@@ -1,17 +1,23 @@
-# CP17 FIX01 Test Plan
+# CP19 Test Plan
 
-Automated:
+## Automated
 
-- typecheck desktop workspace
-- full desktop test suite
-- desktop production build
-- forbidden-pattern check
+- Environment check
+- Strict TypeScript typecheck
+- Domain tests
+- Schema tests
+- Testing utility tests
+- Desktop tests
+- Production build
+- Forbidden-pattern scan
 
-Manual:
+## Native manual
 
-1. Export the full library pack.
-2. Import that exported pack again.
-3. Expect every exported entry to be structurally/semantically ready for transfer.
-4. With `Keep existing entries`, expect all existing items to be skipped rather than invalid.
-5. Import `testing/manual/cp17-mixed-vocabulary-pack.json`.
-6. Expect exactly one valid and one invalid entry.
+1. Change theme between Light, Dark, and System.
+2. Enable reduced motion.
+3. Change interface size.
+4. Disable etymology and common mistakes, then inspect a vocabulary detail page.
+5. Change example display count from ten to five.
+6. Change instruction settings.
+7. Restart English Focus and confirm every preference remains.
+8. Reset all settings and confirm defaults return.

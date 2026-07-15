@@ -545,3 +545,168 @@
     justify-content: flex-start;
   }
 }
+
+.vocabulary-metadata-dialog {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.vocabulary-metadata-dialog__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface-subtle);
+}
+
+.vocabulary-metadata-dialog__summary h3 {
+  margin-top: var(--space-1);
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-7);
+  font-weight: var(--font-weight-regular);
+}
+
+.vocabulary-metadata-dialog__summary p:last-child {
+  margin-top: var(--space-1);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.vocabulary-metadata-dialog__favorite {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding-inline: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.vocabulary-metadata-dialog__favorite:hover,
+.vocabulary-metadata-dialog__favorite[data-active] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.vocabulary-metadata-dialog__favorite:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.vocabulary-metadata-dialog__error {
+  padding: var(--space-4);
+  border-left: 0.1875rem solid var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.vocabulary-metadata-dialog__error p {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.vocabulary-metadata-dialog__section {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.vocabulary-metadata-dialog__section > header h3 {
+  font-size: var(--font-size-4);
+}
+
+.vocabulary-metadata-dialog__section > header p {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.vocabulary-metadata-dialog__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.vocabulary-metadata-dialog__options label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: 7rem;
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface-subtle);
+  cursor: pointer;
+}
+
+.vocabulary-metadata-dialog__options label:hover,
+.vocabulary-metadata-dialog__options label[data-selected] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.vocabulary-metadata-dialog__options input {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15rem;
+  accent-color: var(--color-accent);
+}
+
+.vocabulary-metadata-dialog__options span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.vocabulary-metadata-dialog__options small {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.vocabulary-metadata-dialog__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.vocabulary-metadata-dialog__activity {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: var(--border-width-hairline) solid var(--color-border);
+}
+
+.vocabulary-metadata-dialog__activity > div {
+  display: grid;
+  gap: var(--space-1);
+  align-content: start;
+}
+
+.vocabulary-metadata-dialog__activity span:first-child {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.vocabulary-metadata-dialog__activity strong {
+  line-height: var(--line-height-ui);
+}
+
+@media (max-width: 50rem) {
+  .vocabulary-metadata-dialog__summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .vocabulary-metadata-dialog__options,
+  .vocabulary-metadata-dialog__fields,
+  .vocabulary-metadata-dialog__activity {
+    grid-template-columns: 1fr;
+  }
+}

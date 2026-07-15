@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { VocabularyRepositoryProvider } from "../../../src/app/providers";
+import { VocabularyMetadataProvider, VocabularyRepositoryProvider } from "../../../src/app/providers";
 import {
   VocabularyInvalidSearchState,
   VocabularyNotFoundState,
@@ -15,7 +15,9 @@ describe("VocabularyPage search states", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
         <VocabularyRepositoryProvider>
-          <VocabularyPage />
+          <VocabularyMetadataProvider>
+            <VocabularyPage />
+          </VocabularyMetadataProvider>
         </VocabularyRepositoryProvider>
       </MemoryRouter>
     );

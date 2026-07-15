@@ -1,5 +1,9 @@
-/**
- * Final skeleton boundary: application/UpdateAppearanceSettings.ts
- * Production implementation is intentionally pending.
- */
-export {};
+import type { AppSettings, AppearanceSettings } from "@platform/domain";
+
+export function updateAppearanceSettings(
+  current: AppSettings,
+  appearance: AppearanceSettings,
+  updatedAt = new Date().toISOString()
+): AppSettings {
+  return Object.freeze({ ...current, appearance: Object.freeze(appearance), updatedAt });
+}

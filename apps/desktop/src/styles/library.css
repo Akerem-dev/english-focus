@@ -64,7 +64,7 @@
 }
 
 .library-summary-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   margin-top: var(--space-5);
 }
 
@@ -89,7 +89,7 @@
 }
 
 .library-controls-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: start;
   margin-top: var(--space-5);
 }
@@ -372,4 +372,19 @@
   .library-table__cell:nth-child(4) {
     grid-column: 2;
   }
+}
+
+
+.library-preview__section--personal {
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-accent-soft);
+}
+
+.library-preview__tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
 }

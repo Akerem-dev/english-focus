@@ -4,7 +4,7 @@ const DEFAULT_TIMESTAMP = "2026-01-01T00:00:00.000Z";
 
 function createDefaultMetadata(): VocabularyUserMetadata {
   return {
-    entryId: "test.maintain.v1",
+    normalizedWord: "maintain",
     favorite: false,
     tags: [],
     note: "",

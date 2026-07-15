@@ -1,5 +1,9 @@
-/**
- * Final skeleton boundary: application/UpdateVocabularyLearningStatus.ts
- * Production implementation is intentionally pending.
- */
-export {};
+import type { LearningStatus, VocabularyUserMetadata } from "@platform/domain";
+
+export function updateVocabularyLearningStatus(
+  metadata: VocabularyUserMetadata,
+  learningStatus: LearningStatus,
+  updatedAt: string
+): VocabularyUserMetadata {
+  return Object.freeze({ ...metadata, learningStatus, updatedAt });
+}

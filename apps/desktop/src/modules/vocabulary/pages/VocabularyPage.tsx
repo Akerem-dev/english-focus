@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { useVocabularyRepository } from "../../../app/providers";
+import { useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { AiInstructionDialog } from "../../instruction";
@@ -10,6 +10,7 @@ import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
 import {
   VocabularyFoundState,
   VocabularyInvalidSearchState,
+  VocabularyMetadataDialog,
   VocabularyNotFoundState,
   VocabularySearchingState
 } from "../components";
@@ -91,11 +92,13 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
 
 export function VocabularyPage() {
   const { contentSource } = useVocabularyRepository();
+  const { getMetadata, recordView, saveMetadata, status: metadataStatus } = useVocabularyMetadata();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
   const [instructionWord, setInstructionWord] = useState<string | undefined>();
   const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
+  const [metadataWord, setMetadataWord] = useState<string | undefined>();
   const searchSequence = useRef(0);
   const deepLinkHandled = useRef<string | undefined>(undefined);
   const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
@@ -112,7 +115,11 @@ export function VocabularyPage() {
       }
 
       try {
-        setSearchState(toPageState(searchVocabulary.execute(nextQuery)));
+        const result = searchVocabulary.execute(nextQuery);
+        setSearchState(toPageState(result));
+        if (result.kind === "found") {
+          void recordView(result.entry.normalizedWord);
+        }
       } catch (error) {
         setSearchState({
           kind: "repository-error",
@@ -153,11 +160,17 @@ export function VocabularyPage() {
   }
 
   if (searchState.kind === "found") {
+    const entryMetadata = getMetadata(searchState.entry.normalizedWord);
+
     return (
       <>
         <VocabularyFoundState
           entry={searchState.entry}
+          metadata={entryMetadata}
           onBack={returnToInitial}
+          onEditMetadata={() => {
+            setMetadataWord(searchState.entry.normalizedWord);
+          }}
           onExport={() => {
             const exported = exportVocabularyEntry(searchState.entry);
             const blob = new Blob([exported.json], { type: "application/json" });
@@ -174,6 +187,21 @@ export function VocabularyPage() {
             setPasteJsonWord(searchState.entry.normalizedWord);
           }}
         />
+        {metadataWord === undefined ? null : (
+          <VocabularyMetadataDialog
+            entry={searchState.entry}
+            metadata={entryMetadata}
+            onClose={() => {
+              setMetadataWord(undefined);
+            }}
+            onSave={async (input) => {
+              await saveMetadata(input);
+              setMetadataWord(undefined);
+            }}
+            open
+            saving={metadataStatus === "saving"}
+          />
+        )}
         {pasteJsonWord === undefined ? null : (
           <PasteGeneratedJsonDialog
             expectedWord={pasteJsonWord}

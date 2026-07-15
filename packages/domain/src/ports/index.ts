@@ -8,6 +8,7 @@ export * from "./NetworkStatus";
 export * from "./SearchHistoryRepository";
 export * from "./SettingsRepository";
 export * from "./VocabularyRepository";
+export * from "./VocabularyUserMetadataRepository";
 export * from "./VocabularySearchIndex";
 
 export * from "./VocabularyContentSource";

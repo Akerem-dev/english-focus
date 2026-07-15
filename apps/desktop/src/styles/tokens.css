@@ -129,3 +129,47 @@
   --window-min-width: 60rem;
   --window-min-height: 40rem;
 }
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ef-color-canvas: #1b1917;
+  --ef-color-sidebar: #201d1a;
+  --ef-color-surface: #26221f;
+  --ef-color-surface-muted: #2d2824;
+  --ef-color-surface-strong: #352f2a;
+  --ef-color-text: #f2ede6;
+  --ef-color-text-secondary: #c8beb4;
+  --ef-color-text-muted: #9f958b;
+  --ef-color-border: #433c36;
+  --ef-color-border-strong: #5a5047;
+  --ef-color-accent: #c56a76;
+  --ef-color-accent-hover: #d47a86;
+  --ef-color-accent-pressed: #af5663;
+  --ef-color-accent-soft: #3a2428;
+  --ef-color-success: #70a982;
+  --ef-color-success-soft: #20352a;
+  --ef-color-warning: #c69656;
+  --ef-color-warning-soft: #3a3023;
+  --ef-color-danger: #d06f77;
+  --ef-color-danger-soft: #3d2427;
+  --ef-color-focus: #7aa5ce;
+  --ef-color-overlay: rgb(0 0 0 / 62%);
+
+  --shadow-low: 0 0.125rem 0.5rem rgb(0 0 0 / 18%);
+  --shadow-medium: 0 0.75rem 2rem rgb(0 0 0 / 24%);
+  --shadow-high: 0 1.5rem 4rem rgb(0 0 0 / 32%);
+  --shadow-overlay: 0 1.75rem 5rem rgb(0 0 0 / 42%);
+}
+
+html[data-interface-size="compact"] {
+  font-size: 0.9375rem;
+}
+
+html[data-interface-size="medium"] {
+  font-size: 1rem;
+}
+
+html[data-interface-size="large"] {
+  font-size: 1.0625rem;
+}
