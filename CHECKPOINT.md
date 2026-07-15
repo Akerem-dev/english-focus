@@ -1,14 +1,13 @@
-# CP19 — Persistent Settings and Appearance
+# CP20 — Backup Creation, Restore Validation, and Retention
 
 Status: TESTING
 
-CP19 stores application preferences in SQLite and applies them across the desktop app.
+CP20 introduces retained local backups that contain user vocabulary entries, separate study metadata, and persistent application settings.
 
-## Scope
+## Safety rules
 
-- Versioned AppSettings domain and Zod schema
-- SQLite app_settings table and Tauri commands
-- Persistent content, data, appearance, and instruction preferences
-- Light, dark, and system theme behavior
-- Reduced-motion and interface-size behavior
-- Vocabulary detail content visibility and example-count behavior
+- Backups remain inside the local application-data directory.
+- Every restore validates backup kind, versions, counts, required fields, and an FNV-1a checksum.
+- A pre-restore safety backup is created before any database mutation.
+- Restore runs in one SQLite transaction.
+- Manual backups are never removed by automatic retention.

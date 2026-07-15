@@ -9,6 +9,7 @@ export interface SettingsContextValue {
   readonly error?: string | undefined;
   readonly updateSettings: (update: (current: AppSettings) => AppSettings) => Promise<AppSettings>;
   readonly resetSettings: () => Promise<AppSettings>;
+  readonly refreshSettings: () => Promise<AppSettings>;
 }
 
 export const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);

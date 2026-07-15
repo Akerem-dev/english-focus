@@ -23,7 +23,12 @@ pub fn run() {
             commands::database::save_vocabulary_user_metadata,
             commands::database::record_vocabulary_view,
             commands::settings::get_app_settings,
-            commands::settings::save_app_settings
+            commands::settings::save_app_settings,
+            commands::backup::list_backups,
+            commands::backup::create_backup,
+            commands::backup::validate_backup,
+            commands::backup::restore_backup,
+            commands::backup::delete_backup
         ])
         .run(tauri::generate_context!())
         .expect("error while running the English Focus Tauri application");

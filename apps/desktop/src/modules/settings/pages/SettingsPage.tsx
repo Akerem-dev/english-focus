@@ -14,7 +14,7 @@ import {
   updateContentSettings,
   updateDataSettings
 } from "../application";
-import { InstructionSettingsSection } from "../components";
+import { BackupSettingsSection, InstructionSettingsSection } from "../components";
 
 interface SettingsPanelProps {
   readonly icon: "book-open" | "command" | "settings" | "upload";
@@ -127,13 +127,13 @@ export function SettingsPage() {
         </SettingsPanel>
 
         <SettingsPanel
-          description="Control local backup defaults before the dedicated backup checkpoint."
+          description="Create, retain, validate, and restore local backups without uploading data."
           icon="upload"
           title="Data"
         >
           <SwitchField
             checked={settings.data.automaticBackups}
-            description="Create retained local backups automatically once backup support is enabled."
+            description="Create a retained local backup when the selected interval is due."
             disabled={isBusy}
             label="Automatic backups"
             onChange={(event) => {
@@ -162,6 +162,7 @@ export function SettingsPage() {
             <span>Storage mode</span>
             <strong>Local SQLite database</strong>
           </div>
+          <BackupSettingsSection />
         </SettingsPanel>
 
         <SettingsPanel

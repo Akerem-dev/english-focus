@@ -1,5 +1,48 @@
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-describe.skip("tests/backup-manifest.schema.test.ts", () => {
-  it("is implemented with the production feature", () => {});
+import {
+  backupDescriptorSchema,
+  backupRestoreResultSchema,
+  backupValidationResultSchema
+} from "../src/backup";
+
+const descriptor = {
+  fileName: "english-focus-backup-manual-20260715120000000.json",
+  createdAt: "2026-07-15T12:00:00.000Z",
+  reason: "manual",
+  sizeBytes: 2048,
+  backupVersion: "1.0.0",
+  databaseSchemaVersion: "2",
+  checksum: "0123456789abcdef",
+  counts: {
+    vocabularyEntries: 2,
+    vocabularyMetadata: 2,
+    settingsRecords: 1
+  }
+};
+
+describe("backup schemas", () => {
+  it("accepts versioned descriptors, validation results, and restore results", () => {
+    expect(backupDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    expect(
+      backupValidationResultSchema.parse({ valid: true, issues: [], descriptor })
+    ).toMatchObject({ valid: true });
+    expect(
+      backupRestoreResultSchema.parse({
+        restoredAt: "2026-07-15T13:00:00.000Z",
+        restored: descriptor.counts,
+        sourceBackup: descriptor,
+        safetyBackup: { ...descriptor, reason: "pre-restore" }
+      })
+    ).toMatchObject({ restoredAt: "2026-07-15T13:00:00.000Z" });
+  });
+
+  it("rejects malformed checksums and unsupported schema versions", () => {
+    expect(
+      backupDescriptorSchema.safeParse({ ...descriptor, checksum: "broken" }).success
+    ).toBe(false);
+    expect(
+      backupDescriptorSchema.safeParse({ ...descriptor, databaseSchemaVersion: "99" }).success
+    ).toBe(false);
+  });
 });

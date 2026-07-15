@@ -1,4 +1,14 @@
-/**
- * Final V1 domain boundary for BackupRepository.
- */
-export interface BackupRepository {}
+import type {
+  BackupDescriptor,
+  BackupReason,
+  BackupRestoreResult,
+  BackupValidationResult
+} from "../backup";
+
+export interface BackupRepository {
+  listBackups(): Promise<readonly BackupDescriptor[]>;
+  createBackup(reason: BackupReason, createdAt: string): Promise<BackupDescriptor>;
+  validateBackup(fileName: string): Promise<BackupValidationResult>;
+  restoreBackup(fileName: string, restoredAt: string): Promise<BackupRestoreResult>;
+  deleteBackup(fileName: string): Promise<void>;
+}

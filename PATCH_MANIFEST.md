@@ -1,22 +1,26 @@
-# CP19 Patch Manifest
+# CP20 Patch Manifest
 
-## Behavior
+## Product behavior
 
-- Persists settings in SQLite.
-- Restores settings at application startup.
-- Applies light, dark, or system theme immediately.
-- Applies reduced-motion and interface-size preferences globally.
-- Persists external-AI instruction preferences.
-- Hides or shows etymology and common mistakes according to content settings.
-- Displays either five or all ten primary examples.
-- Adds save/loading/error feedback to Settings.
+- Manual backup creation from Settings → Data.
+- Daily/weekly automatic backup check at application startup.
+- Retained backup browser with counts, size, reason, and timestamp.
+- Local integrity validation before restore.
+- Explicit destructive restore confirmation.
+- Automatic pre-restore safety backup.
+- Transactional replacement of vocabulary entries, study metadata, and settings.
+- Manual backup deletion with a separate confirmation.
+- Retention: newest 7 automatic backups and newest 5 pre-restore backups; manual backups are protected.
 
-## Database
+## Storage format
 
-- Adds `app_settings` singleton table.
-- Advances local database schema marker from 1 to 2.
+- `kind`: `english-focus-backup`
+- `backupVersion`: `1.0.0`
+- `databaseSchemaVersion`: `2`
+- checksum: FNV-1a 64-bit over the serialized backup data
 
 ## Dependencies
 
 - No new npm dependency.
 - No new Rust crate.
+- No package-lock change.
