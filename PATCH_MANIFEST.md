@@ -1,30 +1,16 @@
-# CP22 Patch Manifest
+# CP23 Patch Manifest
 
 ## Product behavior
 
-- Activates the top-bar `Ctrl+K` control.
-- Adds a searchable, keyboard-operable command bar.
-- Adds route-aware commands for Vocabulary, Library, and Settings.
-- Adds global shortcuts:
-  - `Ctrl+K` command bar
-  - `Ctrl+L` Library
-  - `Ctrl+,` Settings
-  - `Ctrl+I` import
-  - `Ctrl+E` context export
-  - `Ctrl+S` favorite/save
-  - `/` focus search
-  - `?` shortcut help
-  - `Esc` close overlay
-- Adds a keyboard shortcut reference dialog.
-- Adds arrow-key and Enter command execution.
-- Adds modal Tab focus containment and explicit autofocus support.
-- Adds contextual command wiring to Vocabulary and Library.
-- Keeps shortcuts inactive while typing in form controls.
+- Adds global success, information, warning, and error toast notifications.
+- Limits the visible stack to four notifications and deduplicates repeated operation feedback.
+- Adds accessible live regions, dismiss buttons, reduced-motion behavior, and responsive layout.
+- Adds an undoable favorite toggle with a visible Undo action.
+- Adds toast feedback for study-details saving, vocabulary persistence, exports, clipboard actions, and search failures.
+- Standardizes common clipboard, SQLite, schema, and backup error messages.
 
-## Safety boundaries
+## Safety
 
-- No database or persistence changes.
-- No network access.
-- No API integration.
-- No new primary route.
-- Existing import/export, backup, settings, diagnostics, and metadata flows remain unchanged.
+- Undo history is memory-only and is not written to SQLite.
+- No API, network, or telemetry integration.
+- Existing vocabulary, metadata, backup, and settings contracts remain unchanged.

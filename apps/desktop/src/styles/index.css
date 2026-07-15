@@ -14,5 +14,6 @@
 @import "./backup.css";
 @import "./diagnostics.css";
 @import "./shortcuts.css";
+@import "./toasts.css";
 @import "./vocabulary-detail.css";
 @import "./runtime-baseline.css";

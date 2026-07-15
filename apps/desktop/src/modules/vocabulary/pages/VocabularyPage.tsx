@@ -2,7 +2,12 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
-import { useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
+import {
+  useToast,
+  useUndo,
+  useVocabularyMetadata,
+  useVocabularyRepository
+} from "../../../app/providers";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { AiInstructionDialog } from "../../instruction";
@@ -95,6 +100,8 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
 export function VocabularyPage() {
   const { contentSource } = useVocabularyRepository();
   const { getMetadata, recordView, saveMetadata, status: metadataStatus } = useVocabularyMetadata();
+  const { showToast } = useToast();
+  const { runUndoableAction } = useUndo();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
   const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
@@ -124,11 +131,14 @@ export function VocabularyPage() {
           void recordView(result.entry.normalizedWord);
         }
       } catch (error) {
-        setSearchState({
-          kind: "repository-error",
-          query: nextQuery,
-          message:
-            error instanceof Error ? error.message : "The local vocabulary could not be searched."
+        const message =
+          error instanceof Error ? error.message : "The local vocabulary could not be searched.";
+        setSearchState({ kind: "repository-error", query: nextQuery, message });
+        showToast({
+          title: "Vocabulary search failed",
+          message,
+          tone: "error",
+          dedupeKey: "vocabulary-search-error"
         });
       }
     });
@@ -177,6 +187,12 @@ export function VocabularyPage() {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+    showToast({
+      title: "Vocabulary JSON exported",
+      message: `${exported.fileName} was created locally.`,
+      tone: "success",
+      dedupeKey: "vocabulary-export"
+    });
   }
 
   async function toggleCurrentFavorite() {
@@ -189,11 +205,32 @@ export function VocabularyPage() {
       getMetadata(searchState.entry.normalizedWord) ??
       createVocabularyUserMetadata(searchState.entry.normalizedWord, now);
 
-    await saveMetadata({
+    const nextFavorite = !current.favorite;
+    const nextMetadata = {
       ...current,
-      favorite: !current.favorite,
+      favorite: nextFavorite,
       updatedAt: now
-    });
+    };
+
+    try {
+      await runUndoableAction({
+        perform: () => saveMetadata(nextMetadata),
+        undo: async () => {
+          await saveMetadata({
+            ...current,
+            updatedAt: new Date().toISOString()
+          });
+        },
+        successTitle: nextFavorite ? "Added to favorites" : "Removed from favorites",
+        successMessage: `“${searchState.entry.word}” study metadata was updated locally.`,
+        undoSuccessTitle: "Favorite change undone",
+        undoSuccessMessage: `“${searchState.entry.word}” returned to its previous favorite state.`,
+        failureTitle: "Favorite could not be updated",
+        undoFailureTitle: "Favorite change could not be undone"
+      });
+    } catch {
+      // The undo provider already presented a standardized user-facing error toast.
+    }
   }
 
   useEffect(() => {
@@ -260,6 +297,12 @@ export function VocabularyPage() {
             onSave={async (input) => {
               await saveMetadata(input);
               setMetadataWord(undefined);
+              showToast({
+                title: "Study details saved",
+                message: `Personal metadata for “${searchState.entry.word}” is stored locally.`,
+                tone: "success",
+                dedupeKey: "study-details-saved"
+              });
             }}
             open
             saving={metadataStatus === "saving"}
