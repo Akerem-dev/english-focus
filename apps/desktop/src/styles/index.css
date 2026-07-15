@@ -13,6 +13,7 @@
 @import "./settings.css";
 @import "./backup.css";
 @import "./diagnostics.css";
+@import "./activity.css";
 @import "./shortcuts.css";
 @import "./toasts.css";
 @import "./vocabulary-detail.css";

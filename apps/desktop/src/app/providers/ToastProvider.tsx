@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type PropsWithChildren } from "react";
 
 import { Toast } from "../../components";
+import { publishActivity } from "../../modules/history";
 import {
   ToastContext,
   type ToastContextValue,
@@ -20,6 +21,54 @@ function createToastId(): string {
   return `toast-${Date.now()}-${fallbackToastSequence}`;
 }
 
+
+function publishToastActivity(input: ToastInput): void {
+  const title = input.title.trim();
+
+  if (title === "Added to favorites" || title === "Removed from favorites") {
+    publishActivity({ kind: "favorite-changed", scope: "vocabulary", label: title });
+    return;
+  }
+
+  switch (title) {
+    case "Study details saved":
+      publishActivity({ kind: "study-details-saved", scope: "vocabulary", label: title });
+      return;
+    case "Vocabulary saved locally":
+      publishActivity({ kind: "vocabulary-saved", scope: "vocabulary", label: title });
+      return;
+    case "Existing entry kept":
+      publishActivity({ kind: "entry-kept", scope: "vocabulary", label: title });
+      return;
+    case "Vocabulary JSON exported":
+      publishActivity({ kind: "export-created", scope: "vocabulary", label: title });
+      return;
+    case "Library pack exported":
+    case "Selected pack exported":
+      publishActivity({ kind: "export-created", scope: "library", label: title });
+      return;
+    case "Words copied":
+      publishActivity({ kind: "clipboard-copied", scope: "library", label: title });
+      return;
+    default:
+      break;
+  }
+
+  if (input.tone === "warning") {
+    publishActivity({
+      kind: "operation-warning",
+      scope: "system",
+      label: "An operation needs attention"
+    });
+  } else if (input.tone === "error") {
+    publishActivity({
+      kind: "operation-failed",
+      scope: "system",
+      label: "An operation failed"
+    });
+  }
+}
+
 export function ToastProvider({ children }: PropsWithChildren) {
   const [toasts, setToasts] = useState<readonly ToastRecord[]>([]);
 
@@ -32,6 +81,7 @@ export function ToastProvider({ children }: PropsWithChildren) {
   }, []);
 
   const showToast = useCallback((input: ToastInput) => {
+    publishToastActivity(input);
     const id = createToastId();
     const record: ToastRecord = Object.freeze({
       ...input,

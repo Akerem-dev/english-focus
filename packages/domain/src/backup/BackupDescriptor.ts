@@ -12,7 +12,7 @@ export interface BackupDescriptor {
   readonly reason: BackupReason;
   readonly sizeBytes: number;
   readonly backupVersion: "1.0.0";
-  readonly databaseSchemaVersion: "2";
+  readonly databaseSchemaVersion: "2" | "3";
   readonly checksum: string;
   readonly counts: BackupCounts;
 }

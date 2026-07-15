@@ -15,6 +15,9 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::runtime::runtime_info,
+            commands::activity::list_activity,
+            commands::activity::record_activity,
+            commands::activity::clear_activity,
             commands::database::list_vocabulary_entries,
             commands::database::get_vocabulary_entry_by_normalized_word,
             commands::database::save_vocabulary_entry,

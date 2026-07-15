@@ -9,6 +9,7 @@ import {
 import type { AppSettings } from "@platform/domain";
 
 import { TauriSettingsRepository } from "../../infrastructure/persistence";
+import { publishActivity } from "../../modules/history";
 import {
   createDefaultAppSettings,
   validateAppSettings
@@ -93,6 +94,11 @@ export function SettingsProvider({ children }: PropsWithChildren) {
         if (saveSequence.current === sequence) {
           setSettings(saved);
           setStatus("saved");
+          publishActivity({
+            kind: "settings-updated",
+            scope: "settings",
+            label: "Application settings updated"
+          });
           window.setTimeout(() => {
             setStatus((current) => (current === "saved" ? "ready" : current));
           }, 1_200);

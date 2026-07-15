@@ -21,6 +21,9 @@ describe("SettingsPage", () => {
     expect(markup).toContain("AI instruction");
     expect(markup).toContain("Run diagnostics");
     expect(markup).toContain("Local database health");
+    expect(markup).toContain("Privacy &amp; activity");
+    expect(markup).toContain("Recent activity");
+    expect(markup).toContain("excluded from exports and backups");
     expect(markup).toContain("Loading settings");
   });
 });

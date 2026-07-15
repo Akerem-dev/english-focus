@@ -14,18 +14,24 @@ import {
   updateContentSettings,
   updateDataSettings
 } from "../application";
-import { BackupSettingsSection, DiagnosticsSection, InstructionSettingsSection } from "../components";
+import {
+  ActivitySection,
+  BackupSettingsSection,
+  DiagnosticsSection,
+  InstructionSettingsSection
+} from "../components";
 
 interface SettingsPanelProps {
+  readonly className?: string | undefined;
   readonly icon: "book-open" | "command" | "settings" | "upload";
   readonly title: string;
   readonly description: string;
   readonly children: ReactNode;
 }
 
-function SettingsPanel({ children, description, icon, title }: SettingsPanelProps) {
+function SettingsPanel({ children, className, description, icon, title }: SettingsPanelProps) {
   return (
-    <section className="settings-panel">
+    <section className={["settings-panel", className].filter(Boolean).join(" ")}>
       <header className="settings-panel__header">
         <span aria-hidden="true" className="settings-panel__icon">
           <AppIcon name={icon} size={20} />
@@ -223,11 +229,21 @@ export function SettingsPage() {
         </SettingsPanel>
 
         <SettingsPanel
+          className="settings-panel--wide"
           description="Run local database health checks and receive safe recovery guidance."
           icon="settings"
           title="Diagnostics"
         >
           <DiagnosticsSection />
+        </SettingsPanel>
+
+        <SettingsPanel
+          className="settings-panel--wide"
+          description="Review privacy-safe local actions and clear the timeline independently."
+          icon="book-open"
+          title="Privacy & activity"
+        >
+          <ActivitySection />
         </SettingsPanel>
       </div>
     </div>

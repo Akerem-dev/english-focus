@@ -13,6 +13,7 @@ import type {
 } from "@platform/domain";
 
 import { TauriBackupRepository } from "../../infrastructure/persistence";
+import { publishActivity } from "../../modules/history";
 import { isAutomaticBackupDue, sortBackupsNewestFirst } from "../../modules/backup";
 import { BackupContext, type BackupContextValue, type BackupStatus } from "./BackupContext";
 import { useSettings } from "./useSettings";
@@ -88,6 +89,11 @@ export function BackupProvider({ children }: PropsWithChildren) {
 
     try {
       const created = await repository.createBackup("manual", new Date().toISOString());
+      publishActivity({
+        kind: "backup-created",
+        scope: "backup",
+        label: "Manual backup created"
+      });
       const listed = sortBackupsNewestFirst(await repository.listBackups());
       setBackups(listed);
       setStatus("ready");
@@ -127,6 +133,11 @@ export function BackupProvider({ children }: PropsWithChildren) {
 
       try {
         const restored = await repository.restoreBackup(fileName, new Date().toISOString());
+        publishActivity({
+          kind: "backup-restored",
+          scope: "backup",
+          label: "Local backup restored"
+        });
         await Promise.all([refreshVocabulary(), refreshMetadata(), refreshSettings()]);
         const listed = sortBackupsNewestFirst(await repository.listBackups());
         setBackups(listed);
@@ -150,6 +161,11 @@ export function BackupProvider({ children }: PropsWithChildren) {
 
       try {
         await repository.deleteBackup(fileName);
+        publishActivity({
+          kind: "backup-deleted",
+          scope: "backup",
+          label: "Retained backup deleted"
+        });
         const listed = sortBackupsNewestFirst(await repository.listBackups());
         setBackups(listed);
         setStatus("ready");

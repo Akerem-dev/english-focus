@@ -12,7 +12,7 @@ use crate::state::AppState;
 
 const BACKUP_KIND: &str = "english-focus-backup";
 const BACKUP_VERSION: &str = "1.0.0";
-const DATABASE_SCHEMA_VERSION: &str = "2";
+const DATABASE_SCHEMA_VERSION: &str = "3";
 const APP_VERSION: &str = "0.1.0";
 const MAX_BACKUP_BYTES: u64 = 32 * 1024 * 1024;
 const AUTOMATIC_RETENTION_LIMIT: usize = 7;
@@ -360,7 +360,9 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
             manifest.backup_version
         ));
     }
-    if manifest.database_schema_version != DATABASE_SCHEMA_VERSION {
+    if manifest.database_schema_version != "2"
+        && manifest.database_schema_version != DATABASE_SCHEMA_VERSION
+    {
         issues.push(format!(
             "Database schema {} cannot be restored by this build.",
             manifest.database_schema_version

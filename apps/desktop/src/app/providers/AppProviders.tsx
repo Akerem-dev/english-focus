@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 
+import { ActivityProvider } from "./ActivityProvider";
 import { BackupProvider } from "./BackupProvider";
 import { InstructionPreferencesProvider } from "./InstructionPreferencesProvider";
 import { SettingsProvider } from "./SettingsProvider";
@@ -10,7 +11,8 @@ import { VocabularyRepositoryProvider } from "./VocabularyRepositoryProvider";
 
 export function AppProviders({ children }: PropsWithChildren) {
   return (
-    <ToastProvider>
+    <ActivityProvider>
+      <ToastProvider>
       <UndoProvider>
         <SettingsProvider>
           <VocabularyRepositoryProvider>
@@ -22,6 +24,7 @@ export function AppProviders({ children }: PropsWithChildren) {
           </VocabularyRepositoryProvider>
         </SettingsProvider>
       </UndoProvider>
-    </ToastProvider>
+      </ToastProvider>
+    </ActivityProvider>
   );
 }

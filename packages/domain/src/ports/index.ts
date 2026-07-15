@@ -1,3 +1,4 @@
+export * from "./ActivityRepository";
 export * from "./BackupRepository";
 export * from "./Clipboard";
 export * from "./Clock";

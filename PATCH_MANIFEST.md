@@ -1,16 +1,38 @@
-# CP23 Patch Manifest
+# Patch Manifest — CP24 Local Activity & Privacy
 
-## Product behavior
+Package type: project-root overlay patch  
+Required baseline: locked CP23 `cp23/toast-feedback-undo`
 
-- Adds global success, information, warning, and error toast notifications.
-- Limits the visible stack to four notifications and deduplicates repeated operation feedback.
-- Adds accessible live regions, dismiss buttons, reduced-motion behavior, and responsive layout.
-- Adds an undoable favorite toggle with a visible Undo action.
-- Adds toast feedback for study-details saving, vocabulary persistence, exports, clipboard actions, and search failures.
-- Standardizes common clipboard, SQLite, schema, and backup error messages.
+## Added
 
-## Safety
+- activity domain contract and repository port;
+- strict activity Zod schema;
+- Tauri activity repository;
+- React activity provider and event bus;
+- SQLite activity commands and bounded retention;
+- Settings → Privacy & activity workspace;
+- activity filtering, empty/error states, and explicit clear confirmation;
+- activity presentation and schema tests.
 
-- Undo history is memory-only and is not written to SQLite.
-- No API, network, or telemetry integration.
-- Existing vocabulary, metadata, backup, and settings contracts remain unchanged.
+## Updated
+
+- SQLite schema version 2 → 3;
+- diagnostics required-table and schema-version checks;
+- backup descriptors to create schema-3 backups while accepting legacy schema-2 backups;
+- vocabulary view, toast feedback, settings, backup, and diagnostics actions to publish safe activity events;
+- Settings layout so Diagnostics and Privacy & activity remain full-width.
+
+## Explicitly unchanged
+
+- exactly three routes: Vocabulary, Library, Settings;
+- vocabulary content and user metadata;
+- external-AI JSON workflow;
+- package dependencies and lockfile;
+- backup payload contents;
+- network policy.
+
+## Installation
+
+Copy the archive contents into the project root and replace matching files.
+
+Do not run `npm install`, delete `node_modules`, delete `package-lock.json`, or reapply CP23.

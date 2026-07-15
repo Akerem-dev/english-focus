@@ -7,7 +7,7 @@ use tauri::{AppHandle, Manager, State};
 
 use crate::{database::migrations, state::AppState};
 
-const EXPECTED_DATABASE_SCHEMA_VERSION: &str = "2";
+const EXPECTED_DATABASE_SCHEMA_VERSION: &str = "3";
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -273,6 +273,7 @@ fn collect_report(
         "vocabulary_entries",
         "vocabulary_user_metadata",
         "app_settings",
+        "activity_log",
     ];
     let mut missing_tables = Vec::new();
     for table in required_tables {

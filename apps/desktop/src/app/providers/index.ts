@@ -1,3 +1,6 @@
+export { ActivityProvider } from "./ActivityProvider";
+export { useActivity } from "./useActivity";
+export type { ActivityContextValue, ActivityStatus } from "./ActivityContext";
 export { AppProviders } from "./AppProviders";
 export { BackupProvider } from "./BackupProvider";
 export { InstructionPreferencesProvider } from "./InstructionPreferencesProvider";

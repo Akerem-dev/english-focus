@@ -9,6 +9,7 @@ import type {
 import { Button, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { TauriDiagnosticsRepository } from "../../../infrastructure/persistence";
+import { publishActivity } from "../../history";
 import {
   createDiagnosticSummary,
   runDiagnostics,
@@ -78,6 +79,11 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
 
     try {
       const nextReport = await runDiagnostics(repository);
+      publishActivity({
+        kind: "diagnostics-run",
+        scope: "settings",
+        label: "Local diagnostics completed"
+      });
       setReport(nextReport);
       setStatus("ready");
     } catch (cause) {
