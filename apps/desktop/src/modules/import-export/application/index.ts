@@ -13,3 +13,15 @@ export {
   validateVocabularySchema,
   type ValidateVocabularySchemaResult
 } from "./ValidateVocabularySchema";
+export {
+  validateVocabularySemantics,
+  type ValidateVocabularySemanticsResult
+} from "./ValidateVocabularySemantics";
+export {
+  assessVocabularyQuality,
+  type AssessVocabularyQualityResult
+} from "./AssessVocabularyQuality";
+export {
+  inspectVocabularyContent,
+  type InspectVocabularyContentResult
+} from "./InspectVocabularyContent";

@@ -81,16 +81,23 @@ export function CorrectionInstructionDialog({
     >
       <div className="instruction-dialog__metadata" aria-label="Correction metadata">
         <StatusBadge tone="accent">Word: {targetWord}</StatusBadge>
-        <StatusBadge tone="danger">{issues.length} schema issues</StatusBadge>
+        <StatusBadge
+          tone={issues.some((issue) => issue.severity === "error") ? "danger" : "warning"}
+        >
+          {issues.length} validation issues
+        </StatusBadge>
         <StatusBadge>Provider independent</StatusBadge>
       </div>
 
       <p className="instruction-dialog__privacy">
-        Nothing is uploaded. The original JSON, validation paths, and required schema are combined
-        locally into plain text for your clipboard.
+        Nothing is uploaded. The original JSON, schema paths, semantic checks, quality signals, and
+        required schema are combined locally into plain text for your clipboard.
       </p>
 
-      <ValidationIssueList heading="Issues included in the instruction" issues={issues} />
+      <ValidationIssueList
+        heading="Validation issues included in the instruction"
+        issues={issues}
+      />
 
       <TextAreaField
         className="instruction-dialog__text correction-instruction-dialog__text"
@@ -109,7 +116,7 @@ export function CorrectionInstructionDialog({
       {copyState === "copied" ? (
         <p className="instruction-dialog__success" role="status">
           Correction instruction copied. Paste it into the external AI conversation that produced
-          the invalid JSON.
+          the JSON that needs correction or improvement.
         </p>
       ) : null}
     </Modal>

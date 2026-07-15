@@ -9,6 +9,7 @@ export interface ValidationResultDialogProps {
   readonly onClose: () => void;
   readonly onEditJson: () => void;
   readonly onOpenCorrectionInstruction: () => void;
+  readonly onRunContentChecks: () => void;
 }
 
 export function ValidationResultDialog({
@@ -16,6 +17,7 @@ export function ValidationResultDialog({
   onClose,
   onEditJson,
   onOpenCorrectionInstruction,
+  onRunContentChecks,
   open,
   result
 }: ValidationResultDialogProps) {
@@ -38,11 +40,11 @@ export function ValidationResultDialog({
           </Button>
           {passed ? (
             <Button
-              disabled
-              title="Preview arrives in the next import checkpoint"
+              leadingIcon={<AppIcon name="check" size={17} />}
+              onClick={onRunContentChecks}
               variant="primary"
             >
-              Preview next
+              Run content checks
             </Button>
           ) : (
             <Button
@@ -86,10 +88,11 @@ export function ValidationResultDialog({
       )}
 
       <div className="validation-result-dialog__next-stage">
-        <h3>Not checked in this checkpoint</h3>
+        <h3>{passed ? "Next gate: content checks" : "Structure must be corrected first"}</h3>
         <p>
-          Target-word consistency, semantic correctness, content quality, duplicate handling, and
-          saving remain separate gates. Passing this dialog does not add anything to Library.
+          {passed
+            ? "English Focus will next verify target-word consistency, cross-field relationships, import provenance, and non-blocking quality signals. Nothing is saved yet."
+            : "Semantic and quality checks can only run after the complete versioned structure passes."}
         </p>
       </div>
     </Modal>

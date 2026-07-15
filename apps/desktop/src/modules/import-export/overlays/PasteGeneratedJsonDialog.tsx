@@ -5,11 +5,14 @@ import { AppIcon } from "../../../design-system";
 import { CorrectionInstructionDialog } from "../../instruction";
 import {
   MAX_PASTED_JSON_CHARACTERS,
+  inspectVocabularyContent,
   parseVocabularyJson,
   validateVocabularySchema,
+  type InspectVocabularyContentResult,
   type ParseVocabularyJsonResult,
   type ValidateVocabularySchemaResult
 } from "../application";
+import { ContentValidationResultDialog } from "./ContentValidationResultDialog";
 import { ValidationResultDialog } from "./ValidationResultDialog";
 
 export interface PasteGeneratedJsonDialogProps {
@@ -18,7 +21,8 @@ export interface PasteGeneratedJsonDialogProps {
   readonly onClose: () => void;
 }
 
-type ImportDialogStage = "paste" | "validation" | "correction";
+type ImportDialogStage = "paste" | "validation" | "content" | "correction";
+type CorrectionReturnStage = "validation" | "content";
 
 function describeTransformation(transformation: string): string {
   switch (transformation) {
@@ -51,7 +55,10 @@ export function PasteGeneratedJsonDialog({
   const [validationResult, setValidationResult] = useState<
     ValidateVocabularySchemaResult | undefined
   >();
+  const [contentResult, setContentResult] = useState<InspectVocabularyContentResult | undefined>();
   const [stage, setStage] = useState<ImportDialogStage>("paste");
+  const [correctionReturnStage, setCorrectionReturnStage] =
+    useState<CorrectionReturnStage>("validation");
   const isOverLimit = input.length > MAX_PASTED_JSON_CHARACTERS;
   const parsedJson = parseResult?.kind === "success" ? parseResult.parsed : undefined;
   const detectedWord = parsedJson?.detectedWord;
@@ -62,16 +69,29 @@ export function PasteGeneratedJsonDialog({
       : undefined;
   const hasWordMismatch =
     detectedWord !== undefined && detectedWord.trim().toLocaleLowerCase("en-US") !== expectedWord;
+  const correctionIssues =
+    correctionReturnStage === "validation" && validationResult?.kind === "failure"
+      ? validationResult.issues
+      : correctionReturnStage === "content"
+        ? (contentResult?.allIssues ?? [])
+        : [];
+
+  function resetDerivedResults() {
+    setParseResult(undefined);
+    setValidationResult(undefined);
+    setContentResult(undefined);
+    setStage("paste");
+  }
 
   function clearInput() {
     setInput("");
-    setParseResult(undefined);
-    setValidationResult(undefined);
+    resetDerivedResults();
   }
 
   function checkJsonSyntax() {
     setParseResult(parseVocabularyJson(input));
     setValidationResult(undefined);
+    setContentResult(undefined);
   }
 
   function validateSchema() {
@@ -80,7 +100,17 @@ export function PasteGeneratedJsonDialog({
     }
 
     setValidationResult(validateVocabularySchema(parsedJson.value));
+    setContentResult(undefined);
     setStage("validation");
+  }
+
+  function runContentChecks() {
+    if (validationResult?.kind !== "success") {
+      return;
+    }
+
+    setContentResult(inspectVocabularyContent(validationResult.entry, expectedWord));
+    setStage("content");
   }
 
   if (stage === "validation" && validationResult !== undefined) {
@@ -93,21 +123,43 @@ export function PasteGeneratedJsonDialog({
         }}
         onOpenCorrectionInstruction={() => {
           if (validationResult.kind === "failure") {
+            setCorrectionReturnStage("validation");
             setStage("correction");
           }
         }}
+        onRunContentChecks={runContentChecks}
         open={open}
         result={validationResult}
       />
     );
   }
 
-  if (stage === "correction" && validationResult?.kind === "failure" && parsedJson !== undefined) {
+  if (stage === "content" && contentResult !== undefined) {
+    return (
+      <ContentValidationResultDialog
+        expectedWord={expectedWord}
+        onClose={onClose}
+        onEditJson={() => {
+          setStage("paste");
+        }}
+        onOpenCorrectionInstruction={() => {
+          if (contentResult.allIssues.length > 0) {
+            setCorrectionReturnStage("content");
+            setStage("correction");
+          }
+        }}
+        open={open}
+        result={contentResult}
+      />
+    );
+  }
+
+  if (stage === "correction" && correctionIssues.length > 0 && parsedJson !== undefined) {
     return (
       <CorrectionInstructionDialog
-        issues={validationResult.issues}
+        issues={correctionIssues}
         onBack={() => {
-          setStage("validation");
+          setStage(correctionReturnStage);
         }}
         onClose={onClose}
         open={open}
@@ -177,8 +229,7 @@ export function PasteGeneratedJsonDialog({
         onChange={(event) => {
           const nextInput = event.currentTarget.value;
           setInput(nextInput);
-          setParseResult(undefined);
-          setValidationResult(undefined);
+          resetDerivedResults();
         }}
         placeholder={'{\n  "schemaVersion": "1.0.0",\n  "word": "' + expectedWord + '"\n}'}
         rows={18}
@@ -222,8 +273,7 @@ export function PasteGeneratedJsonDialog({
           {hasWordMismatch ? (
             <p className="json-paste-result__warning" role="alert">
               This object says “{detectedWord}”, but the current request expects “{expectedWord}”.
-              Structural validation can still run; semantic validation will block this mismatch in
-              the next checkpoint.
+              Structural validation can still run; semantic validation will block this mismatch.
             </p>
           ) : null}
         </section>

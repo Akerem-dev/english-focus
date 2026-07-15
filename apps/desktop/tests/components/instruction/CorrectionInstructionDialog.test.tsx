@@ -30,8 +30,8 @@ describe("CorrectionInstructionDialog", () => {
 
     expect(markup).toContain("Correction instruction");
     expect(markup).toContain("Word: allocate");
-    expect(markup).toContain("1 schema issues");
-    expect(markup).toContain("Issues included in the instruction");
+    expect(markup).toContain("1 validation issues");
+    expect(markup).toContain("Validation issues included in the instruction");
     expect(markup).toContain("TARGET WORD: allocate");
     expect(markup).toContain("Copy correction instruction");
     expect(markup).toContain("Nothing is uploaded");
