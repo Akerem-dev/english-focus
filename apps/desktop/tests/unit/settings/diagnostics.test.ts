@@ -6,7 +6,7 @@ import { createDiagnosticSummary } from "../../../src/modules/settings/applicati
 const report: DiagnosticReport = Object.freeze({
   generatedAt: "2026-07-15T20:00:00.000Z",
   appVersion: "0.1.0",
-  databaseSchemaVersion: "2",
+  databaseSchemaVersion: "3",
   overallStatus: "attention",
   checks: Object.freeze([
     Object.freeze({

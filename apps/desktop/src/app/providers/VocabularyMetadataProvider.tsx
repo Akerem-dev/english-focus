@@ -5,6 +5,7 @@ import type {
 } from "@platform/domain";
 
 import { TauriVocabularyUserMetadataRepository } from "../../infrastructure/persistence";
+import { publishActivity } from "../../modules/history";
 import {
   VocabularyMetadataContext,
   type VocabularyMetadataStatus
@@ -68,6 +69,12 @@ export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
     async (normalizedWord: string) => {
       try {
         const saved = await repository.recordView(normalizedWord, new Date().toISOString());
+        publishActivity({
+          kind: "vocabulary-viewed",
+          scope: "vocabulary",
+          label: "Viewed vocabulary entry",
+          target: normalizedWord
+        });
         setMetadata((current) =>
           Object.freeze([
             saved,

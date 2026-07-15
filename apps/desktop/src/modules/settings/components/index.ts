@@ -1,3 +1,4 @@
+export { ActivitySection } from "./ActivitySection";
 export { InstructionSettingsSection } from "./InstructionSettingsSection";
 
 export { BackupSettingsSection } from "./BackupSettingsSection";

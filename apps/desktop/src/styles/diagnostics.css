@@ -1,7 +1,3 @@
-.settings-grid > .settings-panel:last-child {
-  grid-column: 1 / -1;
-}
-
 .diagnostics-section {
   display: grid;
   gap: var(--space-5);

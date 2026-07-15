@@ -12,7 +12,7 @@ const descriptor = {
   reason: "manual",
   sizeBytes: 2048,
   backupVersion: "1.0.0",
-  databaseSchemaVersion: "2",
+  databaseSchemaVersion: "3",
   checksum: "0123456789abcdef",
   counts: {
     vocabularyEntries: 2,
@@ -22,6 +22,13 @@ const descriptor = {
 };
 
 describe("backup schemas", () => {
+  it("accepts current and legacy database schema descriptors", () => {
+    expect(backupDescriptorSchema.parse(descriptor)).toEqual(descriptor);
+    expect(backupDescriptorSchema.parse({ ...descriptor, databaseSchemaVersion: "2" })).toMatchObject({
+      databaseSchemaVersion: "2"
+    });
+  });
+
   it("accepts versioned descriptors, validation results, and restore results", () => {
     expect(backupDescriptorSchema.parse(descriptor)).toEqual(descriptor);
     expect(
