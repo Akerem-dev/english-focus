@@ -14,7 +14,7 @@ import {
   updateContentSettings,
   updateDataSettings
 } from "../application";
-import { BackupSettingsSection, InstructionSettingsSection } from "../components";
+import { BackupSettingsSection, DiagnosticsSection, InstructionSettingsSection } from "../components";
 
 interface SettingsPanelProps {
   readonly icon: "book-open" | "command" | "settings" | "upload";
@@ -223,26 +223,11 @@ export function SettingsPage() {
         </SettingsPanel>
 
         <SettingsPanel
-          description="Current application and local settings information."
+          description="Run local database health checks and receive safe recovery guidance."
           icon="settings"
           title="Diagnostics"
         >
-          <div className="settings-value-row">
-            <span>Application version</span>
-            <strong>0.0.0</strong>
-          </div>
-          <div className="settings-value-row">
-            <span>Settings schema</span>
-            <strong>{settings.schemaVersion}</strong>
-          </div>
-          <div className="settings-value-row">
-            <span>Database schema</span>
-            <strong>2</strong>
-          </div>
-          <div className="settings-value-row">
-            <span>Persistence</span>
-            <strong>{status === "error" ? "Needs attention" : "Local SQLite"}</strong>
-          </div>
+          <DiagnosticsSection />
         </SettingsPanel>
       </div>
     </div>

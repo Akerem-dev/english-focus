@@ -1,4 +1,5 @@
 export * from "./backup";
+export * from "./diagnostics";
 export * from "./imports";
 export * from "./migrations";
 export * from "./settings";

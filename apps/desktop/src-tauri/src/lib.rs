@@ -28,7 +28,9 @@ pub fn run() {
             commands::backup::create_backup,
             commands::backup::validate_backup,
             commands::backup::restore_backup,
-            commands::backup::delete_backup
+            commands::backup::delete_backup,
+            commands::diagnostics::run_diagnostics,
+            commands::diagnostics::run_safe_maintenance
         ])
         .run(tauri::generate_context!())
         .expect("error while running the English Focus Tauri application");

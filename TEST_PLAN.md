@@ -1,21 +1,23 @@
-# CP20 Test Plan
+# CP21 Test Plan
 
 ## Automated
 
-- environment check
-- TypeScript strict typecheck
-- domain, schema, testing, and desktop tests
-- production frontend build
-- forbidden-pattern scan
+- `npm run check:environment`
+- `npm run typecheck`
+- `npm run test --workspace=@platform/domain`
+- `npm run test --workspace=@platform/schemas`
+- `npm run test --workspace=@platform/testing`
+- `npm run test --workspace=@app/desktop`
+- `npm run build --workspace=@app/desktop`
+- `npm run check:forbidden`
 
 ## Native manual
 
-1. Create a manual backup.
-2. Confirm it appears in Manage backups.
-3. Validate it and confirm integrity passes.
-4. Change one piece of study metadata and one setting.
-5. Restore the earlier backup.
-6. Confirm vocabulary, metadata, and settings return to the backed-up state.
-7. Confirm a pre-restore safety backup appears.
-8. Restart the application and confirm restored state persists.
-9. Delete a selected backup only after the deletion checkbox is enabled.
+1. Open Settings → Diagnostics.
+2. Run diagnostics.
+3. Confirm SQLite integrity, schema, safety settings, data consistency, and backup readiness appear.
+4. Copy the summary and verify it contains counts and statuses but not vocabulary definitions or personal notes.
+5. Confirm safe maintenance is disabled when there is no repairable issue.
+6. If a repairable warning appears, acknowledge the non-destructive boundary and run safe maintenance.
+7. Rerun diagnostics and confirm the report refreshes.
+8. Restart the app and verify vocabulary, metadata, settings, and backups remain unchanged.
