@@ -5,12 +5,17 @@ import { maintainVocabularyEntry } from "../../../src/content";
 import { VocabularyFoundState } from "../../../src/modules/vocabulary/components";
 
 const markup = renderToStaticMarkup(
-  <VocabularyFoundState entry={maintainVocabularyEntry} onBack={() => undefined} />
+  <VocabularyFoundState
+    entry={maintainVocabularyEntry}
+    onBack={() => undefined}
+    onImportReplacement={() => undefined}
+  />
 );
 
 describe("VocabularyFoundState", () => {
   it("renders the reviewed maintain entry from validated content", () => {
     expect(markup).toContain("maintain");
+    expect(markup).toContain("Import replacement JSON");
     expect(markup).toContain("sürdürmek");
     expect(markup).toContain("CEFR B2");
     expect(markup).toContain("Editorially reviewed");

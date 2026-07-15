@@ -7,6 +7,7 @@ export {
 export {
   parseVocabularyJson,
   type ParsedVocabularyJson,
+  type ParsedJsonTransformation,
   type ParseVocabularyJsonResult
 } from "./ParseVocabularyJson";
 export {
@@ -25,3 +26,18 @@ export {
   inspectVocabularyContent,
   type InspectVocabularyContentResult
 } from "./InspectVocabularyContent";
+export {
+  previewVocabularyImport,
+  type VocabularyImportPreview,
+  type VocabularyImportPreviewChecklistItem,
+  type VocabularyImportPreviewCounts
+} from "./PreviewVocabularyImport";
+export {
+  compareDuplicateEntries,
+  type DuplicateCheckResult,
+  type DuplicateComparison,
+  type DuplicateComparisonField,
+  type DuplicateComparisonFieldId,
+  type DuplicateEntrySummary
+} from "./CompareDuplicateEntries";
+export { resolveDuplicateEntry, type DuplicateResolutionPlan } from "./ResolveDuplicateEntry";

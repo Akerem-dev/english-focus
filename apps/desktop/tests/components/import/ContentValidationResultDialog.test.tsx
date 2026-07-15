@@ -26,7 +26,8 @@ const warning: ImportIssue = {
 const callbacks = {
   onClose: () => undefined,
   onEditJson: () => undefined,
-  onOpenCorrectionInstruction: () => undefined
+  onOpenCorrectionInstruction: () => undefined,
+  onPreview: () => undefined
 } as const;
 
 describe("ContentValidationResultDialog", () => {

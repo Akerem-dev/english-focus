@@ -1,0 +1,513 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "user.maintain.cp13",
+  "word": "maintain",
+  "normalizedWord": "maintain",
+  "aliases": ["maintains", "maintained", "maintaining"],
+  "pronunciations": [
+    {
+      "ipa": "/meɪnˈteɪn/",
+      "variant": "uk",
+      "syllableBreakdown": "main-tain",
+      "stress": "second syllable"
+    },
+    {
+      "ipa": "/meɪnˈteɪn/",
+      "variant": "us",
+      "syllableBreakdown": "main-tain",
+      "stress": "second syllable"
+    }
+  ],
+  "cefr": "B2",
+  "registers": ["neutral", "formal", "academic", "business"],
+  "partsOfSpeech": ["verb"],
+  "meanings": [
+    {
+      "id": "maintain.keep-state",
+      "partOfSpeech": "verb",
+      "definitionEn": "To keep something at the same level, standard, condition, or rate over time.",
+      "translationsTr": ["sürdürmek", "korumak", "aynı düzeyde tutmak"],
+      "registers": ["neutral", "formal"],
+      "usageNoteEn": "Common with nouns that describe standards, levels, speed, pressure, balance, and quality.",
+      "usageNoteTr": "Standart, seviye, hız, basınç, denge ve kalite bildiren isimlerle sık kullanılır."
+    },
+    {
+      "id": "maintain.care-for",
+      "partOfSpeech": "verb",
+      "definitionEn": "To keep a building, machine, system, or piece of equipment in good working condition by checking and repairing it.",
+      "translationsTr": ["bakımını yapmak", "iyi durumda tutmak", "koruyup işletmek"],
+      "registers": ["neutral", "technical", "business"],
+      "usageNoteEn": "This meaning focuses on regular care and repair rather than simply continuing an activity.",
+      "usageNoteTr": "Bu anlam yalnızca bir faaliyeti sürdürmeyi değil, düzenli bakım ve onarımı vurgular."
+    },
+    {
+      "id": "maintain.continue-claim",
+      "partOfSpeech": "verb",
+      "definitionEn": "To continue to state that something is true, especially when other people disagree or doubt it.",
+      "translationsTr": ["iddiasını sürdürmek", "ısrarla savunmak", "ileri sürmeye devam etmek"],
+      "registers": ["formal", "academic", "legal", "written"],
+      "usageNoteEn": "Frequently followed by a that-clause: maintain that something is the case.",
+      "usageNoteTr": "Sıklıkla that-cümleciğiyle kullanılır: maintain that ..."
+    },
+    {
+      "id": "maintain.support-financially",
+      "partOfSpeech": "verb",
+      "definitionEn": "To provide the money and resources needed to support a person, family, organization, or way of life.",
+      "translationsTr": ["geçindirmek", "maddi olarak desteklemek", "devamını finanse etmek"],
+      "registers": ["formal", "legal"],
+      "usageNoteEn": "More formal than support when the meaning is financial provision over time.",
+      "usageNoteTr": "Uzun süreli maddi destek anlamında support fiiline göre daha resmîdir."
+    }
+  ],
+  "morphology": {
+    "baseForm": "maintain",
+    "root": "maintain",
+    "inflectedForms": [
+      {
+        "form": "maintain",
+        "normalizedForm": "maintain",
+        "type": "base"
+      },
+      {
+        "form": "maintains",
+        "normalizedForm": "maintains",
+        "type": "third-person-singular"
+      },
+      {
+        "form": "maintained",
+        "normalizedForm": "maintained",
+        "type": "past"
+      },
+      {
+        "form": "maintained",
+        "normalizedForm": "maintained",
+        "type": "past-participle"
+      },
+      {
+        "form": "maintaining",
+        "normalizedForm": "maintaining",
+        "type": "present-participle"
+      }
+    ],
+    "notesEn": "The final n is retained before -ed and -ing; no spelling change is required.",
+    "notesTr": "-ed ve -ing eklerinden önce sondaki n korunur; yazım değişikliği yapılmaz."
+  },
+  "wordFamily": [
+    {
+      "word": "maintenance",
+      "normalizedWord": "maintenance",
+      "partOfSpeech": "noun",
+      "relation": "derived",
+      "translationTr": "bakım; sürdürme"
+    },
+    {
+      "word": "maintainer",
+      "normalizedWord": "maintainer",
+      "partOfSpeech": "noun",
+      "relation": "derived",
+      "translationTr": "bakımı yapan kişi; sürdürücü"
+    },
+    {
+      "word": "maintainable",
+      "normalizedWord": "maintainable",
+      "partOfSpeech": "adjective",
+      "relation": "derived",
+      "translationTr": "bakımı yapılabilir; sürdürülebilir"
+    },
+    {
+      "word": "maintainability",
+      "normalizedWord": "maintainability",
+      "partOfSpeech": "noun",
+      "relation": "derived",
+      "translationTr": "bakım yapılabilirlik; sürdürülebilirlik"
+    }
+  ],
+  "etymology": {
+    "explanationEn": "The verb entered English through Anglo-French maintenir, built from forms meaning 'hand' and 'to hold'. Its earliest senses involved supporting, defending, or keeping something in existence.",
+    "explanationTr": "Fiil İngilizceye, 'el' ve 'tutmak' anlamlarıyla ilişkili ögelerden oluşan Anglo-Fransızca maintenir sözcüğünden geçmiştir. İlk anlamları bir şeyi desteklemek, savunmak veya varlığını korumakla ilgilidir.",
+    "certainty": "high",
+    "originLanguage": "Anglo-French",
+    "originForm": "maintenir"
+  },
+  "grammar": {
+    "summaryEn": "Maintain is a transitive verb and normally takes a direct object. It is commonly used with standards, conditions, equipment, relationships, and claims. In the sense of continuing an assertion, it can introduce a that-clause.",
+    "summaryTr": "Maintain geçişli bir fiildir ve normalde doğrudan nesne alır. Standartlar, koşullar, ekipmanlar, ilişkiler ve iddialarla sık kullanılır. Bir iddiayı sürdürme anlamında that-cümleciği başlatabilir.",
+    "patterns": [
+      {
+        "pattern": "maintain + noun",
+        "explanationEn": "Use this pattern to keep a level, condition, standard, relationship, or system continuing as required.",
+        "explanationTr": "Bir seviye, durum, standart, ilişki veya sistemi gerektiği biçimde sürdürmek için kullanılır.",
+        "examples": [
+          {
+            "sentenceEn": "The laboratory must maintain strict safety standards.",
+            "translationTr": "Laboratuvar sıkı güvenlik standartlarını korumalıdır."
+          },
+          {
+            "sentenceEn": "She maintains regular contact with former colleagues.",
+            "translationTr": "Eski çalışma arkadaşlarıyla düzenli iletişimini sürdürüyor."
+          }
+        ]
+      },
+      {
+        "pattern": "maintain + object + at + level/rate/temperature",
+        "explanationEn": "Use at to specify the level, rate, temperature, or value that should remain stable.",
+        "explanationTr": "Sabit kalması gereken seviye, oran, sıcaklık veya değeri belirtmek için at kullanılır.",
+        "examples": [
+          {
+            "sentenceEn": "Keep the solution maintained at room temperature.",
+            "translationTr": "Çözeltiyi oda sıcaklığında tutun."
+          },
+          {
+            "sentenceEn": "The system maintains pressure at a safe level.",
+            "translationTr": "Sistem basıncı güvenli bir seviyede tutar."
+          }
+        ]
+      },
+      {
+        "pattern": "maintain + object + in + condition/state",
+        "explanationEn": "Use in when describing the condition or state in which something is kept.",
+        "explanationTr": "Bir şeyin tutulduğu durum veya hâli belirtirken in kullanılır.",
+        "examples": [
+          {
+            "sentenceEn": "Regular servicing maintains the engine in good condition.",
+            "translationTr": "Düzenli servis motoru iyi durumda tutar."
+          }
+        ]
+      },
+      {
+        "pattern": "maintain that + clause",
+        "explanationEn": "Use this formal pattern when someone continues to claim or argue that a statement is true.",
+        "explanationTr": "Bir kişinin bir ifadenin doğru olduğunu iddia etmeyi veya savunmayı sürdürdüğü resmî bağlamlarda kullanılır.",
+        "examples": [
+          {
+            "sentenceEn": "The company maintains that it followed every regulation.",
+            "translationTr": "Şirket bütün düzenlemelere uyduğunu savunmaya devam ediyor."
+          }
+        ]
+      }
+    ],
+    "tenseExamples": [
+      {
+        "tense": "Present simple",
+        "sentenceEn": "This software maintains a complete audit trail.",
+        "translationTr": "Bu yazılım eksiksiz bir denetim kaydı tutar.",
+        "usageNoteEn": "Use the present simple for regular functions, routines, and general facts.",
+        "usageNoteTr": "Düzenli işlevler, rutinler ve genel gerçekler için geniş zaman kullanılır."
+      },
+      {
+        "tense": "Present continuous",
+        "sentenceEn": "The technicians are maintaining the ventilation system today.",
+        "translationTr": "Teknisyenler bugün havalandırma sisteminin bakımını yapıyor.",
+        "usageNoteEn": "Use the continuous form for maintenance work happening around the present time.",
+        "usageNoteTr": "Şu an civarında devam eden bakım çalışmaları için sürekli yapı kullanılır."
+      },
+      {
+        "tense": "Past simple",
+        "sentenceEn": "The team maintained its lead throughout the second half.",
+        "translationTr": "Takım ikinci yarı boyunca üstünlüğünü korudu."
+      },
+      {
+        "tense": "Present perfect",
+        "sentenceEn": "The organization has maintained the same policy for ten years.",
+        "translationTr": "Kurum on yıldır aynı politikayı sürdürüyor.",
+        "usageNoteEn": "This form connects a past starting point with a condition that continues to the present.",
+        "usageNoteTr": "Bu yapı geçmişteki başlangıç noktasını günümüze kadar süren durumla bağlar."
+      },
+      {
+        "tense": "Future with will",
+        "sentenceEn": "We will maintain support for the current version until December.",
+        "translationTr": "Mevcut sürüm için desteği aralık ayına kadar sürdüreceğiz."
+      }
+    ],
+    "sentenceForms": [
+      {
+        "form": "affirmative",
+        "sentenceEn": "They maintain high standards across every department.",
+        "translationTr": "Her departmanda yüksek standartları koruyorlar."
+      },
+      {
+        "form": "negative",
+        "sentenceEn": "The building was not maintained properly.",
+        "translationTr": "Binanın bakımı düzgün yapılmadı."
+      },
+      {
+        "form": "question",
+        "sentenceEn": "How do you maintain concentration during long meetings?",
+        "translationTr": "Uzun toplantılar sırasında konsantrasyonunu nasıl koruyorsun?"
+      },
+      {
+        "form": "imperative",
+        "sentenceEn": "Maintain a safe distance from the moving equipment.",
+        "translationTr": "Hareketli ekipmandan güvenli bir mesafe koruyun."
+      },
+      {
+        "form": "passive",
+        "sentenceEn": "The database is maintained by the infrastructure team.",
+        "translationTr": "Veritabanının bakımı altyapı ekibi tarafından yapılır."
+      },
+      {
+        "form": "conditional",
+        "sentenceEn": "If we maintain this pace, we will finish before Friday.",
+        "translationTr": "Bu tempoyu korursak cuma gününden önce bitireceğiz."
+      }
+    ],
+    "prepositionPatterns": [
+      {
+        "pattern": "maintain something at a level/rate/temperature",
+        "preposition": "at",
+        "explanationEn": "At introduces the target level or value that remains stable.",
+        "explanationTr": "At, sabit tutulan hedef seviye veya değeri belirtir.",
+        "examples": [
+          {
+            "sentenceEn": "The device maintains the room at a constant temperature.",
+            "translationTr": "Cihaz odayı sabit bir sıcaklıkta tutar."
+          }
+        ]
+      },
+      {
+        "pattern": "maintain something in a condition/state",
+        "preposition": "in",
+        "explanationEn": "In introduces the condition or state being preserved.",
+        "explanationTr": "In, korunan durum veya hâli belirtir.",
+        "examples": [
+          {
+            "sentenceEn": "The archive is maintained in excellent condition.",
+            "translationTr": "Arşiv mükemmel durumda korunuyor."
+          }
+        ]
+      },
+      {
+        "pattern": "maintain a relationship/contact with someone",
+        "preposition": "with",
+        "explanationEn": "With identifies the person or organization with whom contact or a relationship continues.",
+        "explanationTr": "With, iletişimin veya ilişkinin sürdürüldüğü kişi ya da kurumu belirtir.",
+        "examples": [
+          {
+            "sentenceEn": "We maintain close contact with regional suppliers.",
+            "translationTr": "Bölgesel tedarikçilerle yakın iletişimi sürdürüyoruz."
+          }
+        ]
+      }
+    ]
+  },
+  "collocations": [
+    {
+      "phrase": "maintain standards",
+      "translationTr": "standartları korumak",
+      "registers": ["neutral", "formal", "business"],
+      "exampleEn": "Independent inspections help maintain quality standards.",
+      "exampleTr": "Bağımsız denetimler kalite standartlarının korunmasına yardımcı olur."
+    },
+    {
+      "phrase": "maintain a balance",
+      "translationTr": "dengeyi korumak",
+      "registers": ["neutral"],
+      "exampleEn": "It is difficult to maintain a balance between speed and accuracy.",
+      "exampleTr": "Hız ile doğruluk arasında dengeyi korumak zordur."
+    },
+    {
+      "phrase": "maintain control",
+      "translationTr": "kontrolü sürdürmek",
+      "registers": ["neutral", "formal"],
+      "exampleEn": "The pilot maintained control despite the strong wind.",
+      "exampleTr": "Pilot güçlü rüzgâra rağmen kontrolü sürdürdü."
+    },
+    {
+      "phrase": "maintain equipment",
+      "translationTr": "ekipmanın bakımını yapmak",
+      "registers": ["technical", "business"],
+      "exampleEn": "Only trained staff may maintain the equipment.",
+      "exampleTr": "Ekipmanın bakımını yalnızca eğitimli personel yapabilir."
+    },
+    {
+      "phrase": "maintain contact",
+      "translationTr": "iletişimi sürdürmek",
+      "registers": ["neutral", "business"],
+      "exampleEn": "Please maintain contact with the project manager.",
+      "exampleTr": "Lütfen proje yöneticisiyle iletişimi sürdürün."
+    },
+    {
+      "phrase": "maintain a position",
+      "translationTr": "bir tutumu veya konumu korumak",
+      "registers": ["formal", "academic"],
+      "exampleEn": "The author maintains a neutral position throughout the article.",
+      "exampleTr": "Yazar makale boyunca tarafsız bir tutum sergiler."
+    }
+  ],
+  "phrasalVerbs": [],
+  "idioms": [],
+  "relatedWords": [
+    {
+      "word": "sustain",
+      "normalizedWord": "sustain",
+      "relationship": "near-synonym",
+      "partOfSpeech": "verb",
+      "distinctionEn": "Sustain often emphasizes providing the energy, resources, or support needed for something to continue.",
+      "distinctionTr": "Sustain çoğu zaman bir şeyin devam etmesi için gereken enerji, kaynak veya desteği sağlama vurgusu taşır."
+    },
+    {
+      "word": "preserve",
+      "normalizedWord": "preserve",
+      "relationship": "near-synonym",
+      "partOfSpeech": "verb",
+      "distinctionEn": "Preserve emphasizes protecting something from damage, loss, or change.",
+      "distinctionTr": "Preserve, bir şeyi hasar, kayıp veya değişimden korumayı vurgular."
+    },
+    {
+      "word": "retain",
+      "normalizedWord": "retain",
+      "relationship": "near-synonym",
+      "partOfSpeech": "verb",
+      "distinctionEn": "Retain emphasizes continuing to have or keep possession of something.",
+      "distinctionTr": "Retain, bir şeye sahip olmaya veya onu elde tutmaya devam etmeyi vurgular."
+    },
+    {
+      "word": "neglect",
+      "normalizedWord": "neglect",
+      "relationship": "antonym",
+      "partOfSpeech": "verb",
+      "distinctionEn": "Neglect means failing to give the care or attention required.",
+      "distinctionTr": "Neglect, gerekli bakım veya ilgiyi göstermemek anlamına gelir."
+    },
+    {
+      "word": "repair",
+      "normalizedWord": "repair",
+      "relationship": "commonly-confused",
+      "partOfSpeech": "verb",
+      "distinctionEn": "Repair fixes damage that has already occurred; maintain uses regular care to keep something working or in good condition.",
+      "distinctionTr": "Repair oluşmuş hasarı giderir; maintain ise düzenli bakımla bir şeyi çalışır veya iyi durumda tutar."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "incorrect": "The company maintained to provide support.",
+      "correct": "The company continued to provide support.",
+      "explanationEn": "Maintain is not normally followed by a to-infinitive meaning 'continue to do'. Use continue to do, or give maintain a direct object.",
+      "explanationTr": "Maintain, 'bir şeyi yapmaya devam etmek' anlamında normalde to-infinitive almaz. Continue to do kullanın veya maintain fiiline doğrudan nesne verin."
+    },
+    {
+      "incorrect": "We maintain about the problem every week.",
+      "correct": "We discuss the problem every week.",
+      "explanationEn": "Maintain does not mean discuss or talk about. It needs an object that is kept, supported, serviced, or asserted.",
+      "explanationTr": "Maintain, tartışmak veya hakkında konuşmak anlamına gelmez. Korunan, desteklenen, bakımı yapılan veya savunulan bir nesne gerektirir."
+    },
+    {
+      "incorrect": "The machine is maintaining well.",
+      "correct": "The machine is well maintained.",
+      "explanationEn": "Use the passive adjective-like form well maintained to describe the condition of equipment.",
+      "explanationTr": "Ekipmanın durumunu anlatırken sıfat gibi kullanılan well maintained yapısını kullanın."
+    },
+    {
+      "incorrect": "She maintains that schedule since 2020.",
+      "correct": "She has maintained that schedule since 2020.",
+      "explanationEn": "Use the present perfect with since when the maintained situation began in the past and continues now.",
+      "explanationTr": "Geçmişte başlayıp günümüzde süren bir durum since ile anlatılıyorsa present perfect kullanın."
+    }
+  ],
+  "examples": [
+    {
+      "id": "maintain.example.01",
+      "sentenceEn": "The hospital must maintain high standards of hygiene at all times.",
+      "translationTr": "Hastane her zaman yüksek hijyen standartlarını korumalıdır.",
+      "registers": ["formal"],
+      "grammarLabel": "modal + maintain + noun",
+      "targetForm": "maintain high standards",
+      "context": "healthcare"
+    },
+    {
+      "id": "maintain.example.02",
+      "sentenceEn": "Regular updates help maintain the security of the system.",
+      "translationTr": "Düzenli güncellemeler sistemin güvenliğini korumaya yardımcı olur.",
+      "registers": ["technical"],
+      "grammarLabel": "help + bare infinitive",
+      "targetForm": "maintain the security",
+      "context": "software"
+    },
+    {
+      "id": "maintain.example.03",
+      "sentenceEn": "The technicians maintain the machines every three months.",
+      "translationTr": "Teknisyenler makinelerin bakımını üç ayda bir yapar.",
+      "registers": ["neutral", "technical"],
+      "grammarLabel": "present simple",
+      "targetForm": "maintain the machines",
+      "context": "maintenance"
+    },
+    {
+      "id": "maintain.example.04",
+      "sentenceEn": "She has maintained close contact with her former research team.",
+      "translationTr": "Eski araştırma ekibiyle yakın iletişimini sürdürdü.",
+      "registers": ["neutral", "academic"],
+      "grammarLabel": "present perfect",
+      "targetForm": "maintain contact with",
+      "context": "professional relationships"
+    },
+    {
+      "id": "maintain.example.05",
+      "sentenceEn": "The regulator maintains that the new rule is necessary.",
+      "translationTr": "Düzenleyici kurum yeni kuralın gerekli olduğunu savunmaya devam ediyor.",
+      "registers": ["formal", "legal"],
+      "grammarLabel": "maintain that + clause",
+      "targetForm": "maintains that",
+      "context": "public policy"
+    },
+    {
+      "id": "maintain.example.06",
+      "sentenceEn": "Try to maintain a steady pace during the final kilometre.",
+      "translationTr": "Son kilometre boyunca sabit bir tempo korumaya çalış.",
+      "registers": ["neutral", "spoken"],
+      "grammarLabel": "try to + maintain",
+      "targetForm": "maintain a steady pace",
+      "context": "sport"
+    },
+    {
+      "id": "maintain.example.07",
+      "sentenceEn": "The temperature is maintained at twenty degrees Celsius.",
+      "translationTr": "Sıcaklık yirmi santigrat derecede tutulur.",
+      "registers": ["technical", "formal"],
+      "grammarLabel": "passive + at",
+      "targetForm": "be maintained at",
+      "context": "laboratory"
+    },
+    {
+      "id": "maintain.example.08",
+      "sentenceEn": "If we maintain this level of accuracy, the audit should go smoothly.",
+      "translationTr": "Bu doğruluk seviyesini korursak denetim sorunsuz ilerlemeli.",
+      "registers": ["business"],
+      "grammarLabel": "first conditional",
+      "targetForm": "maintain this level",
+      "context": "quality assurance"
+    },
+    {
+      "id": "maintain.example.09",
+      "sentenceEn": "The scholarship helped him maintain his family while he studied.",
+      "translationTr": "Burs, öğrenimi sırasında ailesini geçindirmesine yardımcı oldu.",
+      "registers": ["formal"],
+      "grammarLabel": "maintain + person",
+      "targetForm": "maintain his family",
+      "context": "financial support"
+    },
+    {
+      "id": "maintain.example.10",
+      "sentenceEn": "A clear routine can help you maintain concentration for longer.",
+      "translationTr": "Net bir rutin, konsantrasyonunu daha uzun süre korumana yardımcı olabilir.",
+      "registers": ["neutral"],
+      "grammarLabel": "maintain + abstract noun",
+      "targetForm": "maintain concentration",
+      "context": "study"
+    }
+  ],
+  "source": {
+    "kind": "user",
+    "sourceId": "cp13-manual-duplicate",
+    "sourceLabel": "CP13 manual duplicate fixture"
+  },
+  "generation": {
+    "method": "external-ai",
+    "generatedAt": "2026-07-15T00:00:00.000Z",
+    "validationStatus": "unvalidated",
+    "generatorLabel": "Manual CP13 duplicate fixture",
+    "warnings": []
+  },
+  "createdAt": "2026-07-15T00:00:00.000Z",
+  "updatedAt": "2026-07-15T00:00:00.000Z"
+}

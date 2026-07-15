@@ -140,7 +140,26 @@ export function VocabularyPage() {
   }
 
   if (searchState.kind === "found") {
-    return <VocabularyFoundState entry={searchState.entry} onBack={returnToInitial} />;
+    return (
+      <>
+        <VocabularyFoundState
+          entry={searchState.entry}
+          onBack={returnToInitial}
+          onImportReplacement={() => {
+            setPasteJsonWord(searchState.entry.normalizedWord);
+          }}
+        />
+        {pasteJsonWord === undefined ? null : (
+          <PasteGeneratedJsonDialog
+            expectedWord={pasteJsonWord}
+            onClose={() => {
+              setPasteJsonWord(undefined);
+            }}
+            open
+          />
+        )}
+      </>
+    );
   }
 
   return (

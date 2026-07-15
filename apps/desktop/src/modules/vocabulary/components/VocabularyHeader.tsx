@@ -6,9 +6,10 @@ import { presentVocabularyEntry } from "../presenters/VocabularyEntryPresenter";
 interface VocabularyHeaderProps {
   readonly entry: VocabularyEntry;
   readonly onBack: () => void;
+  readonly onImportReplacement: () => void;
 }
 
-export function VocabularyHeader({ entry, onBack }: VocabularyHeaderProps) {
+export function VocabularyHeader({ entry, onBack, onImportReplacement }: VocabularyHeaderProps) {
   const presentation = presentVocabularyEntry(entry);
 
   return (
@@ -26,6 +27,9 @@ export function VocabularyHeader({ entry, onBack }: VocabularyHeaderProps) {
         <div className="vocabulary-detail-header__source">
           <StatusBadge tone="success">{presentation.reviewLabel}</StatusBadge>
           <span>{presentation.sourceLabel}</span>
+          <Button onClick={onImportReplacement} size="small" variant="secondary">
+            Import replacement JSON
+          </Button>
         </div>
       </div>
 

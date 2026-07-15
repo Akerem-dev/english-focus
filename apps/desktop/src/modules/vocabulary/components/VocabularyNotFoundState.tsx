@@ -50,8 +50,8 @@ export function VocabularyNotFoundState({
           </Button>
         </div>
         <small>
-          The instruction and pasted JSON remain local. This checkpoint checks pasted JSON syntax;
-          schema validation and saving arrive in the next approved phase.
+          The instruction and pasted JSON remain local. Syntax, schema, semantic, quality, and
+          explicit preview gates run before any later save.
         </small>
       </div>
     </section>
