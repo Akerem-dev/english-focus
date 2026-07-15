@@ -1,36 +1,41 @@
-# CP10 Test Plan
+# CP11 Test Plan
 
-## Automatic test block
+## Automatic verification
 
-Run the complete PowerShell block supplied with the patch delivery. It stops at the first failure.
+Run the complete PowerShell block supplied with the patch delivery. It stops at the first failing command.
 
-Expected results:
+Expected results after this patch:
 
-- Domain: 2 passed
-- Schemas: 14 passed, 2 skipped
-- Testing: 4 passed
-- Desktop: 89 passed, 19 skipped
+- Environment check: passed
+- TypeScript strict: passed
+- Domain package: passed
+- Schema package: passed
+- Testing utilities: passed
+- Desktop tests: 106 passed, 17 skipped
 - Production build: passed
 - Forbidden-pattern check: passed
 
-## Native failure flow
+## Blocking semantic flow
 
-1. Search for `allocate`.
-2. Open **Paste generated JSON**.
-3. Paste `{"schemaVersion":"1.0.0","word":"allocate"}`.
-4. Check syntax.
-5. Validate schema.
-6. Confirm a scrollable issue list with readable paths.
-7. Open the correction instruction.
-8. Copy it and paste into Notepad.
-9. Return to issues, then edit the JSON.
+1. Search `allocate`.
+2. Paste the reviewed `maintain.entry.json` fixture.
+3. Pass syntax and schema checks.
+4. Run content checks.
+5. Confirm target mismatch and external-import provenance errors block continuation.
+6. Open and copy the correction instruction.
 
-## Native success flow
+## Warning-only flow
 
-Copy `apps/desktop/src/content/core/entries/maintain.entry.json` to the clipboard and paste it while the expected word is `allocate`.
+1. Copy `testing/manual/cp11-allocate-valid-with-warnings.entry.json` to the clipboard.
+2. Paste it for the expected word `allocate`.
+3. Pass syntax, schema, and semantic checks.
+4. Confirm quality warnings are shown as non-blocking.
+5. Confirm Preview remains disabled because preview is CP12.
 
-- Syntax must pass.
-- Schema must pass.
-- The target-word mismatch may remain as a warning because semantic validation is CP11.
-- Preview stays disabled.
-- Nothing is saved to Library.
+## Regression
+
+- Search normalization and inflections
+- AI instruction preferences and clipboard
+- JSON cleanup and syntax errors
+- Schema failure and correction flow
+- Three routes and sticky vocabulary navigation

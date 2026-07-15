@@ -250,3 +250,17 @@
   color: var(--color-text-muted);
   font-family: var(--font-family-mono);
 }
+
+.validation-issue-list[data-tone="warning"] {
+  border-color: color-mix(in srgb, var(--color-warning) 38%, var(--color-border));
+}
+
+.validation-issue-list[data-tone="warning"] .validation-issue-list__header,
+.validation-issue-list li[data-severity="warning"] .validation-issue-list__icon {
+  background: var(--color-warning-soft);
+}
+
+.validation-issue-list[data-tone="warning"] .validation-issue-list__header span,
+.validation-issue-list li[data-severity="warning"] .validation-issue-list__icon {
+  color: var(--color-warning);
+}

@@ -4,3 +4,5 @@ export {
   normalizeSmartJsonQuotes,
   type SmartQuoteNormalizationResult
 } from "./SmartQuoteNormalizer";
+export { VocabularySemanticValidator } from "./VocabularySemanticValidator";
+export { VocabularyQualityInspector } from "./VocabularyQualityInspector";

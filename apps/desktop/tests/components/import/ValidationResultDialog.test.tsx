@@ -14,14 +14,19 @@ const issue: ImportIssue = {
   message: "Invalid input: expected string, received undefined"
 };
 
+const sharedCallbacks = {
+  onClose: () => undefined,
+  onEditJson: () => undefined,
+  onOpenCorrectionInstruction: () => undefined,
+  onRunContentChecks: () => undefined
+} as const;
+
 describe("ValidationResultDialog", () => {
   it("renders detailed schema issues and the correction action", () => {
     const markup = renderToStaticMarkup(
       <ValidationResultDialog
+        {...sharedCallbacks}
         expectedWord="allocate"
-        onClose={() => undefined}
-        onEditJson={() => undefined}
-        onOpenCorrectionInstruction={() => undefined}
         open
         result={{ kind: "failure", issues: [issue] }}
       />
@@ -34,13 +39,11 @@ describe("ValidationResultDialog", () => {
     expect(markup).toContain("Edit JSON");
   });
 
-  it("renders a successful structural validation without claiming semantic approval", () => {
+  it("offers the semantic and quality gate after structural validation", () => {
     const markup = renderToStaticMarkup(
       <ValidationResultDialog
+        {...sharedCallbacks}
         expectedWord="maintain"
-        onClose={() => undefined}
-        onEditJson={() => undefined}
-        onOpenCorrectionInstruction={() => undefined}
         open
         result={{ kind: "success", entry: maintainVocabularyEntry, issues: [] }}
       />
@@ -48,18 +51,16 @@ describe("ValidationResultDialog", () => {
 
     expect(markup).toContain("Schema validation passed");
     expect(markup).toContain("Vocabulary structure is valid");
-    expect(markup).toContain("Not checked in this checkpoint");
-    expect(markup).toContain("Preview next");
+    expect(markup).toContain("Next gate: content checks");
+    expect(markup).toContain("Run content checks");
     expect(markup).not.toContain("Copy correction instruction");
   });
 
   it("renders nothing while closed", () => {
     const markup = renderToStaticMarkup(
       <ValidationResultDialog
+        {...sharedCallbacks}
         expectedWord="allocate"
-        onClose={() => undefined}
-        onEditJson={() => undefined}
-        onOpenCorrectionInstruction={() => undefined}
         open={false}
         result={{ kind: "failure", issues: [issue] }}
       />

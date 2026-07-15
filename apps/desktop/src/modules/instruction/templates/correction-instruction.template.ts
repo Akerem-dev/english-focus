@@ -12,7 +12,7 @@ export function renderCorrectionInstruction({
   const issueLines = input.issues
     .map(
       (issue, index) =>
-        `${index + 1}. PATH: ${issue.pathText}\n   CODE: ${issue.code}\n   ERROR: ${issue.message}`
+        `${index + 1}. SOURCE: ${issue.source}\n   SEVERITY: ${issue.severity}\n   PATH: ${issue.pathText}\n   CODE: ${issue.code}\n   ISSUE: ${issue.message}`
     )
     .join("\n");
 
@@ -21,15 +21,16 @@ export function renderCorrectionInstruction({
     "",
     `TARGET WORD: ${input.targetWord}`,
     `VOCABULARY SCHEMA VERSION: ${input.vocabularySchemaVersion}`,
-    `VALIDATION ERRORS: ${input.issues.length}`,
+    `VALIDATION ISSUES: ${input.issues.length}`,
     "",
     "TASK",
-    "Repair the original JSON so that it satisfies every validation error and the required JSON Schema below.",
-    "Preserve accurate content that is already valid. Do not invent unsupported grammar, idioms, phrasal verbs, etymology, or usage claims.",
-    "The final word and normalizedWord must represent the target word exactly.",
+    "Repair or improve the original JSON so that it satisfies every blocking validation issue and addresses reliable quality warnings where appropriate.",
+    "Preserve accurate content that is already valid. Do not invent unsupported grammar, idioms, phrasal verbs, etymology, word senses, or usage claims.",
+    "The final word, normalizedWord, morphology, examples, source metadata, and generation metadata must represent the target word exactly.",
+    "Warnings are advisory: leave a field empty or absent when no reliable content exists instead of fabricating material.",
     "Return exactly one corrected JSON object and no Markdown fence, commentary, preface, or follow-up text.",
     "",
-    "VALIDATION ERRORS TO FIX",
+    "VALIDATION ISSUES TO FIX OR REVIEW",
     issueLines,
     "",
     "ORIGINAL JSON",

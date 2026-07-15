@@ -48,6 +48,8 @@ describe("BuildCorrectionInstruction", () => {
     expect(first).toEqual(second);
     expect(first.issueCount).toBe(2);
     expect(first.text).toContain("TARGET WORD: allocate");
+    expect(first.text).toContain("SOURCE: schema");
+    expect(first.text).toContain("SEVERITY: error");
     expect(first.text).toContain("PATH: examples");
     expect(first.text).toContain("grammar.patterns[2].explanationTr");
     expect(first.text).toContain("<ORIGINAL_JSON>");
@@ -96,6 +98,6 @@ describe("BuildCorrectionInstruction", () => {
     });
 
     expect(clipboard.text).toContain("TARGET WORD: allocate");
-    expect(clipboard.text).toContain("VALIDATION ERRORS: 2");
+    expect(clipboard.text).toContain("VALIDATION ISSUES: 2");
   });
 });

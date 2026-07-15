@@ -1,29 +1,32 @@
-# CP10 — Schema Validation & Correction Instruction
+# CP11 — Semantic Validation & Quality Inspection
 
 Status: **TESTING**
 
 ## Goal
 
-Turn one safely parsed JSON object into a strict, local, versioned vocabulary-schema result without saving anything yet.
+Run target-aware, cross-field validation after the versioned Zod schema passes, then surface non-blocking quality warnings without saving anything.
 
 ## Added
 
-- Zod vocabulary schema validation use case
-- Stable import-issue model with readable JSON paths
-- Detailed validation result dialog
-- Provider-independent correction instruction builder
-- Correction instruction dialog and local clipboard flow
-- Success and failure regression tests
+- Target-word and normalized-word consistency checks
+- External import provenance checks
+- Morphology, alias, word-family, related-word, example, collocation, grammar, and timestamp consistency checks
+- Bilingual optional-field pairing rules
+- Non-blocking vocabulary quality inspection
+- Dedicated content-validation result dialog
+- Correction/improvement instruction support for semantic errors and quality warnings
+- Manual schema-valid `allocate` fixture for Windows verification
+- Regression tests for semantic, quality, UI, and correction flows
 
 ## Explicitly not included
 
-- Semantic validation
-- Content quality inspection
-- Preview approval
+- Human factual review of language claims
+- Vocabulary preview approval
 - Duplicate handling
 - SQLite persistence
 - Library insertion
+- Validation-status mutation
 
 ## Lock condition
 
-CP10 becomes locked only after automatic tests, schema-failure UI, correction clipboard flow, and schema-success UI all pass on Windows.
+CP11 becomes locked only after all automatic tests, target-mismatch blocking, warning-only continuation, correction clipboard, and regression flows pass on Windows.

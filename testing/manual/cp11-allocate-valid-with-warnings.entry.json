@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "user.allocate.cp11",
+  "word": "allocate",
+  "normalizedWord": "allocate",
+  "aliases": ["allocates", "allocated", "allocating"],
+  "pronunciations": [
+    {
+      "ipa": "/ˈæləkeɪt/",
+      "variant": "general",
+      "syllableBreakdown": "al-lo-cate",
+      "stress": "first syllable"
+    }
+  ],
+  "cefr": "B2",
+  "registers": ["neutral", "formal"],
+  "partsOfSpeech": ["verb"],
+  "meanings": [
+    {
+      "id": "allocate.assign-resource",
+      "partOfSpeech": "verb",
+      "definitionEn": "To officially assign money, time, space, equipment, or another resource for a particular purpose.",
+      "translationsTr": ["tahsis etmek", "ayırmak"],
+      "registers": ["neutral", "formal"]
+    }
+  ],
+  "morphology": {
+    "baseForm": "allocate",
+    "root": "allocate",
+    "inflectedForms": [
+      {
+        "form": "allocates",
+        "normalizedForm": "allocates",
+        "type": "third-person-singular"
+      },
+      {
+        "form": "allocated",
+        "normalizedForm": "allocated",
+        "type": "past"
+      },
+      {
+        "form": "allocated",
+        "normalizedForm": "allocated",
+        "type": "past-participle"
+      },
+      {
+        "form": "allocating",
+        "normalizedForm": "allocating",
+        "type": "present-participle"
+      }
+    ]
+  },
+  "wordFamily": [],
+  "grammar": {
+    "summaryEn": "Allocate is a transitive verb that normally takes a resource as its object and often introduces the intended recipient or purpose with to or for.",
+    "summaryTr": "Allocate, genellikle nesne olarak bir kaynak alan ve hedef kişi ya da amacı çoğu zaman to veya for ile belirten geçişli bir fiildir.",
+    "patterns": [],
+    "tenseExamples": [],
+    "sentenceForms": [],
+    "prepositionPatterns": []
+  },
+  "collocations": [],
+  "phrasalVerbs": [],
+  "idioms": [],
+  "relatedWords": [],
+  "commonMistakes": [],
+  "examples": [
+    {
+      "id": "allocate.example.01",
+      "sentenceEn": "The council will allocate additional funds to public transport.",
+      "translationTr": "Belediye toplu taşımaya ek kaynak tahsis edecek.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.02",
+      "sentenceEn": "Managers allocate tasks according to each employee's experience.",
+      "translationTr": "Yöneticiler görevleri her çalışanın deneyimine göre dağıtır.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.03",
+      "sentenceEn": "The software allocates memory only when it is needed.",
+      "translationTr": "Yazılım belleği yalnızca gerektiğinde ayırır.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.04",
+      "sentenceEn": "We allocated two hours for the final review.",
+      "translationTr": "Son inceleme için iki saat ayırdık.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.05",
+      "sentenceEn": "Each department was allocated a separate meeting room.",
+      "translationTr": "Her bölüme ayrı bir toplantı odası tahsis edildi.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.06",
+      "sentenceEn": "The charity is allocating more resources to emergency housing.",
+      "translationTr": "Yardım kuruluşu acil barınmaya daha fazla kaynak ayırıyor.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.07",
+      "sentenceEn": "Please allocate enough storage space for the backup files.",
+      "translationTr": "Lütfen yedekleme dosyaları için yeterli depolama alanı ayırın.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.08",
+      "sentenceEn": "The budget allocates forty percent of spending to education.",
+      "translationTr": "Bütçe harcamaların yüzde kırkını eğitime ayırıyor.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.09",
+      "sentenceEn": "Resources should be allocated according to actual need.",
+      "translationTr": "Kaynaklar gerçek ihtiyaca göre tahsis edilmelidir.",
+      "registers": ["neutral"]
+    },
+    {
+      "id": "allocate.example.10",
+      "sentenceEn": "The team allocated one server to the testing environment.",
+      "translationTr": "Ekip test ortamına bir sunucu ayırdı.",
+      "registers": ["neutral"]
+    }
+  ],
+  "source": {
+    "kind": "user",
+    "sourceId": "cp11-manual-test",
+    "sourceLabel": "CP11 manual validation fixture"
+  },
+  "generation": {
+    "method": "external-ai",
+    "generatedAt": "2026-07-15T00:00:00.000Z",
+    "validationStatus": "unvalidated",
+    "generatorLabel": "Manual CP11 fixture",
+    "warnings": []
+  },
+  "createdAt": "2026-07-15T00:00:00.000Z",
+  "updatedAt": "2026-07-15T00:00:00.000Z"
+}

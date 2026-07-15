@@ -1,22 +1,22 @@
-# CP10 Patch Manifest
+# CP11 Patch Manifest
 
 ## Patch type
 
-Incremental project-root overlay for branch `cp10/schema-validation`.
+Incremental project-root overlay for branch `cp11/content-validation`.
 
 ## Product changes
 
-1. Validates parsed objects with `vocabularyEntrySchema`.
-2. Converts Zod issues into stable `ImportIssue` records.
-3. Formats paths such as `meanings[0].definitionEn` and `grammar.patterns[2].explanationTr`.
-4. Shows a dedicated validation-result dialog.
-5. Builds a deterministic correction instruction from the original JSON, issue list, and required JSON Schema.
-6. Copies correction text locally without API or network integration.
+1. Runs semantic checks only after the strict vocabulary schema passes.
+2. Blocks mismatched target words, inconsistent normalization, invalid external-import provenance, broken bilingual pairs, duplicate/self-referential content, target-free examples, and impossible timestamp ordering.
+3. Runs advisory quality inspection separately from blocking validation.
+4. Shows semantic errors and quality warnings in a dedicated result dialog.
+5. Reuses the provider-independent correction instruction for schema, semantic, and quality issues.
+6. Keeps preview and persistence disabled for the next checkpoints.
 
-## Files
+## Safety
 
-- 22 product/test files added or modified
-- 7 checkpoint/documentation files added or replaced
-- 0 files deleted
-- 0 dependencies added
-- `package-lock.json` is intentionally not included
+- No API, provider, endpoint, or network integration
+- No new npm or Rust dependencies
+- No `package-lock.json` replacement
+- No persistence mutation
+- No files deleted

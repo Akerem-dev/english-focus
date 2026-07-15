@@ -9,13 +9,14 @@
 - CP07: local search vertical slice
 - CP08: external-AI instruction bridge
 - CP09: safe JSON paste and syntax parsing
+- CP10: strict schema validation and correction instruction
 
 ## Current
 
-- **CP10: Zod schema validation and correction-instruction foundation — TESTING**
+- **CP11: semantic validation and quality inspection — TESTING**
 
 ## Next
 
-- CP11: semantic validation, target-word consistency, and quality inspection
-- CP12: vocabulary preview and approval flow
-- CP13+: SQLite persistence, duplicate resolution, Library workflows
+- CP12: vocabulary preview and explicit approval
+- CP13: local SQLite persistence and imported-entry retrieval
+- CP14+: duplicate resolution and Library workflows
