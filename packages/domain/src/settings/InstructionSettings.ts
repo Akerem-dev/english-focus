@@ -1,4 +1,3 @@
-/**
- * Final V1 domain boundary for InstructionSettings.
- */
-export interface InstructionSettings {}
+import type { InstructionPreferences } from "../instruction";
+
+export type InstructionSettings = InstructionPreferences;

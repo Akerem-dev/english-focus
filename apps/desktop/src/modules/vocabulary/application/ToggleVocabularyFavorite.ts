@@ -1,5 +1,12 @@
-/**
- * Final skeleton boundary: application/ToggleVocabularyFavorite.ts
- * Production implementation is intentionally pending.
- */
-export {};
+import type { VocabularyUserMetadata } from "@platform/domain";
+
+export function toggleVocabularyFavorite(
+  metadata: VocabularyUserMetadata,
+  updatedAt: string
+): VocabularyUserMetadata {
+  return Object.freeze({
+    ...metadata,
+    favorite: !metadata.favorite,
+    updatedAt
+  });
+}

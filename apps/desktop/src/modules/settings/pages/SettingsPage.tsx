@@ -1,8 +1,19 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import type {
+  BackupFrequency,
+  ExampleSentenceDisplayCount,
+  InterfaceSize,
+  ThemePreference
+} from "@platform/domain";
 
-import { SelectField, SwitchField } from "../../../components";
+import { Button, SelectField, StatusBadge, SwitchField } from "../../../components";
+import { useSettings } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
+import {
+  updateAppearanceSettings,
+  updateContentSettings,
+  updateDataSettings
+} from "../application";
 import { InstructionSettingsSection } from "../components";
 
 interface SettingsPanelProps {
@@ -30,20 +41,42 @@ function SettingsPanel({ children, description, icon, title }: SettingsPanelProp
 }
 
 export function SettingsPage() {
-  const [showEtymology, setShowEtymology] = useState(true);
-  const [showMistakes, setShowMistakes] = useState(true);
-  const [automaticBackups, setAutomaticBackups] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const { error, resetSettings, settings, status, updateSettings } = useSettings();
+  const isBusy = status === "loading" || status === "saving";
 
   return (
     <div className="route-page route-page--settings">
-      <header className="route-page__header">
+      <header className="route-page__header settings-page-header">
         <div>
           <p className="route-page__eyebrow">Application preferences</p>
           <h1>Settings</h1>
           <p>Customize content presentation, local data behavior, and accessibility preferences.</p>
         </div>
+        <div className="settings-page-header__actions" aria-live="polite">
+          {status === "loading" ? <StatusBadge>Loading settings</StatusBadge> : null}
+          {status === "saving" ? <StatusBadge tone="warning">Saving locally</StatusBadge> : null}
+          {status === "saved" ? <StatusBadge tone="success">Saved locally</StatusBadge> : null}
+          {status === "ready" ? <StatusBadge tone="success">SQLite settings ready</StatusBadge> : null}
+          {status === "error" ? <StatusBadge tone="danger">Save needs attention</StatusBadge> : null}
+          <Button
+            disabled={isBusy}
+            onClick={() => {
+              void resetSettings();
+            }}
+            size="small"
+            variant="secondary"
+          >
+            Reset all settings
+          </Button>
+        </div>
       </header>
+
+      {error === undefined ? null : (
+        <section className="settings-error" role="alert">
+          <strong>Application settings could not be saved.</strong>
+          <p>{error}</p>
+        </section>
+      )}
 
       <div className="settings-grid">
         <SettingsPanel
@@ -52,49 +85,82 @@ export function SettingsPage() {
           title="Content"
         >
           <SwitchField
-            checked={showEtymology}
+            checked={settings.content.showEtymology}
             description="Display reliable word origins when available."
+            disabled={isBusy}
             label="Show etymology"
             onChange={(event) => {
-              setShowEtymology(event.currentTarget.checked);
+              const showEtymology = event.currentTarget.checked;
+              void updateSettings((current) =>
+                updateContentSettings(current, { ...current.content, showEtymology })
+              );
             }}
           />
           <SwitchField
-            checked={showMistakes}
+            checked={settings.content.showCommonMistakes}
             description="Highlight common learner errors and confusing usages."
+            disabled={isBusy}
             label="Show common mistakes"
             onChange={(event) => {
-              setShowMistakes(event.currentTarget.checked);
+              const showCommonMistakes = event.currentTarget.checked;
+              void updateSettings((current) =>
+                updateContentSettings(current, { ...current.content, showCommonMistakes })
+              );
             }}
           />
-          <SelectField defaultValue="10" label="Example sentence count">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
+          <SelectField
+            disabled={isBusy}
+            label="Example sentences shown"
+            onChange={(event) => {
+              const exampleSentenceCount = Number(
+                event.currentTarget.value
+              ) as ExampleSentenceDisplayCount;
+              void updateSettings((current) =>
+                updateContentSettings(current, { ...current.content, exampleSentenceCount })
+              );
+            }}
+            value={String(settings.content.exampleSentenceCount)}
+          >
+            <option value="5">First 5</option>
+            <option value="10">All 10</option>
           </SelectField>
         </SettingsPanel>
 
         <SettingsPanel
-          description="Control local backup defaults and storage-oriented behavior."
+          description="Control local backup defaults before the dedicated backup checkpoint."
           icon="upload"
           title="Data"
         >
           <SwitchField
-            checked={automaticBackups}
-            description="Create retained local backups automatically."
+            checked={settings.data.automaticBackups}
+            description="Create retained local backups automatically once backup support is enabled."
+            disabled={isBusy}
             label="Automatic backups"
             onChange={(event) => {
-              setAutomaticBackups(event.currentTarget.checked);
+              const automaticBackups = event.currentTarget.checked;
+              void updateSettings((current) =>
+                updateDataSettings(current, { ...current.data, automaticBackups })
+              );
             }}
           />
-          <SelectField defaultValue="daily" label="Backup frequency">
+          <SelectField
+            disabled={isBusy || !settings.data.automaticBackups}
+            label="Backup frequency"
+            onChange={(event) => {
+              const backupFrequency = event.currentTarget.value as BackupFrequency;
+              void updateSettings((current) =>
+                updateDataSettings(current, { ...current.data, backupFrequency })
+              );
+            }}
+            value={settings.data.backupFrequency}
+          >
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
             <option value="manual">Manual only</option>
           </SelectField>
           <div className="settings-value-row">
             <span>Storage mode</span>
-            <strong>Local device</strong>
+            <strong>Local SQLite database</strong>
           </div>
         </SettingsPanel>
 
@@ -103,23 +169,48 @@ export function SettingsPage() {
           icon="settings"
           title="Appearance & accessibility"
         >
-          <SelectField defaultValue="system" label="Theme">
+          <SelectField
+            disabled={isBusy}
+            label="Theme"
+            onChange={(event) => {
+              const theme = event.currentTarget.value as ThemePreference;
+              void updateSettings((current) =>
+                updateAppearanceSettings(current, { ...current.appearance, theme })
+              );
+            }}
+            value={settings.appearance.theme}
+          >
             <option value="light">Light</option>
             <option value="system">System</option>
             <option value="dark">Dark</option>
           </SelectField>
           <SwitchField
-            checked={reducedMotion}
-            description="Minimize non-essential interface motion."
+            checked={settings.appearance.reducedMotion}
+            description="Minimize non-essential interface motion and smooth scrolling."
+            disabled={isBusy}
             label="Reduced motion"
             onChange={(event) => {
-              setReducedMotion(event.currentTarget.checked);
+              const reducedMotion = event.currentTarget.checked;
+              void updateSettings((current) =>
+                updateAppearanceSettings(current, { ...current.appearance, reducedMotion })
+              );
             }}
           />
-          <div className="settings-value-row">
-            <span>Interface size</span>
-            <strong>Medium</strong>
-          </div>
+          <SelectField
+            disabled={isBusy}
+            label="Interface size"
+            onChange={(event) => {
+              const interfaceSize = event.currentTarget.value as InterfaceSize;
+              void updateSettings((current) =>
+                updateAppearanceSettings(current, { ...current.appearance, interfaceSize })
+              );
+            }}
+            value={settings.appearance.interfaceSize}
+          >
+            <option value="compact">Compact</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+          </SelectField>
         </SettingsPanel>
 
         <SettingsPanel
@@ -131,7 +222,7 @@ export function SettingsPage() {
         </SettingsPanel>
 
         <SettingsPanel
-          description="Current application and local database information."
+          description="Current application and local settings information."
           icon="settings"
           title="Diagnostics"
         >
@@ -140,12 +231,16 @@ export function SettingsPage() {
             <strong>0.0.0</strong>
           </div>
           <div className="settings-value-row">
-            <span>Schema version</span>
-            <strong>Foundation</strong>
+            <span>Settings schema</span>
+            <strong>{settings.schemaVersion}</strong>
           </div>
           <div className="settings-value-row">
-            <span>Database status</span>
-            <strong>Not initialized</strong>
+            <span>Database schema</span>
+            <strong>2</strong>
+          </div>
+          <div className="settings-value-row">
+            <span>Persistence</span>
+            <strong>{status === "error" ? "Needs attention" : "Local SQLite"}</strong>
           </div>
         </SettingsPanel>
       </div>

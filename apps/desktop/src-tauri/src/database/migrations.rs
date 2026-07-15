@@ -20,6 +20,12 @@ CREATE TABLE IF NOT EXISTS vocabulary_entries (
 CREATE INDEX IF NOT EXISTS idx_vocabulary_entries_updated_at
     ON vocabulary_entries(updated_at DESC);
 
+CREATE TABLE IF NOT EXISTS app_settings (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    settings_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS vocabulary_user_metadata (
     normalized_word TEXT PRIMARY KEY,
     favorite INTEGER NOT NULL DEFAULT 0 CHECK (favorite IN (0, 1)),
@@ -34,7 +40,7 @@ CREATE TABLE IF NOT EXISTS vocabulary_user_metadata (
 );
 
 INSERT INTO schema_metadata(key, value)
-VALUES ('database_schema_version', '1')
+VALUES ('database_schema_version', '2')
 ON CONFLICT(key) DO UPDATE SET value = excluded.value;
 "#;
 

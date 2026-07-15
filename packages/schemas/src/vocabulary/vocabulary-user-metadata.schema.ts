@@ -30,7 +30,7 @@ export const tagSchema: z.ZodType<Tag> = z.strictObject({
 });
 
 export const vocabularyUserMetadataSchema: z.ZodType<VocabularyUserMetadata> = z.strictObject({
-  entryId: vocabularyCompactIdSchema,
+  normalizedWord: z.string().trim().min(1).max(120),
   favorite: z.boolean(),
   tags: z.array(tagSchema).max(30),
   note: z.string().max(5_000),

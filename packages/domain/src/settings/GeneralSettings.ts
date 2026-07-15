@@ -1,4 +1,4 @@
-/**
- * Final V1 domain boundary for GeneralSettings.
- */
-export interface GeneralSettings {}
+export interface GeneralSettings {
+  readonly interfaceLanguage: "en";
+  readonly translationLanguage: "tr";
+}

@@ -1,4 +1,6 @@
-/**
- * Final V1 domain boundary for SettingsRepository.
- */
-export interface SettingsRepository {}
+import type { AppSettings } from "../settings";
+
+export interface SettingsRepository {
+  getSettings(): Promise<AppSettings | undefined>;
+  saveSettings(settings: AppSettings): Promise<AppSettings>;
+}

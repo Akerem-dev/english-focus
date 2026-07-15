@@ -5,30 +5,52 @@ import {
   createDefaultInstructionPreferences,
   validateInstructionPreferences
 } from "../../modules/instruction/services";
+import { updateInstructionSettings } from "../../modules/settings/application";
 import {
   InstructionPreferencesContext,
   type InstructionPreferencesContextValue
 } from "./InstructionPreferencesContext";
+import { useOptionalSettings } from "./useOptionalSettings";
 
 export function InstructionPreferencesProvider({ children }: PropsWithChildren) {
-  const [preferences, setPreferencesState] = useState<InstructionPreferences>(() =>
+  const settingsContext = useOptionalSettings();
+  const [fallbackPreferences, setFallbackPreferences] = useState<InstructionPreferences>(() =>
     createDefaultInstructionPreferences()
   );
+  const preferences = settingsContext?.settings.instruction ?? fallbackPreferences;
 
   const value = useMemo<InstructionPreferencesContextValue>(
     () => ({
       preferences,
       setPreferences(update) {
-        setPreferencesState((current) => {
-          const next = typeof update === "function" ? update(current) : update;
-          return validateInstructionPreferences(next);
+        if (settingsContext === undefined) {
+          setFallbackPreferences((current) => {
+            const next = typeof update === "function" ? update(current) : update;
+            return validateInstructionPreferences(next);
+          });
+          return;
+        }
+
+        void settingsContext.updateSettings((current) => {
+          const next =
+            typeof update === "function" ? update(current.instruction) : update;
+          return updateInstructionSettings(current, validateInstructionPreferences(next));
         });
       },
       resetPreferences() {
-        setPreferencesState(createDefaultInstructionPreferences());
+        const defaults = createDefaultInstructionPreferences();
+
+        if (settingsContext === undefined) {
+          setFallbackPreferences(defaults);
+          return;
+        }
+
+        void settingsContext.updateSettings((current) =>
+          updateInstructionSettings(current, defaults)
+        );
       }
     }),
-    [preferences]
+    [preferences, settingsContext]
   );
 
   return (

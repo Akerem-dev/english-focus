@@ -1,4 +1,4 @@
-import type { VocabularyEntry } from "@platform/domain";
+import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
 import { Button, StatusBadge, TagChip } from "../../../components";
 import { AppIcon } from "../../../design-system";
@@ -6,12 +6,25 @@ import { presentVocabularyEntry } from "../presenters/VocabularyEntryPresenter";
 
 interface VocabularyHeaderProps {
   readonly entry: VocabularyEntry;
+  readonly metadata?: VocabularyUserMetadata | undefined;
   readonly onBack: () => void;
+  readonly onEditMetadata: () => void;
   readonly onImportReplacement: () => void;
   readonly onExport: () => void;
 }
 
-export function VocabularyHeader({ entry, onBack, onExport, onImportReplacement }: VocabularyHeaderProps) {
+function labelStatus(value: string): string {
+  return value.charAt(0).toLocaleUpperCase("en-US") + value.slice(1);
+}
+
+export function VocabularyHeader({
+  entry,
+  metadata,
+  onBack,
+  onEditMetadata,
+  onExport,
+  onImportReplacement
+}: VocabularyHeaderProps) {
   const presentation = presentVocabularyEntry(entry);
 
   return (
@@ -22,7 +35,7 @@ export function VocabularyHeader({ entry, onBack, onExport, onImportReplacement 
 
       <div className="vocabulary-detail-header__title-row">
         <div>
-          <p className="route-page__eyebrow">Read-only core vocabulary</p>
+          <p className="route-page__eyebrow">Local vocabulary entry</p>
           <h1 className="word-title">{entry.word}</h1>
           <p className="vocabulary-detail-header__translation">{presentation.primaryTranslation}</p>
         </div>
@@ -30,6 +43,14 @@ export function VocabularyHeader({ entry, onBack, onExport, onImportReplacement 
           <StatusBadge tone="success">{presentation.reviewLabel}</StatusBadge>
           <span>{presentation.sourceLabel}</span>
           <div className="vocabulary-detail-header__actions">
+            <Button
+              leadingIcon={<AppIcon name="star" size={16} />}
+              onClick={onEditMetadata}
+              size="small"
+              variant={metadata?.favorite === true ? "primary" : "secondary"}
+            >
+              {metadata?.favorite === true ? "Favorited" : "Study details"}
+            </Button>
             <Button
               leadingIcon={<AppIcon name="download" size={16} />}
               onClick={onExport}
@@ -51,6 +72,17 @@ export function VocabularyHeader({ entry, onBack, onExport, onImportReplacement 
         {presentation.registerLabels.map((register) => (
           <TagChip key={register}>{register}</TagChip>
         ))}
+        {metadata === undefined ? null : (
+          <>
+            <StatusBadge tone={metadata.learningStatus === "known" ? "success" : "neutral"}>
+              {labelStatus(metadata.learningStatus)}
+            </StatusBadge>
+            <StatusBadge>{labelStatus(metadata.reviewStatus)}</StatusBadge>
+            {metadata.tags.slice(0, 4).map((tag) => (
+              <TagChip key={tag.id}>{tag.name}</TagChip>
+            ))}
+          </>
+        )}
       </div>
     </header>
   );

@@ -16,12 +16,17 @@
 - CP14: SQLite persistence and imported-entry retrieval
 - CP15: Library search, filtering, sorting, preview, selection, and bulk actions
 - CP16: single-entry file import and export
+- CP17: vocabulary-pack transfer, strategies, progress, and summary
+
+## Applied and awaiting combined native verification
+
+- CP18: personal vocabulary metadata editing and SQLite persistence
 
 ## Current
 
-- **CP17: Vocabulary-pack import/export, progress, strategies, and summary — TESTING**
+- **CP19: persistent application settings and appearance behavior — TESTING**
 
 ## Next
 
-- CP18: user metadata editing and persistence
-- CP19+: settings persistence, backup/restore, productivity, diagnostics, and release
+- CP20: backup creation, restore validation, and retention
+- CP21+: productivity, diagnostics, accessibility, performance, and release

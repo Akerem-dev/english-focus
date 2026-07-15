@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { useVocabularyRepository } from "../../../app/providers";
+import { useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
 import { Button, EmptyState, SearchInput, SelectField, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { exportVocabularyPack } from "../../import-export";
-import type { StoredVocabularyEntry, VocabularyStorageLayer } from "@platform/domain";
+import type {
+  LearningStatus,
+  StoredVocabularyEntry,
+  VocabularyStorageLayer,
+  VocabularyUserMetadata
+} from "@platform/domain";
 
 type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
 type LibraryLayerFilter = "all" | VocabularyStorageLayer;
 type LibraryCefrFilter = "all" | "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+type LibraryLearningFilter = "all" | LearningStatus;
+type LibraryFavoriteFilter = "all" | "favorites";
 
 function primaryTranslation(translations: readonly string[]): string {
   return translations.slice(0, 3).join(", ");
@@ -32,7 +39,14 @@ function formatUpdatedDate(isoDate: string): string {
   });
 }
 
-function searchableText(record: StoredVocabularyEntry): string {
+function labelStatus(value: string): string {
+  return value.charAt(0).toLocaleUpperCase("en-US") + value.slice(1);
+}
+
+function searchableText(
+  record: StoredVocabularyEntry,
+  metadata: VocabularyUserMetadata | undefined
+): string {
   return [
     record.entry.word,
     record.entry.normalizedWord,
@@ -44,18 +58,26 @@ function searchableText(record: StoredVocabularyEntry): string {
       meaning.definitionEn,
       ...meaning.translationsTr
     ]),
-    ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr])
+    ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr]),
+    metadata?.note ?? "",
+    ...(metadata?.tags.map((tag) => tag.name) ?? []),
+    metadata?.learningStatus ?? "",
+    metadata?.reviewStatus ?? ""
   ]
     .join(" ")
     .toLocaleLowerCase("en-US");
 }
 
-function matchesSearch(record: StoredVocabularyEntry, query: string): boolean {
+function matchesSearch(
+  record: StoredVocabularyEntry,
+  metadata: VocabularyUserMetadata | undefined,
+  query: string
+): boolean {
   if (query.trim().length === 0) {
     return true;
   }
 
-  return searchableText(record).includes(query.trim().toLocaleLowerCase("en-US"));
+  return searchableText(record, metadata).includes(query.trim().toLocaleLowerCase("en-US"));
 }
 
 function compareRecords(
@@ -76,9 +98,12 @@ function compareRecords(
 
 export function LibraryPage() {
   const { error, status, storedEntries } = useVocabularyRepository();
+  const { getMetadata, metadata } = useVocabularyMetadata();
   const [searchQuery, setSearchQuery] = useState("");
   const [layerFilter, setLayerFilter] = useState<LibraryLayerFilter>("all");
   const [cefrFilter, setCefrFilter] = useState<LibraryCefrFilter>("all");
+  const [learningFilter, setLearningFilter] = useState<LibraryLearningFilter>("all");
+  const [favoriteFilter, setFavoriteFilter] = useState<LibraryFavoriteFilter>("all");
   const [sort, setSort] = useState<LibrarySort>("updated-desc");
   const [selectedWords, setSelectedWords] = useState<readonly string[]>([]);
   const [previewWord, setPreviewWord] = useState<string | undefined>();
@@ -88,9 +113,30 @@ export function LibraryPage() {
     return [...storedEntries]
       .filter((record) => (layerFilter === "all" ? true : record.layer === layerFilter))
       .filter((record) => (cefrFilter === "all" ? true : record.entry.cefr === cefrFilter))
-      .filter((record) => matchesSearch(record, searchQuery))
+      .filter((record) => {
+        const entryMetadata = getMetadata(record.entry.normalizedWord);
+        return learningFilter === "all" ? true : entryMetadata?.learningStatus === learningFilter;
+      })
+      .filter((record) =>
+        favoriteFilter === "all"
+          ? true
+          : getMetadata(record.entry.normalizedWord)?.favorite === true
+      )
+      .filter((record) =>
+        matchesSearch(record, getMetadata(record.entry.normalizedWord), searchQuery)
+      )
       .sort((left, right) => compareRecords(left, right, sort));
-  }, [cefrFilter, layerFilter, searchQuery, sort, storedEntries]);
+  }, [
+    cefrFilter,
+    favoriteFilter,
+    getMetadata,
+    layerFilter,
+    learningFilter,
+    metadata,
+    searchQuery,
+    sort,
+    storedEntries
+  ]);
 
   const selectedEntries = useMemo(
     () => filteredEntries.filter((record) => selectedWords.includes(record.entry.normalizedWord)),
@@ -106,6 +152,7 @@ export function LibraryPage() {
 
   const storedUserCount = storedEntries.filter((record) => record.layer === "user").length;
   const storedOverrideCount = storedEntries.filter((record) => record.layer === "override").length;
+  const favoriteCount = metadata.filter((record) => record.favorite).length;
 
   useEffect(() => {
     setSelectedWords((current) =>
@@ -278,6 +325,11 @@ export function LibraryPage() {
                 <small>reviewed replacements layered over core</small>
               </article>
               <article className="library-summary-card">
+                <span>Favorites</span>
+                <strong>{favoriteCount}</strong>
+                <small>personal favorites stored separately</small>
+              </article>
+              <article className="library-summary-card">
                 <span>Selected</span>
                 <strong>{selectedEntries.length}</strong>
                 <small>available for export or copy</small>
@@ -324,6 +376,30 @@ export function LibraryPage() {
                     {level}
                   </option>
                 ))}
+              </SelectField>
+              <SelectField
+                fieldClassName="library-control-field"
+                label="Learning status"
+                onChange={(event) => {
+                  setLearningFilter(event.currentTarget.value as LibraryLearningFilter);
+                }}
+                value={learningFilter}
+              >
+                <option value="all">All learning states</option>
+                <option value="new">New</option>
+                <option value="learning">Learning</option>
+                <option value="known">Known</option>
+              </SelectField>
+              <SelectField
+                fieldClassName="library-control-field"
+                label="Favorites"
+                onChange={(event) => {
+                  setFavoriteFilter(event.currentTarget.value as LibraryFavoriteFilter);
+                }}
+                value={favoriteFilter}
+              >
+                <option value="all">All entries</option>
+                <option value="favorites">Favorites only</option>
               </SelectField>
               <SelectField
                 fieldClassName="library-control-field"
@@ -411,6 +487,7 @@ export function LibraryPage() {
                   </div>
                   <div className="library-table__body" role="rowgroup">
                     {filteredEntries.map((record) => {
+                      const entryMetadata = getMetadata(record.entry.normalizedWord);
                       const isSelected = selectedWords.includes(record.entry.normalizedWord);
                       const isPreviewed =
                         previewEntry?.entry.normalizedWord === record.entry.normalizedWord;
@@ -459,6 +536,14 @@ export function LibraryPage() {
                               <StatusBadge tone="success">
                                 {record.entry.examples.length} examples
                               </StatusBadge>
+                              {entryMetadata?.favorite === true ? (
+                                <StatusBadge tone="accent">Favorite</StatusBadge>
+                              ) : null}
+                              {entryMetadata === undefined ? null : (
+                                <StatusBadge>
+                                  {labelStatus(entryMetadata.learningStatus)}
+                                </StatusBadge>
+                              )}
                             </span>
                             <small>Updated {formatUpdatedDate(record.entry.updatedAt)}</small>
                           </span>
@@ -492,6 +577,25 @@ export function LibraryPage() {
                     <div className="library-preview__badges">
                       <StatusBadge>{describeLayer(previewEntry.layer)}</StatusBadge>
                       <StatusBadge tone="success">Reviewed import</StatusBadge>
+                      {getMetadata(previewEntry.entry.normalizedWord)?.favorite === true ? (
+                        <StatusBadge tone="accent">Favorite</StatusBadge>
+                      ) : null}
+                      {getMetadata(previewEntry.entry.normalizedWord) === undefined ? null : (
+                        <>
+                          <StatusBadge>
+                            {labelStatus(
+                              getMetadata(previewEntry.entry.normalizedWord)?.learningStatus ??
+                                "new"
+                            )}
+                          </StatusBadge>
+                          <StatusBadge>
+                            {labelStatus(
+                              getMetadata(previewEntry.entry.normalizedWord)?.reviewStatus ??
+                                "reviewed"
+                            )}
+                          </StatusBadge>
+                        </>
+                      )}
                     </div>
 
                     <dl className="library-preview__facts">
@@ -512,6 +616,28 @@ export function LibraryPage() {
                         <dd>{previewEntry.entry.collocations.length}</dd>
                       </div>
                     </dl>
+
+                    {getMetadata(previewEntry.entry.normalizedWord) === undefined ? null : (
+                      <section className="library-preview__section library-preview__section--personal">
+                        <h3>Personal study details</h3>
+                        {getMetadata(previewEntry.entry.normalizedWord)?.tags.length ===
+                        0 ? null : (
+                          <div className="library-preview__tag-list">
+                            {getMetadata(previewEntry.entry.normalizedWord)?.tags.map((tag) => (
+                              <StatusBadge key={tag.id}>{tag.name}</StatusBadge>
+                            ))}
+                          </div>
+                        )}
+                        <p>
+                          {getMetadata(previewEntry.entry.normalizedWord)?.note ||
+                            "No personal note has been added."}
+                        </p>
+                        <small>
+                          Viewed {getMetadata(previewEntry.entry.normalizedWord)?.viewCount ?? 0}{" "}
+                          times
+                        </small>
+                      </section>
+                    )}
 
                     <section className="library-preview__section">
                       <h3>Primary meaning</h3>

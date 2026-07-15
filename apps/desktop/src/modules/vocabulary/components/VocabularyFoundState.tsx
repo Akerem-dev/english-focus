@@ -1,4 +1,6 @@
-import type { VocabularyEntry } from "@platform/domain";
+import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
+
+import { useOptionalSettings } from "../../../app/providers";
 
 import { CollocationsSection } from "./CollocationsSection";
 import { CommonMistakesSection } from "./CommonMistakesSection";
@@ -18,12 +20,14 @@ import { WordFamilySection } from "./WordFamilySection";
 
 interface VocabularyFoundStateProps {
   readonly entry: VocabularyEntry;
+  readonly metadata?: VocabularyUserMetadata | undefined;
   readonly onBack: () => void;
+  readonly onEditMetadata: () => void;
   readonly onImportReplacement: () => void;
   readonly onExport: () => void;
 }
 
-const DETAIL_LINKS = [
+const BASE_DETAIL_LINKS = [
   ["overview", "Overview"],
   ["meanings", "Meanings"],
   ["grammar", "Grammar"],
@@ -37,10 +41,30 @@ const DETAIL_LINKS = [
 
 export function VocabularyFoundState({
   entry,
+  metadata,
   onBack,
+  onEditMetadata,
   onExport,
   onImportReplacement
 }: VocabularyFoundStateProps) {
+  const settingsContext = useOptionalSettings();
+  const contentSettings = settingsContext?.settings.content ?? {
+    showEtymology: true,
+    showCommonMistakes: true,
+    exampleSentenceCount: 10 as const
+  };
+  const detailLinks = BASE_DETAIL_LINKS.filter(([target]) => {
+    if (target === "common-mistakes") {
+      return contentSettings.showCommonMistakes;
+    }
+
+    if (target === "etymology") {
+      return contentSettings.showEtymology;
+    }
+
+    return true;
+  });
+
   return (
     <article
       className="route-page vocabulary-detail-page"
@@ -48,13 +72,15 @@ export function VocabularyFoundState({
     >
       <VocabularyHeader
         entry={entry}
+        metadata={metadata}
         onBack={onBack}
+        onEditMetadata={onEditMetadata}
         onExport={onExport}
         onImportReplacement={onImportReplacement}
       />
 
       <nav className="vocabulary-detail-nav" aria-label="Vocabulary entry sections">
-        {DETAIL_LINKS.map(([target, label]) => (
+        {detailLinks.map(([target, label]) => (
           <button
             key={target}
             onClick={() => {
@@ -77,7 +103,7 @@ export function VocabularyFoundState({
           <TenseExamplesSection entry={entry} />
           <SentenceFormsSection entry={entry} />
           <PrepositionPatternsSection entry={entry} />
-          <ExampleSentenceList entry={entry} />
+          <ExampleSentenceList entry={entry} limit={contentSettings.exampleSentenceCount} />
         </div>
 
         <aside className="vocabulary-detail-aside" aria-label="Supporting vocabulary details">
@@ -86,8 +112,8 @@ export function VocabularyFoundState({
           <WordFamilySection entry={entry} />
           <CollocationsSection entry={entry} />
           <RelatedWordsSection entry={entry} />
-          <CommonMistakesSection entry={entry} />
-          <EtymologySection entry={entry} />
+          {contentSettings.showCommonMistakes ? <CommonMistakesSection entry={entry} /> : null}
+          {contentSettings.showEtymology ? <EtymologySection entry={entry} /> : null}
         </aside>
       </div>
     </article>
