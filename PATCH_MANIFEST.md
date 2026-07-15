@@ -1,51 +1,21 @@
-# CP07 Search Vertical Slice — Patch Manifest
+# Patch manifest — CP08-FIX01
 
-## Purpose
+## Modified
 
-Complete Phase 5 of the master roadmap as one cohesive, testable local search vertical slice.
+- `apps/desktop/src/modules/settings/components/InstructionSettingsSection.tsx`
+  - Uses event-safe instruction preference handlers.
 
-## Source changes
+## Added
 
-### Search application and services
+- `apps/desktop/src/modules/settings/components/instructionSettingsHandlers.ts`
+  - Snapshots DOM values before deferred React state updates.
+- `apps/desktop/tests/components/settings/InstructionSettingsHandlers.test.ts`
+  - Guards Maximum, C1, and switch changes against event-lifetime regressions.
 
-- `apps/desktop/src/modules/search/application/SearchVocabulary.ts`
-- `apps/desktop/src/modules/search/application/index.ts`
-- `apps/desktop/src/modules/search/components/SearchSuggestions.tsx`
-- `apps/desktop/src/modules/search/components/index.ts`
-- `apps/desktop/src/modules/search/index.ts`
-- `apps/desktop/src/modules/search/services/createFuzzySuggestions.ts`
-- `apps/desktop/src/modules/search/services/index.ts`
-- `apps/desktop/src/modules/search/services/normalizeApostrophes.ts`
-- `apps/desktop/src/modules/search/services/normalizeHyphens.ts`
-- `apps/desktop/src/modules/search/services/normalizeSearchQuery.ts`
-- `apps/desktop/src/modules/search/services/resolveInflectedForm.ts`
-- `apps/desktop/src/modules/search/state/index.ts`
-- `apps/desktop/src/modules/search/state/searchState.ts`
+## Dependencies
 
-### Vocabulary UI integration
+No dependency or lockfile changes.
 
-- `apps/desktop/src/modules/vocabulary/components/VocabularyInvalidSearchState.tsx`
-- `apps/desktop/src/modules/vocabulary/components/VocabularyNotFoundState.tsx`
-- `apps/desktop/src/modules/vocabulary/components/VocabularySearchingState.tsx`
-- `apps/desktop/src/modules/vocabulary/pages/VocabularyPage.tsx`
-- `apps/desktop/src/styles/route-pages.css`
-
-### Tests
-
-- `apps/desktop/tests/components/vocabulary/VocabularyPage.test.tsx`
-- `apps/desktop/tests/unit/search/normalize-search-query.test.ts`
-- `apps/desktop/tests/unit/search/resolve-inflected-form.test.ts`
-- `apps/desktop/tests/unit/search/search-vocabulary.test.ts`
-
-### Documentation
-
-- `docs/roadmap/SEARCH_VERTICAL_SLICE.md`
-- root checkpoint documents.
-
-## Dependency changes
-
-None.
-
-## Deleted files
+## Deletions
 
 None.

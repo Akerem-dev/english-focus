@@ -5,6 +5,7 @@ import { SearchSuggestions } from "../../search";
 export interface VocabularyNotFoundStateProps {
   readonly normalizedQuery: string;
   readonly onEditSearch: () => void;
+  readonly onOpenInstruction: () => void;
   readonly onSelectSuggestion: (word: string) => void;
   readonly suggestions: readonly string[];
 }
@@ -12,6 +13,7 @@ export interface VocabularyNotFoundStateProps {
 export function VocabularyNotFoundState({
   normalizedQuery,
   onEditSearch,
+  onOpenInstruction,
   onSelectSuggestion,
   suggestions
 }: VocabularyNotFoundStateProps) {
@@ -34,7 +36,11 @@ export function VocabularyNotFoundState({
           <Button onClick={onEditSearch} variant="secondary">
             Edit search
           </Button>
-          <Button disabled title="Available in the external-AI instruction checkpoint">
+          <Button
+            leadingIcon={<AppIcon name="copy" size={17} />}
+            onClick={onOpenInstruction}
+            variant="primary"
+          >
             Copy AI instruction
           </Button>
           <Button disabled title="Available in the JSON ingestion checkpoint" variant="secondary">
@@ -42,7 +48,8 @@ export function VocabularyNotFoundState({
           </Button>
         </div>
         <small>
-          Instruction generation and JSON paste arrive in the next approved roadmap phases.
+          The instruction is generated locally and can be pasted into any external AI account. JSON
+          ingestion arrives in the next approved roadmap phase.
         </small>
       </div>
     </section>

@@ -1,5 +1,2 @@
-/**
- * Final skeleton boundary: overlays/index.ts
- * Production implementation is intentionally pending.
- */
-export {};
+export { AiInstructionDialog } from "./AiInstructionDialog";
+export type { AiInstructionDialogProps } from "./AiInstructionDialog";

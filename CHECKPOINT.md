@@ -1,21 +1,25 @@
-# Checkpoint CP07 — Search Vertical Slice
+# CP08-FIX01 — Instruction settings event snapshot
 
-Status: **TESTING**
+Status: TESTING
 
-## Completed by this patch
+## Purpose
 
-- deterministic local query normalization;
-- exact normalized lookup;
-- alias and inflected-form resolution;
-- bounded fuzzy suggestions;
-- typing, searching, found, not-found, invalid, and repository-error states;
-- search-state UI integrated into the existing Vocabulary route;
-- regression coverage for the approved search matrix.
+Prevent the application-wide error boundary from activating when the user changes provider-independent instruction preferences such as `Maximum`, `C1`, or any instruction switch.
 
-## User validation required
+## Root cause
 
-Run the automated test block in `TEST_PLAN.md`, then verify the native search matrix.
+The previous handlers referenced `event.currentTarget` from inside React state-updater callbacks. A React event's `currentTarget` is only guaranteed while the event handler itself is executing. When React evaluated the deferred updater, the event target was no longer reliable and the update threw during render.
 
-## Lock condition
+## Fix
 
-CP07 becomes `LOCKED` only after all automated checks pass and every listed native search input reaches the correct UI state.
+- Snapshot select values and switch states synchronously inside each event handler.
+- Pass only immutable primitive values into deferred state updaters.
+- Add regression tests for `Maximum`, `C1`, and switch changes.
+
+## Acceptance
+
+- Changing detail level does not crash the application.
+- Changing target proficiency does not crash the application.
+- Instruction switches do not crash the application.
+- Preferences remain synchronized with the instruction dialog.
+- Typecheck, desktop tests, production build, and forbidden-pattern check pass.

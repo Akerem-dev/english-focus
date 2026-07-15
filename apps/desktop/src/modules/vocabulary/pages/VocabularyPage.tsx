@@ -3,6 +3,7 @@ import { useMemo, useRef, useState, type FormEvent } from "react";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { createCoreVocabularyContentSource } from "../../../infrastructure/content";
+import { AiInstructionDialog } from "../../instruction";
 import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
 import {
   VocabularyFoundState,
@@ -89,6 +90,7 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
 export function VocabularyPage() {
   const [query, setQuery] = useState("");
   const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
+  const [instructionWord, setInstructionWord] = useState<string | undefined>();
   const searchSequence = useRef(0);
   const searchVocabulary = useMemo(
     () => new SearchVocabulary(createCoreVocabularyContentSource()),
@@ -198,6 +200,9 @@ export function VocabularyPage() {
         <VocabularyNotFoundState
           normalizedQuery={searchState.normalizedQuery}
           onEditSearch={editCurrentSearch}
+          onOpenInstruction={() => {
+            setInstructionWord(searchState.normalizedQuery);
+          }}
           onSelectSuggestion={executeSearch}
           suggestions={searchState.suggestions}
         />
@@ -219,6 +224,16 @@ export function VocabularyPage() {
           title="Local vocabulary search failed"
         />
       ) : null}
+
+      {instructionWord === undefined ? null : (
+        <AiInstructionDialog
+          onClose={() => {
+            setInstructionWord(undefined);
+          }}
+          open
+          targetWord={instructionWord}
+        />
+      )}
 
       {searchState.kind === "initial" || searchState.kind === "typing" ? (
         <div className="vocabulary-dashboard">

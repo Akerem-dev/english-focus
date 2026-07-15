@@ -1,1 +1,1 @@
-export {};
+export * from "./instruction-settings.schema";

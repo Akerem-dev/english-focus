@@ -3,9 +3,10 @@ import { useState } from "react";
 
 import { SelectField, SwitchField } from "../../../components";
 import { AppIcon } from "../../../design-system";
+import { InstructionSettingsSection } from "../components";
 
 interface SettingsPanelProps {
-  readonly icon: "book-open" | "settings" | "upload";
+  readonly icon: "book-open" | "command" | "settings" | "upload";
   readonly title: string;
   readonly description: string;
   readonly children: ReactNode;
@@ -119,6 +120,14 @@ export function SettingsPage() {
             <span>Interface size</span>
             <strong>Medium</strong>
           </div>
+        </SettingsPanel>
+
+        <SettingsPanel
+          description="Control the provider-independent prompt copied for words missing locally."
+          icon="command"
+          title="AI instruction"
+        >
+          <InstructionSettingsSection />
         </SettingsPanel>
 
         <SettingsPanel
