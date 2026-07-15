@@ -1,5 +1,5 @@
-/**
- * Final skeleton boundary: services/normalizeApostrophes.ts
- * Production implementation is intentionally pending.
- */
-export {};
+const APOSTROPHE_VARIANTS = /[\u2018\u2019\u201B\u2032\u00B4`]/g;
+
+export function normalizeApostrophes(value: string): string {
+  return value.replace(APOSTROPHE_VARIANTS, "'");
+}

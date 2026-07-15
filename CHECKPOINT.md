@@ -1,15 +1,21 @@
-# CP06A FIX01 — Sticky Section Navigation
+# Checkpoint CP07 — Search Vertical Slice
 
-Status: TESTING
+Status: **TESTING**
 
-This patch corrects the vocabulary detail section navigation inside the existing CP06A checkpoint.
+## Completed by this patch
 
-## Fixed
+- deterministic local query normalization;
+- exact normalized lookup;
+- alias and inflected-form resolution;
+- bounded fuzzy suggestions;
+- typing, searching, found, not-found, invalid, and repository-error states;
+- search-state UI integrated into the existing Vocabulary route;
+- regression coverage for the approved search matrix.
 
-- Removes the false 4.75rem gap between the application top bar and the sticky detail navigation.
-- Uses an opaque navigation surface so card content no longer shows through while scrolling.
-- Adds a restrained elevation while the navigation overlays long content.
-- Reduces anchor clearance to the actual sticky navigation height.
-- Adds a regression contract test for the sticky navigation CSS.
+## User validation required
 
-No vocabulary data, routes, schemas, dependencies, Rust code, or database behavior changed.
+Run the automated test block in `TEST_PLAN.md`, then verify the native search matrix.
+
+## Lock condition
+
+CP07 becomes `LOCKED` only after all automated checks pass and every listed native search input reaches the correct UI state.
