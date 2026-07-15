@@ -1,5 +1,2 @@
-/**
- * Final skeleton boundary: components/index.ts
- * Production implementation is intentionally pending.
- */
-export {};
+export { SearchSuggestions } from "./SearchSuggestions";
+export type { SearchSuggestionsProps } from "./SearchSuggestions";

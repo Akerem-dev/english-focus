@@ -275,3 +275,92 @@
     display: none;
   }
 }
+
+.vocabulary-result-state {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-extra-large);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-low);
+}
+
+.vocabulary-result-state__icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: var(--radius-medium);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.vocabulary-result-state h2 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-5);
+  font-weight: var(--font-weight-regular);
+}
+
+.vocabulary-result-state > div > p:not(.route-page__eyebrow),
+.vocabulary-result-state > div > small {
+  display: block;
+  max-width: 48rem;
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.vocabulary-result-state__guidance {
+  font-size: var(--font-size-2);
+}
+
+.vocabulary-result-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.vocabulary-result-state--searching {
+  grid-template-columns: minmax(0, 0.9fr) minmax(18rem, 1.1fr);
+  align-items: center;
+}
+
+.vocabulary-search-skeleton {
+  min-width: 0;
+}
+
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-2);
+}
+
+.search-suggestions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (max-width: 52rem) {
+  .vocabulary-result-state,
+  .vocabulary-result-state--searching {
+    grid-template-columns: 1fr;
+  }
+
+  .vocabulary-result-state__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .vocabulary-result-state__actions .button {
+    width: 100%;
+  }
+}

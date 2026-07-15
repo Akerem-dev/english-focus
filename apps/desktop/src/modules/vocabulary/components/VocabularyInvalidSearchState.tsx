@@ -1,7 +1,32 @@
-/**
- * Final skeleton UI boundary: VocabularyInvalidSearchState
- * Production implementation is intentionally pending.
- */
-export function VocabularyInvalidSearchState() {
-  return null;
+import { Button, InlineError } from "../../../components";
+import { AppIcon } from "../../../design-system";
+
+export interface VocabularyInvalidSearchStateProps {
+  readonly message: string;
+  readonly onEditSearch: () => void;
+}
+
+export function VocabularyInvalidSearchState({
+  message,
+  onEditSearch
+}: VocabularyInvalidSearchStateProps) {
+  return (
+    <section className="vocabulary-result-state" aria-labelledby="invalid-search-title">
+      <span className="vocabulary-result-state__icon" aria-hidden="true">
+        <AppIcon name="warning" size={24} />
+      </span>
+      <div>
+        <p className="route-page__eyebrow">Search needs attention</p>
+        <h2 id="invalid-search-title">Enter a single English word</h2>
+        <InlineError>{message}</InlineError>
+        <p className="vocabulary-result-state__guidance">
+          Examples: maintain, well-being, or learner&apos;s. Avoid punctuation at the end and full
+          phrases.
+        </p>
+        <Button onClick={onEditSearch} variant="secondary">
+          Edit search
+        </Button>
+      </div>
+    </section>
+  );
 }
