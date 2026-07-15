@@ -41,6 +41,7 @@ describe("VocabularyPage search states", () => {
       <VocabularyNotFoundState
         normalizedQuery="maintan"
         onEditSearch={() => undefined}
+        onOpenInstruction={() => undefined}
         onSelectSuggestion={() => undefined}
         suggestions={["maintain"]}
       />
@@ -49,5 +50,7 @@ describe("VocabularyPage search states", () => {
     expect(markup).toContain("“maintan” was not found");
     expect(markup).toContain("Did you mean");
     expect(markup).toContain("maintain");
+    expect(markup).toContain("Copy AI instruction");
+    expect(markup).not.toContain('title="Available in the external-AI instruction checkpoint"');
   });
 });

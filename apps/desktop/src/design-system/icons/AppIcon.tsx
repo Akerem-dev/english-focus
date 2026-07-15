@@ -7,6 +7,7 @@ export type AppIconName =
   | "chevron-down"
   | "close"
   | "command"
+  | "copy"
   | "download"
   | "search"
   | "settings"
@@ -53,6 +54,13 @@ function renderGlyph(name: AppIconName): ReactNode {
       return (
         <>
           <path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6Z" />
+        </>
+      );
+    case "copy":
+      return (
+        <>
+          <rect x="8" y="8" width="11" height="11" rx="2" />
+          <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
         </>
       );
     case "download":

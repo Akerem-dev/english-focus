@@ -11,26 +11,26 @@
 
 ## Checkpoint table
 
-| ID | Name | Main proof | User must test | Initial status |
-|---|---|---|---|---|
-| CP00 | Roadmap baseline | Planning documents copied without source changes | Confirm file placement | TESTING |
-| CP01 | Dependency installation | Public npm install succeeds | Yes | PLANNED |
-| CP02 | Browser runtime | Minimal React app opens in browser | Yes | PLANNED |
-| CP03 | Native runtime | Tauri window opens on Windows | Yes | PLANNED |
-| CP04 | Visual shell | Three routes and responsive shell | Yes, functional + visual | PLANNED |
-| CP05 | Domain and fixture | Schemas accept valid fixture and reject invalid cases | Automated output review | PLANNED |
-| CP06 | Read-only vocabulary | Full maintain entry renders | Yes, visual + content | PLANNED |
-| CP07 | Search vertical slice | Exact, normalized, inflected, unknown, invalid states | Yes | PLANNED |
-| CP08 | Copyable instruction | Unknown word instruction copied correctly | Yes | PLANNED |
-| CP09 | Validation workflow | Invalid JSON yields actionable issues | Yes | PLANNED |
-| CP10 | In-memory full loop | Unknown word becomes searchable after import | Yes | PLANNED |
-| CP11 | Persistent search | Imported data survives restart | Yes | PLANNED |
-| CP12 | Library management | Search/filter/sort/metadata/bulk operations | Yes | PLANNED |
-| CP13 | Import/export | Single and pack round trips | Yes | PLANNED |
-| CP14 | Data safety | Backup/restore/retention and clear-data flows | Yes | PLANNED |
-| CP15 | Productivity | Command bar, shortcuts, undo, diagnostics | Yes | PLANNED |
-| CP16 | Release candidate | Accessibility, performance, build, installer | Yes | PLANNED |
-| CP17 | Content release | Validated core vocabulary pack | Sampling + automated review | PLANNED |
+| ID   | Name                    | Main proof                                            | User must test              | Initial status |
+| ---- | ----------------------- | ----------------------------------------------------- | --------------------------- | -------------- |
+| CP00 | Roadmap baseline        | Planning documents copied without source changes      | Confirm file placement      | TESTING        |
+| CP01 | Dependency installation | Public npm install succeeds                           | Yes                         | PLANNED        |
+| CP02 | Browser runtime         | Minimal React app opens in browser                    | Yes                         | PLANNED        |
+| CP03 | Native runtime          | Tauri window opens on Windows                         | Yes                         | PLANNED        |
+| CP04 | Visual shell            | Three routes and responsive shell                     | Yes, functional + visual    | PLANNED        |
+| CP05 | Domain and fixture      | Schemas accept valid fixture and reject invalid cases | Automated output review     | PLANNED        |
+| CP06 | Read-only vocabulary    | Full maintain entry renders                           | Yes, visual + content       | PLANNED        |
+| CP07 | Search vertical slice   | Exact, normalized, inflected, unknown, invalid states | Yes                         | PLANNED        |
+| CP08 | Copyable instruction    | Unknown word instruction copied correctly             | Yes                         | TESTING        |
+| CP09 | Validation workflow     | Invalid JSON yields actionable issues                 | Yes                         | PLANNED        |
+| CP10 | In-memory full loop     | Unknown word becomes searchable after import          | Yes                         | PLANNED        |
+| CP11 | Persistent search       | Imported data survives restart                        | Yes                         | PLANNED        |
+| CP12 | Library management      | Search/filter/sort/metadata/bulk operations           | Yes                         | PLANNED        |
+| CP13 | Import/export           | Single and pack round trips                           | Yes                         | PLANNED        |
+| CP14 | Data safety             | Backup/restore/retention and clear-data flows         | Yes                         | PLANNED        |
+| CP15 | Productivity            | Command bar, shortcuts, undo, diagnostics             | Yes                         | PLANNED        |
+| CP16 | Release candidate       | Accessibility, performance, build, installer          | Yes                         | PLANNED        |
+| CP17 | Content release         | Validated core vocabulary pack                        | Sampling + automated review | PLANNED        |
 
 ## Locking procedure
 
