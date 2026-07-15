@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useVocabularyRepository } from "../../../app/providers";
+import { useToast, useVocabularyRepository } from "../../../app/providers";
 import { Button, Modal, StatusBadge, TextAreaField } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { CorrectionInstructionDialog } from "../../instruction";
@@ -73,6 +73,7 @@ export function PasteGeneratedJsonDialog({
   sourceFileName
 }: PasteGeneratedJsonDialogProps) {
   const { contentSource, saveEntry } = useVocabularyRepository();
+  const { showToast } = useToast();
   const [input, setInput] = useState(initialInput ?? "");
   const [parseResult, setParseResult] = useState<ParseVocabularyJsonResult | undefined>();
   const [validationResult, setValidationResult] = useState<
@@ -229,6 +230,12 @@ export function PasteGeneratedJsonDialog({
         entry: persistencePlan.entry
       });
       setPersistenceStatus("success");
+      showToast({
+        title: "Existing entry kept",
+        message: `No local content was changed for “${persistencePlan.entry.word}”.`,
+        tone: "info",
+        dedupeKey: "vocabulary-persistence"
+      });
       return;
     }
 
@@ -242,11 +249,24 @@ export function PasteGeneratedJsonDialog({
       });
       setPersistenceOutcome({ kind: "saved", record });
       setPersistenceStatus("success");
+      showToast({
+        title: "Vocabulary saved locally",
+        message: `“${record.entry.word}” is available in Vocabulary and Library.`,
+        tone: "success",
+        dedupeKey: "vocabulary-persistence"
+      });
     } catch (cause) {
-      setPersistenceError(
-        cause instanceof Error ? cause.message : "The vocabulary entry could not be saved."
-      );
+      const message =
+        cause instanceof Error ? cause.message : "The vocabulary entry could not be saved.";
+      setPersistenceError(message);
       setPersistenceStatus("error");
+      showToast({
+        title: "Vocabulary could not be saved",
+        message,
+        tone: "error",
+        durationMs: 8_000,
+        dedupeKey: "vocabulary-persistence"
+      });
     }
   }
 

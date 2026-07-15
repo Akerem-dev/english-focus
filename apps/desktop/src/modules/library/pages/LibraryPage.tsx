@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
-import { useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
+import { useToast, useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
 import { Button, EmptyState, SearchInput, SelectField, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { exportVocabularyPack } from "../../import-export";
@@ -100,6 +100,7 @@ function compareRecords(
 export function LibraryPage() {
   const { error, status, storedEntries } = useVocabularyRepository();
   const { getMetadata, metadata } = useVocabularyMetadata();
+  const { showToast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [layerFilter, setLayerFilter] = useState<LibraryLayerFilter>("all");
   const [cefrFilter, setCefrFilter] = useState<LibraryCefrFilter>("all");
@@ -108,7 +109,6 @@ export function LibraryPage() {
   const [sort, setSort] = useState<LibrarySort>("updated-desc");
   const [selectedWords, setSelectedWords] = useState<readonly string[]>([]);
   const [previewWord, setPreviewWord] = useState<string | undefined>();
-  const [clipboardNotice, setClipboardNotice] = useState<string | undefined>();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const filteredEntries = useMemo(() => {
@@ -200,11 +200,19 @@ export function LibraryPage() {
 
     try {
       await navigator.clipboard.writeText(payload);
-      setClipboardNotice(
-        `${selectedEntries.length} word${selectedEntries.length === 1 ? "" : "s"} copied.`
-      );
-    } catch {
-      setClipboardNotice("Clipboard access was blocked.");
+      showToast({
+        title: "Words copied",
+        message: `${selectedEntries.length} word${selectedEntries.length === 1 ? "" : "s"} copied to the clipboard.`,
+        tone: "success",
+        dedupeKey: "library-copy"
+      });
+    } catch (cause) {
+      showToast({
+        title: "Clipboard access was blocked",
+        message: cause instanceof Error ? cause.message : "Allow clipboard access and try again.",
+        tone: "error",
+        dedupeKey: "library-copy"
+      });
     }
   }
 
@@ -223,6 +231,12 @@ export function LibraryPage() {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+    showToast({
+      title: "Library pack exported",
+      message: `${storedEntries.length} entr${storedEntries.length === 1 ? "y" : "ies"} exported locally.`,
+      tone: "success",
+      dedupeKey: "library-export"
+    });
   }
 
   function exportSelectedEntries() {
@@ -243,6 +257,12 @@ export function LibraryPage() {
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+    showToast({
+      title: "Selected pack exported",
+      message: `${selectedEntries.length} selected entr${selectedEntries.length === 1 ? "y" : "ies"} exported locally.`,
+      tone: "success",
+      dedupeKey: "library-export"
+    });
   }
 
   useEffect(() => {
@@ -479,9 +499,6 @@ export function LibraryPage() {
               </div>
             </div>
 
-            {clipboardNotice === undefined ? null : (
-              <p className="library-selection-toolbar__notice">{clipboardNotice}</p>
-            )}
           </section>
 
           {filteredEntries.length === 0 ? (

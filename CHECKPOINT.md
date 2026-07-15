@@ -1,7 +1,5 @@
-# CP22 — Command Bar and Keyboard Navigation
+# CP23 — Toast Feedback and Undo
 
 Status: TESTING
 
-This checkpoint activates the global command bar, approved keyboard shortcuts, shortcut help, context-aware export/favorite actions, search focus commands, and modal focus containment.
-
-No new route, npm package, Rust crate, database table, or migration is introduced.
+This checkpoint standardizes non-blocking operation feedback, safe error messages, and transient undo behavior without adding a new route or persisting undo history.
