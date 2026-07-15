@@ -1,6 +1,7 @@
 export * from "./BackupRepository";
 export * from "./Clipboard";
 export * from "./Clock";
+export * from "./DiagnosticsRepository";
 export * from "./FilePicker";
 export * from "./IdGenerator";
 export * from "./Logger";

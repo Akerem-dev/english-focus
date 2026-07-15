@@ -12,5 +12,6 @@
 @import "./library.css";
 @import "./settings.css";
 @import "./backup.css";
+@import "./diagnostics.css";
 @import "./vocabulary-detail.css";
 @import "./runtime-baseline.css";

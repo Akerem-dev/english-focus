@@ -19,7 +19,8 @@ describe("SettingsPage", () => {
     expect(markup).toContain("Manage backups");
     expect(markup).toContain("Reduced motion");
     expect(markup).toContain("AI instruction");
-    expect(markup).toContain("Settings schema");
+    expect(markup).toContain("Run diagnostics");
+    expect(markup).toContain("Local database health");
     expect(markup).toContain("Loading settings");
   });
 });
