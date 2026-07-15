@@ -1,0 +1,1 @@
+export { TauriVocabularyRepository } from "./TauriVocabularyRepository";

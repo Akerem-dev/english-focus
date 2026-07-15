@@ -3,18 +3,18 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { AppLayout } from "../../src/app/layout";
-import { InstructionPreferencesProvider } from "../../src/app/providers";
+import { AppProviders } from "../../src/app/providers";
 import { AppRouter, APP_ROUTES, ROUTE_PATHS } from "../../src/app/router";
 
 function renderRoute(path: string) {
   return renderToStaticMarkup(
-    <InstructionPreferencesProvider>
+    <AppProviders>
       <MemoryRouter initialEntries={[path]}>
         <AppLayout>
           <AppRouter />
         </AppLayout>
       </MemoryRouter>
-    </InstructionPreferencesProvider>
+    </AppProviders>
   );
 }
 

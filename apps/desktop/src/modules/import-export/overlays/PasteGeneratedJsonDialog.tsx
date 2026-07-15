@@ -1,8 +1,8 @@
 import { useState } from "react";
 
+import { useVocabularyRepository } from "../../../app/providers";
 import { Button, Modal, StatusBadge, TextAreaField } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { createCoreVocabularyContentSource } from "../../../infrastructure/content";
 import { CorrectionInstructionDialog } from "../../instruction";
 import {
   MAX_PASTED_JSON_CHARACTERS,
@@ -10,6 +10,7 @@ import {
   inspectVocabularyContent,
   parseVocabularyJson,
   previewVocabularyImport,
+  prepareVocabularyPersistence,
   resolveDuplicateEntry,
   validateVocabularySchema,
   type DuplicateCheckResult,
@@ -17,20 +18,25 @@ import {
   type InspectVocabularyContentResult,
   type ParseVocabularyJsonResult,
   type ValidateVocabularySchemaResult,
-  type VocabularyImportPreview
+  type VocabularyImportPreview,
+  type VocabularyPersistenceOutcome,
+  type VocabularyPersistencePlan
 } from "../application";
 import type { CorrectionReturnStage, ImportWizardStage, PreviewApprovalState } from "../state";
 import { ContentValidationResultDialog } from "./ContentValidationResultDialog";
 import { DuplicateComparisonDialog } from "./DuplicateComparisonDialog";
 import { ValidationResultDialog } from "./ValidationResultDialog";
 import { VocabularyPreviewDialog } from "./VocabularyPreviewDialog";
-
-const coreVocabularySource = createCoreVocabularyContentSource();
+import {
+  VocabularyPersistenceDialog,
+  type VocabularyPersistenceStatus
+} from "./VocabularyPersistenceDialog";
 
 export interface PasteGeneratedJsonDialogProps {
   readonly open: boolean;
   readonly expectedWord: string;
   readonly onClose: () => void;
+  readonly onOpenSavedEntry?: ((word: string) => void) | undefined;
 }
 
 function describeTransformation(transformation: string): string {
@@ -59,8 +65,10 @@ function describeTransformation(transformation: string): string {
 export function PasteGeneratedJsonDialog({
   expectedWord,
   onClose,
+  onOpenSavedEntry,
   open
 }: PasteGeneratedJsonDialogProps) {
+  const { contentSource, saveEntry } = useVocabularyRepository();
   const [input, setInput] = useState("");
   const [parseResult, setParseResult] = useState<ParseVocabularyJsonResult | undefined>();
   const [validationResult, setValidationResult] = useState<
@@ -73,6 +81,12 @@ export function PasteGeneratedJsonDialog({
   const [duplicateResolution, setDuplicateResolution] = useState<
     DuplicateResolutionPlan | undefined
   >();
+  const [persistencePlan, setPersistencePlan] = useState<VocabularyPersistencePlan | undefined>();
+  const [persistenceStatus, setPersistenceStatus] = useState<VocabularyPersistenceStatus>("ready");
+  const [persistenceOutcome, setPersistenceOutcome] = useState<
+    VocabularyPersistenceOutcome | undefined
+  >();
+  const [persistenceError, setPersistenceError] = useState<string | undefined>();
   const [stage, setStage] = useState<ImportWizardStage>("paste");
   const [correctionReturnStage, setCorrectionReturnStage] =
     useState<CorrectionReturnStage>("validation");
@@ -101,6 +115,10 @@ export function PasteGeneratedJsonDialog({
     setPreviewApproval("pending");
     setDuplicateResult(undefined);
     setDuplicateResolution(undefined);
+    setPersistencePlan(undefined);
+    setPersistenceStatus("ready");
+    setPersistenceOutcome(undefined);
+    setPersistenceError(undefined);
     setStage("paste");
   }
 
@@ -117,6 +135,8 @@ export function PasteGeneratedJsonDialog({
     setPreviewApproval("pending");
     setDuplicateResult(undefined);
     setDuplicateResolution(undefined);
+    setPersistencePlan(undefined);
+    setPersistenceOutcome(undefined);
   }
 
   function validateSchema() {
@@ -130,6 +150,8 @@ export function PasteGeneratedJsonDialog({
     setPreviewApproval("pending");
     setDuplicateResult(undefined);
     setDuplicateResolution(undefined);
+    setPersistencePlan(undefined);
+    setPersistenceOutcome(undefined);
     setStage("validation");
   }
 
@@ -143,6 +165,8 @@ export function PasteGeneratedJsonDialog({
     setPreviewApproval("pending");
     setDuplicateResult(undefined);
     setDuplicateResolution(undefined);
+    setPersistencePlan(undefined);
+    setPersistenceOutcome(undefined);
     setStage("content");
   }
 
@@ -157,6 +181,8 @@ export function PasteGeneratedJsonDialog({
     setPreviewApproval("pending");
     setDuplicateResult(undefined);
     setDuplicateResolution(undefined);
+    setPersistencePlan(undefined);
+    setPersistenceOutcome(undefined);
     setStage("preview");
   }
 
@@ -165,9 +191,59 @@ export function PasteGeneratedJsonDialog({
       return;
     }
 
-    setDuplicateResult(compareDuplicateEntries(coreVocabularySource, preview.entry));
+    setDuplicateResult(compareDuplicateEntries(contentSource, preview.entry));
     setDuplicateResolution(undefined);
     setStage("duplicate");
+  }
+
+  function openPersistence() {
+    if (duplicateResult === undefined) {
+      return;
+    }
+
+    try {
+      setPersistencePlan(prepareVocabularyPersistence(duplicateResult, duplicateResolution));
+      setPersistenceStatus("ready");
+      setPersistenceOutcome(undefined);
+      setPersistenceError(undefined);
+      setStage("save");
+    } catch (cause) {
+      setPersistenceError(
+        cause instanceof Error ? cause.message : "The persistence plan could not be prepared."
+      );
+    }
+  }
+
+  async function persistVocabularyEntry() {
+    if (persistencePlan === undefined) {
+      return;
+    }
+
+    if (persistencePlan.kind === "keep-existing") {
+      setPersistenceOutcome({
+        kind: "kept-existing",
+        entry: persistencePlan.entry
+      });
+      setPersistenceStatus("success");
+      return;
+    }
+
+    setPersistenceStatus("saving");
+    setPersistenceError(undefined);
+
+    try {
+      const record = await saveEntry({
+        entry: persistencePlan.entry,
+        layer: persistencePlan.layer
+      });
+      setPersistenceOutcome({ kind: "saved", record });
+      setPersistenceStatus("success");
+    } catch (cause) {
+      setPersistenceError(
+        cause instanceof Error ? cause.message : "The vocabulary entry could not be saved."
+      );
+      setPersistenceStatus("error");
+    }
   }
 
   if (stage === "validation" && validationResult !== undefined) {
@@ -254,9 +330,36 @@ export function PasteGeneratedJsonDialog({
             setDuplicateResolution(resolveDuplicateEntry(duplicateResult.comparison, choice));
           }
         }}
+        onContinueToSave={openPersistence}
         open={open}
         {...(duplicateResolution === undefined ? {} : { resolution: duplicateResolution })}
         result={duplicateResult}
+      />
+    );
+  }
+
+  if (stage === "save" && persistencePlan !== undefined) {
+    return (
+      <VocabularyPersistenceDialog
+        {...(persistenceError === undefined ? {} : { error: persistenceError })}
+        {...(persistenceOutcome === undefined ? {} : { outcome: persistenceOutcome })}
+        onBack={() => {
+          setPersistenceStatus("ready");
+          setPersistenceOutcome(undefined);
+          setPersistenceError(undefined);
+          setStage("duplicate");
+        }}
+        onClose={onClose}
+        onOpenEntry={(word) => {
+          onClose();
+          onOpenSavedEntry?.(word);
+        }}
+        onSave={() => {
+          void persistVocabularyEntry();
+        }}
+        open={open}
+        plan={persistencePlan}
+        status={persistenceStatus}
       />
     );
   }

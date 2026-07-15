@@ -1,12 +1,15 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { VocabularyRepositoryProvider } from "../../../src/app/providers";
 import { PasteGeneratedJsonDialog } from "../../../src/modules/import-export";
 
 describe("PasteGeneratedJsonDialog", () => {
   it("renders the local syntax and schema-validation workflow for the expected word", () => {
     const markup = renderToStaticMarkup(
-      <PasteGeneratedJsonDialog expectedWord="allocate" onClose={() => undefined} open />
+      <VocabularyRepositoryProvider>
+        <PasteGeneratedJsonDialog expectedWord="allocate" onClose={() => undefined} open />
+      </VocabularyRepositoryProvider>
     );
 
     expect(markup).toContain("Paste generated JSON");
@@ -21,7 +24,13 @@ describe("PasteGeneratedJsonDialog", () => {
   it("renders nothing while closed", () => {
     expect(
       renderToStaticMarkup(
-        <PasteGeneratedJsonDialog expectedWord="allocate" onClose={() => undefined} open={false} />
+        <VocabularyRepositoryProvider>
+          <PasteGeneratedJsonDialog
+            expectedWord="allocate"
+            onClose={() => undefined}
+            open={false}
+          />
+        </VocabularyRepositoryProvider>
       )
     ).toBe("");
   });
