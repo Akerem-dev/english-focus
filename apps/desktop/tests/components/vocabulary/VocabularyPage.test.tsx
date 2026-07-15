@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
+import { VocabularyRepositoryProvider } from "../../../src/app/providers";
 import {
   VocabularyInvalidSearchState,
   VocabularyNotFoundState,
@@ -10,7 +11,11 @@ import { VocabularyPage } from "../../../src/modules/vocabulary/pages";
 
 describe("VocabularyPage search states", () => {
   it("renders the initial local-search experience", () => {
-    const markup = renderToStaticMarkup(<VocabularyPage />);
+    const markup = renderToStaticMarkup(
+      <VocabularyRepositoryProvider>
+        <VocabularyPage />
+      </VocabularyRepositoryProvider>
+    );
 
     expect(markup).toContain("Look up an English word");
     expect(markup).toContain("alias, and inflected-form lookup");

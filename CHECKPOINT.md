@@ -1,5 +1,5 @@
-# CP13 FIX01 — Summary Alignment
+# CP14 FIX01 — Persistence Dialog and JSON Summary Polish
 
 Status: TESTING
 
-This fix removes the browser-default `dd` indentation from the new-entry and resolved duplicate summaries.
+This fix addresses visual alignment and hierarchy problems in the SQLite save-confirmation flow and in the JSON syntax-passed summary card.

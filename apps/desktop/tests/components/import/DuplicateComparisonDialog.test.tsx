@@ -13,7 +13,8 @@ const callbacks = {
   onBack: () => undefined,
   onClose: () => undefined,
   onEditJson: () => undefined,
-  onResolve: () => undefined
+  onResolve: () => undefined,
+  onContinueToSave: () => undefined
 };
 
 function createUserEntry(word = "maintain") {
@@ -74,7 +75,7 @@ describe("DuplicateComparisonDialog", () => {
 
     expect(markup).toContain("Duplicate decision recorded");
     expect(markup).toContain("Preserved separately");
-    expect(markup).toContain("No — persistence begins in CP14");
-    expect(markup).toContain("Continue to save");
+    expect(markup).toContain("No — continue to save confirmation");
+    expect(markup).toContain("Finish import");
   });
 });

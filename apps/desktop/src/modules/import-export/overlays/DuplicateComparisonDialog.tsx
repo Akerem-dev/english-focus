@@ -14,6 +14,7 @@ export interface DuplicateComparisonDialogProps {
   readonly onClose: () => void;
   readonly onEditJson: () => void;
   readonly onResolve: (choice: DuplicateResolutionChoice) => void;
+  readonly onContinueToSave: () => void;
 }
 
 interface ResolutionOption {
@@ -58,6 +59,7 @@ export function DuplicateComparisonDialog({
   onClose,
   onEditJson,
   onResolve,
+  onContinueToSave,
   open,
   resolution,
   result
@@ -79,7 +81,7 @@ export function DuplicateComparisonDialog({
             <Button onClick={onBack} variant="secondary">
               Back to preview
             </Button>
-            <Button disabled title="Local saving arrives in CP14" variant="primary">
+            <Button onClick={onContinueToSave} variant="primary">
               Continue to save
             </Button>
           </>
@@ -161,8 +163,8 @@ export function DuplicateComparisonDialog({
               Confirm decision
             </Button>
           ) : (
-            <Button disabled title="Local saving arrives in CP14" variant="primary">
-              Continue to save
+            <Button onClick={onContinueToSave} variant="primary">
+              {resolution.shouldPersist ? "Continue to save" : "Finish import"}
             </Button>
           )}
         </>
@@ -334,7 +336,7 @@ export function DuplicateComparisonDialog({
               </div>
               <div>
                 <dt>Saved now</dt>
-                <dd>No — persistence begins in CP14</dd>
+                <dd>No — continue to save confirmation</dd>
               </div>
             </dl>
           </div>

@@ -41,3 +41,9 @@ export {
   type DuplicateEntrySummary
 } from "./CompareDuplicateEntries";
 export { resolveDuplicateEntry, type DuplicateResolutionPlan } from "./ResolveDuplicateEntry";
+
+export {
+  prepareVocabularyPersistence,
+  type VocabularyPersistenceOutcome,
+  type VocabularyPersistencePlan
+} from "./PrepareVocabularyPersistence";

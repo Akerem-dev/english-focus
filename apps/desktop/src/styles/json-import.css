@@ -102,7 +102,12 @@
 }
 
 .json-paste-result__summary dd {
+  margin: 0;
+  color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-ui);
+  text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .json-paste-result__warning {
@@ -930,6 +935,112 @@
   .duplicate-check__new-summary,
   .duplicate-check__resolved dl,
   .duplicate-check__entry-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.persistence-dialog__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.persistence-dialog__status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface-subtle);
+}
+
+.persistence-dialog__status[data-tone="ready"] {
+  border-color: color-mix(in srgb, var(--color-success) 34%, var(--color-border));
+  background: var(--color-success-soft);
+}
+
+.persistence-dialog__status[data-tone="success"] {
+  border-color: color-mix(in srgb, var(--color-success) 42%, var(--color-border));
+  background: var(--color-success-soft);
+}
+
+.persistence-dialog__status[data-tone="error"] {
+  border-color: color-mix(in srgb, var(--color-danger) 36%, var(--color-border));
+  background: var(--color-danger-soft);
+}
+
+.persistence-dialog__status > span {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-success);
+}
+
+.persistence-dialog__status[data-tone="error"] > span {
+  color: var(--color-danger);
+}
+
+.persistence-dialog__status h3 {
+  font-size: var(--font-size-4);
+}
+
+.persistence-dialog__status p {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.persistence-dialog__summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.persistence-dialog__summary > div {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  min-height: 5rem;
+  padding: var(--space-3);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface);
+}
+
+.persistence-dialog__summary dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-medium);
+}
+
+.persistence-dialog__summary dd {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-ui);
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.persistence-dialog__restart-note {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-left: 0.1875rem solid var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+@media (max-width: 40rem) {
+  .persistence-dialog__summary {
     grid-template-columns: 1fr;
   }
 }

@@ -1,8 +1,8 @@
 import { useMemo, useRef, useState, type FormEvent } from "react";
 
+import { useVocabularyRepository } from "../../../app/providers";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { createCoreVocabularyContentSource } from "../../../infrastructure/content";
 import { AiInstructionDialog } from "../../instruction";
 import { PasteGeneratedJsonDialog } from "../../import-export";
 import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
@@ -89,15 +89,13 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
 }
 
 export function VocabularyPage() {
+  const { contentSource } = useVocabularyRepository();
   const [query, setQuery] = useState("");
   const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
   const [instructionWord, setInstructionWord] = useState<string | undefined>();
   const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
   const searchSequence = useRef(0);
-  const searchVocabulary = useMemo(
-    () => new SearchVocabulary(createCoreVocabularyContentSource()),
-    []
-  );
+  const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
 
   function executeSearch(nextQuery: string) {
     const requestId = searchSequence.current + 1;
@@ -154,6 +152,10 @@ export function VocabularyPage() {
             expectedWord={pasteJsonWord}
             onClose={() => {
               setPasteJsonWord(undefined);
+            }}
+            onOpenSavedEntry={(word) => {
+              setPasteJsonWord(undefined);
+              executeSearch(word);
             }}
             open
           />
@@ -264,6 +266,10 @@ export function VocabularyPage() {
           expectedWord={pasteJsonWord}
           onClose={() => {
             setPasteJsonWord(undefined);
+          }}
+          onOpenSavedEntry={(word) => {
+            setPasteJsonWord(undefined);
+            executeSearch(word);
           }}
           open
         />

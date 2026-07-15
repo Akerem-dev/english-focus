@@ -15,3 +15,9 @@ export {
   DuplicateComparisonDialog,
   type DuplicateComparisonDialogProps
 } from "./DuplicateComparisonDialog";
+
+export {
+  VocabularyPersistenceDialog,
+  type VocabularyPersistenceDialogProps,
+  type VocabularyPersistenceStatus
+} from "./VocabularyPersistenceDialog";
