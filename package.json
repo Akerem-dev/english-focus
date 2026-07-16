@@ -29,9 +29,11 @@
     "check:bundle": "node scripts/check-bundle-budget.mjs",
     "check:release-metadata": "node scripts/check-release-metadata.mjs",
     "check:release-artifacts": "node scripts/check-release-artifacts.mjs",
-    "quality:release": "npm run check:structure && npm run check:forbidden && npm run check:release-metadata && npm run typecheck && npm run test && npm run build && npm run check:bundle",
+    "quality:release": "npm run check:structure && npm run check:forbidden && npm run check:release-metadata && npm run check:core-content && npm run typecheck && npm run test && npm run build && npm run check:bundle",
     "release:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-windows-installers.ps1",
-    "release:windows:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-windows-installers.ps1"
+    "release:windows:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-windows-installers.ps1",
+    "check:core-content": "node scripts/check-core-content.mjs",
+    "quality:content": "npm run check:structure && npm run check:forbidden && npm run check:release-metadata && npm run check:core-content && npm run typecheck && npm run test && npm run build && npm run check:bundle"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

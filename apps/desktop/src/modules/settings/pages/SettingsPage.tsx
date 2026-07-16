@@ -17,6 +17,7 @@ import {
 import {
   ActivitySection,
   BackupSettingsSection,
+  CoreContentSection,
   DiagnosticsSection,
   InstructionSettingsSection,
   LocalDataControlsSection
@@ -63,8 +64,12 @@ export function SettingsPage() {
           {status === "loading" ? <StatusBadge>Loading settings</StatusBadge> : null}
           {status === "saving" ? <StatusBadge tone="warning">Saving locally</StatusBadge> : null}
           {status === "saved" ? <StatusBadge tone="success">Saved locally</StatusBadge> : null}
-          {status === "ready" ? <StatusBadge tone="success">SQLite settings ready</StatusBadge> : null}
-          {status === "error" ? <StatusBadge tone="danger">Save needs attention</StatusBadge> : null}
+          {status === "ready" ? (
+            <StatusBadge tone="success">SQLite settings ready</StatusBadge>
+          ) : null}
+          {status === "error" ? (
+            <StatusBadge tone="danger">Save needs attention</StatusBadge>
+          ) : null}
         </div>
       </header>
 
@@ -121,6 +126,14 @@ export function SettingsPage() {
             <option value="5">First 5</option>
             <option value="10">All 10</option>
           </SelectField>
+        </SettingsPanel>
+
+        <SettingsPanel
+          description="Inspect the versioned read-only vocabulary collection bundled with this build."
+          icon="book-open"
+          title="Core vocabulary"
+        >
+          <CoreContentSection />
         </SettingsPanel>
 
         <SettingsPanel

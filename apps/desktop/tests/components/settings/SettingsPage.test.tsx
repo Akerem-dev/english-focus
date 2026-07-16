@@ -14,6 +14,9 @@ describe("SettingsPage", () => {
 
     expect(markup).toContain("Settings");
     expect(markup).toContain("Show etymology");
+    expect(markup).toContain("Core vocabulary");
+    expect(markup).toContain("1.0.0-pilot.1");
+    expect(markup).toContain("Pilot validated");
     expect(markup).toContain("Automatic backups");
     expect(markup).toContain("Create backup now");
     expect(markup).toContain("Manage backups");

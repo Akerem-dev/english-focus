@@ -1,5 +1,5 @@
-# CHECKPOINT — CP27 WINDOWS INSTALLER RELEASE ENGINEERING
+# CP29 — Full Regression, Upgrade Rehearsal and Release-Candidate Lock
 
 Status: TESTING
 
-Build and test both unsigned installers on Windows before merge. Verify fresh install, in-place reinstall, uninstall behavior, and preservation of local application data.
+This checkpoint adds release-rehearsal automation only. It does not modify vocabulary content, SQLite tables, routes, or user-visible product features.
