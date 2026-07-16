@@ -1,7 +1,5 @@
-# CHECKPOINT — CP25 Safe Local Data Reset
+# CP26 — Accessibility, performance and release hardening
 
-Status: **TESTING**
+Status: READY FOR WINDOWS VALIDATION
 
-This patch adds selective local data deletion, guarded full reset, pre-operation safety backups, exact local record counts, and transactional native deletion.
-
-Do not merge or tag CP25 until the native Windows tests in `TEST_PLAN.md` pass.
+This checkpoint adds route and import-overlay code splitting, bundle budgets, route-aware focus and announcements, accessible loading states, route-level recovery, and a privacy-safe fatal startup boundary.

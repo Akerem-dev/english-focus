@@ -1,5 +1,5 @@
-# Project Status
+# Project status
 
-- Previous checkpoint: CP24 Local Activity & Privacy — LOCKED
-- Current checkpoint: CP25 Safe Local Data Reset — TESTING
-- Next checkpoint: CP26 Accessibility, Performance & Release Hardening
+- CP25 safe local data reset: locked by user validation.
+- CP26 accessibility, performance and release hardening: implementation complete; Windows/native manual validation pending.
+- Next checkpoint after approval: CP27 Windows installer and release engineering.

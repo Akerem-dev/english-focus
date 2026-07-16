@@ -1,0 +1,114 @@
+.route-loading-state {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+}
+
+.route-loading-state h1,
+.fatal-error h1 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-6);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+}
+
+.route-loading-state > p:not(.route-page__eyebrow) {
+  max-width: 42rem;
+  color: var(--color-text-secondary);
+}
+
+.route-loading-state__skeleton {
+  width: min(100%, 46rem);
+  margin-top: var(--space-5);
+}
+
+.route-error-boundary {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+}
+
+.route-error-boundary .error-state {
+  width: min(100%, 42rem);
+}
+
+.route-error-boundary__link,
+.fatal-error__link {
+  text-decoration: none;
+}
+
+.fatal-error {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: var(--space-6);
+  background: var(--color-background);
+}
+
+.fatal-error__card {
+  display: grid;
+  width: min(100%, 44rem);
+  gap: var(--space-4);
+  padding: clamp(var(--space-6), 6vw, var(--space-8));
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-extra-large);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-high);
+}
+
+.fatal-error__icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: var(--radius-large);
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.fatal-error__card > p:not(.route-page__eyebrow, .fatal-error__reference) {
+  max-width: 38rem;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.fatal-error__reference {
+  width: fit-content;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-2);
+}
+
+.fatal-error__reference strong {
+  color: var(--color-text);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.04em;
+}
+
+.fatal-error__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 36rem) {
+  .fatal-error {
+    padding: var(--space-4);
+  }
+
+  .fatal-error__card {
+    padding: var(--space-5);
+  }
+
+  .fatal-error__actions {
+    display: grid;
+  }
+
+  .fatal-error__actions > * {
+    width: 100%;
+  }
+}
