@@ -1,4 +1,4 @@
-import type { Tag, VocabularyUserMetadata } from "@platform/domain";
+import type { Tag } from "@platform/domain";
 
 const TURKISH_ASCII_REPLACEMENTS: Readonly<Record<string, string>> = Object.freeze({
   ç: "c",
@@ -64,12 +64,4 @@ export function parseVocabularyTags(input: string, createdAt: string): readonly 
   }
 
   return Object.freeze([...byNormalizedName.values()]);
-}
-
-export function updateVocabularyTags(
-  metadata: VocabularyUserMetadata,
-  tags: readonly Tag[],
-  updatedAt: string
-): VocabularyUserMetadata {
-  return Object.freeze({ ...metadata, tags: Object.freeze([...tags]), updatedAt });
 }

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 
 import { Button, Modal } from "../../../components";
+import { useFileTransfer } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
 import { MAX_PASTED_JSON_CHARACTERS, parseVocabularyJson } from "../application";
 
@@ -24,10 +25,6 @@ interface SelectedFileState {
   readonly error?: string | undefined;
 }
 
-function isJsonFile(file: File): boolean {
-  return file.name.toLocaleLowerCase("en-US").endsWith(".json") || file.type === "application/json";
-}
-
 function describeFileSize(size: number): string {
   if (size < 1024) {
     return `${size} bytes`;
@@ -41,19 +38,10 @@ export function SingleEntryFileImportDialog({
   onContinue,
   open
 }: SingleEntryFileImportDialogProps) {
+  const { reader } = useFileTransfer();
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<SelectedFileState | undefined>();
   const [isReading, setIsReading] = useState(false);
-
-  useEffect(() => {
-    if (!open) {
-      setSelectedFile(undefined);
-      setIsReading(false);
-      if (inputRef.current !== null) {
-        inputRef.current.value = "";
-      }
-    }
-  }, [open]);
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.currentTarget.files?.[0];
@@ -62,23 +50,34 @@ export function SingleEntryFileImportDialog({
       return;
     }
 
-    if (!isJsonFile(file)) {
-      setSelectedFile({
-        fileName: file.name,
-        input: "",
-        error: "Choose a .json file containing one vocabulary entry."
-      });
-      return;
-    }
-
     setIsReading(true);
 
     try {
-      const input = await file.text();
+      const readResult = await reader.readText(file, {
+        allowedExtensions: [".json"],
+        allowedMediaTypes: ["application/json"],
+        maxBytes: MAX_PASTED_JSON_CHARACTERS
+      });
+
+      if (readResult.kind === "failure") {
+        setSelectedFile({
+          fileName: readResult.fileName,
+          input: "",
+          error:
+            readResult.code === "unsupported-type"
+              ? "Choose a .json file containing one vocabulary entry."
+              : readResult.code === "too-large"
+                ? `The file exceeds the ${MAX_PASTED_JSON_CHARACTERS.toLocaleString("en-US")} byte safety limit.`
+                : (readResult.message ?? "The selected file could not be read.")
+        });
+        return;
+      }
+
+      const { fileName, text: input } = readResult.file;
 
       if (input.length > MAX_PASTED_JSON_CHARACTERS) {
         setSelectedFile({
-          fileName: file.name,
+          fileName,
           input,
           error: `The file exceeds the ${MAX_PASTED_JSON_CHARACTERS.toLocaleString("en-US")} character safety limit.`
         });
@@ -88,7 +87,7 @@ export function SingleEntryFileImportDialog({
       const parseResult = parseVocabularyJson(input);
 
       if (parseResult.kind === "failure") {
-        setSelectedFile({ fileName: file.name, input, error: parseResult.message });
+        setSelectedFile({ fileName, input, error: parseResult.message });
         return;
       }
 
@@ -96,7 +95,7 @@ export function SingleEntryFileImportDialog({
 
       if (detectedWord === undefined || detectedWord.length === 0) {
         setSelectedFile({
-          fileName: file.name,
+          fileName,
           input,
           topLevelKeyCount: parseResult.parsed.topLevelKeys.length,
           error: "The file is valid JSON, but no vocabulary word could be detected."
@@ -105,14 +104,14 @@ export function SingleEntryFileImportDialog({
       }
 
       setSelectedFile({
-        fileName: file.name,
+        fileName,
         input,
         detectedWord,
         topLevelKeyCount: parseResult.parsed.topLevelKeys.length
       });
     } catch (cause) {
       setSelectedFile({
-        fileName: file.name,
+        fileName: "Unknown file",
         input: "",
         error: cause instanceof Error ? cause.message : "The selected file could not be read."
       });
@@ -179,7 +178,9 @@ export function SingleEntryFileImportDialog({
         <span aria-hidden="true">
           <AppIcon name="upload" size={28} />
         </span>
-        <strong>{selectedFile === undefined ? "Choose a vocabulary JSON file" : "Choose another file"}</strong>
+        <strong>
+          {selectedFile === undefined ? "Choose a vocabulary JSON file" : "Choose another file"}
+        </strong>
         <small>Single JSON object · local processing · maximum 524,288 characters</small>
       </button>
 

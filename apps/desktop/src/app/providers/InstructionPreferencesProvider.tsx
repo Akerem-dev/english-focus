@@ -32,8 +32,7 @@ export function InstructionPreferencesProvider({ children }: PropsWithChildren) 
         }
 
         void settingsContext.updateSettings((current) => {
-          const next =
-            typeof update === "function" ? update(current.instruction) : update;
+          const next = typeof update === "function" ? update(current.instruction) : update;
           return updateInstructionSettings(current, validateInstructionPreferences(next));
         });
       },

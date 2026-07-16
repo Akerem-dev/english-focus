@@ -1,8 +1,4 @@
-import type {
-  BackupDescriptor,
-  BackupRetentionPolicy,
-  BackupReason
-} from "@platform/domain";
+import type { BackupDescriptor, BackupRetentionPolicy, BackupReason } from "@platform/domain";
 import { defaultBackupRetentionPolicy } from "@platform/domain";
 
 function excessForReason(

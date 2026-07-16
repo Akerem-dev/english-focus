@@ -1,8 +1,5 @@
 import { createContext } from "react";
-import type {
-  SaveVocabularyUserMetadataInput,
-  VocabularyUserMetadata
-} from "@platform/domain";
+import type { SaveVocabularyUserMetadataInput, VocabularyUserMetadata } from "@platform/domain";
 
 export type VocabularyMetadataStatus = "loading" | "ready" | "saving" | "error";
 
@@ -18,6 +15,6 @@ export interface VocabularyMetadataContextValue {
   readonly recordView: (normalizedWord: string) => Promise<VocabularyUserMetadata | undefined>;
 }
 
-export const VocabularyMetadataContext = createContext<
-  VocabularyMetadataContextValue | undefined
->(undefined);
+export const VocabularyMetadataContext = createContext<VocabularyMetadataContextValue | undefined>(
+  undefined
+);

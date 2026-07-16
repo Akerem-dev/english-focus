@@ -1,25 +1,11 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import type { AppSettings } from "@platform/domain";
 
 import { TauriSettingsRepository } from "../../infrastructure/persistence";
 import { publishActivity } from "../../modules/history";
-import {
-  createDefaultAppSettings,
-  validateAppSettings
-} from "../../modules/settings/application";
+import { createDefaultAppSettings, validateAppSettings } from "../../modules/settings/application";
 import { resolveTheme } from "../../modules/settings/state";
-import {
-  SettingsContext,
-  type SettingsContextValue,
-  type SettingsStatus
-} from "./SettingsContext";
+import { SettingsContext, type SettingsContextValue, type SettingsStatus } from "./SettingsContext";
 
 function applyDocumentPreferences(settings: AppSettings, systemPrefersDark: boolean): void {
   const resolvedTheme = resolveTheme(settings.appearance.theme, systemPrefersDark);
@@ -36,6 +22,8 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   const [settings, setSettings] = useState<AppSettings>(() => createDefaultAppSettings());
   const [status, setStatus] = useState<SettingsStatus>("loading");
   const [error, setError] = useState<string | undefined>();
+  const settingsRef = useRef(settings);
+  const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const saveSequence = useRef(0);
 
   const refreshSettings = useCallback(async () => {
@@ -45,6 +33,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     try {
       const stored = await repository.getSettings();
       const resolved = stored ?? createDefaultAppSettings();
+      settingsRef.current = resolved;
       setSettings(resolved);
 
       if (stored === undefined) {
@@ -63,7 +52,12 @@ export function SettingsProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   useEffect(() => {
-    void refreshSettings();
+    const timer = window.setTimeout(() => {
+      void refreshSettings().catch(() => undefined);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [refreshSettings]);
 
   useEffect(() => {
@@ -81,17 +75,26 @@ export function SettingsProvider({ children }: PropsWithChildren) {
 
   const updateSettings = useCallback(
     async (update: (current: AppSettings) => AppSettings) => {
-      const next = validateAppSettings(update(settings));
+      const previous = settingsRef.current;
+      const next = validateAppSettings(update(previous));
       const sequence = saveSequence.current + 1;
       saveSequence.current = sequence;
+      settingsRef.current = next;
       setSettings(next);
       setStatus("saving");
       setError(undefined);
 
+      const saveOperation = saveQueue.current.then(() => repository.saveSettings(next));
+      saveQueue.current = saveOperation.then(
+        () => undefined,
+        () => undefined
+      );
+
       try {
-        const saved = await repository.saveSettings(next);
+        const saved = await saveOperation;
 
         if (saveSequence.current === sequence) {
+          settingsRef.current = saved;
           setSettings(saved);
           setStatus("saved");
           publishActivity({
@@ -108,12 +111,16 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       } catch (cause) {
         const message =
           cause instanceof Error ? cause.message : "Application settings could not be saved.";
-        setError(message);
-        setStatus("error");
+        if (saveSequence.current === sequence) {
+          settingsRef.current = previous;
+          setSettings(previous);
+          setError(message);
+          setStatus("error");
+        }
         throw cause;
       }
     },
-    [repository, settings]
+    [repository]
   );
 
   const resetSettings = useCallback(async () => {

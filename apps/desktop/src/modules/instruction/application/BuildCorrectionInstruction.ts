@@ -8,7 +8,7 @@ import { vocabularyEntryJsonSchema } from "@platform/schemas";
 import { renderCorrectionInstruction } from "../templates";
 
 const NORMALIZED_ENGLISH_WORD = /^[a-z]+(?:['-][a-z]+)*$/;
-export const CORRECTION_INSTRUCTION_TEMPLATE_VERSION = "1.0.0" as const;
+const CORRECTION_INSTRUCTION_TEMPLATE_VERSION = "1.0.0" as const;
 
 export interface BuildCorrectionInstructionRequest {
   readonly targetWord: string;

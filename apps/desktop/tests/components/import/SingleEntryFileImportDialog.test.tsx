@@ -6,11 +6,7 @@ import { SingleEntryFileImportDialog } from "../../../src/modules/import-export"
 describe("SingleEntryFileImportDialog", () => {
   it("renders the local single-entry file boundary", () => {
     const markup = renderToStaticMarkup(
-      <SingleEntryFileImportDialog
-        onClose={() => undefined}
-        onContinue={() => undefined}
-        open
-      />
+      <SingleEntryFileImportDialog onClose={() => undefined} onContinue={() => undefined} open />
     );
 
     expect(markup).toContain("Import one vocabulary entry");

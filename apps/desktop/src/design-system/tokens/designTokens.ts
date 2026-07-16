@@ -104,5 +104,3 @@ export const designTokens = {
     contentApp: "80rem"
   }
 } as const;
-
-export type DesignTokens = typeof designTokens;

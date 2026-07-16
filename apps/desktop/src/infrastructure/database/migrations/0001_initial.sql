@@ -1,4 +1,4 @@
--- CP14 SQLite vocabulary persistence baseline.
+-- SQLite vocabulary persistence baseline.
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS schema_metadata (

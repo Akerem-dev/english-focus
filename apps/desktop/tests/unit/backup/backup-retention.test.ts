@@ -55,14 +55,14 @@ describe("backup retention and scheduling", () => {
   });
 
   it("creates an automatic backup only when the configured interval is due", () => {
-    const latest = backup(
-      "automatic.json",
-      "automatic",
-      "2026-07-14T12:00:00.000Z"
-    );
+    const latest = backup("automatic.json", "automatic", "2026-07-14T12:00:00.000Z");
 
-    expect(isAutomaticBackupDue([latest], "daily", new Date("2026-07-15T13:00:00.000Z"))).toBe(true);
-    expect(isAutomaticBackupDue([latest], "weekly", new Date("2026-07-15T13:00:00.000Z"))).toBe(false);
+    expect(isAutomaticBackupDue([latest], "daily", new Date("2026-07-15T13:00:00.000Z"))).toBe(
+      true
+    );
+    expect(isAutomaticBackupDue([latest], "weekly", new Date("2026-07-15T13:00:00.000Z"))).toBe(
+      false
+    );
     expect(isAutomaticBackupDue([], "manual", new Date("2026-07-15T13:00:00.000Z"))).toBe(false);
   });
 });

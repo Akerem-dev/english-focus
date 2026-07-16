@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { ToastRecord } from "../../app/providers/ToastContext";
 import { AppIcon } from "../../design-system";
@@ -15,23 +15,19 @@ function iconName(tone: ToastRecord["tone"]) {
 
 export function Toast({ onDismiss, toast }: ToastProps) {
   const [actionPending, setActionPending] = useState(false);
-  const hovering = useRef(false);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (toast.durationMs === undefined || toast.durationMs <= 0) {
+    if (toast.durationMs === undefined || toast.durationMs <= 0 || paused || actionPending) {
       return;
     }
 
-    const timeout = window.setTimeout(() => {
-      if (!hovering.current && !actionPending) {
-        onDismiss();
-      }
-    }, toast.durationMs);
+    const timeout = window.setTimeout(onDismiss, toast.durationMs);
 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [actionPending, onDismiss, toast.durationMs]);
+  }, [actionPending, onDismiss, paused, toast.durationMs]);
 
   async function runAction() {
     if (toast.action === undefined || actionPending) {
@@ -53,10 +49,18 @@ export function Toast({ onDismiss, toast }: ToastProps) {
       className="toast"
       data-tone={toast.tone}
       onMouseEnter={() => {
-        hovering.current = true;
+        setPaused(true);
       }}
       onMouseLeave={() => {
-        hovering.current = false;
+        setPaused(false);
+      }}
+      onFocusCapture={() => {
+        setPaused(true);
+      }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setPaused(false);
+        }
       }}
       role={toast.tone === "error" || toast.tone === "warning" ? "alert" : "status"}
     >

@@ -33,7 +33,12 @@ export function VocabularyRepositoryProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   useEffect(() => {
-    void refresh();
+    const timer = window.setTimeout(() => {
+      void refresh();
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [refresh]);
 
   const saveEntry = useCallback(
@@ -52,13 +57,30 @@ export function VocabularyRepositoryProvider({ children }: PropsWithChildren) {
     [repository]
   );
 
+  const saveEntries = useCallback(
+    async (inputs: readonly SaveVocabularyEntryInput[]) => {
+      const saved = await repository.saveEntries(inputs);
+      const savedWords = new Set(saved.map((record) => record.entry.normalizedWord));
+      setStoredEntries((current) =>
+        Object.freeze([
+          ...saved,
+          ...current.filter((record) => !savedWords.has(record.entry.normalizedWord))
+        ])
+      );
+      setStatus("ready");
+      setError(undefined);
+      return saved;
+    },
+    [repository]
+  );
+
   const contentSource = useMemo(
     () => new LayeredVocabularyContentSource(coreSource, storedEntries),
     [coreSource, storedEntries]
   );
   const value = useMemo(
-    () => ({ contentSource, storedEntries, status, error, refresh, saveEntry }),
-    [contentSource, storedEntries, status, error, refresh, saveEntry]
+    () => ({ contentSource, storedEntries, status, error, refresh, saveEntry, saveEntries }),
+    [contentSource, storedEntries, status, error, refresh, saveEntries, saveEntry]
   );
 
   return (

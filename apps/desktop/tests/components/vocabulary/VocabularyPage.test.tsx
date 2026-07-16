@@ -2,7 +2,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import { VocabularyMetadataProvider, VocabularyRepositoryProvider } from "../../../src/app/providers";
+import {
+  ActivityProvider,
+  VocabularyMetadataProvider,
+  VocabularyRepositoryProvider
+} from "../../../src/app/providers";
 import {
   VocabularyInvalidSearchState,
   VocabularyNotFoundState,
@@ -14,11 +18,13 @@ describe("VocabularyPage search states", () => {
   it("renders the initial local-search experience", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
-        <VocabularyRepositoryProvider>
-          <VocabularyMetadataProvider>
-            <VocabularyPage />
-          </VocabularyMetadataProvider>
-        </VocabularyRepositoryProvider>
+        <ActivityProvider>
+          <VocabularyRepositoryProvider>
+            <VocabularyMetadataProvider>
+              <VocabularyPage />
+            </VocabularyMetadataProvider>
+          </VocabularyRepositoryProvider>
+        </ActivityProvider>
       </MemoryRouter>
     );
 

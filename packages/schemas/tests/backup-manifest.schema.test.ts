@@ -24,7 +24,9 @@ const descriptor = {
 describe("backup schemas", () => {
   it("accepts current and legacy database schema descriptors", () => {
     expect(backupDescriptorSchema.parse(descriptor)).toEqual(descriptor);
-    expect(backupDescriptorSchema.parse({ ...descriptor, databaseSchemaVersion: "2" })).toMatchObject({
+    expect(
+      backupDescriptorSchema.parse({ ...descriptor, databaseSchemaVersion: "2" })
+    ).toMatchObject({
       databaseSchemaVersion: "2"
     });
   });
@@ -45,9 +47,9 @@ describe("backup schemas", () => {
   });
 
   it("rejects malformed checksums and unsupported schema versions", () => {
-    expect(
-      backupDescriptorSchema.safeParse({ ...descriptor, checksum: "broken" }).success
-    ).toBe(false);
+    expect(backupDescriptorSchema.safeParse({ ...descriptor, checksum: "broken" }).success).toBe(
+      false
+    );
     expect(
       backupDescriptorSchema.safeParse({ ...descriptor, databaseSchemaVersion: "99" }).success
     ).toBe(false);

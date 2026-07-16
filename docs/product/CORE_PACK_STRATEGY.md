@@ -3,6 +3,7 @@
 A future 5,000-entry core pack is installed separately from user content.
 
 Layers:
+
 - core entry
 - user-created entry
 - user override

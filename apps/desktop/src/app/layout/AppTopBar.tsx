@@ -5,7 +5,7 @@ import { Button } from "../../components";
 import { AppIcon } from "../../design-system";
 import type { SingleEntryFileImportPayload } from "../../modules/import-export/overlays/SingleEntryFileImportDialog";
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../command-bar";
-import { getRouteByPath } from "../router";
+import { getRouteByPath, ROUTE_PATHS } from "../router";
 
 const ImportSourceDialog = lazy(async () => {
   const module = await import("../../modules/import-export/overlays/ImportSourceDialog");
@@ -136,7 +136,7 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
             }}
             onOpenLibrary={() => {
               setPackDialogOpen(false);
-              navigate("/library");
+              navigate(ROUTE_PATHS.library);
             }}
             open
           />
@@ -154,7 +154,7 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
             }}
             onOpenSavedEntry={(word) => {
               setImportPayload(undefined);
-              navigate(`/vocabulary?word=${encodeURIComponent(word)}`);
+              navigate(`${ROUTE_PATHS.vocabulary}?word=${encodeURIComponent(word)}`);
             }}
             open
             sourceFileName={importPayload.fileName}

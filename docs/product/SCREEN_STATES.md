@@ -1,6 +1,7 @@
 # Screen States
 
 ## Vocabulary
+
 - Initial
 - Typing
 - Searching
@@ -13,6 +14,7 @@
 - Narrow window
 
 ## Library
+
 - Normal
 - Empty
 - Filtered empty
@@ -23,6 +25,7 @@
 - Error
 
 ## Settings
+
 - Normal
 - Saving
 - Saved

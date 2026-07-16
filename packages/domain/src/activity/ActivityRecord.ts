@@ -31,6 +31,6 @@ export interface ActivityRecord {
   readonly occurredAt: string;
 }
 
-export interface RecordActivityInput extends ActivityRecord {}
+export type RecordActivityInput = ActivityRecord;
 
 export type ActivityFilter = "all" | ActivityScope;

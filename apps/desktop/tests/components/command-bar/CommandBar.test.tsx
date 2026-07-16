@@ -1,10 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import {
-  CommandBar,
-  createCommandRegistry
-} from "../../../src/app/command-bar";
+import { CommandBar, createCommandRegistry } from "../../../src/app/command-bar";
 import { KeyboardShortcutsDialog } from "../../../src/app/shortcuts";
 
 function renderCommandBar(pathname: string) {
@@ -38,9 +35,7 @@ describe("CommandBar", () => {
   });
 
   it("renders the keyboard shortcut reference", () => {
-    const markup = renderToStaticMarkup(
-      <KeyboardShortcutsDialog onClose={() => undefined} open />
-    );
+    const markup = renderToStaticMarkup(<KeyboardShortcutsDialog onClose={() => undefined} open />);
 
     expect(markup).toContain("Keyboard shortcuts");
     expect(markup).toContain("Open command bar");

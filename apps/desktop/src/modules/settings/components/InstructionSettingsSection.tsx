@@ -71,7 +71,8 @@ export function InstructionSettingsSection() {
         Reset instruction defaults
       </Button>
       <small className="instruction-settings__note">
-        These provider-independent preferences are saved locally and restored when English Focus restarts.
+        These provider-independent preferences are saved locally and restored when English Focus
+        restarts.
       </small>
     </div>
   );

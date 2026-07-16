@@ -9,14 +9,30 @@ import {
   writeFileSync
 } from "node:fs";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { basename, extname, join, resolve } from "node:path";
 
 const root = process.cwd();
 const collect = process.argv.includes("--collect");
 const config = JSON.parse(
-  readFileSync(resolve(root, "apps/desktop/src-tauri/tauri.conf.json"), "utf8").replace(/^\uFEFF/, "")
+  readFileSync(resolve(root, "apps/desktop/src-tauri/tauri.conf.json"), "utf8").replace(
+    /^\uFEFF/,
+    ""
+  )
 );
 const version = config.version;
+const sourceCommit = execFileSync("git", ["rev-parse", "HEAD"], {
+  cwd: root,
+  encoding: "utf8"
+}).trim();
+const sourceDirty =
+  execFileSync("git", ["status", "--porcelain"], {
+    cwd: root,
+    encoding: "utf8"
+  }).trim().length > 0;
+const signingRequested = Boolean(
+  process.env.EF_WINDOWS_CERTIFICATE_THUMBPRINT || process.env.EF_WINDOWS_SIGN_COMMAND
+);
 
 if (typeof version !== "string" || !/^\d+\.\d+\.\d+$/.test(version)) {
   throw new Error(`Invalid Tauri release version: ${String(version)}`);
@@ -37,7 +53,9 @@ for (const target of expected) {
   const files = existsSync(target.directory)
     ? readdirSync(target.directory)
         .map((name) => join(target.directory, name))
-        .filter((path) => statSync(path).isFile() && extname(path).toLowerCase() === target.extension)
+        .filter(
+          (path) => statSync(path).isFile() && extname(path).toLowerCase() === target.extension
+        )
     : [];
 
   const currentVersionFiles = files.filter((path) => basename(path).includes(version));
@@ -105,7 +123,9 @@ if (collect) {
         version,
         identifier: config.identifier,
         generatedAt: new Date().toISOString(),
-        signed: false,
+        sourceCommit,
+        sourceDirty,
+        signingRequested,
         artifacts: artifacts.map(({ kind, name, sizeBytes, sha256 }) => ({
           kind,
           name,

@@ -23,7 +23,7 @@ function preferImported<T>(imported: readonly T[], existing: readonly T[]): read
 }
 
 /**
- * Safe merge policy for CP13:
+ * Safe duplicate merge policy:
  * - imported meanings, morphology and exactly-ten examples remain authoritative;
  * - optional supporting sections fall back to the existing entry only when omitted;
  * - aliases/registers/parts of speech are combined without duplicates;

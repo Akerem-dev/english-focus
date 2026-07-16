@@ -20,10 +20,10 @@ export function CoreContentSection() {
       </div>
       <div className="settings-value-row">
         <span>Validation state</span>
-        <StatusBadge tone="success">Pilot validated</StatusBadge>
+        <StatusBadge tone="success">Editorially reviewed</StatusBadge>
       </div>
       <div className="settings-value-row settings-value-row--stacked">
-        <span>Manual review sample</span>
+        <span>Reviewed entries</span>
         <strong>{sampleWords}</strong>
       </div>
       <p className="settings-supporting-copy">

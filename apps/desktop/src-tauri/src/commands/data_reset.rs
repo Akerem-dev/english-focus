@@ -1,13 +1,9 @@
 use std::collections::HashSet;
 
-use rusqlite::params;
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, State};
 
-use crate::{
-    commands::backup,
-    state::AppState,
-};
+use crate::{commands::backup, state::AppState};
 
 const ALLOWED_CATEGORIES: [&str; 6] = [
     "study-metadata",
@@ -63,7 +59,9 @@ fn validate_request(request: &ResetLocalDataRequest) -> Result<HashSet<&str>, St
     let mut categories = HashSet::new();
     for category in &request.categories {
         if !ALLOWED_CATEGORIES.contains(&category.as_str()) {
-            return Err(format!("Local data category '{category}' is not supported."));
+            return Err(format!(
+                "Local data category '{category}' is not supported."
+            ));
         }
         categories.insert(category.as_str());
     }
@@ -176,7 +174,10 @@ pub fn reset_local_data(
 
     if categories.contains("overrides") {
         deleted.override_vocabulary_entries = transaction
-            .execute("DELETE FROM vocabulary_entries WHERE layer = 'override'", [])
+            .execute(
+                "DELETE FROM vocabulary_entries WHERE layer = 'override'",
+                [],
+            )
             .map_err(|error| format!("Vocabulary overrides could not be removed: {error}"))?;
     }
 

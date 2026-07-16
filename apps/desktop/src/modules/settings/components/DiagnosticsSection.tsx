@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type {
   DiagnosticCheckStatus,
   DiagnosticOverallStatus,
@@ -7,14 +7,10 @@ import type {
 } from "@platform/domain";
 
 import { Button, StatusBadge } from "../../../components";
+import { useClipboard, useMaintenance } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
-import { TauriDiagnosticsRepository } from "../../../infrastructure/persistence";
 import { publishActivity } from "../../history";
-import {
-  createDiagnosticSummary,
-  runDiagnostics,
-  runSafeMaintenance
-} from "../application";
+import { createDiagnosticSummary, runDiagnostics, runSafeMaintenance } from "../application";
 
 interface DiagnosticsSectionProps {
   readonly repository?: DiagnosticsRepository;
@@ -58,10 +54,9 @@ function formatGeneratedAt(value: string): string {
 }
 
 export function DiagnosticsSection({ repository: providedRepository }: DiagnosticsSectionProps) {
-  const repository = useMemo(
-    () => providedRepository ?? new TauriDiagnosticsRepository(),
-    [providedRepository]
-  );
+  const clipboard = useClipboard();
+  const { diagnosticsRepository } = useMaintenance();
+  const repository = providedRepository ?? diagnosticsRepository;
   const [status, setStatus] = useState<DiagnosticsStatus>("idle");
   const [report, setReport] = useState<DiagnosticReport | undefined>();
   const [error, setError] = useState<string | undefined>();
@@ -113,7 +108,7 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
     }
 
     try {
-      await navigator.clipboard.writeText(createDiagnosticSummary(report));
+      await clipboard.writeText(createDiagnosticSummary(report));
       setCopyStatus("copied");
     } catch {
       setCopyStatus("failed");
@@ -164,10 +159,7 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
         <>
           <section className="diagnostics-overview" data-status={report.overallStatus}>
             <div className="diagnostics-overview__icon" aria-hidden="true">
-              <AppIcon
-                name={report.overallStatus === "healthy" ? "check" : "warning"}
-                size={22}
-              />
+              <AppIcon name={report.overallStatus === "healthy" ? "check" : "warning"} size={22} />
             </div>
             <div>
               <div className="diagnostics-overview__heading">
@@ -183,8 +175,8 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
                 </StatusBadge>
               </div>
               <p>
-                Generated {formatGeneratedAt(report.generatedAt)} · app {report.appVersion} · database
-                schema {report.databaseSchemaVersion}
+                Generated {formatGeneratedAt(report.generatedAt)} · app {report.appVersion} ·
+                database schema {report.databaseSchemaVersion}
               </p>
             </div>
           </section>

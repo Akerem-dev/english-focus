@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import type {
   BackupDescriptor,
   BackupRestoreResult,
@@ -49,7 +42,12 @@ export function BackupProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   useEffect(() => {
-    void refreshBackups();
+    const timer = window.setTimeout(() => {
+      void refreshBackups().catch(() => undefined);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [refreshBackups]);
 
   useEffect(() => {
@@ -69,18 +67,25 @@ export function BackupProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    setStatus("creating");
-    void repository
-      .createBackup("automatic", new Date().toISOString())
-      .then(async () => {
-        const listed = sortBackupsNewestFirst(await repository.listBackups());
-        setBackups(listed);
-        setStatus("ready");
-      })
-      .catch((cause) => {
-        setError(cause instanceof Error ? cause.message : "Automatic backup could not be created.");
-        setStatus("error");
-      });
+    const timer = window.setTimeout(() => {
+      setStatus("creating");
+      void repository
+        .createBackup("automatic", new Date().toISOString())
+        .then(async () => {
+          const listed = sortBackupsNewestFirst(await repository.listBackups());
+          setBackups(listed);
+          setStatus("ready");
+        })
+        .catch((cause) => {
+          setError(
+            cause instanceof Error ? cause.message : "Automatic backup could not be created."
+          );
+          setStatus("error");
+        });
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [backups, repository, settings.data, settingsStatus, status]);
 
   const createManualBackup = useCallback(async () => {

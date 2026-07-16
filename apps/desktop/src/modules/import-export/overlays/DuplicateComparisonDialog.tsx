@@ -69,7 +69,7 @@ export function DuplicateComparisonDialog({
   if (result.kind === "new-entry") {
     return (
       <Modal
-        description={`No local entry currently uses “${result.imported.entry.normalizedWord}”. The reviewed content can continue to the persistence checkpoint.`}
+        description={`No local entry currently uses “${result.imported.entry.normalizedWord}”. The reviewed content can continue to local persistence.`}
         footer={
           <>
             <Button onClick={onClose} variant="ghost">

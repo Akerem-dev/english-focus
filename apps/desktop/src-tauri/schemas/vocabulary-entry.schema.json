@@ -1,0 +1,681 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0.0" },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+    },
+    "word": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "normalizedWord": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z' -]*$"
+    },
+    "aliases": {
+      "maxItems": 30,
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 120, "pattern": "^[a-z][a-z' -]*$" }
+    },
+    "pronunciations": {
+      "minItems": 1,
+      "maxItems": 6,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ipa": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "variant": { "type": "string", "enum": ["general", "uk", "us", "au", "other"] },
+          "syllableBreakdown": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "stress": { "type": "string", "minLength": 1, "maxLength": 240 }
+        },
+        "required": ["ipa", "variant"],
+        "additionalProperties": false
+      }
+    },
+    "cefr": { "type": "string", "enum": ["A1", "A2", "B1", "B2", "C1", "C2"] },
+    "registers": {
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "neutral",
+          "formal",
+          "informal",
+          "academic",
+          "business",
+          "legal",
+          "literary",
+          "technical",
+          "spoken",
+          "written",
+          "slang",
+          "archaic"
+        ]
+      }
+    },
+    "partsOfSpeech": {
+      "minItems": 1,
+      "maxItems": 8,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "noun",
+          "verb",
+          "adjective",
+          "adverb",
+          "pronoun",
+          "preposition",
+          "conjunction",
+          "determiner",
+          "interjection",
+          "modal",
+          "auxiliary",
+          "phrase",
+          "phrasal-verb",
+          "idiom",
+          "other"
+        ]
+      }
+    },
+    "meanings": {
+      "minItems": 1,
+      "maxItems": 24,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+          },
+          "partOfSpeech": {
+            "type": "string",
+            "enum": [
+              "noun",
+              "verb",
+              "adjective",
+              "adverb",
+              "pronoun",
+              "preposition",
+              "conjunction",
+              "determiner",
+              "interjection",
+              "modal",
+              "auxiliary",
+              "phrase",
+              "phrasal-verb",
+              "idiom",
+              "other"
+            ]
+          },
+          "definitionEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "translationsTr": {
+            "minItems": 1,
+            "maxItems": 12,
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 240 }
+          },
+          "registers": {
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "formal",
+                "informal",
+                "academic",
+                "business",
+                "legal",
+                "literary",
+                "technical",
+                "spoken",
+                "written",
+                "slang",
+                "archaic"
+              ]
+            }
+          },
+          "usageNoteEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "usageNoteTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+        },
+        "required": ["id", "partOfSpeech", "definitionEn", "translationsTr", "registers"],
+        "additionalProperties": false
+      }
+    },
+    "morphology": {
+      "type": "object",
+      "properties": {
+        "baseForm": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "root": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "prefix": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "suffix": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "inflectedForms": {
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "form": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "normalizedForm": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "^[a-z][a-z' -]*$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "base",
+                  "plural",
+                  "past",
+                  "past-participle",
+                  "present-participle",
+                  "third-person-singular",
+                  "comparative",
+                  "superlative",
+                  "other"
+                ]
+              }
+            },
+            "required": ["form", "normalizedForm", "type"],
+            "additionalProperties": false
+          }
+        },
+        "notesEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "notesTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+      },
+      "required": ["baseForm", "inflectedForms"],
+      "additionalProperties": false
+    },
+    "wordFamily": {
+      "maxItems": 40,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "word": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "normalizedWord": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[a-z][a-z' -]*$"
+          },
+          "partOfSpeech": {
+            "type": "string",
+            "enum": [
+              "noun",
+              "verb",
+              "adjective",
+              "adverb",
+              "pronoun",
+              "preposition",
+              "conjunction",
+              "determiner",
+              "interjection",
+              "modal",
+              "auxiliary",
+              "phrase",
+              "phrasal-verb",
+              "idiom",
+              "other"
+            ]
+          },
+          "relation": { "type": "string", "enum": ["derived", "compound", "variant", "root"] },
+          "translationTr": { "type": "string", "minLength": 1, "maxLength": 240 }
+        },
+        "required": ["word", "normalizedWord", "partOfSpeech", "relation"],
+        "additionalProperties": false
+      }
+    },
+    "etymology": {
+      "type": "object",
+      "properties": {
+        "explanationEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "explanationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "certainty": { "type": "string", "enum": ["high", "medium", "low"] },
+        "originLanguage": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "originForm": { "type": "string", "minLength": 1, "maxLength": 240 }
+      },
+      "required": ["explanationEn", "explanationTr", "certainty"],
+      "additionalProperties": false
+    },
+    "grammar": {
+      "type": "object",
+      "properties": {
+        "summaryEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "summaryTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "patterns": {
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "explanationEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "explanationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "examples": {
+                "minItems": 1,
+                "maxItems": 6,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+                    "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+                  },
+                  "required": ["sentenceEn", "translationTr"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["pattern", "explanationEn", "explanationTr", "examples"],
+            "additionalProperties": false
+          }
+        },
+        "tenseExamples": {
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tense": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "usageNoteEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "usageNoteTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+            },
+            "required": ["tense", "sentenceEn", "translationTr"],
+            "additionalProperties": false
+          }
+        },
+        "sentenceForms": {
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "form": {
+                "type": "string",
+                "enum": [
+                  "affirmative",
+                  "negative",
+                  "question",
+                  "imperative",
+                  "conditional",
+                  "passive",
+                  "other"
+                ]
+              },
+              "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+            },
+            "required": ["form", "sentenceEn", "translationTr"],
+            "additionalProperties": false
+          }
+        },
+        "prepositionPatterns": {
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "preposition": { "type": "string", "minLength": 1, "maxLength": 240 },
+              "explanationEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "explanationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+              "examples": {
+                "minItems": 1,
+                "maxItems": 6,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+                    "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+                  },
+                  "required": ["sentenceEn", "translationTr"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": ["pattern", "preposition", "explanationEn", "explanationTr", "examples"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "summaryEn",
+        "summaryTr",
+        "patterns",
+        "tenseExamples",
+        "sentenceForms",
+        "prepositionPatterns"
+      ],
+      "additionalProperties": false
+    },
+    "collocations": {
+      "maxItems": 60,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phrase": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "translationTr": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "registers": {
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "formal",
+                "informal",
+                "academic",
+                "business",
+                "legal",
+                "literary",
+                "technical",
+                "spoken",
+                "written",
+                "slang",
+                "archaic"
+              ]
+            }
+          },
+          "explanationEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "explanationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "exampleEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "exampleTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+        },
+        "required": ["phrase", "translationTr", "registers"],
+        "additionalProperties": false
+      }
+    },
+    "phrasalVerbs": {
+      "maxItems": 30,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phrase": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "meaningEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "separable": { "anyOf": [{ "type": "boolean" }, { "type": "null" }] },
+          "registers": {
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "formal",
+                "informal",
+                "academic",
+                "business",
+                "legal",
+                "literary",
+                "technical",
+                "spoken",
+                "written",
+                "slang",
+                "archaic"
+              ]
+            }
+          },
+          "examples": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+                "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+              },
+              "required": ["sentenceEn", "translationTr"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["phrase", "meaningEn", "translationTr", "separable", "registers", "examples"],
+        "additionalProperties": false
+      }
+    },
+    "idioms": {
+      "maxItems": 30,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "phrase": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "meaningEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "registers": {
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "formal",
+                "informal",
+                "academic",
+                "business",
+                "legal",
+                "literary",
+                "technical",
+                "spoken",
+                "written",
+                "slang",
+                "archaic"
+              ]
+            }
+          },
+          "examples": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+                "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+              },
+              "required": ["sentenceEn", "translationTr"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["phrase", "meaningEn", "translationTr", "registers", "examples"],
+        "additionalProperties": false
+      }
+    },
+    "relatedWords": {
+      "maxItems": 60,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "word": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "normalizedWord": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "pattern": "^[a-z][a-z' -]*$"
+          },
+          "relationship": {
+            "type": "string",
+            "enum": ["synonym", "antonym", "near-synonym", "commonly-confused", "related"]
+          },
+          "partOfSpeech": {
+            "type": "string",
+            "enum": [
+              "noun",
+              "verb",
+              "adjective",
+              "adverb",
+              "pronoun",
+              "preposition",
+              "conjunction",
+              "determiner",
+              "interjection",
+              "modal",
+              "auxiliary",
+              "phrase",
+              "phrasal-verb",
+              "idiom",
+              "other"
+            ]
+          },
+          "distinctionEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "distinctionTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+        },
+        "required": ["word", "normalizedWord", "relationship"],
+        "additionalProperties": false
+      }
+    },
+    "commonMistakes": {
+      "maxItems": 30,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "incorrect": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "correct": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "explanationEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "explanationTr": { "type": "string", "minLength": 1, "maxLength": 4000 }
+        },
+        "required": ["incorrect", "correct", "explanationEn", "explanationTr"],
+        "additionalProperties": false
+      }
+    },
+    "examples": {
+      "minItems": 10,
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+          },
+          "sentenceEn": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "translationTr": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "registers": {
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "formal",
+                "informal",
+                "academic",
+                "business",
+                "legal",
+                "literary",
+                "technical",
+                "spoken",
+                "written",
+                "slang",
+                "archaic"
+              ]
+            }
+          },
+          "grammarLabel": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "targetForm": { "type": "string", "minLength": 1, "maxLength": 240 },
+          "context": { "type": "string", "minLength": 1, "maxLength": 240 }
+        },
+        "required": ["id", "sentenceEn", "translationTr", "registers"],
+        "additionalProperties": false
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "kind": { "type": "string", "enum": ["core", "user", "override"] },
+        "sourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+        },
+        "sourceLabel": { "type": "string", "minLength": 1, "maxLength": 240 }
+      },
+      "required": ["kind"],
+      "additionalProperties": false
+    },
+    "generation": {
+      "type": "object",
+      "properties": {
+        "method": { "type": "string", "enum": ["core-pack", "external-ai", "manual", "migration"] },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+        },
+        "validationStatus": {
+          "type": "string",
+          "enum": ["unvalidated", "schema-valid", "validated", "reviewed"]
+        },
+        "generatorLabel": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "warnings": {
+          "maxItems": 50,
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 }
+        }
+      },
+      "required": ["method", "generatedAt", "validationStatus", "warnings"],
+      "additionalProperties": false
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "word",
+    "normalizedWord",
+    "aliases",
+    "pronunciations",
+    "cefr",
+    "registers",
+    "partsOfSpeech",
+    "meanings",
+    "morphology",
+    "wordFamily",
+    "grammar",
+    "collocations",
+    "phrasalVerbs",
+    "idioms",
+    "relatedWords",
+    "commonMistakes",
+    "examples",
+    "source",
+    "generation",
+    "createdAt",
+    "updatedAt"
+  ],
+  "additionalProperties": false
+}

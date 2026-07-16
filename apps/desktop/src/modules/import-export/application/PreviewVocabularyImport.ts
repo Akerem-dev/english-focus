@@ -1,6 +1,6 @@
 import type { ImportIssue, VocabularyEntry } from "@platform/domain";
 
-export interface VocabularyImportPreviewCounts {
+interface VocabularyImportPreviewCounts {
   readonly meanings: number;
   readonly pronunciations: number;
   readonly examples: number;
@@ -14,7 +14,7 @@ export interface VocabularyImportPreviewCounts {
   readonly commonMistakes: number;
 }
 
-export interface VocabularyImportPreviewChecklistItem {
+interface VocabularyImportPreviewChecklistItem {
   readonly id: "identity" | "schema" | "semantics" | "examples" | "provenance";
   readonly label: string;
   readonly detail: string;

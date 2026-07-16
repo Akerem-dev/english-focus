@@ -2,7 +2,7 @@ import type { HTMLAttributes, PropsWithChildren } from "react";
 
 import { joinClassNames } from "../componentUtils";
 
-export type StatusBadgeTone = "neutral" | "accent" | "success" | "warning" | "danger";
+type StatusBadgeTone = "neutral" | "accent" | "success" | "warning" | "danger";
 
 export interface StatusBadgeProps extends PropsWithChildren<HTMLAttributes<HTMLSpanElement>> {
   readonly tone?: StatusBadgeTone;

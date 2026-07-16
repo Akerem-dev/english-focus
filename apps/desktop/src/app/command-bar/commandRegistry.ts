@@ -2,15 +2,11 @@ import type { AppIconName } from "../../design-system";
 import { ROUTE_PATHS } from "../router";
 
 export type AppCommandAction =
-  | "edit-study-details"
-  | "export-current"
-  | "focus-search"
-  | "open-import"
-  | "save-current";
+  "edit-study-details" | "export-current" | "focus-search" | "open-import" | "save-current";
 
-export type CommandCategory = "Navigation" | "Actions" | "Help";
+type CommandCategory = "Navigation" | "Actions" | "Help";
 
-export type CommandTarget =
+type CommandTarget =
   | { readonly kind: "navigate"; readonly path: string }
   | { readonly kind: "action"; readonly action: AppCommandAction }
   | { readonly kind: "shortcuts" };

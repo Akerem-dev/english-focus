@@ -1,8 +1,8 @@
 import { createContext } from "react";
 
-export type ToastTone = "success" | "info" | "warning" | "error";
+type ToastTone = "success" | "info" | "warning" | "error";
 
-export interface ToastAction {
+interface ToastAction {
   readonly label: string;
   readonly onAction: () => void | Promise<void>;
 }

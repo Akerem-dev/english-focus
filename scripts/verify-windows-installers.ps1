@@ -1,3 +1,7 @@
+param(
+    [switch]$AllowUnsigned
+)
+
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
@@ -15,7 +19,7 @@ $config = Get-Content "apps/desktop/src-tauri/tauri.conf.json" -Raw | ConvertFro
 $version = [string]$config.version
 $directory = Join-Path $root "release-artifacts/windows/$version"
 $installers = Get-ChildItem $directory -File | Where-Object { $_.Extension -in @(".msi", ".exe") }
-$requireSignature = $env:REQUIRE_WINDOWS_SIGNATURE -eq "1"
+$requireSignature = -not $AllowUnsigned
 
 if ($installers.Count -lt 2) {
     throw "Expected MSI and NSIS installers in $directory."
@@ -32,7 +36,7 @@ foreach ($installer in $installers) {
     }
 }
 
-if (-not $requireSignature) {
+if ($AllowUnsigned) {
     Write-Host ""
-    Write-Host "Unsigned Windows release artifact verification passed for English Focus $version." -ForegroundColor Yellow
+    Write-Host "Unsigned local rehearsal artifacts verified for English Focus $version. These files are not publishable." -ForegroundColor Yellow
 }

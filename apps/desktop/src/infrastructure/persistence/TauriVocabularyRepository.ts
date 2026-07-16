@@ -59,4 +59,18 @@ export class TauriVocabularyRepository implements VocabularyRepository {
     });
     return parseStoredEntry(payload);
   }
+
+  async saveEntries(
+    inputs: readonly SaveVocabularyEntryInput[]
+  ): Promise<readonly StoredVocabularyEntry[]> {
+    if (!isTauriRuntime()) {
+      throw new Error("Local SQLite saving is available only in the English Focus desktop app.");
+    }
+
+    const payloads = await invoke<readonly StoredVocabularyEntryPayload[]>(
+      "save_vocabulary_entries",
+      { requests: inputs }
+    );
+    return Object.freeze(payloads.map(parseStoredEntry));
+  }
 }

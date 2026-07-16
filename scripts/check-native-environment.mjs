@@ -26,7 +26,7 @@ function fail(label, detail) {
 if (process.platform === "win32") {
   pass("Operating system", "Windows detected");
 } else {
-  fail("Operating system", `Expected Windows for this checkpoint; detected ${process.platform}`);
+  fail("Operating system", `Expected Windows; detected ${process.platform}`);
 }
 
 const rustcVersion = readCommand("rustc", ["--version"]);
@@ -59,9 +59,13 @@ for (const check of checks) {
 
 const failures = checks.filter((check) => check.status === "FAIL");
 if (failures.length > 0) {
-  console.error("\nNative environment check failed. Resolve every FAIL item before npm run desktop.");
+  console.error(
+    "\nNative environment check failed. Resolve every FAIL item before npm run desktop."
+  );
   process.exitCode = 1;
 } else {
   console.log("\nNative Rust environment check passed.");
-  console.log("Microsoft C++ Build Tools and WebView2 are verified by the actual Tauri launch step.");
+  console.log(
+    "Microsoft C++ Build Tools and WebView2 are verified by the actual Tauri launch step."
+  );
 }

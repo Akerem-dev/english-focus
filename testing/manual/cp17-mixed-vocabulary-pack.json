@@ -10,11 +10,7 @@
       "id": "user.allocate.cp11",
       "word": "allocate",
       "normalizedWord": "allocate",
-      "aliases": [
-        "allocates",
-        "allocated",
-        "allocating"
-      ],
+      "aliases": ["allocates", "allocated", "allocating"],
       "pronunciations": [
         {
           "ipa": "/ˈæləkeɪt/",
@@ -24,26 +20,15 @@
         }
       ],
       "cefr": "B2",
-      "registers": [
-        "neutral",
-        "formal"
-      ],
-      "partsOfSpeech": [
-        "verb"
-      ],
+      "registers": ["neutral", "formal"],
+      "partsOfSpeech": ["verb"],
       "meanings": [
         {
           "id": "allocate.assign-resource",
           "partOfSpeech": "verb",
           "definitionEn": "To officially assign money, time, space, equipment, or another resource for a particular purpose.",
-          "translationsTr": [
-            "tahsis etmek",
-            "ayırmak"
-          ],
-          "registers": [
-            "neutral",
-            "formal"
-          ]
+          "translationsTr": ["tahsis etmek", "ayırmak"],
+          "registers": ["neutral", "formal"]
         }
       ],
       "morphology": {
@@ -91,81 +76,61 @@
           "id": "allocate.example.01",
           "sentenceEn": "The council will allocate additional funds to public transport.",
           "translationTr": "Belediye toplu taşımaya ek kaynak tahsis edecek.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.02",
           "sentenceEn": "Managers allocate tasks according to each employee's experience.",
           "translationTr": "Yöneticiler görevleri her çalışanın deneyimine göre dağıtır.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.03",
           "sentenceEn": "The software allocates memory only when it is needed.",
           "translationTr": "Yazılım belleği yalnızca gerektiğinde ayırır.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.04",
           "sentenceEn": "We allocated two hours for the final review.",
           "translationTr": "Son inceleme için iki saat ayırdık.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.05",
           "sentenceEn": "Each department was allocated a separate meeting room.",
           "translationTr": "Her bölüme ayrı bir toplantı odası tahsis edildi.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.06",
           "sentenceEn": "The charity is allocating more resources to emergency housing.",
           "translationTr": "Yardım kuruluşu acil barınmaya daha fazla kaynak ayırıyor.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.07",
           "sentenceEn": "Please allocate enough storage space for the backup files.",
           "translationTr": "Lütfen yedekleme dosyaları için yeterli depolama alanı ayırın.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.08",
           "sentenceEn": "The budget allocates forty percent of spending to education.",
           "translationTr": "Bütçe harcamaların yüzde kırkını eğitime ayırıyor.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.09",
           "sentenceEn": "Resources should be allocated according to actual need.",
           "translationTr": "Kaynaklar gerçek ihtiyaca göre tahsis edilmelidir.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         },
         {
           "id": "allocate.example.10",
           "sentenceEn": "The team allocated one server to the testing environment.",
           "translationTr": "Ekip test ortamına bir sunucu ayırdı.",
-          "registers": [
-            "neutral"
-          ]
+          "registers": ["neutral"]
         }
       ],
       "source": {

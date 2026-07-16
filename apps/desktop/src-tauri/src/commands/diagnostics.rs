@@ -137,7 +137,9 @@ fn inspect_vocabulary_json(connection: &Connection) -> Result<(usize, usize), St
         .prepare("SELECT normalized_word, entry_json FROM vocabulary_entries")
         .map_err(|error| format!("Vocabulary JSON scan could not be prepared: {error}"))?;
     let rows = statement
-        .query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?)))
+        .query_map([], |row| {
+            Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
+        })
         .map_err(|error| format!("Vocabulary JSON scan could not run: {error}"))?;
 
     for row in rows {
@@ -231,10 +233,9 @@ fn retained_backup_count(app: &AppHandle) -> Result<usize, String> {
     Ok(entries
         .filter_map(Result::ok)
         .filter(|entry| {
-            entry
-                .file_name()
-                .to_str()
-                .is_some_and(|name| name.starts_with("english-focus-backup-") && name.ends_with(".json"))
+            entry.file_name().to_str().is_some_and(|name| {
+                name.starts_with("english-focus-backup-") && name.ends_with(".json")
+            })
         })
         .count())
 }
@@ -389,10 +390,14 @@ fn collect_report(
     } else {
         let mut details = Vec::new();
         if invalid_vocabulary_json > 0 {
-            details.push(format!("Invalid vocabulary JSON rows: {invalid_vocabulary_json}"));
+            details.push(format!(
+                "Invalid vocabulary JSON rows: {invalid_vocabulary_json}"
+            ));
         }
         if invalid_metadata_json > 0 {
-            details.push(format!("Invalid metadata tag rows: {invalid_metadata_json}"));
+            details.push(format!(
+                "Invalid metadata tag rows: {invalid_metadata_json}"
+            ));
         }
         if invalid_settings_json > 0 {
             details.push(format!("Invalid settings rows: {invalid_settings_json}"));
@@ -403,7 +408,9 @@ fn collect_report(
             ));
         }
         if invalid_metadata_statuses > 0 {
-            details.push(format!("Invalid metadata status rows: {invalid_metadata_statuses}"));
+            details.push(format!(
+                "Invalid metadata status rows: {invalid_metadata_statuses}"
+            ));
         }
         checks.push(failed(
             "data-consistency",

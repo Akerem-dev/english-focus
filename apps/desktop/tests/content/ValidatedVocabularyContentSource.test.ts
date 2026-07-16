@@ -10,10 +10,10 @@ describe("ValidatedVocabularyContentSource", () => {
   it("exposes the canonical entry through read-only lookup methods", () => {
     const source = createCoreVocabularyContentSource();
 
-    expect(source.listEntries()).toHaveLength(100);
+    expect(source.listEntries()).toHaveLength(1);
     expect(source.getEntryById("core.maintain.v1")).toStrictEqual(maintainVocabularyEntry);
     expect(source.getEntryByNormalizedWord("maintain")).toStrictEqual(maintainVocabularyEntry);
-    expect(source.getEntryByNormalizedWord("reliable")?.word).toBe("reliable");
+    expect(source.getEntryByNormalizedWord("reliable")).toBeUndefined();
     expect(source.getEntryByNormalizedWord("unknown")).toBeUndefined();
   });
 

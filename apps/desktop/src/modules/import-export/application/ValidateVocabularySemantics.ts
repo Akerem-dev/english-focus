@@ -1,9 +1,6 @@
 import type { ImportIssue, VocabularyEntry } from "@platform/domain";
 
-import {
-  VocabularySemanticValidator,
-  type VocabularySemanticValidationContext
-} from "../services";
+import { VocabularySemanticValidator, type VocabularySemanticValidationContext } from "../services";
 
 export type ValidateVocabularySemanticsResult =
   | {

@@ -7,6 +7,5 @@ export * from "./import-export";
 export * from "./instruction";
 export * from "./library";
 export * from "./ports";
-export * from "./search";
 export * from "./settings";
 export * from "./vocabulary";

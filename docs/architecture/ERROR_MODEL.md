@@ -1,6 +1,7 @@
 # Error Model
 
 Families:
+
 - InvalidSearch
 - EntryNotFound
 - JsonParse

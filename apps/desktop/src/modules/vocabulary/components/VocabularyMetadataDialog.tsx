@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useState } from "react";
 import type {
   LearningStatus,
   ReviewStatus,
@@ -80,19 +80,6 @@ export function VocabularyMetadataDialog({
   const [note, setNote] = useState(initialMetadata.note);
   const [error, setError] = useState<string | undefined>();
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    setFavorite(initialMetadata.favorite);
-    setLearningStatus(initialMetadata.learningStatus);
-    setReviewStatus(initialMetadata.reviewStatus);
-    setTagsInput(initialMetadata.tags.map((tag) => tag.name).join(", "));
-    setNote(initialMetadata.note);
-    setError(undefined);
-  }, [initialMetadata, open]);
-
   async function save() {
     const updatedAt = new Date().toISOString();
 
@@ -116,6 +103,8 @@ export function VocabularyMetadataDialog({
     }
   }
 
+  const saveFromShortcut = useEffectEvent(save);
+
   useEffect(() => {
     if (!open) {
       return;
@@ -127,7 +116,7 @@ export function VocabularyMetadataDialog({
         event.stopPropagation();
 
         if (!saving) {
-          void save();
+          void saveFromShortcut();
         }
       }
     }
@@ -137,7 +126,7 @@ export function VocabularyMetadataDialog({
     return () => {
       document.removeEventListener("keydown", handleSaveShortcut, true);
     };
-  }, [favorite, learningStatus, note, open, reviewStatus, saving, tagsInput]);
+  }, [open, saving]);
 
   return (
     <Modal
@@ -199,7 +188,10 @@ export function VocabularyMetadataDialog({
           </header>
           <div className="vocabulary-metadata-dialog__options">
             {LEARNING_OPTIONS.map((option) => (
-              <label key={option.value} data-selected={learningStatus === option.value || undefined}>
+              <label
+                key={option.value}
+                data-selected={learningStatus === option.value || undefined}
+              >
                 <input
                   checked={learningStatus === option.value}
                   name="learning-status"

@@ -5,10 +5,7 @@ import type {
   ResetLocalDataInput,
   ResetLocalDataResult
 } from "@platform/domain";
-import {
-  localDataSnapshotSchema,
-  resetLocalDataResultSchema
-} from "@platform/schemas";
+import { localDataSnapshotSchema, resetLocalDataResultSchema } from "@platform/schemas";
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;

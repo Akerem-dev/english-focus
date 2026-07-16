@@ -1,23 +1,9 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import type { ActivityRecord, RecordActivityInput } from "@platform/domain";
 
 import { TauriActivityRepository } from "../../infrastructure/persistence";
-import {
-  ACTIVITY_EVENT_NAME,
-  type ActivityEventDetail
-} from "../../modules/history";
-import {
-  ActivityContext,
-  type ActivityContextValue,
-  type ActivityStatus
-} from "./ActivityContext";
+import { ACTIVITY_EVENT_NAME, type ActivityEventDetail } from "../../modules/history";
+import { ActivityContext, type ActivityContextValue, type ActivityStatus } from "./ActivityContext";
 
 const MAX_VISIBLE_ACTIVITY = 100;
 let fallbackActivitySequence = 0;
@@ -50,7 +36,8 @@ export function ActivityProvider({ children }: PropsWithChildren) {
       setStatus("ready");
       return listed;
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "Recent activity could not be loaded.";
+      const message =
+        cause instanceof Error ? cause.message : "Recent activity could not be loaded.";
       setError(message);
       setStatus("error");
       throw cause;
@@ -58,7 +45,12 @@ export function ActivityProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   useEffect(() => {
-    void refreshActivity();
+    const timer = window.setTimeout(() => {
+      void refreshActivity().catch(() => undefined);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [refreshActivity]);
 
   const recordActivity = useCallback<ActivityContextValue["recordActivity"]>(
@@ -89,15 +81,18 @@ export function ActivityProvider({ children }: PropsWithChildren) {
         const saved = await repository.recordActivity(record);
         latestRecord.current = saved;
         setActivity((current) =>
-          Object.freeze([
-            saved,
-            ...current.filter((item) => item.id !== saved.id)
-          ].slice(0, MAX_VISIBLE_ACTIVITY))
+          Object.freeze(
+            [saved, ...current.filter((item) => item.id !== saved.id)].slice(
+              0,
+              MAX_VISIBLE_ACTIVITY
+            )
+          )
         );
         setStatus("ready");
         return saved;
       } catch (cause) {
-        const message = cause instanceof Error ? cause.message : "Recent activity could not be recorded.";
+        const message =
+          cause instanceof Error ? cause.message : "Recent activity could not be recorded.";
         setError(message);
         setStatus("error");
         throw cause;
@@ -137,7 +132,8 @@ export function ActivityProvider({ children }: PropsWithChildren) {
       setStatus("ready");
       return cleared;
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "Recent activity could not be cleared.";
+      const message =
+        cause instanceof Error ? cause.message : "Recent activity could not be cleared.";
       setError(message);
       setStatus("error");
       throw cause;

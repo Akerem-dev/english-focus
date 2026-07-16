@@ -230,7 +230,8 @@
   gap: var(--space-3);
   margin-top: var(--space-4);
   padding: var(--space-4);
-  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-warning) 38%, var(--color-border));
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-warning) 38%, var(--color-border));
   border-radius: var(--radius-large);
   background: var(--color-warning-soft);
 }

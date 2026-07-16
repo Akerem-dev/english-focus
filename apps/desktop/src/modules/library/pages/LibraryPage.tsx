@@ -1,29 +1,68 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
-import { useToast, useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
-import { Button, EmptyState, SearchInput, SelectField, StatusBadge } from "../../../components";
+import {
+  APP_COMMAND_EVENT,
+  dispatchAppCommand,
+  type AppCommandEventDetail
+} from "../../../app/command-bar";
+import {
+  useFileTransfer,
+  useToast,
+  useVocabularyMetadata,
+  useVocabularyRepository
+} from "../../../app/providers";
+import { ROUTE_PATHS } from "../../../app/router";
+import { Button, EmptyState, SearchInput, SelectField } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { exportVocabularyPack } from "../../import-export";
-import type {
-  LearningStatus,
-  StoredVocabularyEntry,
-  VocabularyStorageLayer,
-  VocabularyUserMetadata
-} from "@platform/domain";
+import type { LearningStatus } from "@platform/domain";
+import {
+  compareRecords,
+  matchesSearch,
+  type LibraryLayer,
+  type LibraryRecord,
+  type LibrarySort
+} from "../application/libraryRecords";
 
-type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
-type LibraryLayerFilter = "all" | VocabularyStorageLayer;
+type LibraryLayerFilter = "all" | LibraryLayer;
 type LibraryCefrFilter = "all" | "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 type LibraryLearningFilter = "all" | LearningStatus;
 type LibraryFavoriteFilter = "all" | "favorites";
 
+const ALPHABET = Object.freeze([
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z"
+] as const);
+
+type LibraryLetterFilter = "all" | (typeof ALPHABET)[number];
+
 function primaryTranslation(translations: readonly string[]): string {
   return translations.slice(0, 3).join(", ");
-}
-
-function describeLayer(layer: VocabularyStorageLayer): string {
-  return layer === "override" ? "User override" : "User entry";
 }
 
 function formatUpdatedDate(isoDate: string): string {
@@ -40,79 +79,47 @@ function formatUpdatedDate(isoDate: string): string {
   });
 }
 
-function labelStatus(value: string): string {
-  return value.charAt(0).toLocaleUpperCase("en-US") + value.slice(1);
-}
-
-function searchableText(
-  record: StoredVocabularyEntry,
-  metadata: VocabularyUserMetadata | undefined
-): string {
-  return [
-    record.entry.word,
-    record.entry.normalizedWord,
-    record.entry.cefr,
-    ...record.entry.aliases,
-    ...record.entry.partsOfSpeech,
-    ...record.entry.registers,
-    ...record.entry.meanings.flatMap((meaning) => [
-      meaning.definitionEn,
-      ...meaning.translationsTr
-    ]),
-    ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr]),
-    metadata?.note ?? "",
-    ...(metadata?.tags.map((tag) => tag.name) ?? []),
-    metadata?.learningStatus ?? "",
-    metadata?.reviewStatus ?? ""
-  ]
-    .join(" ")
-    .toLocaleLowerCase("en-US");
-}
-
-function matchesSearch(
-  record: StoredVocabularyEntry,
-  metadata: VocabularyUserMetadata | undefined,
-  query: string
-): boolean {
-  if (query.trim().length === 0) {
-    return true;
-  }
-
-  return searchableText(record, metadata).includes(query.trim().toLocaleLowerCase("en-US"));
-}
-
-function compareRecords(
-  left: StoredVocabularyEntry,
-  right: StoredVocabularyEntry,
-  sort: LibrarySort
-) {
-  switch (sort) {
-    case "word-asc":
-      return left.entry.word.localeCompare(right.entry.word, "en", { sensitivity: "base" });
-    case "word-desc":
-      return right.entry.word.localeCompare(left.entry.word, "en", { sensitivity: "base" });
-    case "updated-desc":
-    default:
-      return right.entry.updatedAt.localeCompare(left.entry.updatedAt);
-  }
-}
-
 export function LibraryPage() {
-  const { error, status, storedEntries } = useVocabularyRepository();
-  const { getMetadata, metadata } = useVocabularyMetadata();
+  const navigate = useNavigate();
+  const { contentSource, error, status, storedEntries } = useVocabularyRepository();
+  const { getMetadata } = useVocabularyMetadata();
   const { showToast } = useToast();
+  const { exporter } = useFileTransfer();
   const [searchQuery, setSearchQuery] = useState("");
   const [layerFilter, setLayerFilter] = useState<LibraryLayerFilter>("all");
   const [cefrFilter, setCefrFilter] = useState<LibraryCefrFilter>("all");
   const [learningFilter, setLearningFilter] = useState<LibraryLearningFilter>("all");
   const [favoriteFilter, setFavoriteFilter] = useState<LibraryFavoriteFilter>("all");
+  const [letterFilter, setLetterFilter] = useState<LibraryLetterFilter>("all");
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [sort, setSort] = useState<LibrarySort>("updated-desc");
   const [selectedWords, setSelectedWords] = useState<readonly string[]>([]);
   const [previewWord, setPreviewWord] = useState<string | undefined>();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const libraryEntries = useMemo<readonly LibraryRecord[]>(() => {
+    const storedByWord = new Map(
+      storedEntries.map((record) => [record.entry.normalizedWord, record] as const)
+    );
+    return Object.freeze(
+      contentSource.listEntries().map<LibraryRecord>((entry) => ({
+        entry,
+        layer: storedByWord.get(entry.normalizedWord)?.layer ?? "core"
+      }))
+    );
+  }, [contentSource, storedEntries]);
+  const availableLetters = useMemo(
+    () =>
+      new Set(libraryEntries.map((record) => record.entry.normalizedWord.charAt(0).toUpperCase())),
+    [libraryEntries]
+  );
 
   const filteredEntries = useMemo(() => {
-    return [...storedEntries]
+    return [...libraryEntries]
+      .filter((record) =>
+        letterFilter === "all"
+          ? true
+          : record.entry.normalizedWord.toUpperCase().startsWith(letterFilter)
+      )
       .filter((record) => (layerFilter === "all" ? true : record.layer === layerFilter))
       .filter((record) => (cefrFilter === "all" ? true : record.entry.cefr === cefrFilter))
       .filter((record) => {
@@ -133,11 +140,11 @@ export function LibraryPage() {
     favoriteFilter,
     getMetadata,
     layerFilter,
+    letterFilter,
     learningFilter,
-    metadata,
     searchQuery,
     sort,
-    storedEntries
+    libraryEntries
   ]);
 
   const selectedEntries = useMemo(
@@ -152,28 +159,13 @@ export function LibraryPage() {
     [filteredEntries, previewWord]
   );
 
-  const storedUserCount = storedEntries.filter((record) => record.layer === "user").length;
-  const storedOverrideCount = storedEntries.filter((record) => record.layer === "override").length;
-  const favoriteCount = metadata.filter((record) => record.favorite).length;
-
-  useEffect(() => {
-    setSelectedWords((current) =>
-      current.filter((normalizedWord) =>
-        storedEntries.some((record) => record.entry.normalizedWord === normalizedWord)
-      )
-    );
-  }, [storedEntries]);
-
-  useEffect(() => {
-    if (previewEntry !== undefined && previewWord !== previewEntry.entry.normalizedWord) {
-      setPreviewWord(previewEntry.entry.normalizedWord);
-      return;
-    }
-
-    if (previewEntry === undefined) {
-      setPreviewWord(undefined);
-    }
-  }, [previewEntry, previewWord]);
+  const activeFilterCount = [
+    layerFilter,
+    cefrFilter,
+    learningFilter,
+    favoriteFilter,
+    sort === "updated-desc" ? "all" : sort
+  ].filter((value) => value !== "all").length;
 
   function toggleSelection(normalizedWord: string) {
     setSelectedWords((current) =>
@@ -183,112 +175,82 @@ export function LibraryPage() {
     );
   }
 
-  function selectVisibleEntries() {
-    setSelectedWords(filteredEntries.map((record) => record.entry.normalizedWord));
-  }
-
-  function clearSelection() {
-    setSelectedWords([]);
-  }
-
-  async function copySelectedWords() {
-    if (selectedEntries.length === 0) {
+  async function exportLibraryPack() {
+    if (libraryEntries.length === 0) {
       return;
     }
 
-    const payload = selectedEntries.map((record) => record.entry.word).join("\n");
-
+    const pack = exportVocabularyPack(libraryEntries.map((record) => record.entry));
     try {
-      await navigator.clipboard.writeText(payload);
+      await exporter.saveText(pack.fileName, pack.json, "application/json");
       showToast({
-        title: "Words copied",
-        message: `${selectedEntries.length} word${selectedEntries.length === 1 ? "" : "s"} copied to the clipboard.`,
+        title: "Library pack exported",
+        message: `${libraryEntries.length} entr${libraryEntries.length === 1 ? "y" : "ies"} exported locally.`,
         tone: "success",
-        dedupeKey: "library-copy"
+        dedupeKey: "library-export"
       });
     } catch (cause) {
       showToast({
-        title: "Clipboard access was blocked",
-        message: cause instanceof Error ? cause.message : "Allow clipboard access and try again.",
+        title: "Library pack could not be exported",
+        message: cause instanceof Error ? cause.message : "The local file could not be created.",
         tone: "error",
-        dedupeKey: "library-copy"
+        dedupeKey: "library-export"
       });
     }
   }
 
-  function exportLibraryPack() {
-    if (storedEntries.length === 0) {
-      return;
-    }
-
-    const pack = exportVocabularyPack(storedEntries.map((record) => record.entry));
-    const blob = new Blob([pack.json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = pack.fileName;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    showToast({
-      title: "Library pack exported",
-      message: `${storedEntries.length} entr${storedEntries.length === 1 ? "y" : "ies"} exported locally.`,
-      tone: "success",
-      dedupeKey: "library-export"
-    });
-  }
-
-  function exportSelectedEntries() {
+  async function exportSelectedEntries() {
     if (selectedEntries.length === 0) {
       return;
     }
 
     const pack = exportVocabularyPack(selectedEntries.map((record) => record.entry));
-    const blob = new Blob([pack.json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = pack.fileName.replace(
+    const fileName = pack.fileName.replace(
       "vocabulary-pack",
       `vocabulary-pack-selected-${selectedEntries.length}`
     );
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    showToast({
-      title: "Selected pack exported",
-      message: `${selectedEntries.length} selected entr${selectedEntries.length === 1 ? "y" : "ies"} exported locally.`,
-      tone: "success",
-      dedupeKey: "library-export"
-    });
+    try {
+      await exporter.saveText(fileName, pack.json, "application/json");
+      showToast({
+        title: "Selected pack exported",
+        message: `${selectedEntries.length} selected entr${selectedEntries.length === 1 ? "y" : "ies"} exported locally.`,
+        tone: "success",
+        dedupeKey: "library-export"
+      });
+    } catch (cause) {
+      showToast({
+        title: "Selected pack could not be exported",
+        message: cause instanceof Error ? cause.message : "The local file could not be created.",
+        tone: "error",
+        dedupeKey: "library-export"
+      });
+    }
   }
 
-  useEffect(() => {
-    function handleAppCommand(event: Event) {
-      const { action } = (event as CustomEvent<AppCommandEventDetail>).detail;
+  const handleAppCommand = useEffectEvent((event: Event) => {
+    const { action } = (event as CustomEvent<AppCommandEventDetail>).detail;
 
-      if (action === "focus-search") {
-        searchInputRef.current?.focus();
-        return;
-      }
-
-      if (action === "export-current") {
-        if (selectedEntries.length > 0) {
-          exportSelectedEntries();
-        } else {
-          exportLibraryPack();
-        }
-      }
+    if (action === "focus-search") {
+      searchInputRef.current?.focus();
+      return;
     }
 
+    if (action === "export-current") {
+      if (selectedEntries.length > 0) {
+        void exportSelectedEntries();
+      } else {
+        void exportLibraryPack();
+      }
+    }
+  });
+
+  useEffect(() => {
     window.addEventListener(APP_COMMAND_EVENT, handleAppCommand);
 
     return () => {
       window.removeEventListener(APP_COMMAND_EVENT, handleAppCommand);
     };
-  }, [selectedEntries, storedEntries]);
+  }, []);
 
   return (
     <div className="route-page route-page--library">
@@ -298,8 +260,15 @@ export function LibraryPage() {
           <h1>Library</h1>
           <p>Search, organize, review, and export vocabulary entries stored on this device.</p>
         </div>
-        <span className="route-page__count">
-          {storedEntries.length} {storedEntries.length === 1 ? "entry" : "entries"}
+        <span
+          aria-live="polite"
+          className="library-entry-count"
+          data-volume={
+            filteredEntries.length >= 100 ? "high" : filteredEntries.length >= 20 ? "medium" : "low"
+          }
+        >
+          <strong>{filteredEntries.length}</strong>
+          <span>{filteredEntries.length === 1 ? "entry" : "entries"}</span>
         </span>
       </header>
 
@@ -310,14 +279,14 @@ export function LibraryPage() {
         </section>
       ) : null}
 
-      {storedEntries.length === 0 ? (
+      {libraryEntries.length === 0 ? (
         <EmptyState
           actions={
             <>
-              <Button disabled variant="primary">
+              <Button onClick={() => navigate(ROUTE_PATHS.vocabulary)} variant="primary">
                 Search a word
               </Button>
-              <Button disabled variant="secondary">
+              <Button onClick={() => dispatchAppCommand("open-import")} variant="secondary">
                 Import JSON
               </Button>
             </>
@@ -339,14 +308,25 @@ export function LibraryPage() {
           >
             <header className="library-panel__header">
               <div>
-                <p className="route-page__eyebrow">CP15 workspace</p>
-                <h2 id="library-controls-title">Search and manage saved vocabulary</h2>
+                <p className="route-page__eyebrow">Collection tools</p>
+                <h2 id="library-controls-title">Search and manage vocabulary</h2>
               </div>
               <div className="library-panel__header-actions">
-                <StatusBadge tone="success">SQLite-backed library</StatusBadge>
+                <Button
+                  disabled={selectedEntries.length === 0}
+                  onClick={() => {
+                    void exportSelectedEntries();
+                  }}
+                  size="small"
+                  variant="primary"
+                >
+                  Export selected pack
+                </Button>
                 <Button
                   leadingIcon={<AppIcon name="download" size={17} />}
-                  onClick={exportLibraryPack}
+                  onClick={() => {
+                    void exportLibraryPack();
+                  }}
                   size="small"
                   variant="secondary"
                 >
@@ -355,35 +335,39 @@ export function LibraryPage() {
               </div>
             </header>
 
-            <div className="library-summary-grid">
-              <article className="library-summary-card">
-                <span>Visible entries</span>
-                <strong>{filteredEntries.length}</strong>
-                <small>after search, filters, and sorting</small>
-              </article>
-              <article className="library-summary-card">
-                <span>User entries</span>
-                <strong>{storedUserCount}</strong>
-                <small>new words saved on this device</small>
-              </article>
-              <article className="library-summary-card">
-                <span>User overrides</span>
-                <strong>{storedOverrideCount}</strong>
-                <small>reviewed replacements layered over core</small>
-              </article>
-              <article className="library-summary-card">
-                <span>Favorites</span>
-                <strong>{favoriteCount}</strong>
-                <small>personal favorites stored separately</small>
-              </article>
-              <article className="library-summary-card">
-                <span>Selected</span>
-                <strong>{selectedEntries.length}</strong>
-                <small>available for export or copy</small>
-              </article>
-            </div>
+            <nav aria-label="Browse library by first letter" className="library-alphabet">
+              <button
+                aria-pressed={letterFilter === "all"}
+                className="library-alphabet__all"
+                data-active={letterFilter === "all" || undefined}
+                onClick={() => {
+                  setLetterFilter("all");
+                }}
+                type="button"
+              >
+                All
+              </button>
+              <div className="library-alphabet__letters">
+                {ALPHABET.map((letter) => (
+                  <button
+                    aria-label={`Show words starting with ${letter}`}
+                    aria-pressed={letterFilter === letter}
+                    className="library-alphabet__letter"
+                    data-active={letterFilter === letter || undefined}
+                    disabled={!availableLetters.has(letter)}
+                    key={letter}
+                    onClick={() => {
+                      setLetterFilter(letter);
+                    }}
+                    type="button"
+                  >
+                    {letter}
+                  </button>
+                ))}
+              </div>
+            </nav>
 
-            <div className="library-controls-grid">
+            <div className="library-search-row">
               <SearchInput
                 fieldClassName="library-control-field"
                 hideLabel={false}
@@ -395,110 +379,96 @@ export function LibraryPage() {
                   setSearchQuery("");
                 }}
                 placeholder="Search word, translation, grammar, or example"
+                ref={searchInputRef}
                 value={searchQuery}
               />
-              <SelectField
-                fieldClassName="library-control-field"
-                label="Filter by layer"
-                onChange={(event) => {
-                  setLayerFilter(event.currentTarget.value as LibraryLayerFilter);
+              <Button
+                aria-controls="library-filter-panel"
+                aria-expanded={filtersOpen}
+                onClick={() => {
+                  setFiltersOpen((current) => !current);
                 }}
-                value={layerFilter}
+                trailingIcon={<AppIcon name="chevron-down" size={16} />}
+                variant="secondary"
               >
-                <option value="all">All layers</option>
-                <option value="user">User entries</option>
-                <option value="override">User overrides</option>
-              </SelectField>
-              <SelectField
-                fieldClassName="library-control-field"
-                label="Filter by CEFR"
-                onChange={(event) => {
-                  setCefrFilter(event.currentTarget.value as LibraryCefrFilter);
-                }}
-                value={cefrFilter}
-              >
-                <option value="all">All CEFR levels</option>
-                {(["A1", "A2", "B1", "B2", "C1", "C2"] as const).map((level) => (
-                  <option key={level} value={level}>
-                    {level}
-                  </option>
-                ))}
-              </SelectField>
-              <SelectField
-                fieldClassName="library-control-field"
-                label="Learning status"
-                onChange={(event) => {
-                  setLearningFilter(event.currentTarget.value as LibraryLearningFilter);
-                }}
-                value={learningFilter}
-              >
-                <option value="all">All learning states</option>
-                <option value="new">New</option>
-                <option value="learning">Learning</option>
-                <option value="known">Known</option>
-              </SelectField>
-              <SelectField
-                fieldClassName="library-control-field"
-                label="Favorites"
-                onChange={(event) => {
-                  setFavoriteFilter(event.currentTarget.value as LibraryFavoriteFilter);
-                }}
-                value={favoriteFilter}
-              >
-                <option value="all">All entries</option>
-                <option value="favorites">Favorites only</option>
-              </SelectField>
-              <SelectField
-                fieldClassName="library-control-field"
-                label="Sort results"
-                onChange={(event) => {
-                  setSort(event.currentTarget.value as LibrarySort);
-                }}
-                value={sort}
-              >
-                <option value="updated-desc">Newest updated first</option>
-                <option value="word-asc">Word A → Z</option>
-                <option value="word-desc">Word Z → A</option>
-              </SelectField>
+                Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+              </Button>
             </div>
 
-            <div className="library-selection-toolbar" aria-live="polite">
-              <div className="library-selection-toolbar__summary">
-                <strong>{selectedEntries.length}</strong>
-                <span>
-                  selected · {filteredEntries.length} visible · {storedEntries.length} total
-                </span>
-              </div>
-              <div className="library-selection-toolbar__actions">
-                <Button onClick={selectVisibleEntries} variant="secondary">
-                  Select visible
-                </Button>
-                <Button
-                  disabled={selectedEntries.length === 0}
-                  onClick={clearSelection}
-                  variant="secondary"
-                >
-                  Clear selection
-                </Button>
-                <Button
-                  disabled={selectedEntries.length === 0}
-                  onClick={() => {
-                    void copySelectedWords();
+            <div
+              aria-label="Library filters"
+              className="library-filter-panel"
+              hidden={!filtersOpen}
+              id="library-filter-panel"
+              role="group"
+            >
+              <div className="library-controls-grid">
+                <SelectField
+                  fieldClassName="library-control-field"
+                  label="Filter by layer"
+                  onChange={(event) => {
+                    setLayerFilter(event.currentTarget.value as LibraryLayerFilter);
                   }}
-                  variant="secondary"
+                  value={layerFilter}
                 >
-                  Copy words
-                </Button>
-                <Button
-                  disabled={selectedEntries.length === 0}
-                  onClick={exportSelectedEntries}
-                  variant="primary"
+                  <option value="all">All layers</option>
+                  <option value="core">Core entries</option>
+                  <option value="user">User entries</option>
+                  <option value="override">User overrides</option>
+                </SelectField>
+                <SelectField
+                  fieldClassName="library-control-field"
+                  label="Filter by CEFR"
+                  onChange={(event) => {
+                    setCefrFilter(event.currentTarget.value as LibraryCefrFilter);
+                  }}
+                  value={cefrFilter}
                 >
-                  Export selected pack
-                </Button>
+                  <option value="all">All CEFR levels</option>
+                  {(["A1", "A2", "B1", "B2", "C1", "C2"] as const).map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </SelectField>
+                <SelectField
+                  fieldClassName="library-control-field"
+                  label="Learning status"
+                  onChange={(event) => {
+                    setLearningFilter(event.currentTarget.value as LibraryLearningFilter);
+                  }}
+                  value={learningFilter}
+                >
+                  <option value="all">All learning states</option>
+                  <option value="new">New</option>
+                  <option value="learning">Learning</option>
+                  <option value="known">Known</option>
+                </SelectField>
+                <SelectField
+                  fieldClassName="library-control-field"
+                  label="Favorites"
+                  onChange={(event) => {
+                    setFavoriteFilter(event.currentTarget.value as LibraryFavoriteFilter);
+                  }}
+                  value={favoriteFilter}
+                >
+                  <option value="all">All entries</option>
+                  <option value="favorites">Favorites only</option>
+                </SelectField>
+                <SelectField
+                  fieldClassName="library-control-field"
+                  label="Sort results"
+                  onChange={(event) => {
+                    setSort(event.currentTarget.value as LibrarySort);
+                  }}
+                  value={sort}
+                >
+                  <option value="updated-desc">Newest updated first</option>
+                  <option value="word-asc">Word A → Z</option>
+                  <option value="word-desc">Word Z → A</option>
+                </SelectField>
               </div>
             </div>
-
           </section>
 
           {filteredEntries.length === 0 ? (
@@ -517,7 +487,9 @@ export function LibraryPage() {
                     <p className="route-page__eyebrow">Results</p>
                     <h2 id="library-results-title">Saved vocabulary list</h2>
                   </div>
-                  <StatusBadge>{filteredEntries.length} visible</StatusBadge>
+                  <span className="library-panel__result-count">
+                    {filteredEntries.length} visible
+                  </span>
                 </header>
 
                 <div className="library-table" role="table" aria-label="Saved vocabulary list">
@@ -526,26 +498,32 @@ export function LibraryPage() {
                       <span role="columnheader">Pick</span>
                       <span role="columnheader">Word</span>
                       <span role="columnheader">Translation</span>
-                      <span role="columnheader">Metadata</span>
+                      <span role="columnheader">Level</span>
                     </div>
                   </div>
                   <div className="library-table__body" role="rowgroup">
                     {filteredEntries.map((record) => {
-                      const entryMetadata = getMetadata(record.entry.normalizedWord);
                       const isSelected = selectedWords.includes(record.entry.normalizedWord);
                       const isPreviewed =
                         previewEntry?.entry.normalizedWord === record.entry.normalizedWord;
 
                       return (
-                        <button
+                        <div
+                          aria-selected={isPreviewed}
                           className="library-table__row library-table__row--entry"
                           data-active={isPreviewed || undefined}
                           key={record.entry.normalizedWord}
                           onClick={() => {
                             setPreviewWord(record.entry.normalizedWord);
                           }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              setPreviewWord(record.entry.normalizedWord);
+                            }
+                          }}
                           role="row"
-                          type="button"
+                          tabIndex={0}
                         >
                           <span
                             className="library-table__cell library-table__cell--checkbox"
@@ -573,25 +551,10 @@ export function LibraryPage() {
                               record.entry.meanings.flatMap((meaning) => meaning.translationsTr)
                             )}
                           </span>
-                          <span className="library-table__cell" role="cell">
-                            <span className="library-table__badges">
-                              <StatusBadge tone="accent">{record.entry.cefr}</StatusBadge>
-                              <StatusBadge>{describeLayer(record.layer)}</StatusBadge>
-                              <StatusBadge tone="success">
-                                {record.entry.examples.length} examples
-                              </StatusBadge>
-                              {entryMetadata?.favorite === true ? (
-                                <StatusBadge tone="accent">Favorite</StatusBadge>
-                              ) : null}
-                              {entryMetadata === undefined ? null : (
-                                <StatusBadge>
-                                  {labelStatus(entryMetadata.learningStatus)}
-                                </StatusBadge>
-                              )}
-                            </span>
-                            <small>Updated {formatUpdatedDate(record.entry.updatedAt)}</small>
+                          <span className="library-table__level" role="cell">
+                            {record.entry.cefr}
                           </span>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -609,7 +572,7 @@ export function LibraryPage() {
                         <p className="route-page__eyebrow">Preview</p>
                         <h2 id="library-preview-title">{previewEntry.entry.word}</h2>
                       </div>
-                      <StatusBadge tone="accent">{previewEntry.entry.cefr}</StatusBadge>
+                      <span className="library-preview__level">{previewEntry.entry.cefr}</span>
                     </header>
 
                     <p className="library-preview__translation">
@@ -617,30 +580,6 @@ export function LibraryPage() {
                         previewEntry.entry.meanings.flatMap((meaning) => meaning.translationsTr)
                       )}
                     </p>
-
-                    <div className="library-preview__badges">
-                      <StatusBadge>{describeLayer(previewEntry.layer)}</StatusBadge>
-                      <StatusBadge tone="success">Reviewed import</StatusBadge>
-                      {getMetadata(previewEntry.entry.normalizedWord)?.favorite === true ? (
-                        <StatusBadge tone="accent">Favorite</StatusBadge>
-                      ) : null}
-                      {getMetadata(previewEntry.entry.normalizedWord) === undefined ? null : (
-                        <>
-                          <StatusBadge>
-                            {labelStatus(
-                              getMetadata(previewEntry.entry.normalizedWord)?.learningStatus ??
-                                "new"
-                            )}
-                          </StatusBadge>
-                          <StatusBadge>
-                            {labelStatus(
-                              getMetadata(previewEntry.entry.normalizedWord)?.reviewStatus ??
-                                "reviewed"
-                            )}
-                          </StatusBadge>
-                        </>
-                      )}
-                    </div>
 
                     <dl className="library-preview__facts">
                       <div>
@@ -666,11 +605,11 @@ export function LibraryPage() {
                         <h3>Personal study details</h3>
                         {getMetadata(previewEntry.entry.normalizedWord)?.tags.length ===
                         0 ? null : (
-                          <div className="library-preview__tag-list">
-                            {getMetadata(previewEntry.entry.normalizedWord)?.tags.map((tag) => (
-                              <StatusBadge key={tag.id}>{tag.name}</StatusBadge>
-                            ))}
-                          </div>
+                          <p className="library-preview__tags">
+                            {getMetadata(previewEntry.entry.normalizedWord)
+                              ?.tags.map((tag) => tag.name)
+                              .join(" · ")}
+                          </p>
                         )}
                         <p>
                           {getMetadata(previewEntry.entry.normalizedWord)?.note ||

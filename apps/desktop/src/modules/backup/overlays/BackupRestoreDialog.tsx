@@ -7,7 +7,6 @@ import type {
 
 import { Button, Modal, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { describeBackup } from "../services";
 
 interface BackupRestoreDialogProps {
   readonly backups: readonly BackupDescriptor[];
@@ -20,6 +19,11 @@ interface BackupRestoreDialogProps {
   readonly onRestore: (fileName: string) => Promise<BackupRestoreResult>;
   readonly onValidate: (fileName: string) => Promise<BackupValidationResult>;
   readonly onClearRestoreResult: () => void;
+}
+
+function describeBackup(backup: BackupDescriptor): string {
+  const reason = backup.reason === "pre-restore" ? "Safety backup" : `${backup.reason} backup`;
+  return `${reason} · ${backup.counts.vocabularyEntries} entries · ${backup.counts.vocabularyMetadata} metadata records`;
 }
 
 function formatDate(value: string): string {
@@ -166,7 +170,7 @@ export function BackupRestoreDialog({
           <div>
             <strong>Backup restored successfully</strong>
             <p>
-              {lastRestore.restored.vocabularyEntries} vocabulary entries and {" "}
+              {lastRestore.restored.vocabularyEntries} vocabulary entries and{" "}
               {lastRestore.restored.vocabularyMetadata} metadata records were restored. A safety
               backup was created first.
             </p>
@@ -187,7 +191,11 @@ export function BackupRestoreDialog({
               const selectedState = backup.fileName === selectedFileName;
 
               return (
-                <label className="backup-list-item" data-selected={selectedState || undefined} key={backup.fileName}>
+                <label
+                  className="backup-list-item"
+                  data-selected={selectedState || undefined}
+                  key={backup.fileName}
+                >
                   <input
                     checked={selectedState}
                     disabled={busy}
@@ -286,7 +294,9 @@ export function BackupRestoreDialog({
                     type="checkbox"
                   />
                   <span>
-                    <strong>I understand this replaces local vocabulary, study metadata, and settings.</strong>
+                    <strong>
+                      I understand this replaces local vocabulary, study metadata, and settings.
+                    </strong>
                     <small>A pre-restore safety backup will be created automatically.</small>
                   </span>
                 </label>

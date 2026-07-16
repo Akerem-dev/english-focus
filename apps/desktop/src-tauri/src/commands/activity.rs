@@ -50,7 +50,10 @@ fn is_allowed_kind(value: &str) -> bool {
 }
 
 fn is_allowed_scope(value: &str) -> bool {
-    matches!(value, "vocabulary" | "library" | "settings" | "backup" | "system")
+    matches!(
+        value,
+        "vocabulary" | "library" | "settings" | "backup" | "system"
+    )
 }
 
 fn validate_request(request: &RecordActivityRequest) -> Result<(), String> {

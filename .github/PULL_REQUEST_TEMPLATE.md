@@ -5,6 +5,7 @@
 ## User-visible behavior
 
 ## Validation
+
 - [ ] Structure
 - [ ] Forbidden patterns
 - [ ] Format

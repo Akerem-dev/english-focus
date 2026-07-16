@@ -1,8 +1,4 @@
-import type {
-  LocalDataSnapshot,
-  ResetLocalDataInput,
-  ResetLocalDataResult
-} from "../data";
+import type { LocalDataSnapshot, ResetLocalDataInput, ResetLocalDataResult } from "../data";
 
 export interface LocalDataRepository {
   getSnapshot(): Promise<LocalDataSnapshot>;

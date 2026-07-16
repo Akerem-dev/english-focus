@@ -7,9 +7,10 @@ import { validateVocabularySemantics } from "./ValidateVocabularySemantics";
 export const VOCABULARY_PACK_KIND = "english-focus-vocabulary-pack" as const;
 export const VOCABULARY_PACK_VERSION = "1.0.0" as const;
 export const MAX_VOCABULARY_PACK_CHARACTERS = 5_242_880;
-export const MAX_VOCABULARY_PACK_ENTRIES = 500;
+export const MAX_VOCABULARY_PACK_BYTES = 5_242_880;
+const MAX_VOCABULARY_PACK_ENTRIES = 500;
 
-export interface VocabularyPackDocument {
+interface VocabularyPackDocument {
   readonly kind: typeof VOCABULARY_PACK_KIND;
   readonly packVersion: typeof VOCABULARY_PACK_VERSION;
   readonly schemaVersion: string;
@@ -24,7 +25,7 @@ export interface VocabularyPackExport {
   readonly entryCount: number;
 }
 
-export type VocabularyPackEntryStatus = "valid" | "invalid";
+type VocabularyPackEntryStatus = "valid" | "invalid";
 
 export interface VocabularyPackEntryAnalysis {
   readonly index: number;
@@ -175,7 +176,7 @@ function parsePackDocument(value: unknown): VocabularyPackDocument | string {
   });
 }
 
-export function analyzeVocabularyPack(document: VocabularyPackDocument): VocabularyPackAnalysis {
+function analyzeVocabularyPack(document: VocabularyPackDocument): VocabularyPackAnalysis {
   const seenWords = new Map<string, number>();
 
   const entries = document.entries.map<VocabularyPackEntryAnalysis>((value, index) => {

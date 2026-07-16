@@ -13,13 +13,7 @@ export interface SearchInputProps extends Omit<
 }
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(function SearchInput(
-  {
-    clearLabel = "Clear search",
-    label = "Search",
-    onClear,
-    value,
-    ...inputProps
-  },
+  { clearLabel = "Clear search", label = "Search", onClear, value, ...inputProps },
   ref
 ) {
   const hasValue = typeof value === "string" ? value.length > 0 : value !== undefined;

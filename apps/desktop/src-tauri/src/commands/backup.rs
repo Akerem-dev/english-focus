@@ -1,19 +1,27 @@
 use std::{
     fs,
+    fs::OpenOptions,
+    io::Write,
     path::{Path, PathBuf},
 };
 
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Manager, State};
 
-use crate::state::AppState;
+use crate::{
+    state::AppState,
+    validation::{
+        validate_app_settings, validate_vocabulary_entry, validate_vocabulary_user_metadata,
+    },
+};
 
 const BACKUP_KIND: &str = "english-focus-backup";
 const BACKUP_VERSION: &str = "1.0.0";
 const DATABASE_SCHEMA_VERSION: &str = "3";
-const APP_VERSION: &str = "0.1.0";
+const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 const MAX_BACKUP_BYTES: u64 = 32 * 1024 * 1024;
 const AUTOMATIC_RETENTION_LIMIT: usize = 7;
 const PRE_RESTORE_RETENTION_LIMIT: usize = 5;
@@ -139,7 +147,11 @@ fn filename_for(reason: &str, created_at: &str) -> String {
         .filter(|character| character.is_ascii_digit())
         .take(17)
         .collect();
-    let safe_stamp = if stamp.is_empty() { "unknown" } else { stamp.as_str() };
+    let safe_stamp = if stamp.is_empty() {
+        "unknown"
+    } else {
+        stamp.as_str()
+    };
     format!("english-focus-backup-{reason}-{safe_stamp}.json")
 }
 
@@ -154,12 +166,22 @@ fn fnv1a64(bytes: &[u8]) -> String {
     format!("{hash:016x}")
 }
 
+fn checksum_for(algorithm: &str, bytes: &[u8]) -> Option<String> {
+    match algorithm {
+        "sha256" => Some(format!("{:x}", Sha256::digest(bytes))),
+        "fnv1a64" => Some(fnv1a64(bytes)),
+        _ => None,
+    }
+}
+
 fn read_vocabulary_entries(connection: &Connection) -> Result<Vec<BackupVocabularyEntry>, String> {
     let mut statement = connection
         .prepare("SELECT entry_json, layer FROM vocabulary_entries ORDER BY normalized_word ASC")
         .map_err(|error| format!("Vocabulary backup query could not be prepared: {error}"))?;
     let rows = statement
-        .query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?)))
+        .query_map([], |row| {
+            Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
+        })
         .map_err(|error| format!("Vocabulary backup query could not run: {error}"))?;
 
     rows.map(|row| {
@@ -287,8 +309,9 @@ fn build_manifest(
         created_at: created_at.to_string(),
         reason: reason.to_string(),
         counts,
-        checksum_algorithm: "fnv1a64".to_string(),
-        checksum: fnv1a64(&checksum_source),
+        checksum_algorithm: "sha256".to_string(),
+        checksum: checksum_for("sha256", &checksum_source)
+            .ok_or_else(|| "Backup checksum algorithm is unavailable.".to_string())?,
         data,
     })
 }
@@ -317,14 +340,33 @@ fn write_manifest(directory: &Path, manifest: &BackupManifest) -> Result<BackupD
     let contents = serde_json::to_vec_pretty(manifest)
         .map_err(|error| format!("Backup file could not be serialized: {error}"))?;
 
-    fs::write(&temporary, &contents)
-        .map_err(|error| format!("Temporary backup file could not be written: {error}"))?;
     if target.exists() {
-        fs::remove_file(&target)
-            .map_err(|error| format!("An older backup file could not be replaced: {error}"))?;
+        return Err(
+            "A backup with the same timestamp already exists; the existing file was preserved."
+                .to_string(),
+        );
     }
-    fs::rename(&temporary, &target)
-        .map_err(|error| format!("Backup file could not be finalized: {error}"))?;
+
+    let mut temporary_file = OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .open(&temporary)
+        .map_err(|error| format!("Temporary backup file could not be created: {error}"))?;
+    let write_result = temporary_file
+        .write_all(&contents)
+        .and_then(|_| temporary_file.sync_all());
+    drop(temporary_file);
+    if let Err(error) = write_result {
+        let _ = fs::remove_file(&temporary);
+        return Err(format!(
+            "Temporary backup file could not be written durably: {error}"
+        ));
+    }
+
+    if let Err(error) = fs::rename(&temporary, &target) {
+        let _ = fs::remove_file(&temporary);
+        return Err(format!("Backup file could not be finalized: {error}"));
+    }
 
     Ok(descriptor_from_manifest(
         file_name,
@@ -341,8 +383,8 @@ fn read_manifest(path: &Path) -> Result<(BackupManifest, u64), String> {
         return Err("The backup file exceeds the 32 MB safety limit.".to_string());
     }
 
-    let contents = fs::read(path)
-        .map_err(|error| format!("Backup file could not be read: {error}"))?;
+    let contents =
+        fs::read(path).map_err(|error| format!("Backup file could not be read: {error}"))?;
     let manifest = serde_json::from_slice(&contents)
         .map_err(|error| format!("Backup JSON is invalid: {error}"))?;
     Ok((manifest, metadata.len()))
@@ -371,14 +413,18 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
     if validate_reason(&manifest.reason).is_err() {
         issues.push("The backup reason is invalid.".to_string());
     }
-    if manifest.checksum_algorithm != "fnv1a64" {
+    if manifest.checksum_algorithm != "sha256" && manifest.checksum_algorithm != "fnv1a64" {
         issues.push("The backup checksum algorithm is not supported.".to_string());
     }
 
     let expected_counts = BackupCounts {
         vocabulary_entries: manifest.data.entries.len(),
         vocabulary_metadata: manifest.data.metadata.len(),
-        settings_records: if manifest.data.settings.is_some() { 1 } else { 0 },
+        settings_records: if manifest.data.settings.is_some() {
+            1
+        } else {
+            0
+        },
     };
     if manifest.counts.vocabulary_entries != expected_counts.vocabulary_entries
         || manifest.counts.vocabulary_metadata != expected_counts.vocabulary_metadata
@@ -388,11 +434,14 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
     }
 
     match serde_json::to_vec(&manifest.data) {
-        Ok(bytes) if fnv1a64(&bytes) != manifest.checksum => {
-            issues.push("The backup checksum does not match its contents.".to_string());
-        }
+        Ok(bytes) => match checksum_for(&manifest.checksum_algorithm, &bytes) {
+            Some(checksum) if checksum != manifest.checksum => {
+                issues.push("The backup checksum does not match its contents.".to_string());
+            }
+            None => {}
+            _ => {}
+        },
         Err(error) => issues.push(format!("Backup checksum data is invalid: {error}")),
-        _ => {}
     }
 
     for record in &manifest.data.entries {
@@ -401,24 +450,31 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
             break;
         }
 
-        for field in ["id", "normalizedWord", "createdAt", "updatedAt"] {
-            if record.entry.get(field).and_then(Value::as_str).is_none() {
-                issues.push(format!("A vocabulary record is missing {field}."));
-                break;
-            }
+        if let Err(error) = validate_vocabulary_entry(&record.entry) {
+            issues.push(format!("A vocabulary record is invalid: {error}"));
+            break;
         }
     }
 
     for record in &manifest.data.metadata {
-        if record.normalized_word.trim().is_empty() || record.view_count < 0 {
-            issues.push("A vocabulary metadata record is invalid.".to_string());
+        let value = match serde_json::to_value(record) {
+            Ok(value) => value,
+            Err(error) => {
+                issues.push(format!("A vocabulary metadata record is invalid: {error}"));
+                break;
+            }
+        };
+        if let Err(error) = validate_vocabulary_user_metadata(&value) {
+            issues.push(format!("A vocabulary metadata record is invalid: {error}"));
             break;
         }
     }
 
     if let Some(settings) = &manifest.data.settings {
-        if !settings.is_object() || settings.get("updatedAt").and_then(Value::as_str).is_none() {
-            issues.push("The backup application settings are invalid.".to_string());
+        if let Err(error) = validate_app_settings(settings) {
+            issues.push(format!(
+                "The backup application settings are invalid: {error}"
+            ));
         }
     }
 
@@ -431,7 +487,8 @@ fn list_descriptors(directory: &Path) -> Result<Vec<BackupDescriptor>, String> {
     for entry in fs::read_dir(directory)
         .map_err(|error| format!("The backup directory could not be read: {error}"))?
     {
-        let entry = entry.map_err(|error| format!("A backup directory item is invalid: {error}"))?;
+        let entry =
+            entry.map_err(|error| format!("A backup directory item is invalid: {error}"))?;
         let path = entry.path();
 
         if path.extension().and_then(|value| value.to_str()) != Some("json") {
@@ -493,7 +550,6 @@ pub(crate) fn create_backup_from_connection(
     apply_retention(&directory)?;
     Ok(descriptor)
 }
-
 
 pub(crate) fn count_backups(app: &AppHandle) -> Result<usize, String> {
     let directory = backup_directory(app)?;
@@ -704,4 +760,30 @@ pub fn delete_backup(file_name: String, app: AppHandle) -> Result<(), String> {
     validate_file_name(&file_name)?;
     let path = backup_directory(&app)?.join(file_name);
     fs::remove_file(path).map_err(|error| format!("The backup could not be deleted: {error}"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::checksum_for;
+
+    #[test]
+    fn calculates_sha256_for_new_backups() {
+        assert_eq!(
+            checksum_for("sha256", b"abc").as_deref(),
+            Some("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")
+        );
+    }
+
+    #[test]
+    fn retains_legacy_fnv_checksum_support() {
+        assert_eq!(
+            checksum_for("fnv1a64", b"abc").as_deref(),
+            Some("e71fa2190541574b")
+        );
+    }
+
+    #[test]
+    fn rejects_unknown_checksum_algorithms() {
+        assert!(checksum_for("md5", b"abc").is_none());
+    }
 }

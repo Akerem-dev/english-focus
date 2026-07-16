@@ -2,22 +2,22 @@
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- CP28 versioned 100-entry pilot core vocabulary pack.
-- Core-content manifest, SHA-256 verification, semantic quality gates, and bundle batches.
-- Settings status panel for bundled content version and count.
+- Removed obsolete checkpoint, patch-delivery, and superseded release-candidate scaffolding.
+- Reduced public barrel exports and removed unreachable component, service, and helper code.
+- Kept only editorially reviewed bundled vocabulary; generated template entries are not shipped.
 
-### Remaining
-
-- CP29 full regression and migration rehearsal.
-- CP30 V1 release and final delivery.
-
-## [0.9.0] - 2026-07-16
+## [1.0.0] - 2026-07-17
 
 ### Added
 
-- Repeatable Windows MSI and NSIS installer builds.
-- Version synchronization and release metadata checks.
-- Installer artifact verification, SHA-256 checksums, and release manifest generation.
-- Windows CI workflow for unsigned release-candidate artifacts.
+- Three-screen Vocabulary, Library, and Settings desktop application.
+- Layered local vocabulary, personal metadata, JSON validation, import/export, and duplicate review.
+- Local SQLite persistence, backup/restore, diagnostics, activity, and guarded data reset.
+- Keyboard, accessibility, performance, release, native-schema, and Windows installer quality gates.
+
+### Security
+
+- External AI bridge contains no provider, API key, local model, RAG, or chat integration.
+- Imported JSON is parsed and validated before persistence; user metadata remains a separate layer.

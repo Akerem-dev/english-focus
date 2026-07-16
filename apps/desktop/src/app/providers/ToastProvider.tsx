@@ -21,7 +21,6 @@ function createToastId(): string {
   return `toast-${Date.now()}-${fallbackToastSequence}`;
 }
 
-
 function publishToastActivity(input: ToastInput): void {
   const title = input.title.trim();
 

@@ -2,8 +2,8 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 import { joinClassNames } from "../componentUtils";
 
-export type IconButtonVariant = "quiet" | "outlined" | "accent" | "danger";
-export type IconButtonSize = "small" | "medium" | "large";
+type IconButtonVariant = "quiet" | "outlined" | "accent" | "danger";
+type IconButtonSize = "small" | "medium" | "large";
 
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   readonly label: string;

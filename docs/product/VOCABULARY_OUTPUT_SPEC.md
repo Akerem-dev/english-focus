@@ -1,6 +1,7 @@
 # Vocabulary Output Specification
 
 Each final entry may include:
+
 - word and normalized word
 - aliases and inflected forms
 - pronunciation and variants

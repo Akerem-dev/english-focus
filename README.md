@@ -1,10 +1,8 @@
-# English Learning Platform — Final V1 Skeleton
+# English Focus
 
-This repository is the complete intended file and module skeleton for the approved final V1.
+English Focus is a local-first Windows desktop vocabulary application built with React, TypeScript, Tauri, Rust, and SQLite. Vocabulary and personal study metadata remain on the device. The application contains no AI provider, API key, chat interface, or cloud account.
 
-The product is a fully local personal English vocabulary library. Users search local entries. When a word is missing, the app generates a copyable instruction for the user's preferred external AI. The user pastes the generated JSON back into the app, which parses, validates, previews, resolves duplicates, and stores the entry locally.
-
-## Three primary screens
+## Primary screens
 
 1. Vocabulary
 2. Library
@@ -12,33 +10,38 @@ The product is a fully local personal English vocabulary library. Users search l
 
 Search and vocabulary detail are states of the Vocabulary screen.
 
-## Included boundaries
+## Capabilities
 
-- Application shell and routing
-- Vocabulary search and detail states
-- Library management
-- Settings
-- Instruction builder
-- Clipboard and JSON paste flow
-- Parse, schema, semantic, and quality validation
-- Correction instruction generation
-- Preview and duplicate comparison
-- SQLite repositories and FTS search
-- Core entries, user entries, overrides, and user metadata
-- Tags, favorites, notes, review status, and learning status
+- Local vocabulary search and detailed editorial entries
+- Separate core entries, user entries, overrides, and personal metadata
+- Provider-independent AI instructions copied for use outside the application
+- Local JSON parsing, schema validation, semantic review, preview, and duplicate resolution
 - Single-entry and vocabulary-pack import/export
-- Backup, restore, and schema migrations
-- Command bar, keyboard shortcuts, history, undo, and diagnostics
-- Unit, integration, component, accessibility, migration, performance, and E2E test locations
-- Tauri desktop shell and platform boundaries
+- Favorites, tags, notes, review state, and learning state
+- Local backup, restore, retention, diagnostics, and guarded data reset
+- Keyboard navigation, command bar, reduced motion, and narrow-window support
 
-## Intentionally pending
+## Development
 
-Production business logic and final visual components are not implemented. Placeholder files define ownership and intended architecture without adding fake demo behavior.
+Requirements: Node.js 22.12+, npm 10+, the stable Rust toolchain, and the Windows prerequisites required by Tauri.
 
-Start with:
+```powershell
+npm install
+npm run desktop
+```
 
-- `docs/FINAL_PRODUCT_SPEC.md`
-- `docs/FILE_MANIFEST.md`
-- `docs/IMPLEMENTATION_ORDER.md`
-- `PROJECT_TREE.txt`
+Run the complete release gate:
+
+```powershell
+npm run quality:release
+```
+
+Run native checks from `apps/desktop/src-tauri`:
+
+```powershell
+cargo fmt --all -- --check
+cargo clippy --all-targets --all-features -- -D warnings
+cargo test --all-targets --all-features
+```
+
+Product and architecture requirements live under `docs/`. Windows installer requirements are documented in `docs/release/WINDOWS_INSTALLERS.md`.

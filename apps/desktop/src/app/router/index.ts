@@ -1,5 +1,4 @@
 export { AppRouter } from "./AppRouter";
-export { APP_ROUTES, getRouteByPath } from "./routes";
-export type { AppRouteDefinition } from "./routes";
+export { APP_ROUTES } from "./routes";
+export { getRouteByPath } from "./routeLookup";
 export { ROUTE_PATHS } from "./routeIds";
-export type { AppRouteId, AppRoutePath } from "./routeIds";

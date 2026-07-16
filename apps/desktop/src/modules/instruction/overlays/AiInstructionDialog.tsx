@@ -2,8 +2,7 @@ import { useMemo, useState } from "react";
 
 import { Button, Modal, StatusBadge, TextAreaField } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { TauriClipboard } from "../../../infrastructure/clipboard";
-import { useInstructionPreferences } from "../../../app/providers";
+import { useClipboard, useInstructionPreferences } from "../../../app/providers";
 import { BuildVocabularyInstruction, CopyVocabularyInstruction } from "../application";
 
 export interface AiInstructionDialogProps {
@@ -16,11 +15,12 @@ type CopyState = "idle" | "copying" | "copied" | "error";
 
 export function AiInstructionDialog({ onClose, open, targetWord }: AiInstructionDialogProps) {
   const { preferences } = useInstructionPreferences();
+  const clipboard = useClipboard();
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const builder = useMemo(() => new BuildVocabularyInstruction(), []);
   const copier = useMemo(
-    () => new CopyVocabularyInstruction(new TauriClipboard(), builder),
-    [builder]
+    () => new CopyVocabularyInstruction(clipboard, builder),
+    [builder, clipboard]
   );
   const instruction = useMemo(
     () => builder.execute({ targetWord, preferences }),

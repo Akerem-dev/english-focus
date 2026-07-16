@@ -128,7 +128,8 @@
 .activity-clear-boundary {
   align-items: center;
   padding: var(--space-4);
-  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-warning) 36%, var(--color-border));
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-warning) 36%, var(--color-border));
   border-radius: var(--radius-large);
   background: var(--color-warning-soft);
 }

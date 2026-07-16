@@ -4,4 +4,5 @@ export * from "./vocabulary-components.schema";
 export * from "./vocabulary-entry-json-schema";
 export * from "./vocabulary-entry.schema";
 export * from "./vocabulary-enums.schema";
+export * from "./vocabulary-pack.schema";
 export * from "./vocabulary-user-metadata.schema";

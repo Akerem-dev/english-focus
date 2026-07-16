@@ -98,9 +98,7 @@ function pushDuplicateIssues(
  * This validator never evaluates whether a language claim is factually true; it checks internal
  * consistency, import provenance, target alignment, and bilingual pairing.
  */
-export type VocabularySemanticValidationContext =
-  | "external-ai-import"
-  | "vocabulary-pack-transfer";
+export type VocabularySemanticValidationContext = "external-ai-import" | "vocabulary-pack-transfer";
 
 export class VocabularySemanticValidator {
   validate(

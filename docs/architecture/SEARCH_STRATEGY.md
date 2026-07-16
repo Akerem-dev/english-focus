@@ -1,6 +1,7 @@
 # Search Strategy
 
 Priority:
+
 1. Exact normalized word
 2. Alias or inflected form
 3. Prefix match

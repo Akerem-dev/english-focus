@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from "react";
-import type {
-  SaveVocabularyUserMetadataInput,
-  VocabularyUserMetadata
-} from "@platform/domain";
+import type { SaveVocabularyUserMetadataInput, VocabularyUserMetadata } from "@platform/domain";
 
 import { TauriVocabularyUserMetadataRepository } from "../../infrastructure/persistence";
 import { publishActivity } from "../../modules/history";
@@ -31,12 +28,16 @@ export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   useEffect(() => {
-    void refresh();
+    const timer = window.setTimeout(() => {
+      void refresh();
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [refresh]);
 
   const getMetadata = useCallback(
-    (normalizedWord: string) =>
-      metadata.find((record) => record.normalizedWord === normalizedWord),
+    (normalizedWord: string) => metadata.find((record) => record.normalizedWord === normalizedWord),
     [metadata]
   );
 
@@ -56,7 +57,8 @@ export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
         setStatus("ready");
         return saved;
       } catch (cause) {
-        const message = cause instanceof Error ? cause.message : "Vocabulary metadata could not be saved.";
+        const message =
+          cause instanceof Error ? cause.message : "Vocabulary metadata could not be saved.";
         setError(message);
         setStatus("error");
         throw cause;

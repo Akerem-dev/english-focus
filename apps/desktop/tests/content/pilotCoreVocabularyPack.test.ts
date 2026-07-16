@@ -1,25 +1,19 @@
 import { vocabularyEntrySchema } from "@platform/schemas";
 import { describe, expect, it } from "vitest";
 
-import {
-  coreVocabularyEntries,
-  coreVocabularyManifest,
-  pilotCoreVocabularyEntries
-} from "../../src/content";
+import { coreVocabularyEntries, coreVocabularyManifest } from "../../src/content";
 import {
   assessVocabularyQuality,
   validateVocabularySemantics
 } from "../../src/modules/import-export";
 
-const allowedWarningCodes = new Set(coreVocabularyManifest.qualityPolicy.allowedWarningCodes);
-
-describe("100-entry pilot core vocabulary pack", () => {
+describe("editorially reviewed core vocabulary", () => {
   it("matches the versioned manifest and contains unique deterministic records", () => {
-    expect(coreVocabularyEntries).toHaveLength(100);
-    expect(pilotCoreVocabularyEntries).toHaveLength(99);
-    expect(coreVocabularyManifest.entryCount).toBe(100);
-    expect(new Set(coreVocabularyEntries.map((entry) => entry.id)).size).toBe(100);
-    expect(new Set(coreVocabularyEntries.map((entry) => entry.normalizedWord)).size).toBe(100);
+    expect(coreVocabularyEntries).toHaveLength(1);
+    expect(coreVocabularyManifest.entryCount).toBe(1);
+    expect(coreVocabularyManifest.status).toBe("editorial-reviewed");
+    expect(new Set(coreVocabularyEntries.map((entry) => entry.id)).size).toBe(1);
+    expect(new Set(coreVocabularyEntries.map((entry) => entry.normalizedWord)).size).toBe(1);
     expect(coreVocabularyEntries.map((entry) => entry.normalizedWord)).toEqual(
       coreVocabularyManifest.words
     );
@@ -39,18 +33,9 @@ describe("100-entry pilot core vocabulary pack", () => {
     }
   });
 
-  it("keeps pilot completeness warnings inside the declared editorial boundary", () => {
-    for (const entry of pilotCoreVocabularyEntries) {
-      const quality = assessVocabularyQuality(entry);
-      const issues = quality.kind === "warnings" ? quality.issues : [];
-
-      expect(issues.length, entry.normalizedWord).toBeLessThanOrEqual(
-        coreVocabularyManifest.qualityPolicy.maxWarningsPerPilotEntry
-      );
-      expect(
-        issues.every((issue) => allowedWarningCodes.has(issue.code)),
-        entry.normalizedWord
-      ).toBe(true);
+  it("does not publish completeness warnings as reviewed content", () => {
+    for (const entry of coreVocabularyEntries) {
+      expect(assessVocabularyQuality(entry).kind, entry.normalizedWord).toBe("clean");
     }
   });
 

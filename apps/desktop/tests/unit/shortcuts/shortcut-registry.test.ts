@@ -23,9 +23,13 @@ describe("keyboard shortcut registry", () => {
     const libraryCommands = createCommandRegistry("/library");
     const settingsCommands = createCommandRegistry("/settings");
 
-    expect(vocabularyCommands.some((command) => command.id === "save-current-vocabulary")).toBe(true);
+    expect(vocabularyCommands.some((command) => command.id === "save-current-vocabulary")).toBe(
+      true
+    );
     expect(libraryCommands.some((command) => command.id === "export-library")).toBe(true);
     expect(settingsCommands.some((command) => command.id === "export-library")).toBe(false);
-    expect(settingsCommands.filter((command) => command.target.kind === "navigate")).toHaveLength(3);
+    expect(settingsCommands.filter((command) => command.target.kind === "navigate")).toHaveLength(
+      3
+    );
   });
 });

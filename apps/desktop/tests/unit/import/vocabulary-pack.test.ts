@@ -32,7 +32,6 @@ describe("vocabulary pack transfer", () => {
     expect(exported.json.endsWith("\n")).toBe(true);
   });
 
-
   it("accepts entries exported from the layered local library", () => {
     const reviewedAllocate = {
       ...(rawAllocateEntry as VocabularyEntry),

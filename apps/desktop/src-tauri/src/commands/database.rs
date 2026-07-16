@@ -1,9 +1,12 @@
-use rusqlite::{params, OptionalExtension};
+use std::collections::HashSet;
+
+use rusqlite::{params, OptionalExtension, Transaction};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::State;
 
 use crate::state::AppState;
+use crate::validation::{validate_vocabulary_entry, validate_vocabulary_user_metadata};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -30,6 +33,8 @@ fn required_string(entry: &Value, field: &str) -> Result<String, String> {
 fn parse_record(entry_json: String, layer: String) -> Result<StoredVocabularyEntry, String> {
     let entry = serde_json::from_str(&entry_json)
         .map_err(|error| format!("Stored vocabulary JSON is invalid: {error}"))?;
+    validate_vocabulary_entry(&entry)
+        .map_err(|error| format!("Stored vocabulary entry is invalid: {error}"))?;
     Ok(StoredVocabularyEntry { entry, layer })
 }
 
@@ -87,24 +92,30 @@ pub fn save_vocabulary_entry(
     request: SaveVocabularyEntryRequest,
     state: State<'_, AppState>,
 ) -> Result<StoredVocabularyEntry, String> {
+    save_vocabulary_entries(vec![request], state)?
+        .into_iter()
+        .next()
+        .ok_or_else(|| "The vocabulary entry was not saved.".to_string())
+}
+
+fn validate_save_request(request: &SaveVocabularyEntryRequest) -> Result<(), String> {
     if request.layer != "user" && request.layer != "override" {
         return Err("Vocabulary storage layer must be 'user' or 'override'.".to_string());
     }
 
+    validate_vocabulary_entry(&request.entry)
+}
+
+fn persist_vocabulary_entry(
+    transaction: &Transaction<'_>,
+    request: &SaveVocabularyEntryRequest,
+) -> Result<(), String> {
     let entry_id = required_string(&request.entry, "id")?;
     let normalized_word = required_string(&request.entry, "normalizedWord")?;
     let created_at = required_string(&request.entry, "createdAt")?;
     let updated_at = required_string(&request.entry, "updatedAt")?;
     let entry_json = serde_json::to_string(&request.entry)
         .map_err(|error| format!("Vocabulary entry could not be serialized: {error}"))?;
-    let mut connection = state
-        .database
-        .lock()
-        .map_err(|_| "The local vocabulary database lock is unavailable.".to_string())?;
-    let transaction = connection
-        .transaction()
-        .map_err(|error| format!("The local vocabulary transaction could not start: {error}"))?;
-
     transaction
         .execute(
             r#"
@@ -140,17 +151,58 @@ pub fn save_vocabulary_entry(
         )
         .map_err(|error| format!("Vocabulary metadata could not be initialized: {error}"))?;
 
+    Ok(())
+}
+
+#[tauri::command]
+pub fn save_vocabulary_entries(
+    requests: Vec<SaveVocabularyEntryRequest>,
+    state: State<'_, AppState>,
+) -> Result<Vec<StoredVocabularyEntry>, String> {
+    if requests.is_empty() {
+        return Err("At least one vocabulary entry is required.".to_string());
+    }
+    if requests.len() > 500 {
+        return Err("At most 500 vocabulary entries can be saved in one transaction.".to_string());
+    }
+
+    let mut normalized_words = HashSet::new();
+    for request in &requests {
+        validate_save_request(request)?;
+        let normalized_word = required_string(&request.entry, "normalizedWord")?;
+        if !normalized_words.insert(normalized_word.clone()) {
+            return Err(format!(
+                "Vocabulary entry '{normalized_word}' appears more than once in the transaction."
+            ));
+        }
+    }
+
+    let mut connection = state
+        .database
+        .lock()
+        .map_err(|_| "The local vocabulary database lock is unavailable.".to_string())?;
+    let transaction = connection
+        .transaction()
+        .map_err(|error| format!("The local vocabulary transaction could not start: {error}"))?;
+
+    for request in &requests {
+        persist_vocabulary_entry(&transaction, request)?;
+    }
+
     transaction
         .commit()
         .map_err(|error| format!("The local vocabulary transaction could not commit: {error}"))?;
 
-    Ok(StoredVocabularyEntry {
-        entry: request.entry,
-        layer: request.layer,
-    })
+    Ok(requests
+        .into_iter()
+        .map(|request| StoredVocabularyEntry {
+            entry: request.entry,
+            layer: request.layer,
+        })
+        .collect())
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SaveVocabularyUserMetadataRequest {
     normalized_word: String,
@@ -209,7 +261,7 @@ fn parse_metadata_record(row: MetadataDatabaseRow) -> Result<VocabularyUserMetad
     let tags = serde_json::from_str(&tags_json)
         .map_err(|error| format!("Stored vocabulary tags are invalid: {error}"))?;
 
-    Ok(VocabularyUserMetadataRecord {
+    let record = VocabularyUserMetadataRecord {
         normalized_word,
         favorite: favorite != 0,
         tags,
@@ -220,7 +272,12 @@ fn parse_metadata_record(row: MetadataDatabaseRow) -> Result<VocabularyUserMetad
         view_count,
         created_at,
         updated_at,
-    })
+    };
+    let value = serde_json::to_value(&record)
+        .map_err(|error| format!("Stored vocabulary metadata could not be decoded: {error}"))?;
+    validate_vocabulary_user_metadata(&value)
+        .map_err(|error| format!("Stored vocabulary metadata is invalid: {error}"))?;
+    Ok(record)
 }
 
 fn validate_metadata_request(request: &SaveVocabularyUserMetadataRequest) -> Result<(), String> {
@@ -349,8 +406,8 @@ pub fn list_vocabulary_user_metadata(
         .map_err(|error| format!("Vocabulary metadata could not be queried: {error}"))?;
 
     rows.map(|row| {
-        let database_row = row
-            .map_err(|error| format!("Vocabulary metadata row could not be read: {error}"))?;
+        let database_row =
+            row.map_err(|error| format!("Vocabulary metadata row could not be read: {error}"))?;
         parse_metadata_record(database_row)
     })
     .collect()
@@ -374,6 +431,9 @@ pub fn save_vocabulary_user_metadata(
     state: State<'_, AppState>,
 ) -> Result<VocabularyUserMetadataRecord, String> {
     validate_metadata_request(&request)?;
+    let metadata = serde_json::to_value(&request)
+        .map_err(|error| format!("Vocabulary metadata could not be decoded: {error}"))?;
+    validate_vocabulary_user_metadata(&metadata)?;
     let tags_json = serde_json::to_string(&request.tags)
         .map_err(|error| format!("Vocabulary tags could not be serialized: {error}"))?;
     let mut connection = state

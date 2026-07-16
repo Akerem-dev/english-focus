@@ -15,6 +15,9 @@ export interface VocabularyRepositoryContextValue {
   readonly error?: string | undefined;
   readonly refresh: () => Promise<void>;
   readonly saveEntry: (input: SaveVocabularyEntryInput) => Promise<StoredVocabularyEntry>;
+  readonly saveEntries: (
+    inputs: readonly SaveVocabularyEntryInput[]
+  ) => Promise<readonly StoredVocabularyEntry[]>;
 }
 
 export const VocabularyRepositoryContext = createContext<

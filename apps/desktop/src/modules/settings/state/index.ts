@@ -1,1 +1,1 @@
-export { resolveTheme, type ResolvedTheme } from "./settingsState";
+export { resolveTheme } from "./settingsState";

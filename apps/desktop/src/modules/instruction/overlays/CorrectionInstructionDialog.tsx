@@ -9,7 +9,7 @@ import {
   ValidationIssueList
 } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { TauriClipboard } from "../../../infrastructure/clipboard";
+import { useClipboard } from "../../../app/providers";
 import { BuildCorrectionInstruction, CopyCorrectionInstruction } from "../application";
 
 export interface CorrectionInstructionDialogProps {
@@ -31,11 +31,12 @@ export function CorrectionInstructionDialog({
   originalJson,
   targetWord
 }: CorrectionInstructionDialogProps) {
+  const clipboard = useClipboard();
   const [copyState, setCopyState] = useState<CopyState>("idle");
   const builder = useMemo(() => new BuildCorrectionInstruction(), []);
   const copier = useMemo(
-    () => new CopyCorrectionInstruction(new TauriClipboard(), builder),
-    [builder]
+    () => new CopyCorrectionInstruction(clipboard, builder),
+    [builder, clipboard]
   );
   const instruction = useMemo(
     () => builder.execute({ issues, originalJson, targetWord }),

@@ -1,13 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type {
-  LocalDataCategory,
-  LocalDataSnapshot,
-  ResetLocalDataResult
-} from "@platform/domain";
+import { useCallback, useEffect, useState } from "react";
+import type { LocalDataCategory, LocalDataSnapshot, ResetLocalDataResult } from "@platform/domain";
 
 import {
   useActivity,
   useBackup,
+  useMaintenance,
   useSettings,
   useToast,
   useVocabularyMetadata,
@@ -15,7 +12,6 @@ import {
 } from "../../../app/providers";
 import { Button, Modal, StatusBadge, TextField } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { TauriLocalDataRepository } from "../../../infrastructure/persistence";
 import {
   FULL_LOCAL_RESET_CATEGORIES,
   canCreateSafetyBackup,
@@ -43,25 +39,29 @@ const categoryDefinitions: readonly CategoryDefinition[] = Object.freeze([
   {
     category: "study-metadata",
     title: "Study details",
-    description: "Favorites, tags, personal notes, learning status, review status, and view history.",
+    description:
+      "Favorites, tags, personal notes, learning status, review status, and view history.",
     count: (snapshot) => snapshot.studyMetadataRecords
   },
   {
     category: "user-vocabulary",
     title: "User vocabulary",
-    description: "Vocabulary entries created or imported by you. Their linked study details are removed too.",
+    description:
+      "Vocabulary entries created or imported by you. Their linked study details are removed too.",
     count: (snapshot) => snapshot.userVocabularyEntries
   },
   {
     category: "overrides",
     title: "Core vocabulary overrides",
-    description: "Your replacement versions are removed; bundled core entries become visible again.",
+    description:
+      "Your replacement versions are removed; bundled core entries become visible again.",
     count: (snapshot) => snapshot.overrideVocabularyEntries
   },
   {
     category: "settings",
     title: "Application settings",
-    description: "Theme, content display, accessibility, backup, and AI instruction preferences return to defaults.",
+    description:
+      "Theme, content display, accessibility, backup, and AI instruction preferences return to defaults.",
     count: (snapshot) => snapshot.settingsRecords
   },
   {
@@ -73,7 +73,8 @@ const categoryDefinitions: readonly CategoryDefinition[] = Object.freeze([
   {
     category: "backups",
     title: "Retained backups",
-    description: "Every retained backup file is permanently deleted. This cannot create a safety backup.",
+    description:
+      "Every retained backup file is permanently deleted. This cannot create a safety backup.",
     count: (snapshot) => snapshot.backupFiles
   }
 ]);
@@ -95,7 +96,7 @@ function deletedSummary(result: ResetLocalDataResult): string {
 }
 
 export function LocalDataControlsSection() {
-  const repository = useMemo(() => new TauriLocalDataRepository(), []);
+  const { localDataRepository: repository } = useMaintenance();
   const { refreshActivity, recordActivity } = useActivity();
   const { refreshBackups } = useBackup();
   const { refreshSettings } = useSettings();
@@ -122,7 +123,8 @@ export function LocalDataControlsSection() {
       setStatus("ready");
       return next;
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "Local data counts could not be loaded.";
+      const message =
+        cause instanceof Error ? cause.message : "Local data counts could not be loaded.";
       setError(message);
       setStatus("error");
       throw cause;
@@ -130,7 +132,12 @@ export function LocalDataControlsSection() {
   }, [repository]);
 
   useEffect(() => {
-    void refreshSnapshot();
+    const timer = window.setTimeout(() => {
+      void refreshSnapshot().catch(() => undefined);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, [refreshSnapshot]);
 
   const expectedPhrase = requiredLocalDataConfirmation(selectedCategories);
@@ -223,7 +230,8 @@ export function LocalDataControlsSection() {
         dedupeKey: "local-data-reset-success"
       });
     } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "Selected local data could not be removed.";
+      const message =
+        cause instanceof Error ? cause.message : "Selected local data could not be removed.";
       setError(message);
       setStatus("error");
       showToast({
@@ -246,7 +254,11 @@ export function LocalDataControlsSection() {
           </p>
         </div>
         <StatusBadge tone={error === undefined ? "success" : "danger"}>
-          {status === "loading" ? "Loading counts" : status === "resetting" ? "Removing locally" : "Protected actions"}
+          {status === "loading"
+            ? "Loading counts"
+            : status === "resetting"
+              ? "Removing locally"
+              : "Protected actions"}
         </StatusBadge>
       </div>
 
@@ -414,7 +426,9 @@ export function LocalDataControlsSection() {
                 }}
                 type="checkbox"
               />
-              <span>I reviewed the selected categories and understand the removal is permanent.</span>
+              <span>
+                I reviewed the selected categories and understand the removal is permanent.
+              </span>
             </label>
             <TextField
               autoComplete="off"
@@ -437,7 +451,8 @@ export function LocalDataControlsSection() {
               <div>
                 <strong>Removal completed</strong>
                 <p>
-                  {deletedSummary(lastResult)} removed. {lastResult.safetyBackup === undefined
+                  {deletedSummary(lastResult)} removed.{" "}
+                  {lastResult.safetyBackup === undefined
                     ? "No safety backup was created."
                     : "A retained safety backup was created before the transaction."}
                 </p>

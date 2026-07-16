@@ -449,7 +449,9 @@ export function PasteGeneratedJsonDialog({
           {MAX_PASTED_JSON_CHARACTERS.toLocaleString("en-US")} characters.
         </p>
         <Button disabled variant="ghost">
-          {sourceFileName === undefined ? "Use top-bar Import for files" : `Loaded: ${sourceFileName}`}
+          {sourceFileName === undefined
+            ? "Use top-bar Import for files"
+            : `Loaded: ${sourceFileName}`}
         </Button>
       </div>
 

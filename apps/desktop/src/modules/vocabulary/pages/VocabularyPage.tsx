@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
 import {
   useToast,
+  useFileTransfer,
   useUndo,
+  useActivity,
   useVocabularyMetadata,
   useVocabularyRepository
 } from "../../../app/providers";
@@ -23,17 +25,15 @@ import {
 import { createVocabularyUserMetadata } from "../application";
 import type { VocabularySearchState } from "../../search/state";
 
-const RECENT_WORDS = ["maintain", "allocate", "vivid", "derive"] as const;
-const RECENT_ADDITIONS = ["concise", "sustain", "infer", "pursue"] as const;
-
 interface WordListCardProps {
   readonly title: string;
   readonly eyebrow: string;
   readonly words: readonly string[];
   readonly onOpenWord: (word: string) => void;
+  readonly emptyMessage: string;
 }
 
-function WordListCard({ eyebrow, onOpenWord, title, words }: WordListCardProps) {
+function WordListCard({ emptyMessage, eyebrow, onOpenWord, title, words }: WordListCardProps) {
   return (
     <section className="word-list-card">
       <header className="word-list-card__header">
@@ -41,27 +41,23 @@ function WordListCard({ eyebrow, onOpenWord, title, words }: WordListCardProps) 
         <span>{eyebrow}</span>
       </header>
       <div className="word-list-card__rows">
+        {words.length === 0 ? <p className="word-list-card__empty">{emptyMessage}</p> : null}
         {words.map((word) => {
-          const isAvailable = word === "maintain";
-
           return (
             <button
               className="word-list-row"
-              disabled={!isAvailable}
               key={word}
               onClick={() => {
                 onOpenWord(word);
               }}
-              title={isAvailable ? `Open ${word}` : `${word} arrives in the core-pack checkpoint`}
+              title={`Open ${word}`}
               type="button"
             >
               <span className="word-list-row__word">
                 <AppIcon name="book-open" size={16} />
                 {word}
               </span>
-              <span className="word-list-row__meta">
-                {isAvailable ? "Open reviewed entry" : "Planned entry"}
-              </span>
+              <span className="word-list-row__meta">Open entry</span>
             </button>
           );
         })}
@@ -98,9 +94,11 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
 }
 
 export function VocabularyPage() {
-  const { contentSource } = useVocabularyRepository();
+  const { contentSource, storedEntries } = useVocabularyRepository();
+  const { activity } = useActivity();
   const { getMetadata, recordView, saveMetadata, status: metadataStatus } = useVocabularyMetadata();
   const { showToast } = useToast();
+  const { exporter } = useFileTransfer();
   const { runUndoableAction } = useUndo();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
@@ -112,6 +110,29 @@ export function VocabularyPage() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const deepLinkHandled = useRef<string | undefined>(undefined);
   const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
+  const recentWords = useMemo(() => {
+    const seen = new Set<string>();
+    return activity
+      .filter((record) => record.kind === "vocabulary-viewed" && record.target !== undefined)
+      .map((record) => record.target as string)
+      .filter((word) => contentSource.getEntryByNormalizedWord(word) !== undefined)
+      .filter((word) => {
+        if (seen.has(word)) {
+          return false;
+        }
+        seen.add(word);
+        return true;
+      })
+      .slice(0, 4);
+  }, [activity, contentSource]);
+  const recentAdditions = useMemo(
+    () =>
+      [...storedEntries]
+        .sort((left, right) => right.entry.createdAt.localeCompare(left.entry.createdAt))
+        .slice(0, 4)
+        .map((record) => record.entry.normalizedWord),
+    [storedEntries]
+  );
 
   function executeSearch(nextQuery: string) {
     const requestId = searchSequence.current + 1;
@@ -144,17 +165,23 @@ export function VocabularyPage() {
     });
   }
 
+  const executeRouteSearch = useEffectEvent(executeSearch);
+
   useEffect(() => {
     const routeWord = searchParams.get("word")?.trim();
 
-    if (routeWord === undefined || routeWord.length === 0 || deepLinkHandled.current === routeWord) {
+    if (
+      routeWord === undefined ||
+      routeWord.length === 0 ||
+      deepLinkHandled.current === routeWord
+    ) {
       return;
     }
 
     deepLinkHandled.current = routeWord;
-    executeSearch(routeWord);
+    executeRouteSearch(routeWord);
     setSearchParams({}, { replace: true });
-  }, [searchParams, searchVocabulary, setSearchParams]);
+  }, [searchParams, setSearchParams]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -172,27 +199,28 @@ export function VocabularyPage() {
     setSearchState(query.trim().length === 0 ? { kind: "initial" } : { kind: "typing", query });
   }
 
-  function exportCurrentEntry() {
+  async function exportCurrentEntry() {
     if (searchState.kind !== "found") {
       return;
     }
 
     const exported = exportVocabularyEntry(searchState.entry);
-    const blob = new Blob([exported.json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = exported.fileName;
-    document.body.append(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
-    showToast({
-      title: "Vocabulary JSON exported",
-      message: `${exported.fileName} was created locally.`,
-      tone: "success",
-      dedupeKey: "vocabulary-export"
-    });
+    try {
+      await exporter.saveText(exported.fileName, exported.json, "application/json");
+      showToast({
+        title: "Vocabulary JSON exported",
+        message: `${exported.fileName} was created locally.`,
+        tone: "success",
+        dedupeKey: "vocabulary-export"
+      });
+    } catch (cause) {
+      showToast({
+        title: "Vocabulary JSON could not be exported",
+        message: cause instanceof Error ? cause.message : "The local file could not be created.",
+        tone: "error",
+        dedupeKey: "vocabulary-export"
+      });
+    }
   }
 
   async function toggleCurrentFavorite() {
@@ -233,42 +261,42 @@ export function VocabularyPage() {
     }
   }
 
-  useEffect(() => {
-    function handleAppCommand(event: Event) {
-      const { action } = (event as CustomEvent<AppCommandEventDetail>).detail;
+  const handleAppCommand = useEffectEvent((event: Event) => {
+    const { action } = (event as CustomEvent<AppCommandEventDetail>).detail;
 
-      switch (action) {
-        case "focus-search":
-          if (searchState.kind === "found") {
-            returnToInitial();
-          }
+    switch (action) {
+      case "focus-search":
+        if (searchState.kind === "found") {
+          returnToInitial();
+        }
 
-          window.requestAnimationFrame(() => {
-            searchInputRef.current?.focus();
-          });
-          return;
-        case "export-current":
-          exportCurrentEntry();
-          return;
-        case "save-current":
-          void toggleCurrentFavorite();
-          return;
-        case "edit-study-details":
-          if (searchState.kind === "found") {
-            setMetadataWord(searchState.entry.normalizedWord);
-          }
-          return;
-        case "open-import":
-          return;
-      }
+        window.requestAnimationFrame(() => {
+          searchInputRef.current?.focus();
+        });
+        return;
+      case "export-current":
+        void exportCurrentEntry();
+        return;
+      case "save-current":
+        void toggleCurrentFavorite();
+        return;
+      case "edit-study-details":
+        if (searchState.kind === "found") {
+          setMetadataWord(searchState.entry.normalizedWord);
+        }
+        return;
+      case "open-import":
+        return;
     }
+  });
 
+  useEffect(() => {
     window.addEventListener(APP_COMMAND_EVENT, handleAppCommand);
 
     return () => {
       window.removeEventListener(APP_COMMAND_EVENT, handleAppCommand);
     };
-  }, [getMetadata, metadataStatus, saveMetadata, searchState]);
+  }, []);
 
   if (searchState.kind === "found") {
     const entryMetadata = getMetadata(searchState.entry.normalizedWord);
@@ -282,7 +310,9 @@ export function VocabularyPage() {
           onEditMetadata={() => {
             setMetadataWord(searchState.entry.normalizedWord);
           }}
-          onExport={exportCurrentEntry}
+          onExport={() => {
+            void exportCurrentEntry();
+          }}
           onImportReplacement={() => {
             setPasteJsonWord(searchState.entry.normalizedWord);
           }}
@@ -334,7 +364,12 @@ export function VocabularyPage() {
           Meaning, Turkish translation, grammar usage, word family, and carefully structured example
           sentences—all stored on this device.
         </p>
-        <form className="vocabulary-search" onSubmit={handleSubmit}>
+        <form
+          aria-label="Vocabulary search"
+          className="vocabulary-search"
+          onSubmit={handleSubmit}
+          role="search"
+        >
           <SearchInput
             ref={searchInputRef}
             aria-label="Search vocabulary"
@@ -440,16 +475,18 @@ export function VocabularyPage() {
       {searchState.kind === "initial" || searchState.kind === "typing" ? (
         <div className="vocabulary-dashboard">
           <WordListCard
+            emptyMessage="Words you open will appear here."
             eyebrow="Recent"
             onOpenWord={executeSearch}
             title="Recent searches"
-            words={RECENT_WORDS}
+            words={recentWords}
           />
           <WordListCard
+            emptyMessage="Imported and user-created entries will appear here."
             eyebrow="Added locally"
             onOpenWord={executeSearch}
             title="Recent additions"
-            words={RECENT_ADDITIONS}
+            words={recentAdditions}
           />
         </div>
       ) : null}

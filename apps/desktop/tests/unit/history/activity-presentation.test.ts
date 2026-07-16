@@ -14,10 +14,7 @@ describe("activity presentation", () => {
 
   it("formats recent timestamps without exposing raw storage details", () => {
     expect(
-      formatActivityTime(
-        "2026-07-16T00:00:00.000Z",
-        new Date("2026-07-16T00:05:00.000Z")
-      )
+      formatActivityTime("2026-07-16T00:00:00.000Z", new Date("2026-07-16T00:05:00.000Z"))
     ).toBe("5 min ago");
   });
 });

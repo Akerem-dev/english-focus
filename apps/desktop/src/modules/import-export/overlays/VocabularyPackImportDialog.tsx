@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useMemo, useRef, useState, type ChangeEvent } from "react";
 
 import type { SaveVocabularyEntryInput, VocabularyStorageLayer } from "@platform/domain";
 
-import { useVocabularyRepository } from "../../../app/providers";
+import { useFileTransfer, useVocabularyRepository } from "../../../app/providers";
 import { Button, Modal, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import {
   MAX_VOCABULARY_PACK_CHARACTERS,
+  MAX_VOCABULARY_PACK_BYTES,
   parseVocabularyPackJson,
   type VocabularyPackAnalysis,
   type VocabularyPackEntryAnalysis
@@ -38,10 +39,6 @@ export interface VocabularyPackImportDialogProps {
   readonly onOpenLibrary: () => void;
 }
 
-function isJsonFile(file: File): boolean {
-  return file.name.toLocaleLowerCase("en-US").endsWith(".json") || file.type === "application/json";
-}
-
 function describeFileSize(size: number): string {
   if (size < 1024) {
     return `${size} bytes`;
@@ -65,7 +62,8 @@ export function VocabularyPackImportDialog({
   open
 }: VocabularyPackImportDialogProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { contentSource, saveEntry, storedEntries } = useVocabularyRepository();
+  const { reader } = useFileTransfer();
+  const { contentSource, saveEntries, storedEntries } = useVocabularyRepository();
   const [stage, setStage] = useState<PackStage>("choose");
   const [selectedPack, setSelectedPack] = useState<SelectedPack | undefined>();
   const [isReading, setIsReading] = useState(false);
@@ -74,22 +72,6 @@ export function VocabularyPackImportDialog({
   const [confirmed, setConfirmed] = useState(false);
   const [progress, setProgress] = useState({ completed: 0, total: 0, currentWord: "" });
   const [summary, setSummary] = useState<PackImportSummary | undefined>();
-
-  useEffect(() => {
-    if (!open) {
-      setStage("choose");
-      setSelectedPack(undefined);
-      setIsReading(false);
-      setInvalidStrategy("skip-invalid");
-      setExistingStrategy("skip-existing");
-      setConfirmed(false);
-      setProgress({ completed: 0, total: 0, currentWord: "" });
-      setSummary(undefined);
-      if (inputRef.current !== null) {
-        inputRef.current.value = "";
-      }
-    }
-  }, [open]);
 
   const analysis = selectedPack?.analysis;
   const existingCount = useMemo(() => {
@@ -117,31 +99,42 @@ export function VocabularyPackImportDialog({
       return;
     }
 
-    if (!isJsonFile(file)) {
-      setSelectedPack({
-        fileName: file.name,
-        input: "",
-        error: "Choose a .json file exported as an English Focus vocabulary pack."
-      });
-      return;
-    }
-
     setIsReading(true);
 
     try {
-      const input = await file.text();
-      const result = parseVocabularyPackJson(input);
+      const readResult = await reader.readText(file, {
+        allowedExtensions: [".json"],
+        allowedMediaTypes: ["application/json"],
+        maxBytes: MAX_VOCABULARY_PACK_BYTES
+      });
 
-      if (result.kind === "failure") {
-        setSelectedPack({ fileName: file.name, input, error: result.message });
+      if (readResult.kind === "failure") {
+        setSelectedPack({
+          fileName: readResult.fileName,
+          input: "",
+          error:
+            readResult.code === "unsupported-type"
+              ? "Choose a .json file exported as an English Focus vocabulary pack."
+              : readResult.code === "too-large"
+                ? `The file exceeds the ${MAX_VOCABULARY_PACK_BYTES.toLocaleString("en-US")} byte safety limit.`
+                : (readResult.message ?? "The selected pack could not be read.")
+        });
         return;
       }
 
-      setSelectedPack({ fileName: file.name, input, analysis: result.analysis });
+      const { fileName, text: input } = readResult.file;
+      const result = parseVocabularyPackJson(input);
+
+      if (result.kind === "failure") {
+        setSelectedPack({ fileName, input, error: result.message });
+        return;
+      }
+
+      setSelectedPack({ fileName, input, analysis: result.analysis });
       setStage("review");
     } catch (cause) {
       setSelectedPack({
-        fileName: file.name,
+        fileName: "Unknown file",
         input: "",
         error: cause instanceof Error ? cause.message : "The selected pack could not be read."
       });
@@ -164,14 +157,11 @@ export function VocabularyPackImportDialog({
     let skippedInvalid = 0;
     let failed = 0;
     const failures: string[] = [];
+    const inputs: SaveVocabularyEntryInput[] = [];
+    let plannedAdded = 0;
+    let plannedReplaced = 0;
 
-    for (const [position, item] of analysis.entries.entries()) {
-      setProgress({
-        completed: position,
-        total: analysis.entries.length,
-        currentWord: item.detectedWord
-      });
-
+    for (const item of analysis.entries) {
       if (item.status === "invalid" || item.entry === undefined) {
         skippedInvalid += 1;
         continue;
@@ -189,28 +179,39 @@ export function VocabularyPackImportDialog({
       );
       const layer: VocabularyStorageLayer =
         existingEntry === undefined ? "user" : (storedRecord?.layer ?? "override");
-      const input: SaveVocabularyEntryInput = { entry: item.entry, layer };
+      inputs.push({ entry: item.entry, layer });
+
+      if (existingEntry === undefined) {
+        plannedAdded += 1;
+      } else {
+        plannedReplaced += 1;
+      }
+    }
+
+    if (inputs.length > 0) {
+      setProgress({
+        completed: 0,
+        total: inputs.length,
+        currentWord: `Saving ${inputs.length.toLocaleString("en-US")} validated entries`
+      });
 
       try {
-        await saveEntry(input);
-        if (existingEntry === undefined) {
-          added += 1;
-        } else {
-          replaced += 1;
-        }
+        await saveEntries(inputs);
+        added = plannedAdded;
+        replaced = plannedReplaced;
       } catch (cause) {
-        failed += 1;
+        failed = inputs.length;
         failures.push(
-          `${item.entry.word}: ${cause instanceof Error ? cause.message : "save failed"}`
+          cause instanceof Error
+            ? cause.message
+            : "The vocabulary pack transaction could not be saved."
         );
       }
-
-      await Promise.resolve();
     }
 
     setProgress({
-      completed: analysis.entries.length,
-      total: analysis.entries.length,
+      completed: inputs.length,
+      total: inputs.length,
       currentWord: "Complete"
     });
     setSummary({

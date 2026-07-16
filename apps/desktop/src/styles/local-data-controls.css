@@ -47,7 +47,8 @@
 
 .local-data-controls__error {
   padding: var(--space-4);
-  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-danger) 42%, var(--color-border));
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-danger) 42%, var(--color-border));
   border-radius: var(--radius-large);
   background: var(--color-danger-soft);
   color: var(--color-danger);
@@ -177,7 +178,8 @@
 
 .local-data-dialog__result {
   padding: var(--space-4);
-  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-success) 40%, var(--color-border));
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-success) 40%, var(--color-border));
   border-radius: var(--radius-large);
   background: var(--color-success-soft);
   color: var(--color-success);

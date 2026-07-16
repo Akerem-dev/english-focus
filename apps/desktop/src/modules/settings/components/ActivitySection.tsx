@@ -4,11 +4,7 @@ import type { ActivityFilter } from "@platform/domain";
 import { useActivity, useToast } from "../../../app/providers";
 import { Button, SelectField, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import {
-  activityKindLabel,
-  activityScopeLabel,
-  formatActivityTime
-} from "../../history";
+import { activityKindLabel, activityScopeLabel, formatActivityTime } from "../../history";
 
 export function ActivitySection() {
   const { activity, clearActivity, error, status } = useActivity();
@@ -48,8 +44,8 @@ export function ActivitySection() {
         <div>
           <h3>Recent activity</h3>
           <p>
-            A short local record of important actions. Personal notes, definitions, pasted JSON,
-            and file paths are never stored here.
+            A short local record of important actions. Personal notes, definitions, pasted JSON, and
+            file paths are never stored here.
           </p>
         </div>
         <StatusBadge
@@ -123,8 +119,8 @@ export function ActivitySection() {
         <div>
           <strong>Clear recent activity</strong>
           <p>
-            This removes only the local activity timeline. Vocabulary, study details, settings,
-            and backups are not changed.
+            This removes only the local activity timeline. Vocabulary, study details, settings, and
+            backups are not changed.
           </p>
         </div>
         <label className="activity-clear-boundary__confirmation">

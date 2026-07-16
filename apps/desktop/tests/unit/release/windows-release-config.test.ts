@@ -30,7 +30,9 @@ type TauriConfig = {
 };
 
 function readJson<T>(relativePath: string): T {
-  return JSON.parse(readFileSync(resolve(repositoryRoot, relativePath), "utf8").replace(/^\uFEFF/, "")) as T;
+  return JSON.parse(
+    readFileSync(resolve(repositoryRoot, relativePath), "utf8").replace(/^\uFEFF/, "")
+  ) as T;
 }
 
 describe("Windows release configuration", () => {
@@ -39,8 +41,14 @@ describe("Windows release configuration", () => {
     const desktopPackage = readJson<PackageJson>("apps/desktop/package.json");
     const packageLock = readJson<PackageLock>("package-lock.json");
     const tauriConfig = readJson<TauriConfig>("apps/desktop/src-tauri/tauri.conf.json");
-    const cargo = readFileSync(resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.toml"), "utf8");
-    const cargoLock = readFileSync(resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.lock"), "utf8");
+    const cargo = readFileSync(
+      resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.toml"),
+      "utf8"
+    );
+    const cargoLock = readFileSync(
+      resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.lock"),
+      "utf8"
+    );
     const cargoVersion = cargo.match(/^\s*version\s*=\s*"([^"]+)"/m)?.[1];
     const cargoLockVersion = cargoLock.match(
       /\[\[package\]\]\r?\nname = "english-learning-platform"\r?\nversion = "([^"]+)"/
@@ -57,12 +65,7 @@ describe("Windows release configuration", () => {
     expect(cargoVersion).toBe(rootPackage.version);
     expect(cargoLockVersion).toBe(rootPackage.version);
 
-    for (const workspacePath of [
-      "packages/domain",
-      "packages/schemas",
-      "packages/shared",
-      "packages/testing"
-    ]) {
+    for (const workspacePath of ["packages/domain", "packages/schemas", "packages/testing"]) {
       const workspacePackage = readJson<PackageJson>(`${workspacePath}/package.json`);
       expect(workspacePackage.version).toBe(internalWorkspaceVersion);
       expect(packageLock.packages?.[workspacePath]?.version).toBe(internalWorkspaceVersion);

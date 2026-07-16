@@ -37,9 +37,9 @@ export function CommandBar({ commands, onClose, onExecute, open }: CommandBarPro
       return;
     }
 
-    setQuery("");
-    setActiveIndex(0);
     const frame = window.requestAnimationFrame(() => {
+      setQuery("");
+      setActiveIndex(0);
       inputRef.current?.focus();
     });
 
@@ -48,11 +48,7 @@ export function CommandBar({ commands, onClose, onExecute, open }: CommandBarPro
     };
   }, [open]);
 
-  useEffect(() => {
-    if (activeIndex >= filteredCommands.length) {
-      setActiveIndex(Math.max(0, filteredCommands.length - 1));
-    }
-  }, [activeIndex, filteredCommands.length]);
+  const resolvedActiveIndex = Math.min(activeIndex, Math.max(0, filteredCommands.length - 1));
 
   function execute(command: CommandDefinition) {
     onExecute(command);
@@ -79,7 +75,7 @@ export function CommandBar({ commands, onClose, onExecute, open }: CommandBarPro
     }
 
     if (event.key === "Enter") {
-      const command = filteredCommands[activeIndex];
+      const command = filteredCommands[resolvedActiveIndex];
 
       if (command !== undefined) {
         event.preventDefault();
@@ -100,9 +96,9 @@ export function CommandBar({ commands, onClose, onExecute, open }: CommandBarPro
         <SearchInput
           ref={inputRef}
           aria-activedescendant={
-            filteredCommands[activeIndex] === undefined
+            filteredCommands[resolvedActiveIndex] === undefined
               ? undefined
-              : `command-${filteredCommands[activeIndex].id}`
+              : `command-${filteredCommands[resolvedActiveIndex].id}`
           }
           aria-controls="command-bar-results"
           aria-expanded={open}
@@ -125,9 +121,16 @@ export function CommandBar({ commands, onClose, onExecute, open }: CommandBarPro
         />
 
         <div className="command-bar__hint" aria-hidden="true">
-          <span><kbd>↑</kbd><kbd>↓</kbd> move</span>
-          <span><kbd>Enter</kbd> run</span>
-          <span><kbd>Esc</kbd> close</span>
+          <span>
+            <kbd>↑</kbd>
+            <kbd>↓</kbd> move
+          </span>
+          <span>
+            <kbd>Enter</kbd> run
+          </span>
+          <span>
+            <kbd>Esc</kbd> close
+          </span>
         </div>
 
         <div className="command-bar__results" id="command-bar-results" role="listbox">
@@ -140,9 +143,9 @@ export function CommandBar({ commands, onClose, onExecute, open }: CommandBarPro
           ) : (
             filteredCommands.map((command, index) => (
               <button
-                aria-selected={activeIndex === index}
+                aria-selected={resolvedActiveIndex === index}
                 className="command-bar__result"
-                data-active={activeIndex === index || undefined}
+                data-active={resolvedActiveIndex === index || undefined}
                 id={`command-${command.id}`}
                 key={command.id}
                 onClick={() => {

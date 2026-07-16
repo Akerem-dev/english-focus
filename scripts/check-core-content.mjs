@@ -24,40 +24,19 @@ const [manifestBuffer, maintainBuffer] = await Promise.all([
 ]);
 
 const manifest = JSON.parse(manifestBuffer.toString("utf8"));
-const batchBuffers = await Promise.all(
-  manifest.pilotBatches.map((batch) =>
-    readFile(resolve(root, "apps/desktop/src/content/core/packs", batch.file))
-  )
-);
-const pilotEntries = batchBuffers.flatMap((buffer) => JSON.parse(buffer.toString("utf8")));
 const maintainEntry = JSON.parse(maintainBuffer.toString("utf8"));
-const entries = [maintainEntry, ...pilotEntries];
+const entries = [maintainEntry];
 
 if (manifest.kind !== "english-focus-core-content-manifest") {
   fail("manifest kind is not recognized");
 }
 
-if (manifest.status !== "pilot-validated") {
-  fail("manifest status must be pilot-validated");
-}
-
-if (!Array.isArray(pilotEntries) || pilotEntries.length !== manifest.pilotEntryCount) {
-  fail(`expected ${manifest.pilotEntryCount} pilot entries, found ${pilotEntries.length}`);
+if (manifest.status !== "editorial-reviewed") {
+  fail("manifest status must be editorial-reviewed");
 }
 
 if (entries.length !== manifest.entryCount) {
   fail(`expected ${manifest.entryCount} total entries, found ${entries.length}`);
-}
-
-for (const [index, batch] of manifest.pilotBatches.entries()) {
-  const buffer = batchBuffers[index];
-  const parsed = JSON.parse(buffer.toString("utf8"));
-  if (parsed.length !== batch.entryCount) {
-    fail(`${batch.file} declares ${batch.entryCount} entries but contains ${parsed.length}`);
-  }
-  if (sha256(buffer) !== batch.sha256) {
-    fail(`${batch.file} checksum does not match the manifest`);
-  }
 }
 
 if (sha256(maintainBuffer) !== manifest.maintainEntrySha256) {
@@ -99,6 +78,13 @@ for (const [index, entry] of entries.entries()) {
 
   if (!Array.isArray(entry.examples) || entry.examples.length !== 10) {
     fail(`${label} must contain exactly 10 primary examples`);
+  }
+
+  const normalizedExamples = new Set(
+    (entry.examples ?? []).map((example) => example.sentenceEn.trim().toLocaleLowerCase("en-US"))
+  );
+  if (normalizedExamples.size !== (entry.examples ?? []).length) {
+    fail(`${label} contains repeated primary examples`);
   }
 
   if (ids.has(entry.id)) {
@@ -154,4 +140,4 @@ console.log(`Content version: ${manifest.contentVersion}`);
 console.log(`Entries: ${entries.length}`);
 console.log(`CEFR distribution: ${JSON.stringify(cefrCounts)}`);
 console.log(`Part-of-speech distribution: ${JSON.stringify(partOfSpeechCounts)}`);
-console.log(`Pilot batches: ${manifest.pilotBatches.length}`);
+console.log(`Editorially reviewed entries: ${manifest.reviewedEntryCount}`);

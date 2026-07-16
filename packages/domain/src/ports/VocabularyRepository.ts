@@ -20,4 +20,7 @@ export interface VocabularyRepository {
   listEntries(): Promise<readonly StoredVocabularyEntry[]>;
   getEntryByNormalizedWord(normalizedWord: string): Promise<StoredVocabularyEntry | undefined>;
   saveEntry(input: SaveVocabularyEntryInput): Promise<StoredVocabularyEntry>;
+  saveEntries(
+    inputs: readonly SaveVocabularyEntryInput[]
+  ): Promise<readonly StoredVocabularyEntry[]>;
 }

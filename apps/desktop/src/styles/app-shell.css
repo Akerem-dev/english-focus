@@ -169,8 +169,7 @@
   gap: var(--space-5);
   padding: 0 var(--space-6);
   border-bottom: var(--border-width-hairline) solid var(--color-border);
-  background: color-mix(in srgb, var(--color-background) 94%, transparent);
-  backdrop-filter: blur(0.75rem);
+  background: var(--color-background);
 }
 
 .app-topbar__route {

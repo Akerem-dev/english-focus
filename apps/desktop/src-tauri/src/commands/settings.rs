@@ -3,6 +3,7 @@ use serde_json::Value;
 use tauri::State;
 
 use crate::state::AppState;
+use crate::validation::validate_app_settings;
 
 #[tauri::command]
 pub fn get_app_settings(state: State<'_, AppState>) -> Result<Option<Value>, String> {
@@ -21,20 +22,18 @@ pub fn get_app_settings(state: State<'_, AppState>) -> Result<Option<Value>, Str
 
     settings_json
         .map(|json| {
-            serde_json::from_str(&json)
-                .map_err(|error| format!("Stored application settings are invalid: {error}"))
+            let settings = serde_json::from_str(&json)
+                .map_err(|error| format!("Stored application settings are invalid: {error}"))?;
+            validate_app_settings(&settings)
+                .map_err(|error| format!("Stored application settings are invalid: {error}"))?;
+            Ok(settings)
         })
         .transpose()
 }
 
 #[tauri::command]
-pub fn save_app_settings(
-    settings: Value,
-    state: State<'_, AppState>,
-) -> Result<Value, String> {
-    if !settings.is_object() {
-        return Err("Application settings must be a JSON object.".to_string());
-    }
+pub fn save_app_settings(settings: Value, state: State<'_, AppState>) -> Result<Value, String> {
+    validate_app_settings(&settings)?;
 
     let updated_at = settings
         .get("updatedAt")

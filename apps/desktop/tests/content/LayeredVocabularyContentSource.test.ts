@@ -21,10 +21,9 @@ describe("LayeredVocabularyContentSource", () => {
     expect(source.getEntryByNormalizedWord("allocate")?.id).toBe(allocate.id);
     expect(source.getEntryByNormalizedWord("maintain")?.normalizedWord).toBe("maintain");
     const words = source.listEntries().map((entry) => entry.normalizedWord);
-    expect(words).toHaveLength(101);
+    expect(words).toHaveLength(2);
     expect(words[0]).toBe("allocate");
     expect(words).toContain("maintain");
-    expect(words).toContain("reliable");
   });
 
   it("lets an override shadow the core entry without duplicating the normalized word", () => {
@@ -39,6 +38,6 @@ describe("LayeredVocabularyContentSource", () => {
     ]);
 
     expect(source.getEntryByNormalizedWord("maintain")?.id).toBe(override.id);
-    expect(source.listEntries()).toHaveLength(100);
+    expect(source.listEntries()).toHaveLength(1);
   });
 });

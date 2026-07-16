@@ -2,10 +2,7 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import { getRouteByPath } from "../router";
-
-export function getDocumentTitle(routeTitle: string): string {
-  return `${routeTitle} — English Focus`;
-}
+import { getDocumentTitle } from "./documentTitle";
 
 export function RouteAccessibilityManager() {
   const location = useLocation();

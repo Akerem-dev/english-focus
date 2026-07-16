@@ -55,3 +55,34 @@ select {
     animation-iteration-count: 1 !important;
   }
 }
+
+@media (forced-colors: active) {
+  :root {
+    --ef-color-canvas: Canvas;
+    --ef-color-sidebar: Canvas;
+    --ef-color-surface: Canvas;
+    --ef-color-surface-muted: Canvas;
+    --ef-color-surface-strong: Canvas;
+    --ef-color-text: CanvasText;
+    --ef-color-text-secondary: CanvasText;
+    --ef-color-text-muted: CanvasText;
+    --ef-color-border: ButtonBorder;
+    --ef-color-border-strong: CanvasText;
+    --ef-color-accent: LinkText;
+    --ef-color-accent-hover: LinkText;
+    --ef-color-accent-pressed: LinkText;
+    --ef-color-accent-soft: Canvas;
+    --ef-color-success: CanvasText;
+    --ef-color-success-soft: Canvas;
+    --ef-color-warning: CanvasText;
+    --ef-color-warning-soft: Canvas;
+    --ef-color-danger: CanvasText;
+    --ef-color-danger-soft: Canvas;
+    --ef-color-focus: Highlight;
+    --ef-color-overlay: Canvas;
+  }
+
+  :focus-visible {
+    outline: 0.125rem solid Highlight;
+  }
+}

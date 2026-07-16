@@ -3,21 +3,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = process.cwd();
-const requiredIgnorePatterns = [
-  "node_modules/",
-  "dist/",
-  "target/",
-  ".env",
-  "*.sqlite",
-  "*.db",
-];
+const requiredIgnorePatterns = ["node_modules/", "dist/", "target/", ".env", "*.sqlite", "*.db"];
 const forbiddenTrackedPatterns = [
   /(^|\/)node_modules\//,
   /(^|\/)target\//,
   /(^|\/)dist\//,
   /\.(?:sqlite|sqlite3|db|db-wal|db-shm|db-journal)$/,
   /(^|\/)backups\//,
-  /(^|\/)exports\//,
+  /(^|\/)exports\//
 ];
 
 function runGit(args, options = {}) {
@@ -25,7 +18,7 @@ function runGit(args, options = {}) {
     cwd: root,
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
-    ...options,
+    ...options
   }).trim();
 }
 
@@ -44,9 +37,11 @@ function fail(label, detail) {
 
 try {
   const inside = runGit(["rev-parse", "--is-inside-work-tree"]);
-  inside === "true"
-    ? pass("Git repository", root)
-    : fail("Git repository", "current directory is not a Git work tree");
+  if (inside === "true") {
+    pass("Git repository", root);
+  } else {
+    fail("Git repository", "current directory is not a Git work tree");
+  }
 } catch {
   fail("Git repository", "run `git init` in the project root first");
   process.exit();
@@ -57,19 +52,17 @@ if (!existsSync(ignorePath)) {
   fail(".gitignore", "file is missing");
 } else {
   const ignoreContent = readFileSync(ignorePath, "utf8");
-  const missing = requiredIgnorePatterns.filter(
-    (pattern) => !ignoreContent.includes(pattern),
-  );
-  missing.length === 0
-    ? pass(".gitignore", "required generated and sensitive paths are covered")
-    : fail(".gitignore", `missing: ${missing.join(", ")}`);
+  const missing = requiredIgnorePatterns.filter((pattern) => !ignoreContent.includes(pattern));
+  if (missing.length === 0) {
+    pass(".gitignore", "required generated and sensitive paths are covered");
+  } else {
+    fail(".gitignore", `missing: ${missing.join(", ")}`);
+  }
 }
 
 let trackedFiles = [];
 try {
-  trackedFiles = runGit(["ls-files"])
-    .split(/\r?\n/u)
-    .filter(Boolean);
+  trackedFiles = runGit(["ls-files"]).split(/\r?\n/u).filter(Boolean);
 } catch {
   trackedFiles = [];
 }
@@ -86,33 +79,41 @@ const forbiddenTracked = trackedFiles.filter((file) => {
     forbiddenTrackedPatterns.some((pattern) => pattern.test(normalized))
   );
 });
-forbiddenTracked.length === 0
-  ? pass("Tracked files", `${trackedFiles.length} tracked file(s), no generated or sensitive paths`)
-  : fail("Tracked files", `remove from Git index: ${forbiddenTracked.join(", ")}`);
+if (forbiddenTracked.length === 0) {
+  pass("Tracked files", `${trackedFiles.length} tracked file(s), no generated or sensitive paths`);
+} else {
+  fail("Tracked files", `remove from Git index: ${forbiddenTracked.join(", ")}`);
+}
 
 try {
   const branch = runGit(["branch", "--show-current"]);
-  branch === "main"
-    ? pass("Default branch", "main")
-    : warn("Default branch", branch || "unborn branch; run `git branch -M main`");
+  if (branch === "main") {
+    pass("Default branch", "main");
+  } else {
+    warn("Default branch", branch || "unborn branch; run `git branch -M main`");
+  }
 } catch {
   warn("Default branch", "could not read branch name");
 }
 
 try {
   const origin = runGit(["remote", "get-url", "origin"]);
-  origin
-    ? pass("Remote origin", origin)
-    : warn("Remote origin", "not configured yet");
+  if (origin) {
+    pass("Remote origin", origin);
+  } else {
+    warn("Remote origin", "not configured yet");
+  }
 } catch {
   warn("Remote origin", "not configured yet");
 }
 
 try {
   const status = runGit(["status", "--short"]);
-  status
-    ? warn("Working tree", "contains uncommitted changes; review before committing")
-    : pass("Working tree", "clean");
+  if (status) {
+    warn("Working tree", "contains uncommitted changes; review before committing");
+  } else {
+    pass("Working tree", "clean");
+  }
 } catch {
   warn("Working tree", "status could not be read");
 }

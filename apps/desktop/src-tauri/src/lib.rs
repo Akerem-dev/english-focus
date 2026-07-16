@@ -2,6 +2,7 @@ mod commands;
 mod database;
 mod filesystem;
 mod state;
+mod validation;
 
 use tauri::Manager;
 
@@ -21,6 +22,7 @@ pub fn run() {
             commands::database::list_vocabulary_entries,
             commands::database::get_vocabulary_entry_by_normalized_word,
             commands::database::save_vocabulary_entry,
+            commands::database::save_vocabulary_entries,
             commands::database::list_vocabulary_user_metadata,
             commands::database::get_vocabulary_user_metadata,
             commands::database::save_vocabulary_user_metadata,

@@ -6,13 +6,7 @@ import type {
 } from "@platform/domain";
 
 export type BackupStatus =
-  | "loading"
-  | "ready"
-  | "creating"
-  | "validating"
-  | "restoring"
-  | "deleting"
-  | "error";
+  "loading" | "ready" | "creating" | "validating" | "restoring" | "deleting" | "error";
 
 export interface BackupContextValue {
   readonly backups: readonly BackupDescriptor[];

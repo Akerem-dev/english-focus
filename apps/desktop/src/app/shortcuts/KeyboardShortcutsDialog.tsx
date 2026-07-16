@@ -30,7 +30,10 @@ export function KeyboardShortcutsDialog({ onClose, open }: KeyboardShortcutsDial
               <div className="keyboard-shortcuts__list">
                 {shortcuts.map((shortcut) => (
                   <div className="keyboard-shortcuts__row" key={shortcut.id}>
-                    <span className="keyboard-shortcuts__keys" aria-label={shortcut.keys.join(" plus ")}>
+                    <span
+                      className="keyboard-shortcuts__keys"
+                      aria-label={shortcut.keys.join(" plus ")}
+                    >
                       {shortcut.keys.map((key) => (
                         <kbd key={key}>{key}</kbd>
                       ))}

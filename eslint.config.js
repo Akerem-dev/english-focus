@@ -17,6 +17,12 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ["**/*.{js,mjs,cjs}"],
+    languageOptions: {
+      globals: globals.node
+    }
+  },
+  {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       globals: {
@@ -30,15 +36,9 @@ export default tseslint.config(
     },
     rules: {
       ...hooks.configs.recommended.rules,
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { "prefer": "type-imports" }
-      ],
+      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
       "@typescript-eslint/no-explicit-any": "error",
-      "react-refresh/only-export-components": [
-        "warn",
-        { "allowConstantExport": true }
-      ]
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }]
     }
   }
 );

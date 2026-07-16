@@ -14,9 +14,7 @@ function parseMetadata(payload: unknown): VocabularyUserMetadata {
   return Object.freeze(vocabularyUserMetadataSchema.parse(payload));
 }
 
-export class TauriVocabularyUserMetadataRepository
-  implements VocabularyUserMetadataRepository
-{
+export class TauriVocabularyUserMetadataRepository implements VocabularyUserMetadataRepository {
   async listMetadata(): Promise<readonly VocabularyUserMetadata[]> {
     if (!isTauriRuntime()) {
       return [];

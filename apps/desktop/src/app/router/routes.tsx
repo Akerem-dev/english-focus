@@ -62,7 +62,3 @@ export const APP_ROUTES = [
     element: createRouteElement("Settings", <SettingsPage />)
   }
 ] as const satisfies readonly AppRouteDefinition[];
-
-export function getRouteByPath(pathname: string): AppRouteDefinition {
-  return APP_ROUTES.find((route) => route.path === pathname) ?? APP_ROUTES[0];
-}

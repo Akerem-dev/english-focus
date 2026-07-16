@@ -108,11 +108,5 @@ export function useGlobalShortcuts({
     return () => {
       document.removeEventListener("keydown", handleKeyDown, true);
     };
-  }, [
-    onFocusSearch,
-    onNavigateLibrary,
-    onNavigateSettings,
-    onOpenCommandBar,
-    onOpenShortcuts
-  ]);
+  }, [onFocusSearch, onNavigateLibrary, onNavigateSettings, onOpenCommandBar, onOpenShortcuts]);
 }

@@ -18,7 +18,7 @@ export const backupDescriptorSchema = z
     sizeBytes: z.number().int().nonnegative(),
     backupVersion: z.literal("1.0.0"),
     databaseSchemaVersion: z.enum(["2", "3"]),
-    checksum: z.string().regex(/^[0-9a-f]{16}$/),
+    checksum: z.string().regex(/^(?:[0-9a-f]{16}|[0-9a-f]{64})$/),
     counts: backupCountsSchema
   })
   .strict();

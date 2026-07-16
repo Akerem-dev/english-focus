@@ -1,9 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type {
-  ActivityRecord,
-  ActivityRepository,
-  RecordActivityInput
-} from "@platform/domain";
+import type { ActivityRecord, ActivityRepository, RecordActivityInput } from "@platform/domain";
 import { activityRecordListSchema, activityRecordSchema } from "@platform/schemas";
 
 function isTauriRuntime(): boolean {

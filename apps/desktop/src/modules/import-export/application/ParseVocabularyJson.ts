@@ -1,10 +1,10 @@
 import { cleanPastedJsonText, type JsonTextTransformation } from "./CleanPastedJsonText";
 import { normalizeSmartJsonQuotes, repairMojibakeJsonValue } from "../services";
 
-export type ParsedJsonTransformation =
+type ParsedJsonTransformation =
   JsonTextTransformation | "normalized-smart-quotes" | "repaired-mojibake-text";
 
-export interface ParsedVocabularyJson {
+interface ParsedVocabularyJson {
   readonly value: Readonly<Record<string, unknown>>;
   readonly cleanedText: string;
   readonly transformations: readonly ParsedJsonTransformation[];

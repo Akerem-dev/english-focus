@@ -207,5 +207,4 @@ describe("validateVocabularySemantics", () => {
     expect(externalResult.kind).toBe("failure");
     expect(packResult.kind).toBe("success");
   });
-
 });

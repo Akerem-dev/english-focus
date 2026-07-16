@@ -2,8 +2,8 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 import { joinClassNames } from "../componentUtils";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-export type ButtonSize = "small" | "medium" | "large";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+type ButtonSize = "small" | "medium" | "large";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   readonly variant?: ButtonVariant;

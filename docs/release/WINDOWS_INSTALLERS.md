@@ -1,6 +1,6 @@
 # Windows installer build
 
-English Focus produces repeatable unsigned Windows installers for the current version declared in `tauri.conf.json`.
+English Focus produces signed Windows installers for the current version declared in `tauri.conf.json`.
 
 ## Build
 
@@ -31,4 +31,10 @@ Expected outputs are one WiX `.msi`, one NSIS `.exe`, `SHA256SUMS.txt`, and `rel
 
 ## Signing
 
-Installers are unsigned unless a real code-signing certificate is supplied outside the repository. Windows may show an unknown-publisher warning. No certificate, private key, thumbprint, password, or signing command is committed.
+Stable builds require either `EF_WINDOWS_CERTIFICATE_THUMBPRINT` plus a timestamp URL or an external `EF_WINDOWS_SIGN_COMMAND`. The working tree must be clean, Authenticode is verified after packaging, and the artifact manifest records the source commit and signing request. Secrets and private keys are never committed.
+
+Use `npm run release:windows:unsigned` only for a local rehearsal; it is not a publishable release.
+
+## Updates
+
+Automatic updates are intentionally disabled until the project has a real HTTPS release endpoint and a protected updater signing key. Until then, users install a newer signed MSI or NSIS package manually; the stable application identifier and upgrade code preserve the upgrade path.

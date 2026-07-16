@@ -8,7 +8,9 @@ export interface ActivityContextValue {
   readonly status: ActivityStatus;
   readonly error?: string | undefined;
   readonly refreshActivity: () => Promise<readonly ActivityRecord[]>;
-  readonly recordActivity: (input: Omit<RecordActivityInput, "id" | "occurredAt">) => Promise<ActivityRecord>;
+  readonly recordActivity: (
+    input: Omit<RecordActivityInput, "id" | "occurredAt">
+  ) => Promise<ActivityRecord>;
   readonly clearActivity: () => Promise<number>;
 }
 

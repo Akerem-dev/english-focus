@@ -2,9 +2,6 @@ name: Windows Installers
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v*"
 
 permissions:
   contents: read
@@ -27,7 +24,7 @@ jobs:
         run: npm ci
       - name: Run release quality checks
         run: npm run quality:release
-      - name: Build unsigned MSI and NSIS installers
+      - name: Build unsigned MSI and NSIS test installers
         shell: powershell
         run: npm run tauri --workspace=@app/desktop -- build --bundles msi,nsis --ci --no-sign
       - name: Verify and collect installer artifacts
@@ -35,7 +32,7 @@ jobs:
       - name: Upload Windows installers
         uses: actions/upload-artifact@v4
         with:
-          name: english-focus-windows-installers
+          name: english-focus-unsigned-test-installers
           path: release-artifacts/windows/**
           if-no-files-found: error
           retention-days: 14

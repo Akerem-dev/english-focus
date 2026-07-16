@@ -1,6 +1,6 @@
 import type { VocabularyContentSource, VocabularyEntry } from "@platform/domain";
 
-export type DuplicateComparisonFieldId =
+type DuplicateComparisonFieldId =
   | "cefr"
   | "meanings"
   | "examples"
@@ -11,7 +11,7 @@ export type DuplicateComparisonFieldId =
   | "commonMistakes"
   | "source";
 
-export interface DuplicateComparisonField {
+interface DuplicateComparisonField {
   readonly id: DuplicateComparisonFieldId;
   readonly label: string;
   readonly existingValue: string;
@@ -19,7 +19,7 @@ export interface DuplicateComparisonField {
   readonly status: "same" | "different";
 }
 
-export interface DuplicateEntrySummary {
+interface DuplicateEntrySummary {
   readonly entry: VocabularyEntry;
   readonly layer: "core" | "user" | "override";
   readonly primaryTranslation: string;

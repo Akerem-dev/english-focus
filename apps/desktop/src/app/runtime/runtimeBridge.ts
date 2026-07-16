@@ -1,6 +1,6 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 
-export interface NativeRuntimeInfo {
+interface NativeRuntimeInfo {
   readonly productName: string;
   readonly appVersion: string;
   readonly runtime: string;
