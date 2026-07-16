@@ -1,74 +1,74 @@
 {
-  "$schema": "https://schema.tauri.app/config/2",
-  "productName": "English Focus",
-  "version": "0.9.0",
-  "identifier": "com.englishfocus.desktop",
-  "build": {
-    "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
-  },
-  "app": {
-    "windows": [
-      {
-        "label": "main",
-        "title": "English Focus",
-        "width": 1180,
-        "height": 760,
-        "minWidth": 900,
-        "minHeight": 600,
-        "center": true,
-        "resizable": true,
-        "fullscreen": false,
-        "decorations": true,
-        "transparent": false
-      }
-    ],
-    "security": {
-      "csp": null
-    }
-  },
-  "bundle": {
-    "active": true,
-    "targets": [
-      "msi",
-      "nsis"
-    ],
-    "createUpdaterArtifacts": false,
-    "publisher": "English Focus",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.ico"
-    ],
-    "copyright": "Copyright © 2026 English Focus",
-    "category": "Education",
-    "shortDescription": "Private, local-first English vocabulary learning.",
-    "longDescription": "English Focus is a private, local-first desktop application for searching, reviewing, importing, organizing, and backing up English vocabulary without cloud accounts or API keys.",
-    "useLocalToolsDir": true,
-    "windows": {
-      "webviewInstallMode": {
-        "type": "downloadBootstrapper",
-        "silent": true
-      },
-      "allowDowngrades": false,
-      "wix": {
-        "version": "0.9.0",
-        "upgradeCode": "8942B0C6-E543-4632-9CE8-056AB8C1F115",
-        "language": "en-US"
-      },
-      "nsis": {
-        "installerIcon": "icons/icon.ico",
-        "uninstallerIcon": "icons/icon.ico",
-        "installMode": "currentUser",
-        "languages": [
-          "English"
-        ],
-        "compression": "lzma",
-        "startMenuFolder": "English Focus"
-      }
-    }
-  }
+    "$schema":  "https://schema.tauri.app/config/2",
+    "productName":  "English Focus",
+    "version":  "0.8.0",
+    "identifier":  "com.englishfocus.desktop",
+    "build":  {
+                  "beforeDevCommand":  "npm run dev",
+                  "devUrl":  "http://localhost:5173",
+                  "beforeBuildCommand":  "npm run build",
+                  "frontendDist":  "../dist"
+              },
+    "app":  {
+                "windows":  [
+                                {
+                                    "label":  "main",
+                                    "title":  "English Focus",
+                                    "width":  1180,
+                                    "height":  760,
+                                    "minWidth":  900,
+                                    "minHeight":  600,
+                                    "center":  true,
+                                    "resizable":  true,
+                                    "fullscreen":  false,
+                                    "decorations":  true,
+                                    "transparent":  false
+                                }
+                            ],
+                "security":  {
+                                 "csp":  null
+                             }
+            },
+    "bundle":  {
+                   "active":  true,
+                   "targets":  [
+                                   "msi",
+                                   "nsis"
+                               ],
+                   "createUpdaterArtifacts":  false,
+                   "publisher":  "English Focus",
+                   "icon":  [
+                                "icons/32x32.png",
+                                "icons/128x128.png",
+                                "icons/128x128@2x.png",
+                                "icons/icon.ico"
+                            ],
+                   "copyright":  "Copyright Â© 2026 English Focus",
+                   "category":  "Education",
+                   "shortDescription":  "Private, local-first English vocabulary learning.",
+                   "longDescription":  "English Focus is a private, local-first desktop application for searching, reviewing, importing, organizing, and backing up English vocabulary without cloud accounts or API keys.",
+                   "useLocalToolsDir":  true,
+                   "windows":  {
+                                   "webviewInstallMode":  {
+                                                              "type":  "downloadBootstrapper",
+                                                              "silent":  true
+                                                          },
+                                   "allowDowngrades":  false,
+                                   "wix":  {
+                                               "version":  "0.9.0",
+                                               "upgradeCode":  "8942B0C6-E543-4632-9CE8-056AB8C1F115",
+                                               "language":  "en-US"
+                                           },
+                                   "nsis":  {
+                                                "installerIcon":  "icons/icon.ico",
+                                                "uninstallerIcon":  "icons/icon.ico",
+                                                "installMode":  "currentUser",
+                                                "languages":  [
+                                                                  "English"
+                                                              ],
+                                                "compression":  "lzma",
+                                                "startMenuFolder":  "English Focus"
+                                            }
+                               }
+               }
 }

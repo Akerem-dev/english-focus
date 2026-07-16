@@ -1,5 +1,5 @@
-# CP29 — Full Regression, Upgrade Rehearsal and Release-Candidate Lock
+# CP30 - English Focus 1.0.0 Final Release
 
-Status: TESTING
+Status: READY FOR FINAL TESTING
 
-This checkpoint adds release-rehearsal automation only. It does not modify vocabulary content, SQLite tables, routes, or user-visible product features.
+This checkpoint promotes the locked 0.9.0 release candidate to 1.0.0 and adds final-release verification, artifact locking, delivery packaging, release notes and the V1 Windows workflow. It does not intentionally change product behavior, SQLite schema, backup format, content or installer identity.

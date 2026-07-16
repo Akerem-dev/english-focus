@@ -1,14 +1,11 @@
-# CP29 Test Plan
+# CP30 Test Plan
 
-1. Run full regression with installer generation.
-2. Move the developer's current app-data aside with `begin-isolated-rehearsal.ps1`.
-3. Prepare a real legacy 0.8.0 build from the CP27 installer tag in an isolated Git worktree.
-4. Install legacy NSIS and create marker vocabulary, metadata, settings and backup.
-5. Capture app-data snapshot.
-6. Install current 0.9.0 NSIS over legacy version.
-7. Verify marker state, legacy backup, diagnostics and file preservation.
-8. Repeat upgrade with MSI.
-9. Verify reinstall, uninstall-data preservation and downgrade blocking.
-10. Restore the developer's original app-data.
-11. Complete the release-candidate checklist.
-12. Commit the final tested code, build installers, then create and verify the RC lock.
+1. Verify the CP29 release-candidate lock and restore the developer's original app-data.
+2. Merge and tag CP29, then create `cp30/v1-final-release`.
+3. Apply the CP30 patch and run `promote-to-v1.mjs`.
+4. Run final metadata verification and the complete release gate.
+5. Build and verify NSIS/MSI 1.0.0 artifacts.
+6. Smoke-test fresh installation and 0.9.0-to-1.0.0 upgrade data preservation.
+7. Commit the tested V1 source and rebuild artifacts from the clean commit.
+8. Create and commit the final release lock as the only second commit.
+9. Verify the final lock, produce delivery ZIP/checksum, merge to main and tag `v1.0.0`.
