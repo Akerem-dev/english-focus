@@ -1,5 +1,7 @@
 # Project status
 
-- CP25 safe local data reset: locked by user validation.
-- CP26 accessibility, performance and release hardening: implementation complete; Windows/native manual validation pending.
-- Next checkpoint after approval: CP27 Windows installer and release engineering.
+Current checkpoint: CP27 — Windows installer release engineering
+
+Release-candidate version: 0.9.0
+
+Remaining checkpoints: CP28 core content pack, CP29 regression and migration rehearsal, CP30 V1 release and delivery.

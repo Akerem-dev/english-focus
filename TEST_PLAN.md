@@ -1,10 +1,9 @@
-# CP26 test plan
+# CP27 test plan
 
-1. Run the full automated checkpoint block.
-2. Confirm all three routes load after a brief local loading state.
-3. Confirm Import opens every existing import flow.
-4. Navigate with mouse and keyboard; verify focus lands on main content after route changes.
-5. Confirm browser/Tauri title changes for Vocabulary, Library and Settings.
-6. Test dark mode, reduced motion and narrow-window layouts.
-7. Run the production bundle budget check and confirm at least four JavaScript chunks.
-8. Confirm no vocabulary, metadata, settings, backups or activity records changed.
+1. Run release metadata and quality checks.
+2. Build MSI and NSIS on Windows.
+3. Verify filenames, file sizes, and SHA-256 hashes.
+4. Install NSIS and test all three routes.
+5. Reinstall and verify vocabulary, metadata, settings, activity, and backups remain.
+6. Install MSI and repeat the data-preservation check.
+7. Uninstall and verify no silent deletion of user backup files.
