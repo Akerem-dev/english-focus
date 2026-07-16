@@ -1,10 +1,23 @@
-import type { ReactElement } from "react";
+import { lazy, Suspense, type ReactElement } from "react";
 
 import type { AppIconName } from "../../design-system";
-import { LibraryPage } from "../../modules/library/pages";
-import { SettingsPage } from "../../modules/settings/pages";
-import { VocabularyPage } from "../../modules/vocabulary/pages";
+import { RouteErrorBoundary, RouteLoadingFallback } from "../performance";
 import { ROUTE_PATHS, type AppRouteId, type AppRoutePath } from "./routeIds";
+
+const VocabularyPage = lazy(async () => {
+  const module = await import("../../modules/vocabulary/pages");
+  return { default: module.VocabularyPage };
+});
+
+const LibraryPage = lazy(async () => {
+  const module = await import("../../modules/library/pages");
+  return { default: module.LibraryPage };
+});
+
+const SettingsPage = lazy(async () => {
+  const module = await import("../../modules/settings/pages");
+  return { default: module.SettingsPage };
+});
 
 export interface AppRouteDefinition {
   readonly id: AppRouteId;
@@ -15,6 +28,14 @@ export interface AppRouteDefinition {
   readonly element: ReactElement;
 }
 
+function createRouteElement(routeLabel: string, page: ReactElement): ReactElement {
+  return (
+    <RouteErrorBoundary routeLabel={routeLabel}>
+      <Suspense fallback={<RouteLoadingFallback routeLabel={routeLabel} />}>{page}</Suspense>
+    </RouteErrorBoundary>
+  );
+}
+
 export const APP_ROUTES = [
   {
     id: "vocabulary",
@@ -22,7 +43,7 @@ export const APP_ROUTES = [
     label: "Vocabulary",
     title: "Vocabulary",
     icon: "book-open",
-    element: <VocabularyPage />
+    element: createRouteElement("Vocabulary", <VocabularyPage />)
   },
   {
     id: "library",
@@ -30,7 +51,7 @@ export const APP_ROUTES = [
     label: "Library",
     title: "Library",
     icon: "books",
-    element: <LibraryPage />
+    element: createRouteElement("Library", <LibraryPage />)
   },
   {
     id: "settings",
@@ -38,7 +59,7 @@ export const APP_ROUTES = [
     label: "Settings",
     title: "Settings",
     icon: "settings",
-    element: <SettingsPage />
+    element: createRouteElement("Settings", <SettingsPage />)
   }
 ] as const satisfies readonly AppRouteDefinition[];
 

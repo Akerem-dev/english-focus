@@ -1,14 +1,10 @@
-# CP25 Test Plan
+# CP26 test plan
 
-1. Run all automated workspace checks.
-2. Confirm local counts match Library, metadata, activity, and backup state.
-3. Verify final action stays disabled until category, acknowledgement, and phrase are valid.
-4. Clear study details and confirm vocabulary remains.
-5. Remove a user vocabulary entry and confirm bundled core vocabulary remains.
-6. Remove an override and confirm the bundled core entry returns.
-7. Reset settings and confirm defaults persist after restart.
-8. Clear activity and confirm other local data remains.
-9. Delete retained backups only after typing `DELETE BACKUPS`.
-10. Run full reset with safety backup and confirm backups are preserved.
-11. Restore the safety backup and confirm vocabulary, metadata, and settings return.
-12. Verify dark theme, reduced motion, narrow-window layout, and no horizontal overflow.
+1. Run the full automated checkpoint block.
+2. Confirm all three routes load after a brief local loading state.
+3. Confirm Import opens every existing import flow.
+4. Navigate with mouse and keyboard; verify focus lands on main content after route changes.
+5. Confirm browser/Tauri title changes for Vocabulary, Library and Settings.
+6. Test dark mode, reduced motion and narrow-window layouts.
+7. Run the production bundle budget check and confirm at least four JavaScript chunks.
+8. Confirm no vocabulary, metadata, settings, backups or activity records changed.

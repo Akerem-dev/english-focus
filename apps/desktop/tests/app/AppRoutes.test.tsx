@@ -28,25 +28,26 @@ describe("application routes", () => {
     ]);
   });
 
-  it("renders the vocabulary route inside the persistent shell", () => {
+  it("renders the vocabulary route loading boundary inside the persistent shell", () => {
     const markup = renderRoute(ROUTE_PATHS.vocabulary);
 
-    expect(markup).toContain("Look up an English word");
+    expect(markup).toContain("Loading Vocabulary");
     expect(markup).toContain("Primary navigation");
     expect(markup).toContain("Local Library");
+    expect(markup).toContain('href="#main-content"');
   });
 
-  it("renders the library route", () => {
+  it("renders the library route loading boundary", () => {
     const markup = renderRoute(ROUTE_PATHS.library);
 
-    expect(markup).toContain("Your library is empty");
-    expect(markup).toContain("0 entries");
+    expect(markup).toContain("Loading Library");
+    expect(markup).toContain("Library page loaded");
   });
 
-  it("renders the settings route", () => {
+  it("renders the settings route loading boundary", () => {
     const markup = renderRoute(ROUTE_PATHS.settings);
 
-    expect(markup).toContain("Appearance &amp; accessibility");
-    expect(markup).toContain("Automatic backups");
+    expect(markup).toContain("Loading Settings");
+    expect(markup).toContain("Settings page loaded");
   });
 });

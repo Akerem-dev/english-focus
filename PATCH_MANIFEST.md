@@ -1,21 +1,20 @@
-# CP25 Patch Manifest
+# Patch manifest
 
 ## Scope
 
-- Selective deletion for study metadata, user vocabulary, overrides, settings, activity, and backups.
-- Full local reset preset that preserves bundled core vocabulary and retained backups.
-- Exact SQLite and backup-file counts before deletion.
-- Three-step confirmation: category selection, review acknowledgement, typed phrase.
-- Optional safety backup before vocabulary, metadata, or settings deletion.
-- One SQLite transaction for database categories.
-- Provider refresh after successful deletion.
-- Toast and privacy-safe activity feedback.
+- Lazy-loads Vocabulary, Library and Settings route implementations.
+- Lazy-loads import workflows only when the user opens them.
+- Adds accessible route loading and route failure boundaries.
+- Moves keyboard focus to the main landmark after route changes.
+- Updates the document title for each primary route.
+- Replaces the plain fatal startup message with local recovery actions and a privacy-safe error reference.
+- Adds Vite vendor splitting and a deterministic production bundle budget check.
+- Adds release-hardening and shell-accessibility tests.
 
-## Boundaries
+## Explicit non-goals
 
-- No new npm dependency.
-- No new Rust crate.
-- No database schema migration.
-- No new route.
-- Core vocabulary files are never deleted.
-- Backup deletion is explicit and cannot be combined with safety-backup creation.
+- No SQLite migration.
+- No vocabulary or metadata mutation.
+- No new npm dependency or Rust crate.
+- No new application route.
+- No telemetry or network reporting.

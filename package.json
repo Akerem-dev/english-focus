@@ -25,7 +25,9 @@
     "check:forbidden": "node scripts/check-forbidden-patterns.mjs",
     "quality": "npm run check:structure && npm run check:forbidden && npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
     "check:native-environment": "node scripts/check-native-environment.mjs",
-    "check:git": "node scripts/check-git-hygiene.mjs"
+    "check:git": "node scripts/check-git-hygiene.mjs",
+    "check:bundle": "node scripts/check-bundle-budget.mjs",
+    "quality:release": "npm run check:structure && npm run check:forbidden && npm run typecheck && npm run test && npm run build && npm run check:bundle"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

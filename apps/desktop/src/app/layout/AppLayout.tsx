@@ -9,6 +9,7 @@ import {
   type CommandDefinition
 } from "../command-bar";
 import { ROUTE_PATHS } from "../router";
+import { RouteAccessibilityManager } from "../performance";
 import { KeyboardShortcutsDialog, useGlobalShortcuts } from "../shortcuts";
 import { AppContent } from "./AppContent";
 import { AppSidebar } from "./AppSidebar";
@@ -77,6 +78,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       </a>
       <AppSidebar />
       <div className="application-main">
+        <RouteAccessibilityManager />
         <AppTopBar onOpenCommandBar={commandBar.openCommandBar} />
         <AppContent>{children}</AppContent>
       </div>

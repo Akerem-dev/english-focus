@@ -1,20 +1,42 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components";
 import { AppIcon } from "../../design-system";
-import {
-  ImportSourceDialog,
-  PasteGeneratedJsonDialog,
-  SingleEntryFileImportDialog,
-  VocabularyPackImportDialog,
-  type SingleEntryFileImportPayload
-} from "../../modules/import-export";
+import type { SingleEntryFileImportPayload } from "../../modules/import-export/overlays/SingleEntryFileImportDialog";
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../command-bar";
 import { getRouteByPath } from "../router";
 
+const ImportSourceDialog = lazy(async () => {
+  const module = await import("../../modules/import-export/overlays/ImportSourceDialog");
+  return { default: module.ImportSourceDialog };
+});
+
+const SingleEntryFileImportDialog = lazy(async () => {
+  const module = await import("../../modules/import-export/overlays/SingleEntryFileImportDialog");
+  return { default: module.SingleEntryFileImportDialog };
+});
+
+const VocabularyPackImportDialog = lazy(async () => {
+  const module = await import("../../modules/import-export/overlays/VocabularyPackImportDialog");
+  return { default: module.VocabularyPackImportDialog };
+});
+
+const PasteGeneratedJsonDialog = lazy(async () => {
+  const module = await import("../../modules/import-export/overlays/PasteGeneratedJsonDialog");
+  return { default: module.PasteGeneratedJsonDialog };
+});
+
 interface AppTopBarProps {
   readonly onOpenCommandBar: () => void;
+}
+
+function OverlayLoadingStatus() {
+  return (
+    <div aria-live="polite" className="visually-hidden" role="status">
+      Preparing local import tools
+    </div>
+  );
 }
 
 export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
@@ -45,7 +67,9 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
   return (
     <>
       <header className="app-topbar">
-        <span className="app-topbar__route">{route.title}</span>
+        <span aria-live="polite" className="app-topbar__route">
+          {route.title}
+        </span>
         <div className="app-topbar__actions">
           <Button
             leadingIcon={<AppIcon name="upload" size={17} />}
@@ -70,58 +94,72 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
         </div>
       </header>
 
-      <ImportSourceDialog
-        onClose={() => {
-          setSourceDialogOpen(false);
-        }}
-        onSelectPack={() => {
-          setSourceDialogOpen(false);
-          setPackDialogOpen(true);
-        }}
-        onSelectSingleEntry={() => {
-          setSourceDialogOpen(false);
-          setSingleEntryDialogOpen(true);
-        }}
-        open={sourceDialogOpen}
-      />
+      {sourceDialogOpen ? (
+        <Suspense fallback={<OverlayLoadingStatus />}>
+          <ImportSourceDialog
+            onClose={() => {
+              setSourceDialogOpen(false);
+            }}
+            onSelectPack={() => {
+              setSourceDialogOpen(false);
+              setPackDialogOpen(true);
+            }}
+            onSelectSingleEntry={() => {
+              setSourceDialogOpen(false);
+              setSingleEntryDialogOpen(true);
+            }}
+            open
+          />
+        </Suspense>
+      ) : null}
 
-      <SingleEntryFileImportDialog
-        onClose={() => {
-          setSingleEntryDialogOpen(false);
-        }}
-        onContinue={(payload) => {
-          setSingleEntryDialogOpen(false);
-          setImportPayload(payload);
-        }}
-        open={singleEntryDialogOpen}
-      />
+      {singleEntryDialogOpen ? (
+        <Suspense fallback={<OverlayLoadingStatus />}>
+          <SingleEntryFileImportDialog
+            onClose={() => {
+              setSingleEntryDialogOpen(false);
+            }}
+            onContinue={(payload) => {
+              setSingleEntryDialogOpen(false);
+              setImportPayload(payload);
+            }}
+            open
+          />
+        </Suspense>
+      ) : null}
 
-      <VocabularyPackImportDialog
-        onClose={() => {
-          setPackDialogOpen(false);
-        }}
-        onOpenLibrary={() => {
-          setPackDialogOpen(false);
-          navigate("/library");
-        }}
-        open={packDialogOpen}
-      />
+      {packDialogOpen ? (
+        <Suspense fallback={<OverlayLoadingStatus />}>
+          <VocabularyPackImportDialog
+            onClose={() => {
+              setPackDialogOpen(false);
+            }}
+            onOpenLibrary={() => {
+              setPackDialogOpen(false);
+              navigate("/library");
+            }}
+            open
+          />
+        </Suspense>
+      ) : null}
 
       {importPayload === undefined ? null : (
-        <PasteGeneratedJsonDialog
-          expectedWord={importPayload.expectedWord}
-          initialInput={importPayload.input}
-          key={`${importPayload.fileName}:${importPayload.expectedWord}`}
-          onClose={() => {
-            setImportPayload(undefined);
-          }}
-          onOpenSavedEntry={(word) => {
-            setImportPayload(undefined);
-            navigate(`/vocabulary?word=${encodeURIComponent(word)}`);
-          }}
-          open
-          sourceFileName={importPayload.fileName}
-        />
+        <Suspense fallback={<OverlayLoadingStatus />}>
+          <PasteGeneratedJsonDialog
+            expectedWord={importPayload.expectedWord}
+            initialInput={importPayload.input}
+            key={`${importPayload.fileName}:${importPayload.expectedWord}`}
+            onClose={() => {
+              setImportPayload(undefined);
+            }}
+            onOpenSavedEntry={(word) => {
+              setImportPayload(undefined);
+              navigate(`/vocabulary?word=${encodeURIComponent(word)}`);
+            }}
+            open
+            sourceFileName={importPayload.fileName}
+          />
+        </Suspense>
       )}
     </>
   );
