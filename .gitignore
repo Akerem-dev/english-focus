@@ -49,3 +49,4 @@ playwright-report/
 test-results/
 .nyc_output/
 release-artifacts/
+delivery/
