@@ -44,7 +44,8 @@ Desktop.ini
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# Test and tooling artifacts
+# Test, tooling, and release artifacts
 playwright-report/
 test-results/
 .nyc_output/
+release-artifacts/

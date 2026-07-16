@@ -1,0 +1,41 @@
+name: Windows Installers
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows-installers:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install JavaScript dependencies
+        run: npm ci
+      - name: Run release quality checks
+        run: npm run quality:release
+      - name: Build unsigned MSI and NSIS installers
+        shell: powershell
+        run: npm run tauri --workspace=@app/desktop -- build --bundles msi,nsis --ci --no-sign
+      - name: Verify and collect installer artifacts
+        run: node scripts/check-release-artifacts.mjs --collect
+      - name: Upload Windows installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: english-focus-windows-installers
+          path: release-artifacts/windows/**
+          if-no-files-found: error
+          retention-days: 14

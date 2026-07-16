@@ -1,5 +1,5 @@
-# CP26 — Accessibility, performance and release hardening
+# CHECKPOINT — CP27 WINDOWS INSTALLER RELEASE ENGINEERING
 
-Status: READY FOR WINDOWS VALIDATION
+Status: TESTING
 
-This checkpoint adds route and import-overlay code splitting, bundle budgets, route-aware focus and announcements, accessible loading states, route-level recovery, and a privacy-safe fatal startup boundary.
+Build and test both unsigned installers on Windows before merge. Verify fresh install, in-place reinstall, uninstall behavior, and preservation of local application data.
