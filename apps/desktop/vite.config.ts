@@ -2,6 +2,11 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 function splitVendorChunk(id: string): string | undefined {
+  const coreContentBatch = id.match(/pilot-core-v1\.batch-(\d+)\.json/u);
+  if (coreContentBatch?.[1] !== undefined) {
+    return `core-content-batch-${coreContentBatch[1]}`;
+  }
+
   if (!id.includes("node_modules")) {
     return undefined;
   }

@@ -13,7 +13,8 @@
 .settings-error {
   margin-bottom: var(--space-5);
   padding: var(--space-4);
-  border: var(--border-width-hairline) solid color-mix(in srgb, var(--color-danger) 42%, var(--color-border));
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-danger) 42%, var(--color-border));
   border-radius: var(--radius-large);
   background: var(--color-danger-soft);
 }
@@ -46,4 +47,28 @@
 
 .settings-panel--wide {
   grid-column: 1 / -1;
+}
+
+.core-content-status {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.settings-value-row--stacked {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.settings-value-row--stacked strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.settings-supporting-copy {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
 }

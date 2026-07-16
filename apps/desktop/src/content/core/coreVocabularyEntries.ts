@@ -1,11 +1,14 @@
 import type { VocabularyEntry } from "@platform/domain";
 
 import { maintainVocabularyEntry } from "./entries";
+import { pilotCoreVocabularyEntries } from "./pilotCoreVocabularyEntries";
 
 /**
- * Small deterministic catalog for the current checkpoint.
- * The same boundary will later load the versioned 5,000-entry core pack.
+ * Immutable 100-entry pilot catalog bundled with English Focus V1.
+ * User entries, overrides, notes, tags, and learning metadata remain separate in SQLite.
  */
-export const coreVocabularyEntries: readonly VocabularyEntry[] = Object.freeze([
-  maintainVocabularyEntry
-]);
+export const coreVocabularyEntries: readonly VocabularyEntry[] = Object.freeze(
+  [maintainVocabularyEntry, ...pilotCoreVocabularyEntries].sort((left, right) =>
+    left.normalizedWord.localeCompare(right.normalizedWord, "en", { sensitivity: "base" })
+  )
+);

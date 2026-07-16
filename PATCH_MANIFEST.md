@@ -1,8 +1,22 @@
-# CP27 patch manifest
+# CP29 Patch Manifest
 
-- Version synchronized to 0.9.0 across npm, package-lock, Cargo, and Tauri.
-- MSI and NSIS bundling enabled.
-- Stable MSI upgrade code and downgrade protection added.
-- Release metadata, artifact, checksum, and Authenticode verification scripts added.
-- Windows CI artifact workflow added.
-- No SQLite migration or vocabulary mutation.
+## Added
+
+- Full Windows regression runner.
+- Version, native asset and stale-checkpoint preflights.
+- Rust migration-source coverage preflight.
+- Temporary legacy installer worktree builder.
+- Safe isolation and restoration of the developer's existing app-data.
+- App-data snapshot and preservation comparator.
+- Interactive NSIS/MSI upgrade rehearsal.
+- Release-candidate lock creation and verification.
+- Windows GitHub Actions regression workflow.
+- Legacy SQLite, backup and installer test matrices.
+
+## Not changed
+
+- Runtime product behavior.
+- SQLite schema.
+- Vocabulary content.
+- Backup format.
+- Installer identity or application version.
