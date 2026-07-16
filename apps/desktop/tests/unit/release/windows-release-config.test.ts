@@ -5,32 +5,73 @@ import { describe, expect, it } from "vitest";
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(testDirectory, "../../../../..");
+const internalWorkspaceVersion = "0.0.0";
 
-function readJson(relativePath: string) {
-  return JSON.parse(readFileSync(resolve(repositoryRoot, relativePath), "utf8")) as Record<string, unknown>;
+type PackageJson = {
+  readonly version?: string;
+};
+
+type PackageLock = {
+  readonly version?: string;
+  readonly packages?: Record<string, { readonly version?: string }>;
+};
+
+type TauriConfig = {
+  readonly version?: string;
+  readonly bundle: {
+    readonly active: boolean;
+    readonly targets: string[];
+    readonly windows: {
+      readonly allowDowngrades: boolean;
+      readonly nsis: { readonly installMode: string };
+      readonly wix: { readonly version?: string; readonly upgradeCode: string };
+    };
+  };
+};
+
+function readJson<T>(relativePath: string): T {
+  return JSON.parse(readFileSync(resolve(repositoryRoot, relativePath), "utf8").replace(/^\uFEFF/, "")) as T;
 }
 
 describe("Windows release configuration", () => {
-  it("keeps application versions synchronized", () => {
-    const rootPackage = readJson("package.json");
-    const desktopPackage = readJson("apps/desktop/package.json");
-    const tauriConfig = readJson("apps/desktop/src-tauri/tauri.conf.json");
+  it("keeps all release-bearing application versions synchronized", () => {
+    const rootPackage = readJson<PackageJson>("package.json");
+    const desktopPackage = readJson<PackageJson>("apps/desktop/package.json");
+    const packageLock = readJson<PackageLock>("package-lock.json");
+    const tauriConfig = readJson<TauriConfig>("apps/desktop/src-tauri/tauri.conf.json");
     const cargo = readFileSync(resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.toml"), "utf8");
-    const cargoVersion = cargo.match(/^version\s*=\s*"([^"]+)"/m)?.[1];
-    expect(rootPackage.version).toBe("0.9.0");
+    const cargoLock = readFileSync(resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.lock"), "utf8");
+    const cargoVersion = cargo.match(/^\s*version\s*=\s*"([^"]+)"/m)?.[1];
+    const cargoLockVersion = cargoLock.match(
+      /\[\[package\]\]\r?\nname = "english-learning-platform"\r?\nversion = "([^"]+)"/
+    )?.[1];
+
+    expect(rootPackage.version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(rootPackage.version).not.toBe(internalWorkspaceVersion);
     expect(desktopPackage.version).toBe(rootPackage.version);
+    expect(packageLock.version).toBe(rootPackage.version);
+    expect(packageLock.packages?.[""]?.version).toBe(rootPackage.version);
+    expect(packageLock.packages?.["apps/desktop"]?.version).toBe(rootPackage.version);
     expect(tauriConfig.version).toBe(rootPackage.version);
+    expect(tauriConfig.bundle.windows.wix.version).toBe(rootPackage.version);
     expect(cargoVersion).toBe(rootPackage.version);
+    expect(cargoLockVersion).toBe(rootPackage.version);
+
+    for (const workspacePath of [
+      "packages/domain",
+      "packages/schemas",
+      "packages/shared",
+      "packages/testing"
+    ]) {
+      const workspacePackage = readJson<PackageJson>(`${workspacePath}/package.json`);
+      expect(workspacePackage.version).toBe(internalWorkspaceVersion);
+      expect(packageLock.packages?.[workspacePath]?.version).toBe(internalWorkspaceVersion);
+    }
   });
 
-  it("enables only MSI and NSIS release-candidate installers", () => {
-    const config = readJson("apps/desktop/src-tauri/tauri.conf.json") as {
-      bundle: {
-        active: boolean;
-        targets: string[];
-        windows: { allowDowngrades: boolean; nsis: { installMode: string }; wix: { upgradeCode: string } };
-      };
-    };
+  it("enables only the supported MSI and NSIS release installers", () => {
+    const config = readJson<TauriConfig>("apps/desktop/src-tauri/tauri.conf.json");
+
     expect(config.bundle.active).toBe(true);
     expect(config.bundle.targets).toEqual(["msi", "nsis"]);
     expect(config.bundle.windows.allowDowngrades).toBe(false);

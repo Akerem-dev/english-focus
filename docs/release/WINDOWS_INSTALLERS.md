@@ -1,6 +1,6 @@
 # Windows installer build
 
-CP27 establishes repeatable unsigned Windows release-candidate packaging.
+English Focus produces repeatable unsigned Windows installers for the current version declared in `tauri.conf.json`.
 
 ## Build
 
@@ -11,7 +11,13 @@ npm run release:windows
 Artifacts are collected under:
 
 ```text
-release-artifacts/windows/0.9.0/
+release-artifacts/windows/<current-version>/
+```
+
+For V1 this is:
+
+```text
+release-artifacts/windows/1.0.0/
 ```
 
 Expected outputs are one WiX `.msi`, one NSIS `.exe`, `SHA256SUMS.txt`, and `release-manifest.json`.
@@ -25,4 +31,4 @@ Expected outputs are one WiX `.msi`, one NSIS `.exe`, `SHA256SUMS.txt`, and `rel
 
 ## Signing
 
-CP27 artifacts are intentionally unsigned release candidates. Windows may show an unknown-publisher warning. No certificate, private key, thumbprint, password, or signing command is committed.
+Installers are unsigned unless a real code-signing certificate is supplied outside the repository. Windows may show an unknown-publisher warning. No certificate, private key, thumbprint, password, or signing command is committed.
