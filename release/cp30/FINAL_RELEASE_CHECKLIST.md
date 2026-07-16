@@ -11,8 +11,10 @@ Every line must pass before tagging `v1.0.0`.
 
 ## Version and metadata
 
-- [ ] Root and workspace package versions are `1.0.0`.
-- [ ] Cargo and Tauri versions are `1.0.0`.
+- [ ] Root application package and desktop package are `1.0.0`.
+- [ ] Internal domain/schema/shared/testing workspace packages remain `0.0.0` by design.
+- [ ] Package-lock entries match the release-bearing and internal workspace version model.
+- [ ] Cargo, Cargo.lock, Tauri and WiX/MSI versions are `1.0.0`.
 - [ ] Product name is `English Focus`.
 - [ ] Identifier is `com.englishfocus.desktop`.
 - [ ] Windows upgrade code remains unchanged.

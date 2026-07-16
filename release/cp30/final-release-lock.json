@@ -1,0 +1,47 @@
+{
+  "kind": "english-focus-final-release-lock",
+  "lockVersion": 1,
+  "productName": "English Focus",
+  "version": "1.0.0",
+  "identifier": "com.englishfocus.desktop",
+  "sourceCommit": "e5b543308238358d901b92976ef86dc4210e466e",
+  "createdAt": "2026-07-16T14:05:32.758Z",
+  "signed": false,
+  "releaseChannel": "stable",
+  "rcSource": {
+    "version": "0.9.0",
+    "lockPath": "release/cp29/release-candidate-lock.json"
+  },
+  "guarantees": {
+    "fullRegressionPassed": true,
+    "legacySqliteUpgradePassed": true,
+    "legacyBackupRestorePassed": true,
+    "nsisUpgradePassed": true,
+    "msiUpgradePassed": true,
+    "reinstallPreservesData": true,
+    "uninstallPreservesAppData": true,
+    "downgradeBlocked": true
+  },
+  "artifacts": [
+    {
+      "name": "English Focus_1.0.0_x64-setup.exe",
+      "sizeBytes": 2903900,
+      "sha256": "1e85892357f265c376b18056f649b22d3af0bb6d9486089b49579aa5643ed229"
+    },
+    {
+      "name": "English Focus_1.0.0_x64_en-US.msi",
+      "sizeBytes": 4091904,
+      "sha256": "5156d7d95aa62e06cd9fc9139861c6cca43f1019e4ac239d50090bee578fa9bf"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "sizeBytes": 200,
+      "sha256": "e18a3e0b5a95e2124e320129cdd31522542cea4c42eafcde11751414b8ebba9d"
+    },
+    {
+      "name": "release-manifest.json",
+      "sizeBytes": 581,
+      "sha256": "07ff2f8fcc7548db87c0959352ceda052616672173014fc75f047a4dffe9dee2"
+    }
+  ]
+}

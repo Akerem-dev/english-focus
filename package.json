@@ -1,6 +1,6 @@
 {
   "name": "english-learning-platform",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -33,7 +33,10 @@
     "release:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-windows-installers.ps1",
     "release:windows:verify": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-windows-installers.ps1",
     "check:core-content": "node scripts/check-core-content.mjs",
-    "quality:content": "npm run check:structure && npm run check:forbidden && npm run check:release-metadata && npm run check:core-content && npm run typecheck && npm run test && npm run build && npm run check:bundle"
+    "quality:content": "npm run check:structure && npm run check:forbidden && npm run check:release-metadata && npm run check:core-content && npm run typecheck && npm run test && npm run build && npm run check:bundle",
+    "cp30:verify": "node scripts/cp30/verify-final-release.mjs",
+    "cp30:lock": "node scripts/cp30/create-final-release-lock.mjs",
+    "cp30:lock:verify": "node scripts/cp30/verify-final-release-lock.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

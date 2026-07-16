@@ -1,8 +1,9 @@
-import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative, resolve } from "node:path";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { resolve } from "node:path";
 
 const root = process.cwd();
 const expectedVersion = process.env.EF_EXPECTED_VERSION ?? "1.0.0";
+const internalWorkspaceVersion = "0.0.0";
 const expectedProductName = "English Focus";
 const expectedIdentifier = "com.englishfocus.desktop";
 let failed = false;
@@ -31,10 +32,38 @@ for (const [name, version] of [
   else fail(`${name}: expected ${expectedVersion}, received ${String(version)}`);
 }
 
+for (const [key, expected] of [
+  ["", expectedVersion],
+  ["apps/desktop", expectedVersion],
+  ["packages/domain", internalWorkspaceVersion],
+  ["packages/schemas", internalWorkspaceVersion],
+  ["packages/shared", internalWorkspaceVersion],
+  ["packages/testing", internalWorkspaceVersion]
+]) {
+  const entry = lockfile?.packages?.[key];
+  if (!entry) {
+    fail(`package-lock.json workspace entry missing: ${key || "<root>"}`);
+  } else if (entry.version === expected) {
+    pass(`package-lock.json ${key || "<root>"}: ${expected}`);
+  } else {
+    fail(`package-lock.json ${key || "<root>"}: expected ${expected}, received ${String(entry.version)}`);
+  }
+}
+
 if (tauri?.productName === expectedProductName) pass(`Product name: ${expectedProductName}`);
 else fail(`Unexpected product name: ${String(tauri?.productName)}`);
 if (tauri?.identifier === expectedIdentifier) pass(`Identifier: ${expectedIdentifier}`);
 else fail(`Unexpected identifier: ${String(tauri?.identifier)}`);
+
+for (const [label, version] of [
+  ["MSI/WiX installer version", tauri?.bundle?.windows?.wix?.version],
+  ["MSI installer version", tauri?.bundle?.windows?.msi?.version],
+  ["NSIS installer version", tauri?.bundle?.windows?.nsis?.version]
+]) {
+  if (version === undefined) continue;
+  if (version === expectedVersion) pass(`${label}: ${expectedVersion}`);
+  else fail(`${label}: expected ${expectedVersion}, received ${String(version)}`);
+}
 
 const cargoPath = resolve(root, "apps/desktop/src-tauri/Cargo.toml");
 if (!existsSync(cargoPath)) fail("Cargo.toml is missing.");
@@ -42,6 +71,27 @@ else {
   const match = readFileSync(cargoPath, "utf8").match(/^\s*version\s*=\s*"([^"]+)"/m);
   if (match?.[1] === expectedVersion) pass(`Cargo.toml: ${expectedVersion}`);
   else fail(`Cargo.toml: expected ${expectedVersion}, received ${match?.[1] ?? "missing"}`);
+}
+
+const cargoLockPath = resolve(root, "apps/desktop/src-tauri/Cargo.lock");
+if (!existsSync(cargoLockPath)) fail("Cargo.lock is missing.");
+else {
+  const match = readFileSync(cargoLockPath, "utf8").match(
+    /\[\[package\]\]\r?\nname = "english-learning-platform"\r?\nversion = "([^"]+)"/
+  );
+  if (match?.[1] === expectedVersion) pass(`Cargo.lock local package: ${expectedVersion}`);
+  else fail(`Cargo.lock local package: expected ${expectedVersion}, received ${match?.[1] ?? "missing"}`);
+}
+
+for (const relativePath of [
+  "packages/domain/package.json",
+  "packages/schemas/package.json",
+  "packages/shared/package.json",
+  "packages/testing/package.json"
+]) {
+  const pkg = readJson(relativePath);
+  if (pkg?.version === internalWorkspaceVersion) pass(`${relativePath}: ${internalWorkspaceVersion}`);
+  else fail(`${relativePath}: expected ${internalWorkspaceVersion}, received ${String(pkg?.version)}`);
 }
 
 const requiredAssets = [
@@ -65,27 +115,10 @@ else {
   else fail(`CP29 lock version changed unexpectedly: ${String(lock.version)}`);
 }
 
-const forbiddenReleasePaths = [".cp29-rehearsal", ".cp29-worktrees"];
-for (const relativePath of forbiddenReleasePaths) {
+for (const relativePath of [".cp29-rehearsal", ".cp29-worktrees"]) {
   if (existsSync(resolve(root, relativePath))) {
     console.warn(`warning ${relativePath} exists locally; it must remain git-ignored and must not enter delivery archives.`);
   }
-}
-
-const workspaceVersions = [];
-for (const base of ["apps", "packages"]) {
-  const basePath = resolve(root, base);
-  if (!existsSync(basePath)) continue;
-  for (const name of readdirSync(basePath)) {
-    const packagePath = join(basePath, name, "package.json");
-    if (!existsSync(packagePath)) continue;
-    const pkg = JSON.parse(readFileSync(packagePath, "utf8").replace(/^\uFEFF/, ""));
-    workspaceVersions.push([relative(root, packagePath).replaceAll("\\", "/"), pkg.version]);
-  }
-}
-for (const [path, version] of workspaceVersions) {
-  if (version === expectedVersion) pass(`${path}: ${expectedVersion}`);
-  else fail(`${path}: expected ${expectedVersion}, received ${String(version)}`);
 }
 
 if (failed) process.exit(1);
