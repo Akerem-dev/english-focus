@@ -18,4 +18,21 @@ jobs:
           cache: "npm"
 
       - run: npm ci
-      - run: npm run quality
+      - name: Check repository structure
+        run: npm run check:structure
+      - name: Check forbidden patterns
+        run: npm run check:forbidden
+      - name: Check CSS custom properties
+        run: npm run check:css-tokens
+      - name: Check dead code
+        run: npm run check:dead-code
+      - name: Check formatting
+        run: npm run format:check
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test
+        run: npm run test
+      - name: Build
+        run: npm run build
