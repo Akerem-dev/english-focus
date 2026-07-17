@@ -9,14 +9,14 @@ import {
 } from "../../../src/modules/vocabulary/presenters/VocabularyEntryPresenter";
 
 describe("VocabularyEntryPresenter", () => {
-  it("derives stable editorial labels from a vocabulary entry", () => {
+  it("derives stable essential labels from a vocabulary entry", () => {
     const entry = createValidVocabularyEntry();
     const presentation = presentVocabularyEntry(entry);
 
     expect(presentation.primaryTranslation).toBe(entry.meanings[0]?.translationsTr.join(", "));
     expect(presentation.partOfSpeechLabel).toBe("Verb");
     expect(presentation.sourceLabel).toBe(entry.source.sourceLabel);
-    expect(presentation.reviewLabel).toBe("Validated");
+    expect(presentation).not.toHaveProperty("reviewLabel");
   });
 
   it("formats enum and kebab-case values for human-readable UI", () => {
