@@ -84,10 +84,6 @@ jobs:
           set -o pipefail
           npm run build 2>&1 | tee quality-reports/build.txt
 
-      - name: Archive source snapshot
-        if: always()
-        run: git archive --format=zip --output=quality-reports/source-snapshot.zip HEAD
-
       - name: Upload quality reports
         if: always()
         uses: actions/upload-artifact@v4
