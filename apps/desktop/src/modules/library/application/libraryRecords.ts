@@ -29,9 +29,7 @@ function searchableText(
     ]),
     ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr]),
     metadata?.note ?? "",
-    ...(metadata?.tags.map((tag) => tag.name) ?? []),
-    metadata?.learningStatus ?? "",
-    metadata?.reviewStatus ?? ""
+    ...(metadata?.tags.map((tag) => tag.name) ?? [])
   ]
     .join(" ")
     .toLocaleLowerCase("en-US");

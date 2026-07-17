@@ -4,6 +4,7 @@
 @import "./globals.css";
 @import "./utilities.css";
 @import "./primitives.css";
+@import "./cefr-badge.css";
 @import "./app-shell.css";
 @import "./route-pages.css";
 @import "./instruction.css";

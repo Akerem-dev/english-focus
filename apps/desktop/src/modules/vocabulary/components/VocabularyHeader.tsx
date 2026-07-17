@@ -1,6 +1,6 @@
 import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
-import { Button, StatusBadge, TagChip } from "../../../components";
+import { Button, CefrBadge, StatusBadge, TagChip } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { presentVocabularyEntry } from "../presenters/VocabularyEntryPresenter";
 
@@ -21,17 +21,13 @@ export function VocabularyHeader({
   onEditEntry,
   onEditMetadata,
   onExport,
-  onImportReplacement,
+  onImportReplacement
 }: VocabularyHeaderProps) {
   const presentation = presentVocabularyEntry(entry);
 
   return (
     <header className="vocabulary-detail-header">
-      <Button
-        className="vocabulary-detail-header__back"
-        onClick={onBack}
-        variant="ghost"
-      >
+      <Button className="vocabulary-detail-header__back" onClick={onBack} variant="ghost">
         ← Back to vocabulary
       </Button>
 
@@ -39,14 +35,17 @@ export function VocabularyHeader({
         <div>
           <p className="route-page__eyebrow">Local vocabulary entry</p>
           <h1 className="word-title">{entry.word}</h1>
-          <p className="vocabulary-detail-header__translation">
-            {presentation.primaryTranslation}
-          </p>
+          <p className="vocabulary-detail-header__translation">{presentation.primaryTranslation}</p>
         </div>
         <div className="vocabulary-detail-header__source">
           <span>{presentation.sourceLabel}</span>
           <div className="vocabulary-detail-header__actions">
-            <Button onClick={onEditEntry} size="small" variant="primary">
+            <Button
+              leadingIcon={<AppIcon name="settings" size={16} />}
+              onClick={onEditEntry}
+              size="small"
+              variant="primary"
+            >
               Edit entry
             </Button>
             <Button
@@ -65,23 +64,15 @@ export function VocabularyHeader({
             >
               Export JSON
             </Button>
-            <Button
-              onClick={onImportReplacement}
-              size="small"
-              title="Advanced JSON replacement"
-              variant="ghost"
-            >
+            <Button onClick={onImportReplacement} size="small" variant="ghost">
               Import JSON
             </Button>
           </div>
         </div>
       </div>
 
-      <div
-        className="vocabulary-detail-header__metadata"
-        aria-label="Vocabulary metadata"
-      >
-        <StatusBadge tone="accent">CEFR {entry.cefr}</StatusBadge>
+      <div className="vocabulary-detail-header__metadata" aria-label="Vocabulary metadata">
+        <CefrBadge level={entry.cefr} />
         <StatusBadge>{presentation.partOfSpeechLabel}</StatusBadge>
         {presentation.registerLabels.map((register) => (
           <TagChip key={register}>{register}</TagChip>
