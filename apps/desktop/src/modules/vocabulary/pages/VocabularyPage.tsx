@@ -225,8 +225,12 @@ export function VocabularyPage() {
 
     try {
       await runUndoableAction({
-        perform: () => saveMetadata({ ...current, favorite: nextFavorite, updatedAt: now }),
-        undo: () => saveMetadata({ ...current, updatedAt: new Date().toISOString() }),
+        perform: async () => {
+          await saveMetadata({ ...current, favorite: nextFavorite, updatedAt: now });
+        },
+        undo: async () => {
+          await saveMetadata({ ...current, updatedAt: new Date().toISOString() });
+        },
         successTitle: nextFavorite ? "Added to favorites" : "Removed from favorites",
         successMessage: `“${searchState.entry.word}” study metadata was updated locally.`,
         undoSuccessTitle: "Favorite change undone",
