@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { BuildVocabularyInstruction } from "../../../src/modules/instruction";
 
 describe("BuildVocabularyInstruction", () => {
-  it("builds a deterministic schema-versioned instruction", () => {
+  it("builds a deterministic simplified schema-versioned instruction", () => {
     const builder = new BuildVocabularyInstruction();
     const first = builder.execute({
       targetWord: "allocate",
@@ -21,6 +21,12 @@ describe("BuildVocabularyInstruction", () => {
     expect(first.text).toContain("TARGET WORD: allocate");
     expect(first.text).toContain("PRIMARY EXAMPLE SENTENCES: 3");
     expect(first.text).toContain("Provide 3 primary examples");
+    expect(first.text).toContain("Keep wordFamily, collocations, relatedWords, and commonMistakes empty");
+    expect(first.text).toContain(
+      "Keep grammar.patterns, grammar.tenseExamples, grammar.sentenceForms, and grammar.prepositionPatterns empty"
+    );
+    expect(first.text).not.toContain("Word family:");
+    expect(first.text).not.toContain("Common learner mistakes:");
     expect(first.text).not.toContain("exactly 10");
     expect(first.text).toContain("Return exactly one JSON object and nothing else.");
     expect(first.text).toContain("REQUIRED JSON SCHEMA");
