@@ -30,7 +30,7 @@ describe("ValidatedVocabularyContentSource", () => {
   it("rejects invalid or duplicate catalog entries before exposing them", () => {
     const invalidEntry = {
       ...structuredClone(maintainVocabularyEntry),
-      examples: maintainVocabularyEntry.examples.slice(0, 9)
+      examples: maintainVocabularyEntry.examples.slice(0, 2)
     };
     const duplicateWord = {
       ...structuredClone(maintainVocabularyEntry),
