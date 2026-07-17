@@ -89,7 +89,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const showEtymology = event.currentTarget.checked;
               void updateSettings((current) =>
-                updateContentSettings(current, { ...current.content, showEtymology })
+                updateContentSettings(current, {
+                  ...current.content,
+                  showEtymology
+                })
               );
             }}
           />
@@ -120,7 +123,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const automaticBackups = event.currentTarget.checked;
               void updateSettings((current) =>
-                updateDataSettings(current, { ...current.data, automaticBackups })
+                updateDataSettings(current, {
+                  ...current.data,
+                  automaticBackups
+                })
               );
             }}
           />
@@ -130,7 +136,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const backupFrequency = event.currentTarget.value as BackupFrequency;
               void updateSettings((current) =>
-                updateDataSettings(current, { ...current.data, backupFrequency })
+                updateDataSettings(current, {
+                  ...current.data,
+                  backupFrequency
+                })
               );
             }}
             value={settings.data.backupFrequency}
@@ -157,7 +166,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const theme = event.currentTarget.value as ThemePreference;
               void updateSettings((current) =>
-                updateAppearanceSettings(current, { ...current.appearance, theme })
+                updateAppearanceSettings(current, {
+                  ...current.appearance,
+                  theme
+                })
               );
             }}
             value={settings.appearance.theme}
@@ -174,7 +186,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const reducedMotion = event.currentTarget.checked;
               void updateSettings((current) =>
-                updateAppearanceSettings(current, { ...current.appearance, reducedMotion })
+                updateAppearanceSettings(current, {
+                  ...current.appearance,
+                  reducedMotion
+                })
               );
             }}
           />
@@ -184,7 +199,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const interfaceSize = event.currentTarget.value as InterfaceSize;
               void updateSettings((current) =>
-                updateAppearanceSettings(current, { ...current.appearance, interfaceSize })
+                updateAppearanceSettings(current, {
+                  ...current.appearance,
+                  interfaceSize
+                })
               );
             }}
             value={settings.appearance.interfaceSize}
