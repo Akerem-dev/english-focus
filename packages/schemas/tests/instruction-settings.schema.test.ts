@@ -4,17 +4,19 @@ import { describe, expect, it } from "vitest";
 import { instructionPreferencesSchema } from "../src";
 
 describe("instructionPreferencesSchema", () => {
-  it("accepts the provider-independent defaults", () => {
+  it("accepts the provider-independent simplified defaults", () => {
     expect(instructionPreferencesSchema.parse(DEFAULT_INSTRUCTION_PREFERENCES)).toEqual(
       DEFAULT_INSTRUCTION_PREFERENCES
     );
   });
 
-  it("requires exactly ten primary examples", () => {
+  it("rejects removed legacy content switches", () => {
     expect(
       instructionPreferencesSchema.safeParse({
         ...DEFAULT_INSTRUCTION_PREFERENCES,
-        exampleCount: 9
+        exampleCount: 10,
+        includeWordFamily: true,
+        includeCommonMistakes: true
       }).success
     ).toBe(false);
   });

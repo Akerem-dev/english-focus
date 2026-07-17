@@ -48,20 +48,10 @@ function createValidEntry(): VocabularyEntry {
         { form: "maintaining", normalizedForm: "maintaining", type: "present-participle" }
       ]
     },
-    wordFamily: [],
     grammar: {
       summaryEn: "A transitive verb commonly followed by a noun phrase.",
-      summaryTr: "Genellikle bir isim öbeğiyle kullanılan geçişli bir fiildir.",
-      patterns: [],
-      tenseExamples: [],
-      sentenceForms: [],
-      prepositionPatterns: []
+      summaryTr: "Genellikle bir isim öbeğiyle kullanılan geçişli bir fiildir."
     },
-    collocations: [],
-    phrasalVerbs: [],
-    idioms: [],
-    relatedWords: [],
-    commonMistakes: [],
     examples: createExamples(3),
     source: { kind: "user", sourceLabel: "External AI paste" },
     generation: {
@@ -82,7 +72,7 @@ describe("vocabularyEntrySchema", () => {
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.examples).toHaveLength(3);
-      expect(result.data.grammar.patterns).toEqual([]);
+      expect(result.data.grammar.summaryEn).toContain("transitive");
     }
   });
 
@@ -108,6 +98,17 @@ describe("vocabularyEntrySchema", () => {
     const entry = createValidEntry();
     const result = vocabularyEntryInputSchema.safeParse({
       ...entry,
+      wordFamily: [{ word: "maintenance" }],
+      collocations: [{ phrase: "maintain standards" }],
+      relatedWords: [{ word: "preserve" }],
+      commonMistakes: [{ incorrect: "maintain to do" }],
+      grammar: {
+        ...entry.grammar,
+        patterns: [{ pattern: "maintain + noun" }],
+        tenseExamples: [],
+        sentenceForms: [],
+        prepositionPatterns: []
+      },
       examples: createExamples(10)
     });
 
@@ -119,6 +120,9 @@ describe("vocabularyEntrySchema", () => {
         "example-2",
         "example-3"
       ]);
+      expect(result.data).not.toHaveProperty("wordFamily");
+      expect(result.data).not.toHaveProperty("collocations");
+      expect(result.data.grammar).toEqual(entry.grammar);
     }
   });
 

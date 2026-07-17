@@ -1,21 +1,11 @@
 import type {
-  Collocation,
-  CommonMistake,
   Etymology,
   GenerationMetadata,
-  GrammarPattern,
-  Idiom,
   InflectedForm,
   Meaning,
   Morphology,
-  PhrasalVerb,
-  PrepositionPattern,
   Pronunciation,
-  RelatedWord,
-  SentenceFormExample,
-  TenseExample,
-  VocabularyEntrySource,
-  WordFamilyItem
+  VocabularyEntrySource
 } from "@platform/domain";
 import { z } from "zod";
 
@@ -27,10 +17,7 @@ import {
   partOfSpeechSchema,
   pronunciationVariantSchema,
   registerSchema,
-  relatedWordRelationshipSchema,
-  sentenceFormSchema,
-  vocabularyEntrySourceKindSchema,
-  wordFamilyRelationSchema
+  vocabularyEntrySourceKindSchema
 } from "./vocabulary-enums.schema";
 
 const compactIdSchema = z
@@ -50,11 +37,6 @@ const normalizedWordSchema = z
   .max(120)
   .regex(/^[a-z][a-z' -]*$/, "Use lowercase English letters, spaces, apostrophes, or hyphens.");
 const utcDateTimeSchema = z.iso.datetime();
-
-export const grammarPatternExampleSchema = z.strictObject({
-  sentenceEn: englishTextSchema,
-  translationTr: turkishTextSchema
-});
 
 export const pronunciationSchema: z.ZodType<Pronunciation> = z.strictObject({
   ipa: shortTextSchema,
@@ -89,92 +71,12 @@ export const morphologySchema: z.ZodType<Morphology> = z.strictObject({
   notesTr: turkishTextSchema.optional()
 });
 
-export const wordFamilyItemSchema: z.ZodType<WordFamilyItem> = z.strictObject({
-  word: shortTextSchema,
-  normalizedWord: normalizedWordSchema,
-  partOfSpeech: partOfSpeechSchema,
-  relation: wordFamilyRelationSchema,
-  translationTr: shortTextSchema.optional()
-});
-
 export const etymologySchema: z.ZodType<Etymology> = z.strictObject({
   explanationEn: englishTextSchema,
   explanationTr: turkishTextSchema,
   certainty: etymologyCertaintySchema,
   originLanguage: shortTextSchema.optional(),
   originForm: shortTextSchema.optional()
-});
-
-export const grammarPatternSchema: z.ZodType<GrammarPattern> = z.strictObject({
-  pattern: shortTextSchema,
-  explanationEn: englishTextSchema,
-  explanationTr: turkishTextSchema,
-  examples: z.array(grammarPatternExampleSchema).min(1).max(6)
-});
-
-export const tenseExampleSchema: z.ZodType<TenseExample> = z.strictObject({
-  tense: shortTextSchema,
-  sentenceEn: englishTextSchema,
-  translationTr: turkishTextSchema,
-  usageNoteEn: englishTextSchema.optional(),
-  usageNoteTr: turkishTextSchema.optional()
-});
-
-export const sentenceFormExampleSchema: z.ZodType<SentenceFormExample> = z.strictObject({
-  form: sentenceFormSchema,
-  sentenceEn: englishTextSchema,
-  translationTr: turkishTextSchema
-});
-
-export const prepositionPatternSchema: z.ZodType<PrepositionPattern> = z.strictObject({
-  pattern: shortTextSchema,
-  preposition: shortTextSchema,
-  explanationEn: englishTextSchema,
-  explanationTr: turkishTextSchema,
-  examples: z.array(grammarPatternExampleSchema).min(1).max(6)
-});
-
-export const collocationSchema: z.ZodType<Collocation> = z.strictObject({
-  phrase: shortTextSchema,
-  translationTr: shortTextSchema,
-  registers: z.array(registerSchema).max(12),
-  explanationEn: englishTextSchema.optional(),
-  explanationTr: turkishTextSchema.optional(),
-  exampleEn: englishTextSchema.optional(),
-  exampleTr: turkishTextSchema.optional()
-});
-
-export const phrasalVerbSchema: z.ZodType<PhrasalVerb> = z.strictObject({
-  phrase: shortTextSchema,
-  meaningEn: englishTextSchema,
-  translationTr: turkishTextSchema,
-  separable: z.boolean().nullable(),
-  registers: z.array(registerSchema).max(12),
-  examples: z.array(grammarPatternExampleSchema).min(1).max(6)
-});
-
-export const idiomSchema: z.ZodType<Idiom> = z.strictObject({
-  phrase: shortTextSchema,
-  meaningEn: englishTextSchema,
-  translationTr: turkishTextSchema,
-  registers: z.array(registerSchema).max(12),
-  examples: z.array(grammarPatternExampleSchema).min(1).max(6)
-});
-
-export const relatedWordSchema: z.ZodType<RelatedWord> = z.strictObject({
-  word: shortTextSchema,
-  normalizedWord: normalizedWordSchema,
-  relationship: relatedWordRelationshipSchema,
-  partOfSpeech: partOfSpeechSchema.optional(),
-  distinctionEn: englishTextSchema.optional(),
-  distinctionTr: turkishTextSchema.optional()
-});
-
-export const commonMistakeSchema: z.ZodType<CommonMistake> = z.strictObject({
-  incorrect: englishTextSchema,
-  correct: englishTextSchema,
-  explanationEn: englishTextSchema,
-  explanationTr: turkishTextSchema
 });
 
 export const vocabularyEntrySourceSchema: z.ZodType<VocabularyEntrySource> = z.strictObject({

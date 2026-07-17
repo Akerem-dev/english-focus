@@ -22,7 +22,22 @@ describe("validateVocabularySchema", () => {
   });
 
   it("normalizes legacy ten-example JSON before the application uses it", () => {
-    const result = validateVocabularySchema(structuredClone(rawMaintainEntry));
+    const entry = structuredClone(rawMaintainEntry) as Record<string, unknown>;
+    const examples = entry.examples as Record<string, unknown>[];
+    entry.wordFamily = [{ word: "maintenance" }];
+    entry.collocations = [{ phrase: "maintain standards" }];
+    entry.grammar = {
+      ...(entry.grammar as Record<string, unknown>),
+      patterns: [],
+      tenseExamples: [],
+      sentenceForms: [],
+      prepositionPatterns: []
+    };
+    entry.examples = Array.from({ length: 10 }, (_, index) => ({
+      ...examples[index % examples.length]!,
+      id: `maintain.example.${String(index + 1).padStart(2, "0")}`
+    }));
+    const result = validateVocabularySchema(entry);
 
     expect(result.kind).toBe("success");
     if (result.kind === "success") {
@@ -63,7 +78,8 @@ describe("validateVocabularySchema", () => {
 
   it("rejects unsupported intermediate example counts", () => {
     const entry = structuredClone(rawMaintainEntry) as Record<string, unknown>;
-    entry.examples = (entry.examples as unknown[]).slice(0, 4);
+    const examples = entry.examples as Record<string, unknown>[];
+    entry.examples = [...examples, { ...examples[0]!, id: "maintain.example.04" }];
 
     expect(validateVocabularySchema(entry).kind).toBe("failure");
   });

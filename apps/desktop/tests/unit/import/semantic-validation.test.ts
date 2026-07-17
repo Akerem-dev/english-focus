@@ -93,7 +93,7 @@ describe("validateVocabularySemantics", () => {
     );
   });
 
-  it("requires bilingual optional fields to be paired", () => {
+  it("requires bilingual optional meaning fields to be paired", () => {
     const entry = createExternalEntry();
     const result = validateVocabularySemantics(
       {
@@ -104,22 +104,12 @@ describe("validateVocabularySemantics", () => {
             usageNoteEn: "Used with standards.",
             usageNoteTr: undefined
           }
-        ],
-        collocations: [
-          {
-            phrase: "maintain standards",
-            translationTr: "standartları korumak",
-            registers: ["neutral"],
-            exampleEn: "Teams maintain standards."
-          }
         ]
       },
       "maintain"
     );
 
-    expect(result.issues.map((issue) => issue.code)).toEqual(
-      expect.arrayContaining(["unpaired_meaning_usage_note", "unpaired_collocation_example"])
-    );
+    expect(result.issues.map((issue) => issue.code)).toContain("unpaired_meaning_usage_note");
   });
 
   it("blocks primary examples that omit the target and duplicate another example", () => {
@@ -141,48 +131,18 @@ describe("validateVocabularySemantics", () => {
     );
   });
 
-  it("blocks self-references, inconsistent timestamps, and identical mistake forms", () => {
+  it("blocks inconsistent timestamps", () => {
     const result = validateVocabularySemantics(
       createExternalEntry({
-        wordFamily: [
-          {
-            word: "maintain",
-            normalizedWord: "maintain",
-            partOfSpeech: "verb",
-            relation: "root"
-          }
-        ],
-        relatedWords: [
-          {
-            word: "maintain",
-            normalizedWord: "maintain",
-            relationship: "related"
-          }
-        ],
-        commonMistakes: [
-          {
-            incorrect: "maintain standards",
-            correct: "Maintain standards",
-            explanationEn: "Capitalization alone is not a meaningful learner correction here.",
-            explanationTr:
-              "Yalnızca büyük harf farkı burada anlamlı bir öğrenci düzeltmesi değildir."
-          }
-        ],
         createdAt: "2026-01-03T00:00:00.000Z",
         updatedAt: "2026-01-02T00:00:00.000Z"
       }),
       "maintain"
     );
 
-    expect(result.issues.map((issue) => issue.code)).toEqual(
-      expect.arrayContaining([
-        "word_family_self_reference",
-        "related_word_self_reference",
-        "identical_mistake_forms",
-        "timestamp_order"
-      ])
-    );
+    expect(result.issues.map((issue) => issue.code)).toContain("timestamp_order");
   });
+
   it("keeps external-AI provenance strict but relaxes transfer-only provenance for packs", () => {
     const transferredEntry = {
       ...createExternalEntry(),

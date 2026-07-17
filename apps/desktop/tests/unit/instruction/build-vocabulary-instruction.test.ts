@@ -21,12 +21,11 @@ describe("BuildVocabularyInstruction", () => {
     expect(first.text).toContain("TARGET WORD: allocate");
     expect(first.text).toContain("PRIMARY EXAMPLE SENTENCES: 3");
     expect(first.text).toContain("Provide 3 primary examples");
-    expect(first.text).toContain(
-      "Keep wordFamily, collocations, relatedWords, and commonMistakes empty"
-    );
-    expect(first.text).toContain(
-      "Keep grammar.patterns, grammar.tenseExamples, grammar.sentenceForms, and grammar.prepositionPatterns empty"
-    );
+    expect(first.text).not.toContain("wordFamily");
+    expect(first.text).not.toContain("collocations");
+    expect(first.text).not.toContain("relatedWords");
+    expect(first.text).not.toContain("commonMistakes");
+    expect(first.text).not.toContain("grammar.patterns");
     expect(first.text).not.toContain("Word family:");
     expect(first.text).not.toContain("Common learner mistakes:");
     expect(first.text).not.toContain("exactly 10");

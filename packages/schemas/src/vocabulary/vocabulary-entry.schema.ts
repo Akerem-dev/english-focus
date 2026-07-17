@@ -4,22 +4,18 @@ import { z } from "zod";
 import { exampleSentenceSchema } from "./example-sentence.schema";
 import { grammarAnalysisSchema } from "./grammar-analysis.schema";
 import {
-  collocationSchema,
-  commonMistakeSchema,
   etymologySchema,
   generationMetadataSchema,
-  idiomSchema,
   meaningSchema,
   morphologySchema,
-  phrasalVerbSchema,
   pronunciationSchema,
-  relatedWordSchema,
   vocabularyCompactIdSchema,
+  vocabularyEnglishTextSchema,
   vocabularyEntrySourceSchema,
   vocabularyNormalizedWordSchema,
   vocabularyShortTextSchema,
-  vocabularyUtcDateTimeSchema,
-  wordFamilyItemSchema
+  vocabularyTurkishTextSchema,
+  vocabularyUtcDateTimeSchema
 } from "./vocabulary-components.schema";
 import { cefrLevelSchema, partOfSpeechSchema, registerSchema } from "./vocabulary-enums.schema";
 
@@ -35,14 +31,8 @@ const vocabularyEntryBaseShape = {
   partsOfSpeech: z.array(partOfSpeechSchema).min(1).max(8),
   meanings: z.array(meaningSchema).min(1).max(24),
   morphology: morphologySchema,
-  wordFamily: z.array(wordFamilyItemSchema).max(40),
   etymology: etymologySchema.optional(),
   grammar: grammarAnalysisSchema,
-  collocations: z.array(collocationSchema).max(60),
-  phrasalVerbs: z.array(phrasalVerbSchema).max(30),
-  idioms: z.array(idiomSchema).max(30),
-  relatedWords: z.array(relatedWordSchema).max(60),
-  commonMistakes: z.array(commonMistakeSchema).max(30),
   source: vocabularyEntrySourceSchema,
   generation: generationMetadataSchema,
   createdAt: vocabularyUtcDateTimeSchema,
@@ -82,38 +72,80 @@ function createVocabularyEntryContract(
     });
 }
 
+const canonicalTenExampleSchema = createVocabularyEntryContract(
+  z.array(exampleSentenceSchema).length(10)
+);
+
+const legacyGrammarCompatibilitySchema = z.strictObject({
+  summaryEn: vocabularyEnglishTextSchema,
+  summaryTr: vocabularyTurkishTextSchema,
+  patterns: z.array(z.unknown()).optional(),
+  tenseExamples: z.array(z.unknown()).optional(),
+  sentenceForms: z.array(z.unknown()).optional(),
+  prepositionPatterns: z.array(z.unknown()).optional()
+});
+
+const legacyTenExampleCompatibilitySchema = z.strictObject({
+  ...vocabularyEntryBaseShape,
+  grammar: legacyGrammarCompatibilitySchema,
+  wordFamily: z.array(z.unknown()).optional(),
+  collocations: z.array(z.unknown()).optional(),
+  phrasalVerbs: z.array(z.unknown()).optional(),
+  idioms: z.array(z.unknown()).optional(),
+  relatedWords: z.array(z.unknown()).optional(),
+  commonMistakes: z.array(z.unknown()).optional(),
+  examples: z.array(exampleSentenceSchema).length(10)
+});
+
 /** Canonical contract written by current English Focus versions. */
 export const vocabularyEntrySchema = createVocabularyEntryContract(
   z.array(exampleSentenceSchema).length(3)
 );
 
-/** Read-only native compatibility contract for V1 entries that still contain ten examples. */
-export const vocabularyEntryNativeCompatibilitySchema = createVocabularyEntryContract(
-  z.array(exampleSentenceSchema).length(10)
-);
+/** Native read compatibility for canonical and legacy V1 records after 3→10 adaptation. */
+export const vocabularyEntryNativeCompatibilitySchema = z.union([
+  canonicalTenExampleSchema,
+  legacyTenExampleCompatibilitySchema
+]);
 
-function normalizeLegacyExamples(value: unknown): unknown {
-  if (typeof value !== "object" || value === null || !("examples" in value)) {
+const REMOVED_TOP_LEVEL_FIELDS = [
+  "wordFamily",
+  "collocations",
+  "phrasalVerbs",
+  "idioms",
+  "relatedWords",
+  "commonMistakes"
+] as const;
+
+function normalizeLegacyEntry(value: unknown): unknown {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
     return value;
   }
 
-  const examples = (value as { readonly examples?: unknown }).examples;
-  if (!Array.isArray(examples) || examples.length !== 10) {
-    return value;
+  const candidate = { ...(value as Record<string, unknown>) };
+
+  for (const field of REMOVED_TOP_LEVEL_FIELDS) {
+    delete candidate[field];
   }
 
-  return {
-    ...value,
-    examples: examples.slice(0, 3)
-  };
+  if (typeof candidate.grammar === "object" && candidate.grammar !== null) {
+    const grammar = candidate.grammar as Record<string, unknown>;
+    candidate.grammar = {
+      summaryEn: grammar.summaryEn,
+      summaryTr: grammar.summaryTr
+    };
+  }
+
+  if (Array.isArray(candidate.examples) && candidate.examples.length === 10) {
+    candidate.examples = candidate.examples.slice(0, 3);
+  }
+
+  return candidate;
 }
 
-/**
- * Accepts canonical three-example entries and legacy ten-example entries.
- * Legacy examples beyond the first three are removed before canonical validation.
- */
+/** Accepts legacy V1 input, strips removed content, and returns the canonical simplified model. */
 export const vocabularyEntryInputSchema: z.ZodType<VocabularyEntry> = z.preprocess(
-  normalizeLegacyExamples,
+  normalizeLegacyEntry,
   vocabularyEntrySchema
 );
 

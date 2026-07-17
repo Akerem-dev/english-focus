@@ -1,12 +1,16 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { AppSettings, SettingsRepository } from "@platform/domain";
-import { appSettingsSchema } from "@platform/schemas";
+import { appSettingsInputSchema, appSettingsSchema } from "@platform/schemas";
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
-function parseSettings(payload: unknown): AppSettings {
+function parseStoredSettings(payload: unknown): AppSettings {
+  return Object.freeze(appSettingsInputSchema.parse(payload));
+}
+
+function parseCanonicalSettings(payload: unknown): AppSettings {
   return Object.freeze(appSettingsSchema.parse(payload));
 }
 
@@ -17,11 +21,11 @@ export class TauriSettingsRepository implements SettingsRepository {
     }
 
     const payload = await invoke<unknown | null>("get_app_settings");
-    return payload === null ? undefined : parseSettings(payload);
+    return payload === null ? undefined : parseStoredSettings(payload);
   }
 
   async saveSettings(settings: AppSettings): Promise<AppSettings> {
-    const validated = parseSettings(settings);
+    const validated = parseCanonicalSettings(settings);
 
     if (!isTauriRuntime()) {
       return validated;
@@ -30,6 +34,6 @@ export class TauriSettingsRepository implements SettingsRepository {
     const payload = await invoke<unknown>("save_app_settings", {
       settings: validated
     });
-    return parseSettings(payload);
+    return parseStoredSettings(payload);
   }
 }

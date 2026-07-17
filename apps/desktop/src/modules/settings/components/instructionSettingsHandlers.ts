@@ -3,11 +3,7 @@ import type { CefrLevel, InstructionDetailLevel, InstructionPreferences } from "
 
 type SetInstructionPreferences = Dispatch<SetStateAction<InstructionPreferences>>;
 type BooleanInstructionPreferenceKey =
-  | "includeGrammarNotes"
-  | "includeWordFamily"
-  | "includeCommonMistakes"
-  | "includeEtymology"
-  | "includeUsageTips";
+  "includeGrammarNotes" | "includeEtymology" | "includeUsageTips";
 
 function updatePreference<K extends keyof InstructionPreferences>(
   current: InstructionPreferences,
@@ -28,12 +24,7 @@ function updateBooleanPreference(
   setPreferences((current) => updatePreference(current, key, checked));
 }
 
-/**
- * Creates event handlers that snapshot DOM values synchronously.
- *
- * React's `currentTarget` is only guaranteed while the event handler is
- * executing. Never close over the event object inside a state updater.
- */
+/** Creates event handlers that snapshot DOM values synchronously. */
 export function createInstructionSettingsHandlers(setPreferences: SetInstructionPreferences) {
   return {
     onDetailLevelChange(event: ChangeEvent<HTMLSelectElement>): void {
@@ -49,28 +40,15 @@ export function createInstructionSettingsHandlers(setPreferences: SetInstruction
     },
 
     onGrammarNotesChange(event: ChangeEvent<HTMLInputElement>): void {
-      const checked = event.currentTarget.checked;
-      updateBooleanPreference(setPreferences, "includeGrammarNotes", checked);
-    },
-
-    onWordFamilyChange(event: ChangeEvent<HTMLInputElement>): void {
-      const checked = event.currentTarget.checked;
-      updateBooleanPreference(setPreferences, "includeWordFamily", checked);
-    },
-
-    onCommonMistakesChange(event: ChangeEvent<HTMLInputElement>): void {
-      const checked = event.currentTarget.checked;
-      updateBooleanPreference(setPreferences, "includeCommonMistakes", checked);
+      updateBooleanPreference(setPreferences, "includeGrammarNotes", event.currentTarget.checked);
     },
 
     onEtymologyChange(event: ChangeEvent<HTMLInputElement>): void {
-      const checked = event.currentTarget.checked;
-      updateBooleanPreference(setPreferences, "includeEtymology", checked);
+      updateBooleanPreference(setPreferences, "includeEtymology", event.currentTarget.checked);
     },
 
     onUsageTipsChange(event: ChangeEvent<HTMLInputElement>): void {
-      const checked = event.currentTarget.checked;
-      updateBooleanPreference(setPreferences, "includeUsageTips", checked);
+      updateBooleanPreference(setPreferences, "includeUsageTips", event.currentTarget.checked);
     }
   } as const;
 }

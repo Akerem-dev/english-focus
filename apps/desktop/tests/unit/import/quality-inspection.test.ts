@@ -7,19 +7,13 @@ import { assessVocabularyQuality } from "../../../src/modules/import-export";
 
 function createSparseEntry(overrides: Partial<VocabularyEntry> = {}): VocabularyEntry {
   return createValidVocabularyEntry({
-    wordFamily: [],
     etymology: undefined,
+    pronunciations: [{ ipa: "/meɪnˈteɪn/", variant: "general" }],
+    morphology: { baseForm: "maintain", inflectedForms: [] },
     grammar: {
-      summaryEn: "Maintain is used as a verb.",
-      summaryTr: "Maintain fiil olarak kullanılır.",
-      patterns: [],
-      tenseExamples: [],
-      sentenceForms: [],
-      prepositionPatterns: []
+      summaryEn: "Maintain is a verb.",
+      summaryTr: "Maintain bir fiildir."
     },
-    collocations: [],
-    relatedWords: [],
-    commonMistakes: [],
     examples: createValidVocabularyEntry().examples.map((example) => ({
       id: example.id,
       sentenceEn: example.sentenceEn,
@@ -39,7 +33,7 @@ describe("assessVocabularyQuality", () => {
     expect(result.issues.every((issue) => issue.source === "quality")).toBe(true);
   });
 
-  it("reports missing learning-support sections without requiring fabricated content", () => {
+  it("reports gaps in the simplified learning content", () => {
     const result = assessVocabularyQuality(createSparseEntry());
     const codes = result.issues.map((issue) => issue.code);
 
@@ -47,13 +41,9 @@ describe("assessVocabularyQuality", () => {
       expect.arrayContaining([
         "single_meaning_only",
         "missing_etymology",
-        "missing_word_family",
-        "missing_grammar_patterns",
-        "missing_tense_examples",
-        "missing_sentence_forms",
-        "limited_collocations",
-        "limited_related_words",
-        "missing_common_mistakes"
+        "general_pronunciation_only",
+        "missing_word_forms",
+        "brief_usage_overview"
       ])
     );
   });

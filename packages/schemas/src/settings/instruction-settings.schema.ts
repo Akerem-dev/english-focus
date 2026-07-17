@@ -9,10 +9,7 @@ export const instructionPreferencesSchema: z.ZodType<InstructionPreferences> = z
   explanationLanguage: z.literal("tr"),
   detailLevel: instructionDetailLevelSchema,
   targetProficiency: cefrLevelSchema,
-  exampleCount: z.literal(10),
-  includeWordFamily: z.boolean(),
   includeGrammarNotes: z.boolean(),
-  includeCommonMistakes: z.boolean(),
   includeEtymology: z.boolean(),
   includeUsageTips: z.boolean()
 });

@@ -62,28 +62,10 @@ function createDefaultEntry(): VocabularyEntry {
         }
       ]
     },
-    wordFamily: [
-      {
-        word: "maintenance",
-        normalizedWord: "maintenance",
-        partOfSpeech: "noun",
-        relation: "derived",
-        translationTr: "bakım"
-      }
-    ],
     grammar: {
       summaryEn: "Maintain is a transitive verb and normally takes a direct object.",
-      summaryTr: "Maintain geçişli bir fiildir ve normalde doğrudan nesne alır.",
-      patterns: [],
-      tenseExamples: [],
-      sentenceForms: [],
-      prepositionPatterns: []
+      summaryTr: "Maintain geçişli bir fiildir ve normalde doğrudan nesne alır."
     },
-    collocations: [],
-    phrasalVerbs: [],
-    idioms: [],
-    relatedWords: [],
-    commonMistakes: [],
     examples: createDefaultExamples(),
     source: {
       kind: "core",

@@ -22,7 +22,6 @@ function formatIssuePath(path: readonly (string | number)[]): string {
     if (typeof segment === "number") {
       return `${formatted}[${segment}]`;
     }
-
     return formatted.length === 0 ? segment : `${formatted}.${segment}`;
   }, "");
 }
@@ -64,14 +63,12 @@ function textContainsRecognizedForm(text: string, recognizedForms: ReadonlySet<s
 }
 
 function collectRecognizedForms(entry: VocabularyEntry): ReadonlySet<string> {
-  const forms = new Set<string>([
+  return new Set<string>([
     normalizeText(entry.word),
     normalizeText(entry.normalizedWord),
     ...entry.aliases.map(normalizeText),
     ...entry.morphology.inflectedForms.map((form) => normalizeText(form.normalizedForm))
   ]);
-
-  return forms;
 }
 
 function pushDuplicateIssues(
@@ -93,13 +90,9 @@ function pushDuplicateIssues(
   });
 }
 
-/**
- * Cross-field and target-specific checks that cannot be expressed by the structural Zod schema.
- * This validator never evaluates whether a language claim is factually true; it checks internal
- * consistency, import provenance, target alignment, and bilingual pairing.
- */
 export type VocabularySemanticValidationContext = "external-ai-import" | "vocabulary-pack-transfer";
 
+/** Cross-field checks for the simplified canonical vocabulary record. */
 export class VocabularySemanticValidator {
   validate(
     entry: VocabularyEntry,
@@ -255,238 +248,6 @@ export class VocabularySemanticValidator {
     });
 
     pushDuplicateIssues(
-      entry.wordFamily.map((item) => item.normalizedWord),
-      ["wordFamily"],
-      "duplicate_word_family_item",
-      "Word-family item",
-      issues
-    );
-
-    entry.wordFamily.forEach((item, index) => {
-      if (normalizeText(item.word) !== item.normalizedWord) {
-        issues.push(
-          semanticIssue(
-            "word_family_normalization_mismatch",
-            ["wordFamily", index, "normalizedWord"],
-            `The word-family item “${item.word}” does not normalize to “${item.normalizedWord}”.`
-          )
-        );
-      }
-      if (item.normalizedWord === entry.normalizedWord) {
-        issues.push(
-          semanticIssue(
-            "word_family_self_reference",
-            ["wordFamily", index],
-            "The base word must not be listed as its own word-family item."
-          )
-        );
-      }
-    });
-
-    pushDuplicateIssues(
-      entry.relatedWords.map((item) => item.normalizedWord),
-      ["relatedWords"],
-      "duplicate_related_word",
-      "Related word",
-      issues
-    );
-
-    entry.relatedWords.forEach((item, index) => {
-      if (normalizeText(item.word) !== item.normalizedWord) {
-        issues.push(
-          semanticIssue(
-            "related_word_normalization_mismatch",
-            ["relatedWords", index, "normalizedWord"],
-            `The related word “${item.word}” does not normalize to “${item.normalizedWord}”.`
-          )
-        );
-      }
-      if (item.normalizedWord === entry.normalizedWord) {
-        issues.push(
-          semanticIssue(
-            "related_word_self_reference",
-            ["relatedWords", index],
-            "The base word must not be listed as a related word."
-          )
-        );
-      }
-      if (!hasPairedValues(item.distinctionEn, item.distinctionTr)) {
-        issues.push(
-          semanticIssue(
-            "unpaired_related_word_distinction",
-            ["relatedWords", index],
-            "English and Turkish related-word distinctions must be provided together."
-          )
-        );
-      }
-    });
-
-    entry.grammar.tenseExamples.forEach((example, index) => {
-      if (!hasPairedValues(example.usageNoteEn, example.usageNoteTr)) {
-        issues.push(
-          semanticIssue(
-            "unpaired_tense_usage_note",
-            ["grammar", "tenseExamples", index],
-            "English and Turkish tense usage notes must be provided together."
-          )
-        );
-      }
-      if (!textContainsRecognizedForm(example.sentenceEn, recognizedForms)) {
-        issues.push(
-          semanticIssue(
-            "tense_example_missing_target",
-            ["grammar", "tenseExamples", index, "sentenceEn"],
-            `The tense example must contain “${entry.normalizedWord}” or a declared form.`
-          )
-        );
-      }
-    });
-
-    entry.grammar.patterns.forEach((pattern, patternIndex) => {
-      pattern.examples.forEach((example, exampleIndex) => {
-        if (!textContainsRecognizedForm(example.sentenceEn, recognizedForms)) {
-          issues.push(
-            semanticIssue(
-              "grammar_example_missing_target",
-              ["grammar", "patterns", patternIndex, "examples", exampleIndex, "sentenceEn"],
-              `The grammar example must contain “${entry.normalizedWord}” or a declared form.`
-            )
-          );
-        }
-      });
-    });
-
-    entry.grammar.sentenceForms.forEach((example, index) => {
-      if (!textContainsRecognizedForm(example.sentenceEn, recognizedForms)) {
-        issues.push(
-          semanticIssue(
-            "sentence_form_missing_target",
-            ["grammar", "sentenceForms", index, "sentenceEn"],
-            `The sentence-form example must contain “${entry.normalizedWord}” or a declared form.`
-          )
-        );
-      }
-    });
-
-    entry.grammar.prepositionPatterns.forEach((pattern, patternIndex) => {
-      if (!normalizeText(pattern.pattern).includes(normalizeText(pattern.preposition))) {
-        issues.push(
-          semanticIssue(
-            "preposition_not_in_pattern",
-            ["grammar", "prepositionPatterns", patternIndex, "pattern"],
-            `The pattern must visibly include the declared preposition “${pattern.preposition}”.`
-          )
-        );
-      }
-      pattern.examples.forEach((example, exampleIndex) => {
-        if (!textContainsRecognizedForm(example.sentenceEn, recognizedForms)) {
-          issues.push(
-            semanticIssue(
-              "preposition_example_missing_target",
-              [
-                "grammar",
-                "prepositionPatterns",
-                patternIndex,
-                "examples",
-                exampleIndex,
-                "sentenceEn"
-              ],
-              `The preposition example must contain “${entry.normalizedWord}” or a declared form.`
-            )
-          );
-        }
-      });
-    });
-
-    entry.collocations.forEach((collocation, index) => {
-      if (!textContainsRecognizedForm(collocation.phrase, recognizedForms)) {
-        issues.push(
-          semanticIssue(
-            "collocation_missing_target",
-            ["collocations", index, "phrase"],
-            `The collocation must contain “${entry.normalizedWord}” or a declared form.`
-          )
-        );
-      }
-      if (!hasPairedValues(collocation.explanationEn, collocation.explanationTr)) {
-        issues.push(
-          semanticIssue(
-            "unpaired_collocation_explanation",
-            ["collocations", index],
-            "English and Turkish collocation explanations must be provided together."
-          )
-        );
-      }
-      if (!hasPairedValues(collocation.exampleEn, collocation.exampleTr)) {
-        issues.push(
-          semanticIssue(
-            "unpaired_collocation_example",
-            ["collocations", index],
-            "English and Turkish collocation examples must be provided together."
-          )
-        );
-      }
-      if (
-        collocation.exampleEn !== undefined &&
-        !textContainsRecognizedForm(collocation.exampleEn, recognizedForms)
-      ) {
-        issues.push(
-          semanticIssue(
-            "collocation_example_missing_target",
-            ["collocations", index, "exampleEn"],
-            `The collocation example must contain “${entry.normalizedWord}” or a declared form.`
-          )
-        );
-      }
-    });
-
-    entry.phrasalVerbs.forEach((item, itemIndex) => {
-      if (!textContainsRecognizedForm(item.phrase, recognizedForms)) {
-        issues.push(
-          semanticIssue(
-            "phrasal_verb_missing_target",
-            ["phrasalVerbs", itemIndex, "phrase"],
-            `The phrasal verb phrase must contain “${entry.normalizedWord}” or a declared form.`
-          )
-        );
-      }
-      item.examples.forEach((example, exampleIndex) => {
-        if (!textContainsRecognizedForm(example.sentenceEn, recognizedForms)) {
-          issues.push(
-            semanticIssue(
-              "phrasal_verb_example_missing_target",
-              ["phrasalVerbs", itemIndex, "examples", exampleIndex, "sentenceEn"],
-              `The phrasal-verb example must contain “${entry.normalizedWord}” or a declared form.`
-            )
-          );
-        }
-      });
-    });
-
-    entry.idioms.forEach((item, itemIndex) => {
-      if (!textContainsRecognizedForm(item.phrase, recognizedForms)) {
-        issues.push(
-          semanticIssue(
-            "idiom_missing_target",
-            ["idioms", itemIndex, "phrase"],
-            `The idiom phrase must contain “${entry.normalizedWord}” or a declared form.`
-          )
-        );
-      }
-      item.examples.forEach((example, exampleIndex) => {
-        if (!textContainsRecognizedForm(example.sentenceEn, recognizedForms)) {
-          issues.push(
-            semanticIssue(
-              "idiom_example_missing_target",
-              ["idioms", itemIndex, "examples", exampleIndex, "sentenceEn"],
-              `The idiom example must contain “${entry.normalizedWord}” or a declared form.`
-            )
-          );
-        }
-      });
-    });
-
-    pushDuplicateIssues(
       entry.examples.map((example) => example.sentenceEn),
       ["examples"],
       "duplicate_primary_example",
@@ -513,18 +274,6 @@ export class VocabularySemanticValidator {
             "unknown_example_target_form",
             ["examples", index, "targetForm"],
             "targetForm must contain the base word or one of its declared forms."
-          )
-        );
-      }
-    });
-
-    entry.commonMistakes.forEach((mistake, index) => {
-      if (normalizeText(mistake.incorrect) === normalizeText(mistake.correct)) {
-        issues.push(
-          semanticIssue(
-            "identical_mistake_forms",
-            ["commonMistakes", index],
-            "A common mistake must show a meaningful difference between incorrect and correct text."
           )
         );
       }

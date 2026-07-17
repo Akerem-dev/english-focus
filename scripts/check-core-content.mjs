@@ -76,8 +76,8 @@ for (const [index, entry] of entries.entries()) {
     fail(`${label} has an inconsistent normalized word`);
   }
 
-  if (!Array.isArray(entry.examples) || entry.examples.length !== 10) {
-    fail(`${label} must contain exactly 10 primary examples`);
+  if (!Array.isArray(entry.examples) || entry.examples.length !== 3) {
+    fail(`${label} must contain exactly 3 primary examples`);
   }
 
   const normalizedExamples = new Set(

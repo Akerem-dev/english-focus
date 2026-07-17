@@ -57,20 +57,10 @@
           }
         ]
       },
-      "wordFamily": [],
       "grammar": {
         "summaryEn": "Allocate is a transitive verb that normally takes a resource as its object and often introduces the intended recipient or purpose with to or for.",
-        "summaryTr": "Allocate, genellikle nesne olarak bir kaynak alan ve hedef kişi ya da amacı çoğu zaman to veya for ile belirten geçişli bir fiildir.",
-        "patterns": [],
-        "tenseExamples": [],
-        "sentenceForms": [],
-        "prepositionPatterns": []
+        "summaryTr": "Allocate, genellikle nesne olarak bir kaynak alan ve hedef kişi ya da amacı çoğu zaman to veya for ile belirten geçişli bir fiildir."
       },
-      "collocations": [],
-      "phrasalVerbs": [],
-      "idioms": [],
-      "relatedWords": [],
-      "commonMistakes": [],
       "examples": [
         {
           "id": "allocate.example.01",
@@ -88,48 +78,6 @@
           "id": "allocate.example.03",
           "sentenceEn": "The software allocates memory only when it is needed.",
           "translationTr": "Yazılım belleği yalnızca gerektiğinde ayırır.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.04",
-          "sentenceEn": "We allocated two hours for the final review.",
-          "translationTr": "Son inceleme için iki saat ayırdık.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.05",
-          "sentenceEn": "Each department was allocated a separate meeting room.",
-          "translationTr": "Her bölüme ayrı bir toplantı odası tahsis edildi.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.06",
-          "sentenceEn": "The charity is allocating more resources to emergency housing.",
-          "translationTr": "Yardım kuruluşu acil barınmaya daha fazla kaynak ayırıyor.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.07",
-          "sentenceEn": "Please allocate enough storage space for the backup files.",
-          "translationTr": "Lütfen yedekleme dosyaları için yeterli depolama alanı ayırın.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.08",
-          "sentenceEn": "The budget allocates forty percent of spending to education.",
-          "translationTr": "Bütçe harcamaların yüzde kırkını eğitime ayırıyor.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.09",
-          "sentenceEn": "Resources should be allocated according to actual need.",
-          "translationTr": "Kaynaklar gerçek ihtiyaca göre tahsis edilmelidir.",
-          "registers": ["neutral"]
-        },
-        {
-          "id": "allocate.example.10",
-          "sentenceEn": "The team allocated one server to the testing environment.",
-          "translationTr": "Ekip test ortamına bir sunucu ayırdı.",
           "registers": ["neutral"]
         }
       ],

@@ -4,11 +4,10 @@ type DuplicateComparisonFieldId =
   | "cefr"
   | "meanings"
   | "examples"
-  | "grammarPatterns"
-  | "collocations"
-  | "wordFamily"
-  | "relatedWords"
-  | "commonMistakes"
+  | "pronunciations"
+  | "wordForms"
+  | "usage"
+  | "etymology"
   | "source";
 
 interface DuplicateComparisonField {
@@ -25,11 +24,10 @@ interface DuplicateEntrySummary {
   readonly primaryTranslation: string;
   readonly meanings: number;
   readonly examples: number;
-  readonly grammarPatterns: number;
-  readonly collocations: number;
-  readonly wordFamily: number;
-  readonly relatedWords: number;
-  readonly commonMistakes: number;
+  readonly pronunciations: number;
+  readonly wordForms: number;
+  readonly usage: string;
+  readonly etymology: "Included" | "Not included";
 }
 
 export interface DuplicateComparison {
@@ -65,11 +63,10 @@ function summarize(entry: VocabularyEntry): DuplicateEntrySummary {
     primaryTranslation: primaryTranslation(entry),
     meanings: entry.meanings.length,
     examples: entry.examples.length,
-    grammarPatterns: entry.grammar.patterns.length,
-    collocations: entry.collocations.length,
-    wordFamily: entry.wordFamily.length,
-    relatedWords: entry.relatedWords.length,
-    commonMistakes: entry.commonMistakes.length
+    pronunciations: entry.pronunciations.length,
+    wordForms: entry.morphology.inflectedForms.length,
+    usage: `${entry.grammar.summaryEn.length + entry.grammar.summaryTr.length} characters`,
+    etymology: entry.etymology === undefined ? "Not included" : "Included"
   });
 }
 
@@ -91,21 +88,34 @@ function field(
   });
 }
 
-function supportingContentScore(summary: DuplicateEntrySummary): number {
+function contentScore(summary: DuplicateEntrySummary): number {
   return (
     summary.meanings * 4 +
-    summary.grammarPatterns * 3 +
-    summary.collocations * 2 +
-    summary.wordFamily * 2 +
-    summary.relatedWords +
-    summary.commonMistakes
+    summary.examples * 2 +
+    summary.pronunciations +
+    summary.wordForms +
+    (summary.etymology === "Included" ? 1 : 0)
   );
 }
 
-/**
- * Checks the immutable local content source for a normalized-word collision.
- * User repositories join this boundary later without changing the comparison model.
- */
+function comparableContent(entry: VocabularyEntry): unknown {
+  return {
+    word: entry.word,
+    normalizedWord: entry.normalizedWord,
+    aliases: entry.aliases,
+    pronunciations: entry.pronunciations,
+    cefr: entry.cefr,
+    registers: entry.registers,
+    partsOfSpeech: entry.partsOfSpeech,
+    meanings: entry.meanings,
+    morphology: entry.morphology,
+    etymology: entry.etymology,
+    grammar: entry.grammar,
+    examples: entry.examples
+  };
+}
+
+/** Checks the effective local content source for a normalized-word collision. */
 export function compareDuplicateEntries(
   contentSource: VocabularyContentSource,
   importedEntry: VocabularyEntry
@@ -122,64 +132,20 @@ export function compareDuplicateEntries(
     field("cefr", "CEFR", existing.entry.cefr, imported.entry.cefr),
     field("meanings", "Meanings", existing.meanings, imported.meanings),
     field("examples", "Primary examples", existing.examples, imported.examples),
-    field(
-      "grammarPatterns",
-      "Grammar patterns",
-      existing.grammarPatterns,
-      imported.grammarPatterns
-    ),
-    field("collocations", "Collocations", existing.collocations, imported.collocations),
-    field("wordFamily", "Word family", existing.wordFamily, imported.wordFamily),
-    field("relatedWords", "Related words", existing.relatedWords, imported.relatedWords),
-    field("commonMistakes", "Common mistakes", existing.commonMistakes, imported.commonMistakes),
+    field("pronunciations", "Pronunciations", existing.pronunciations, imported.pronunciations),
+    field("wordForms", "Word forms", existing.wordForms, imported.wordForms),
+    field("usage", "Usage overview", existing.usage, imported.usage),
+    field("etymology", "Etymology", existing.etymology, imported.etymology),
     field("source", "Content layer", existing.layer, imported.layer)
   ]);
   const differingFieldCount = fields.filter((item) => item.status === "different").length;
   const contentAppearsIdentical =
-    JSON.stringify({
-      word: existing.entry.word,
-      normalizedWord: existing.entry.normalizedWord,
-      aliases: existing.entry.aliases,
-      pronunciations: existing.entry.pronunciations,
-      cefr: existing.entry.cefr,
-      registers: existing.entry.registers,
-      partsOfSpeech: existing.entry.partsOfSpeech,
-      meanings: existing.entry.meanings,
-      morphology: existing.entry.morphology,
-      wordFamily: existing.entry.wordFamily,
-      etymology: existing.entry.etymology,
-      grammar: existing.entry.grammar,
-      collocations: existing.entry.collocations,
-      phrasalVerbs: existing.entry.phrasalVerbs,
-      idioms: existing.entry.idioms,
-      relatedWords: existing.entry.relatedWords,
-      commonMistakes: existing.entry.commonMistakes,
-      examples: existing.entry.examples
-    }) ===
-    JSON.stringify({
-      word: imported.entry.word,
-      normalizedWord: imported.entry.normalizedWord,
-      aliases: imported.entry.aliases,
-      pronunciations: imported.entry.pronunciations,
-      cefr: imported.entry.cefr,
-      registers: imported.entry.registers,
-      partsOfSpeech: imported.entry.partsOfSpeech,
-      meanings: imported.entry.meanings,
-      morphology: imported.entry.morphology,
-      wordFamily: imported.entry.wordFamily,
-      etymology: imported.entry.etymology,
-      grammar: imported.entry.grammar,
-      collocations: imported.entry.collocations,
-      phrasalVerbs: imported.entry.phrasalVerbs,
-      idioms: imported.entry.idioms,
-      relatedWords: imported.entry.relatedWords,
-      commonMistakes: imported.entry.commonMistakes,
-      examples: imported.entry.examples
-    });
+    JSON.stringify(comparableContent(existing.entry)) ===
+    JSON.stringify(comparableContent(imported.entry));
 
   const recommendation = contentAppearsIdentical
     ? "keep-existing"
-    : supportingContentScore(imported) > supportingContentScore(existing)
+    : contentScore(imported) > contentScore(existing)
       ? "replace-with-imported"
       : "merge-compatible-content";
 

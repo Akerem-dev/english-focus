@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { format, resolveConfig } from "prettier";
 
 import {
-  appSettingsSchema,
+  appSettingsNativeCompatibilitySchema,
   vocabularyEntryNativeCompatibilitySchema,
   vocabularyUserMetadataSchema
 } from "@platform/schemas";
@@ -19,7 +19,7 @@ const outputs = [
   },
   {
     path: "apps/desktop/src-tauri/schemas/app-settings.schema.json",
-    schema: appSettingsSchema
+    schema: appSettingsNativeCompatibilitySchema
   },
   {
     path: "apps/desktop/src-tauri/schemas/vocabulary-user-metadata.schema.json",
