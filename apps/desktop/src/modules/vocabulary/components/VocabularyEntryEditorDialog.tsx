@@ -3,15 +3,12 @@ import type {
   SaveVocabularyEntryInput,
   StoredVocabularyEntry,
   VocabularyEntry,
-  VocabularyStorageLayer,
+  VocabularyStorageLayer
 } from "@platform/domain";
 
 import { Button, Modal, StatusBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import {
-  prepareVocabularyEntryEdit,
-  type VocabularyEntryEditIssue,
-} from "../application";
+import { prepareVocabularyEntryEdit, type VocabularyEntryEditIssue } from "../application";
 import { VocabularyEntryEditorContentSections } from "./VocabularyEntryEditorContentSections";
 import { VocabularyEntryEditorIdentitySections } from "./VocabularyEntryEditorIdentitySections";
 import { VocabularyEntryEditorLanguageSections } from "./VocabularyEntryEditorLanguageSections";
@@ -22,9 +19,7 @@ interface VocabularyEntryEditorDialogProps {
   readonly open: boolean;
   readonly saving: boolean;
   readonly onClose: () => void;
-  readonly onSave: (
-    input: SaveVocabularyEntryInput,
-  ) => Promise<StoredVocabularyEntry>;
+  readonly onSave: (input: SaveVocabularyEntryInput) => Promise<StoredVocabularyEntry>;
 }
 
 export function VocabularyEntryEditorDialog({
@@ -33,25 +28,15 @@ export function VocabularyEntryEditorDialog({
   onClose,
   onSave,
   open,
-  saving,
+  saving
 }: VocabularyEntryEditorDialogProps) {
-  const [draft, setDraft] = useState<VocabularyEntry>(() =>
-    structuredClone(entry),
-  );
+  const [draft, setDraft] = useState<VocabularyEntry>(() => structuredClone(entry));
   const [issues, setIssues] = useState<readonly VocabularyEntryEditIssue[]>([]);
   const [saveError, setSaveError] = useState<string | undefined>();
 
-  useEffect(() => {
-    if (open) {
-      setDraft(structuredClone(entry));
-      setIssues([]);
-      setSaveError(undefined);
-    }
-  }, [entry, open]);
-
   const dirty = useMemo(
     () => JSON.stringify(draft) !== JSON.stringify(entry),
-    [draft, entry],
+    [draft, entry]
   );
 
   function requestClose() {
@@ -59,10 +44,7 @@ export function VocabularyEntryEditorDialog({
       return;
     }
 
-    if (
-      dirty &&
-      !window.confirm("Discard the unsaved vocabulary changes in this editor?")
-    ) {
+    if (dirty && !window.confirm("Discard the unsaved vocabulary changes in this editor?")) {
       return;
     }
 
@@ -88,7 +70,7 @@ export function VocabularyEntryEditorDialog({
       original: entry,
       draft,
       layer,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
 
     if (prepared.kind === "failure") {
@@ -106,7 +88,7 @@ export function VocabularyEntryEditorDialog({
       setSaveError(
         cause instanceof Error
           ? cause.message
-          : "The vocabulary entry could not be saved locally.",
+          : "The vocabulary entry could not be saved locally."
       );
     }
   }
@@ -119,10 +101,7 @@ export function VocabularyEntryEditorDialog({
     }
 
     function handleSaveShortcut(event: KeyboardEvent) {
-      if (
-        (event.ctrlKey || event.metaKey) &&
-        event.key.toLocaleLowerCase("en-US") === "s"
-      ) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase("en-US") === "s") {
         event.preventDefault();
         event.stopPropagation();
         void saveFromShortcut();
@@ -130,8 +109,7 @@ export function VocabularyEntryEditorDialog({
     }
 
     document.addEventListener("keydown", handleSaveShortcut, true);
-    return () =>
-      document.removeEventListener("keydown", handleSaveShortcut, true);
+    return () => document.removeEventListener("keydown", handleSaveShortcut, true);
   }, [open]);
 
   return (
@@ -162,9 +140,7 @@ export function VocabularyEntryEditorDialog({
       <div className="vocabulary-entry-editor">
         <div className="vocabulary-entry-editor__status">
           <StatusBadge tone="accent">
-            {layer === "override"
-              ? "Creates local override"
-              : "Updates local entry"}
+            {layer === "override" ? "Creates local override" : "Updates local entry"}
           </StatusBadge>
           <span>
             {layer === "override"
@@ -205,8 +181,7 @@ export function VocabularyEntryEditorDialog({
         />
 
         <p className="vocabulary-entry-editor__shortcut">
-          Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> to validate and
-          save.
+          Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> to validate and save.
         </p>
       </div>
     </Modal>
