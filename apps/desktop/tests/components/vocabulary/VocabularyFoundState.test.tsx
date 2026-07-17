@@ -1,12 +1,30 @@
+import { createVocabularyUserMetadataBuilder } from "@platform/testing";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { maintainVocabularyEntry } from "../../../src/content";
 import { VocabularyFoundState } from "../../../src/modules/vocabulary/components";
 
+const metadata = createVocabularyUserMetadataBuilder()
+  .with({
+    normalizedWord: "maintain",
+    learningStatus: "known",
+    reviewStatus: "reviewed",
+    tags: [
+      {
+        id: "tag.ielts",
+        name: "IELTS",
+        normalizedName: "ielts",
+        createdAt: "2026-01-01T00:00:00.000Z"
+      }
+    ]
+  })
+  .build();
+
 const markup = renderToStaticMarkup(
   <VocabularyFoundState
     entry={maintainVocabularyEntry}
+    metadata={metadata}
     onBack={() => undefined}
     onEditMetadata={() => undefined}
     onExport={() => undefined}
@@ -15,25 +33,33 @@ const markup = renderToStaticMarkup(
 );
 
 describe("VocabularyFoundState", () => {
-  it("renders the reviewed maintain entry from validated content", () => {
+  it("renders essential vocabulary identity without review or learning-status chips", () => {
     expect(markup).toContain("maintain");
     expect(markup).toContain("Import replacement JSON");
     expect(markup).toContain("sürdürmek");
     expect(markup).toContain("CEFR B2");
-    expect(markup).toContain("Editorially reviewed");
+    expect(markup).toContain("IELTS");
+    expect(markup).not.toContain("Editorially reviewed");
+    expect(markup).not.toContain(">Known<");
+    expect(markup).not.toContain(">Reviewed<");
   });
 
-  it("renders complete meanings, grammar, and supporting vocabulary sections", () => {
+  it("renders only the simplified vocabulary sections", () => {
+    expect(markup).toContain("Usage overview");
     expect(markup).toContain("Meanings");
-    expect(markup).toContain("Grammar patterns");
-    expect(markup).toContain("Tense examples");
-    expect(markup).toContain("Sentence forms");
-    expect(markup).toContain("Preposition patterns");
-    expect(markup).toContain("Collocations");
-    expect(markup).toContain("Word family");
-    expect(markup).toContain("Related words");
-    expect(markup).toContain("Common mistakes");
+    expect(markup).toContain("Example sentences");
+    expect(markup).toContain("Pronunciation");
+    expect(markup).toContain("Word forms");
     expect(markup).toContain("Etymology");
+
+    expect(markup).not.toContain("Grammar patterns");
+    expect(markup).not.toContain("Tense examples");
+    expect(markup).not.toContain("Sentence forms");
+    expect(markup).not.toContain("Preposition patterns");
+    expect(markup).not.toContain("Collocations");
+    expect(markup).not.toContain("Word family");
+    expect(markup).not.toContain("Related words");
+    expect(markup).not.toContain("Common mistakes");
   });
 
   it("renders the first three primary examples without a count chip", () => {
@@ -41,11 +67,10 @@ describe("VocabularyFoundState", () => {
     expect(markup).toContain("The hospital must maintain high standards of hygiene at all times.");
     expect(markup).toContain("Hastane her zaman yüksek hijyen standartlarını korumalıdır.");
     expect(markup).toContain("The technicians maintain the machines every three months.");
-    expect(markup).not.toContain("She has maintained close contact with her former research team.");
     expect(markup).not.toContain("Exactly 10");
   });
 
-  it("does not create empty phrasal-verb or idiom sections", () => {
+  it("does not create phrasal-verb or idiom sections", () => {
     expect(markup).not.toContain("Phrasal verbs");
     expect(markup).not.toContain("Idioms");
   });
