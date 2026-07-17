@@ -36,11 +36,13 @@ describe("VocabularyFoundState", () => {
     expect(markup).toContain("Etymology");
   });
 
-  it("renders exactly ten numbered primary examples with Turkish translations", () => {
-    expect(markup.match(/class="example-sentence-row"/g)).toHaveLength(10);
+  it("renders the first three primary examples without a count chip", () => {
+    expect(markup.match(/class="example-sentence-row"/g)).toHaveLength(3);
     expect(markup).toContain("The hospital must maintain high standards of hygiene at all times.");
     expect(markup).toContain("Hastane her zaman yüksek hijyen standartlarını korumalıdır.");
-    expect(markup).toContain("Exactly 10");
+    expect(markup).toContain("The technicians maintain the machines every three months.");
+    expect(markup).not.toContain("She has maintained close contact with her former research team.");
+    expect(markup).not.toContain("Exactly 10");
   });
 
   it("does not create empty phrasal-verb or idiom sections", () => {
