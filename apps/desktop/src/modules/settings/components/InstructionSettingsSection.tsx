@@ -12,10 +12,6 @@ export function InstructionSettingsSection() {
         <span>Explanation language</span>
         <strong>Turkish</strong>
       </div>
-      <div className="settings-value-row">
-        <span>Primary examples</span>
-        <strong>Exactly {preferences.exampleCount}</strong>
-      </div>
       <SelectField
         label="Instruction detail level"
         onChange={handlers.onDetailLevelChange}
