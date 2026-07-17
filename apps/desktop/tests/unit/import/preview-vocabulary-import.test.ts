@@ -38,7 +38,7 @@ describe("previewVocabularyImport", () => {
     expect(preview.entry).toBe(entry);
     expect(preview.expectedWord).toBe("maintain");
     expect(preview.primaryTranslation).toBe("sürdürmek, korumak");
-    expect(preview.counts.examples).toBe(10);
+    expect(preview.counts.examples).toBe(3);
     expect(preview.counts.meanings).toBe(1);
     expect(preview.qualityWarnings).toEqual([warning]);
     expect(preview.checklist).toHaveLength(5);
@@ -49,6 +49,9 @@ describe("previewVocabularyImport", () => {
       "examples",
       "provenance"
     ]);
+    expect(preview.checklist.find((item) => item.id === "examples")?.label).toBe(
+      "Three primary examples"
+    );
     expect(Object.isFrozen(preview)).toBe(true);
     expect(Object.isFrozen(preview.counts)).toBe(true);
     expect(Object.isFrozen(preview.qualityWarnings)).toBe(true);

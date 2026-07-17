@@ -1,7 +1,22 @@
 import type { VocabularyEntry } from "@platform/domain";
 import { describe, expect, it } from "vitest";
 
-import { vocabularyEntryJsonSchema, vocabularyEntrySchema } from "../src/vocabulary";
+import {
+  vocabularyEntryInputSchema,
+  vocabularyEntryJsonSchema,
+  vocabularyEntrySchema
+} from "../src/vocabulary";
+
+function createExamples(count: number) {
+  return Array.from({ length: count }, (_, index) => ({
+    id: `example-${index + 1}`,
+    sentenceEn: `They maintain the system carefully in example ${index + 1}.`,
+    translationTr: `Sistemi ${index + 1}. örnekte dikkatlice sürdürüyorlar.`,
+    registers: ["neutral"] as const,
+    grammarLabel: "present simple",
+    targetForm: "maintain"
+  }));
+}
 
 function createValidEntry(): VocabularyEntry {
   const timestamp = "2026-07-15T00:00:00.000Z";
@@ -47,14 +62,7 @@ function createValidEntry(): VocabularyEntry {
     idioms: [],
     relatedWords: [],
     commonMistakes: [],
-    examples: Array.from({ length: 10 }, (_, index) => ({
-      id: `example-${index + 1}`,
-      sentenceEn: `They maintain the system carefully in example ${index + 1}.`,
-      translationTr: `Sistemi ${index + 1}. örnekte dikkatlice sürdürüyorlar.`,
-      registers: ["neutral"] as const,
-      grammarLabel: "present simple",
-      targetForm: "maintain"
-    })),
+    examples: createExamples(3),
     source: { kind: "user", sourceLabel: "External AI paste" },
     generation: {
       method: "external-ai",
@@ -68,21 +76,56 @@ function createValidEntry(): VocabularyEntry {
 }
 
 describe("vocabularyEntrySchema", () => {
-  it("accepts a complete V1 entry with exactly ten primary examples", () => {
+  it("accepts a canonical V1 entry with three primary examples", () => {
     const result = vocabularyEntrySchema.safeParse(createValidEntry());
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.examples).toHaveLength(10);
+      expect(result.data.examples).toHaveLength(3);
       expect(result.data.grammar.patterns).toEqual([]);
     }
   });
 
-  it("rejects entries that do not contain exactly ten primary examples", () => {
+  it("rejects canonical entries that do not contain three primary examples", () => {
     const entry = createValidEntry();
-    const result = vocabularyEntrySchema.safeParse({
+
+    expect(
+      vocabularyEntrySchema.safeParse({
+        ...entry,
+        examples: entry.examples.slice(0, 2)
+      }).success
+    ).toBe(false);
+
+    expect(
+      vocabularyEntrySchema.safeParse({
+        ...entry,
+        examples: createExamples(4)
+      }).success
+    ).toBe(false);
+  });
+
+  it("accepts legacy ten-example input and normalizes it to three examples", () => {
+    const entry = createValidEntry();
+    const result = vocabularyEntryInputSchema.safeParse({
       ...entry,
-      examples: entry.examples.slice(0, 9)
+      examples: createExamples(10)
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.examples).toHaveLength(3);
+      expect(result.data.examples.map((example) => example.id)).toEqual([
+        "example-1",
+        "example-2",
+        "example-3"
+      ]);
+    }
+  });
+
+  it("rejects unsupported intermediate example counts", () => {
+    const result = vocabularyEntryInputSchema.safeParse({
+      ...createValidEntry(),
+      examples: createExamples(4)
     });
 
     expect(result.success).toBe(false);
@@ -122,12 +165,16 @@ describe("vocabularyEntrySchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("exports a reusable JSON Schema representation", () => {
+  it("exports the canonical three-example JSON Schema representation", () => {
     expect(vocabularyEntryJsonSchema).toMatchObject({
       type: "object",
       additionalProperties: false
     });
     expect(vocabularyEntryJsonSchema.properties).toHaveProperty("schemaVersion");
     expect(vocabularyEntryJsonSchema.properties).toHaveProperty("examples");
+    expect(vocabularyEntryJsonSchema.properties.examples).toMatchObject({
+      minItems: 3,
+      maxItems: 3
+    });
   });
 });

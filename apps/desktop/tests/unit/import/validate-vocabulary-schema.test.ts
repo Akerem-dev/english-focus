@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import rawMaintainEntry from "../../../src/content/core/entries/maintain.entry.json";
 import { maintainVocabularyEntry } from "../../../src/content/core";
 import { validateVocabularySchema } from "../../../src/modules/import-export";
 
@@ -14,9 +15,20 @@ describe("validateVocabularySchema", () => {
     expect(result.kind).toBe("success");
     if (result.kind === "success") {
       expect(result.entry.word).toBe("maintain");
-      expect(result.entry.examples).toHaveLength(10);
+      expect(result.entry.examples).toHaveLength(3);
       expect(Object.isFrozen(result.entry)).toBe(true);
       expect(Object.isFrozen(result.entry.examples)).toBe(true);
+    }
+  });
+
+  it("normalizes legacy ten-example JSON before the application uses it", () => {
+    const result = validateVocabularySchema(structuredClone(rawMaintainEntry));
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.entry.examples).toHaveLength(3);
+      expect(result.entry.examples[0]?.id).toBe("maintain.example.01");
+      expect(result.entry.examples[2]?.id).toBe("maintain.example.03");
     }
   });
 
@@ -31,7 +43,7 @@ describe("validateVocabularySchema", () => {
     }
   });
 
-  it("reports the exactly-ten-examples contract", () => {
+  it("reports invalid example counts", () => {
     const entry = cloneEntry();
     entry.examples = [];
     const result = validateVocabularySchema(entry);
@@ -47,6 +59,13 @@ describe("validateVocabularySchema", () => {
         ])
       );
     }
+  });
+
+  it("rejects unsupported intermediate example counts", () => {
+    const entry = structuredClone(rawMaintainEntry) as Record<string, unknown>;
+    entry.examples = (entry.examples as unknown[]).slice(0, 4);
+
+    expect(validateVocabularySchema(entry).kind).toBe("failure");
   });
 
   it("reports nested array paths with indexes", () => {

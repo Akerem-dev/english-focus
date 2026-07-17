@@ -1,5 +1,5 @@
 import type { VocabularyContentSource, VocabularyEntry } from "@platform/domain";
-import { vocabularyEntrySchema } from "@platform/schemas";
+import { vocabularyEntryInputSchema } from "@platform/schemas";
 
 function deepFreeze<T>(value: T): T {
   if (value === null || typeof value !== "object" || Object.isFrozen(value)) {
@@ -14,7 +14,7 @@ function deepFreeze<T>(value: T): T {
 }
 
 function parseEntry(candidate: unknown, index: number): VocabularyEntry {
-  const result = vocabularyEntrySchema.safeParse(candidate);
+  const result = vocabularyEntryInputSchema.safeParse(candidate);
 
   if (!result.success) {
     const firstIssue = result.error.issues[0];

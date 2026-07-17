@@ -123,12 +123,12 @@ export class VocabularyQualityInspector {
     const missingGrammarLabels = entry.examples.filter(
       (example) => example.grammarLabel === undefined
     ).length;
-    if (missingGrammarLabels >= 5) {
+    if (missingGrammarLabels >= 2) {
       issues.push(
         qualityIssue(
           "examples_lack_grammar_labels",
           ["examples"],
-          `${missingGrammarLabels} of 10 primary examples have no grammar label, which limits guided review.`
+          `${missingGrammarLabels} of ${entry.examples.length} primary examples have no grammar label, which limits guided review.`
         )
       );
     }
@@ -136,12 +136,12 @@ export class VocabularyQualityInspector {
     const missingTargetForms = entry.examples.filter(
       (example) => example.targetForm === undefined
     ).length;
-    if (missingTargetForms >= 5) {
+    if (missingTargetForms >= 2) {
       issues.push(
         qualityIssue(
           "examples_lack_target_forms",
           ["examples"],
-          `${missingTargetForms} of 10 primary examples do not identify the demonstrated target form.`
+          `${missingTargetForms} of ${entry.examples.length} primary examples do not identify the demonstrated target form.`
         )
       );
     }
@@ -149,12 +149,12 @@ export class VocabularyQualityInspector {
     const missingContexts = entry.examples.filter(
       (example) => example.context === undefined
     ).length;
-    if (missingContexts >= 7) {
+    if (missingContexts >= 2) {
       issues.push(
         qualityIssue(
           "examples_lack_context",
           ["examples"],
-          `${missingContexts} of 10 primary examples have no concise context label.`
+          `${missingContexts} of ${entry.examples.length} primary examples have no concise context label.`
         )
       );
     }

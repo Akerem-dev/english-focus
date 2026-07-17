@@ -15,7 +15,7 @@ describe("test data builders", () => {
     expect(vocabularyEntrySchema.parse(first)).toEqual(first);
     expect(first).not.toBe(second);
     expect(first.examples).not.toBe(second.examples);
-    expect(first.examples).toHaveLength(10);
+    expect(first.examples).toHaveLength(3);
   });
 
   it("supports deliberate entry overrides without weakening the default contract", () => {

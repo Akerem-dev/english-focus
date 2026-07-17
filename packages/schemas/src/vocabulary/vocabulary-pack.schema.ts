@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { vocabularyEntrySchema } from "./vocabulary-entry.schema";
+import { vocabularyEntryInputSchema } from "./vocabulary-entry.schema";
 
 export const VOCABULARY_PACK_KIND = "english-focus-vocabulary-pack" as const;
 export const VOCABULARY_PACK_VERSION = "1.0.0" as const;
@@ -13,7 +13,7 @@ export const vocabularyPackSchema = z
     schemaVersion: z.literal("1.0.0"),
     createdAt: z.string().datetime({ offset: true }),
     entryCount: z.number().int().positive().max(MAX_VOCABULARY_PACK_ENTRIES),
-    entries: z.array(vocabularyEntrySchema).min(1).max(MAX_VOCABULARY_PACK_ENTRIES)
+    entries: z.array(vocabularyEntryInputSchema).min(1).max(MAX_VOCABULARY_PACK_ENTRIES)
   })
   .superRefine((pack, context) => {
     if (pack.entryCount !== pack.entries.length) {

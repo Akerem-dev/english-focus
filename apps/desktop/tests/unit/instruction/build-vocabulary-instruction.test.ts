@@ -19,12 +19,16 @@ describe("BuildVocabularyInstruction", () => {
     expect(first.targetWord).toBe("allocate");
     expect(first.vocabularySchemaVersion).toBe("1.0.0");
     expect(first.text).toContain("TARGET WORD: allocate");
-    expect(first.text).toContain("PRIMARY EXAMPLE SENTENCES: exactly 10");
+    expect(first.text).toContain("PRIMARY EXAMPLE SENTENCES: 3");
+    expect(first.text).toContain("Provide 3 primary examples");
+    expect(first.text).not.toContain("exactly 10");
     expect(first.text).toContain("Return exactly one JSON object and nothing else.");
     expect(first.text).toContain("REQUIRED JSON SCHEMA");
     expect(first.text).toContain("generation.method to 'external-ai'");
     expect(first.text).toContain("source.kind to 'user'");
     expect(first.text).toContain('"examples"');
+    expect(first.text).toContain('"minItems": 3');
+    expect(first.text).toContain('"maxItems": 3');
   });
 
   it("contains no provider, model, endpoint, or credential selection", () => {

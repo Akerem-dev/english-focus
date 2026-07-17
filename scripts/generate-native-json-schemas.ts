@@ -4,7 +4,7 @@ import { format, resolveConfig } from "prettier";
 
 import {
   appSettingsSchema,
-  vocabularyEntrySchema,
+  vocabularyEntryNativeCompatibilitySchema,
   vocabularyUserMetadataSchema
 } from "@platform/schemas";
 import { z } from "zod";
@@ -15,7 +15,7 @@ const checkOnly = process.argv.includes("--check");
 const outputs = [
   {
     path: "apps/desktop/src-tauri/schemas/vocabulary-entry.schema.json",
-    schema: vocabularyEntrySchema
+    schema: vocabularyEntryNativeCompatibilitySchema
   },
   {
     path: "apps/desktop/src-tauri/schemas/app-settings.schema.json",

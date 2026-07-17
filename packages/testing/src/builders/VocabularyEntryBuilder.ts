@@ -5,9 +5,10 @@ import {
 } from "@platform/domain";
 
 const DEFAULT_TIMESTAMP = "2026-01-01T00:00:00.000Z";
+const DEFAULT_EXAMPLE_COUNT = 3;
 
 function createDefaultExamples(): readonly ExampleSentence[] {
-  return Array.from({ length: 10 }, (_, index) => ({
+  return Array.from({ length: DEFAULT_EXAMPLE_COUNT }, (_, index) => ({
     id: `test.example.${String(index + 1).padStart(2, "0")}`,
     sentenceEn: `The team will maintain standard number ${index + 1}.`,
     translationTr: `Ekip ${index + 1}. standardı koruyacak.`,

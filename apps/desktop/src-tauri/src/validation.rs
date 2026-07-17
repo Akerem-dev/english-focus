@@ -69,6 +69,32 @@ fn validate_trimmed_strings(value: &Value, path: &str) -> Result<(), String> {
     }
 }
 
+/// The generated native schema remains on the ten-example V1 shape during migration.
+/// Canonical three-example entries are expanded only for structural validation; the
+/// original value is still used for semantic checks and persistence.
+fn adapt_vocabulary_entry_for_native_schema(entry: &Value) -> Value {
+    let Some(examples) = entry.get("examples").and_then(Value::as_array) else {
+        return entry.clone();
+    };
+
+    if examples.len() != 3 {
+        return entry.clone();
+    }
+
+    let mut adapted = entry.clone();
+    let Some(adapted_examples) = adapted.get_mut("examples").and_then(Value::as_array_mut) else {
+        return entry.clone();
+    };
+    let originals = adapted_examples.clone();
+
+    while adapted_examples.len() < 10 {
+        let source_index = adapted_examples.len() % originals.len();
+        adapted_examples.push(originals[source_index].clone());
+    }
+
+    adapted
+}
+
 fn validate_vocabulary_semantics(entry: &Value) -> Result<(), String> {
     let declared_parts: HashSet<&str> = entry["partsOfSpeech"]
         .as_array()
@@ -86,6 +112,14 @@ fn validate_vocabulary_semantics(entry: &Value) -> Result<(), String> {
                 "Meaning part of speech '{part_of_speech}' is missing from partsOfSpeech."
             ));
         }
+    }
+
+    let example_count = entry["examples"].as_array().map_or(0, Vec::len);
+    if example_count != 3 && example_count != 10 {
+        return Err(
+            "Vocabulary entries must contain either three canonical examples or ten legacy examples."
+                .to_string(),
+        );
     }
 
     let mut example_ids = HashSet::new();
@@ -107,7 +141,8 @@ pub(crate) fn validate_vocabulary_entry(entry: &Value) -> Result<(), String> {
         VOCABULARY_ENTRY_SCHEMA,
         "vocabulary entry",
     )?;
-    validate_schema(entry, validator, "Vocabulary entry")?;
+    let schema_candidate = adapt_vocabulary_entry_for_native_schema(entry);
+    validate_schema(&schema_candidate, validator, "Vocabulary entry")?;
     validate_trimmed_strings(entry, "entry")?;
     validate_vocabulary_semantics(entry)
 }
@@ -140,15 +175,40 @@ mod tests {
         validate_app_settings, validate_vocabulary_entry, validate_vocabulary_user_metadata,
     };
 
-    #[test]
-    fn accepts_the_bundled_maintain_entry() {
-        let entry: Value = serde_json::from_str(include_str!(
+    fn bundled_maintain_entry() -> Value {
+        serde_json::from_str(include_str!(
             "../../src/content/core/entries/maintain.entry.json"
         ))
-        .expect("maintain fixture must be valid JSON");
+        .expect("maintain fixture must be valid JSON")
+    }
+
+    #[test]
+    fn accepts_the_bundled_maintain_entry() {
+        validate_vocabulary_entry(&bundled_maintain_entry())
+            .expect("maintain fixture must satisfy the native contract");
+    }
+
+    #[test]
+    fn accepts_a_canonical_three_example_entry() {
+        let mut entry = bundled_maintain_entry();
+        entry["examples"]
+            .as_array_mut()
+            .expect("examples must be an array")
+            .truncate(3);
 
         validate_vocabulary_entry(&entry)
-            .expect("maintain fixture must satisfy the native contract");
+            .expect("three-example entries must satisfy the native migration boundary");
+    }
+
+    #[test]
+    fn rejects_intermediate_example_counts() {
+        let mut entry = bundled_maintain_entry();
+        entry["examples"]
+            .as_array_mut()
+            .expect("examples must be an array")
+            .truncate(4);
+
+        assert!(validate_vocabulary_entry(&entry).is_err());
     }
 
     #[test]

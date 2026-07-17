@@ -1,5 +1,7 @@
 import type { InstructionPreferences } from "@platform/domain";
 
+const PRIMARY_EXAMPLE_COUNT = 3;
+
 function enabledLabel(value: boolean): string {
   return value ? "required" : "omit when no reliable content exists";
 }
@@ -15,7 +17,7 @@ export function renderVocabularyInstructionRules(
     `EXPLANATION LANGUAGE: Turkish (tr)`,
     `TARGET LEARNER LEVEL: ${preferences.targetProficiency.toUpperCase()}`,
     `DETAIL LEVEL: ${preferences.detailLevel}`,
-    `PRIMARY EXAMPLE SENTENCES: exactly ${preferences.exampleCount}`,
+    `PRIMARY EXAMPLE SENTENCES: ${PRIMARY_EXAMPLE_COUNT}`,
     "",
     "CONTENT REQUIREMENTS",
     `- Word family: ${enabledLabel(preferences.includeWordFamily)}.`,
@@ -28,7 +30,7 @@ export function renderVocabularyInstructionRules(
     "- Empty arrays are correct when a structure does not naturally apply.",
     "- Never force tense, passive, conditional, idiom, phrasal-verb, or preposition content merely to fill fields.",
     "- Grammar examples must use the target word naturally and must match the stated grammar label.",
-    "- Each of the exactly 10 primary examples must include an accurate Turkish translation.",
+    `- Provide ${PRIMARY_EXAMPLE_COUNT} primary examples, each with an accurate Turkish translation.`,
     "- Avoid duplicate examples, duplicate meanings, circular definitions, and generic filler.",
     "",
     "IDENTITY AND NORMALIZATION RULES",

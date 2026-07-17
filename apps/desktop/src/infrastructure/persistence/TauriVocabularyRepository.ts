@@ -5,7 +5,7 @@ import type {
   VocabularyRepository,
   VocabularyStorageLayer
 } from "@platform/domain";
-import { vocabularyEntrySchema } from "@platform/schemas";
+import { vocabularyEntryInputSchema } from "@platform/schemas";
 
 interface StoredVocabularyEntryPayload {
   readonly entry: unknown;
@@ -18,7 +18,7 @@ function isTauriRuntime(): boolean {
 
 function parseStoredEntry(payload: StoredVocabularyEntryPayload): StoredVocabularyEntry {
   return Object.freeze({
-    entry: vocabularyEntrySchema.parse(payload.entry),
+    entry: vocabularyEntryInputSchema.parse(payload.entry),
     layer: payload.layer
   });
 }

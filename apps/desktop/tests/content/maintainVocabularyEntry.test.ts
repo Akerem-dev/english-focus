@@ -13,7 +13,7 @@ describe("canonical maintain vocabulary entry", () => {
 
   it("contains the required reviewed learning content", () => {
     expect(maintainVocabularyEntry.meanings.length).toBeGreaterThanOrEqual(4);
-    expect(maintainVocabularyEntry.examples).toHaveLength(10);
+    expect(maintainVocabularyEntry.examples).toHaveLength(3);
     expect(
       maintainVocabularyEntry.examples.every((example) => example.translationTr.length > 0)
     ).toBe(true);

@@ -64,7 +64,6 @@ export function AiInstructionDialog({ onClose, open, targetWord }: AiInstruction
       <div className="instruction-dialog__metadata" aria-label="Instruction metadata">
         <StatusBadge tone="accent">Word: {targetWord}</StatusBadge>
         <StatusBadge>Turkish explanations</StatusBadge>
-        <StatusBadge>Exactly 10 examples</StatusBadge>
         <StatusBadge>{preferences.targetProficiency.toUpperCase()} target</StatusBadge>
         <StatusBadge>{preferences.detailLevel} detail</StatusBadge>
       </div>

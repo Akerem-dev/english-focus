@@ -81,7 +81,7 @@ export function previewVocabularyImport(
     }),
     Object.freeze({
       id: "examples" as const,
-      label: "Exactly ten primary examples",
+      label: "Three primary examples",
       detail: `${entry.examples.length} English examples include Turkish translations.`
     }),
     Object.freeze({

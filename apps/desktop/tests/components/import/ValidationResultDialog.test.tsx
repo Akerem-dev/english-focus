@@ -51,9 +51,11 @@ describe("ValidationResultDialog", () => {
 
     expect(markup).toContain("Schema validation passed");
     expect(markup).toContain("Vocabulary structure is valid");
+    expect(markup).toContain("three primary examples");
     expect(markup).toContain("Next gate: content checks");
     expect(markup).toContain("Run content checks");
     expect(markup).not.toContain("Copy correction instruction");
+    expect(markup).not.toContain("exactly ten");
   });
 
   it("renders nothing while closed", () => {

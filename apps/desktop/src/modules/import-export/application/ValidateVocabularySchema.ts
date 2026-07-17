@@ -1,5 +1,5 @@
 import type { ImportIssue, VocabularyEntry } from "@platform/domain";
-import { vocabularyEntrySchema } from "@platform/schemas";
+import { vocabularyEntryInputSchema } from "@platform/schemas";
 
 export type ValidateVocabularySchemaResult =
   | {
@@ -64,9 +64,9 @@ function toImportIssue(issue: {
   });
 }
 
-/** Validates one already-parsed top-level object against the versioned vocabulary contract. */
+/** Validates and normalizes one already-parsed top-level vocabulary object. */
 export function validateVocabularySchema(value: unknown): ValidateVocabularySchemaResult {
-  const result = vocabularyEntrySchema.safeParse(value);
+  const result = vocabularyEntryInputSchema.safeParse(value);
 
   if (result.success) {
     return Object.freeze({
