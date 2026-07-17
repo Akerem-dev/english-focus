@@ -23,8 +23,20 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Install JavaScript dependencies
         run: npm ci
-      - name: Run release quality checks
-        run: npm run quality:release
+      - name: Run standard quality checks
+        run: npm run quality
+      - name: Check native schemas
+        run: npm run check:native-schemas
+      - name: Check release metadata
+        run: npm run check:release-metadata
+      - name: Check reviewed core content
+        run: npm run check:core-content
+      - name: Run performance tests
+        run: npm run test:performance
+      - name: Run Windows browser tests
+        run: npm run test:e2e
+      - name: Check bundle budget
+        run: npm run check:bundle
       - name: Build unsigned MSI and NSIS test installers
         shell: powershell
         run: npm run tauri --workspace=@app/desktop -- build --bundles msi,nsis --ci --no-sign
