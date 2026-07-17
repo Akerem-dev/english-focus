@@ -5,6 +5,5 @@ export { ROUTE_PATHS } from "./routeIds";
 export {
   buildVocabularyEntryPath,
   createVocabularyEntrySearchParams,
-  getVocabularyRouteOrigin,
-  type VocabularyRouteOrigin
+  getVocabularyRouteOrigin
 } from "./vocabularyNavigation";
