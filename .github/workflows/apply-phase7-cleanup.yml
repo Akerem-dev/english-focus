@@ -16,41 +16,24 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Check cleanup patch
-        id: patch_check
-        continue-on-error: true
+      - name: Prepare cleanup patch
         shell: bash
         run: |
           set -o pipefail
           cat .phase7/patch.* | base64 -d > phase7.patch.gz
-          {
-            echo "compressed sha256: $(sha256sum phase7.patch.gz | cut -d' ' -f1)"
-            gzip -t phase7.patch.gz
-            gunzip -c phase7.patch.gz > phase7.patch
-            echo "patch sha256: $(sha256sum phase7.patch | cut -d' ' -f1)"
-            git apply --check --verbose phase7.patch
-          } > phase7-diagnostic.txt 2>&1
-
-      - name: Upload patch diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: phase7-patch-diagnostic
-          path: phase7-diagnostic.txt
-          if-no-files-found: error
-          retention-days: 1
+          gzip -t phase7.patch.gz
+          gunzip -c phase7.patch.gz > phase7.patch
+          git apply --check --verbose phase7.patch
 
       - name: Apply cleanup patch
-        if: steps.patch_check.outcome == 'success'
         shell: bash
         run: |
           git apply --index --whitespace=nowarn phase7.patch
+          git restore --source=HEAD --staged --worktree .github/workflows/quality.yml
           rm -rf .phase7
-          rm phase7.patch phase7.patch.gz phase7-diagnostic.txt
-          rm .github/workflows/apply-phase7-cleanup.yml
+          rm phase7.patch phase7.patch.gz
 
       - name: Commit phase seven cleanup
-        if: steps.patch_check.outcome == 'success'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -58,8 +41,3 @@ jobs:
           git add --all
           git commit -m "refactor: finalize simplified vocabulary contracts"
           git push origin HEAD:${{ github.head_ref }}
-
-      - name: Enforce patch check
-        if: always()
-        shell: bash
-        run: test "${{ steps.patch_check.outcome }}" = "success"
