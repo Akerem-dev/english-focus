@@ -5,7 +5,7 @@ import type {
 } from "@platform/domain";
 
 export type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
-export type LibraryLayer = "core" | VocabularyStorageLayer;
+type LibraryLayer = "core" | VocabularyStorageLayer;
 
 export interface LibraryRecord {
   readonly entry: VocabularyEntry;
