@@ -51,9 +51,13 @@ export function compareRecords(
 ): number {
   switch (sort) {
     case "word-asc":
-      return left.entry.word.localeCompare(right.entry.word, "en", { sensitivity: "base" });
+      return left.entry.word.localeCompare(right.entry.word, "en", {
+        sensitivity: "base"
+      });
     case "word-desc":
-      return right.entry.word.localeCompare(left.entry.word, "en", { sensitivity: "base" });
+      return right.entry.word.localeCompare(left.entry.word, "en", {
+        sensitivity: "base"
+      });
     case "updated-desc":
     default:
       return right.entry.updatedAt.localeCompare(left.entry.updatedAt);

@@ -234,7 +234,8 @@ export function LibraryPage() {
               size="small"
               variant="primary"
             >
-              Export selected{selectedEntries.length > 0 ? ` (${selectedEntries.length})` : ""}
+              Export selected
+              {selectedEntries.length > 0 ? ` (${selectedEntries.length})` : ""}
             </Button>
             <Button
               disabled={libraryEntries.length === 0}
@@ -306,7 +307,7 @@ export function LibraryPage() {
                     setLetterFilter(letter);
                   }}
                   type="button"
-              >
+                >
                   {letter}
                 </button>
               ))}
@@ -435,7 +436,7 @@ export function LibraryPage() {
                       >
                         <span
                           className="library-table__cell library-table__cell--checkbox"
-                            role="cell"
+                          role="cell"
                         >
                           <label className="library-selection">
                             <input

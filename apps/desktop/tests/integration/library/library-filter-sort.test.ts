@@ -11,7 +11,13 @@ function record(word: string, updatedAt: string): LibraryRecord {
   const base = createValidVocabularyEntry();
   return {
     layer: "user",
-    entry: { ...base, id: `entry-${word}`, word, normalizedWord: word, updatedAt }
+    entry: {
+      ...base,
+      id: `entry-${word}`,
+      word,
+      normalizedWord: word,
+      updatedAt
+    }
   };
 }
 
