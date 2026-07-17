@@ -14,7 +14,7 @@ import {
   useVocabularyMetadata,
   useVocabularyRepository
 } from "../../../app/providers";
-import { ROUTE_PATHS } from "../../../app/router";
+import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../../app/router";
 import { Button, CefrBadge, EmptyState, SearchInput, SelectField } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { exportVocabularyPack } from "../../import-export";
@@ -132,7 +132,7 @@ export function LibraryPage() {
   }
 
   function openEntry(normalizedWord: string) {
-    navigate(`${ROUTE_PATHS.vocabulary}?word=${encodeURIComponent(normalizedWord)}`);
+    navigate(buildVocabularyEntryPath(normalizedWord, "library"));
   }
 
   async function exportLibraryPack() {
@@ -234,8 +234,7 @@ export function LibraryPage() {
               size="small"
               variant="primary"
             >
-              Export selected
-              {selectedEntries.length > 0 ? ` (${selectedEntries.length})` : ""}
+              Export selected{selectedEntries.length > 0 ? ` (${selectedEntries.length})` : ""}
             </Button>
             <Button
               disabled={libraryEntries.length === 0}

@@ -15,14 +15,15 @@ const metadata = createVocabularyUserMetadataBuilder()
         id: "tag.ielts",
         name: "IELTS",
         normalizedName: "ielts",
-        createdAt: "2026-01-01T00:00:00.000Z",
-      },
-    ],
+        createdAt: "2026-01-01T00:00:00.000Z"
+      }
+    ]
   })
   .build();
 
 const markup = renderToStaticMarkup(
   <VocabularyFoundState
+    backLabel="Back to Library"
     entry={maintainVocabularyEntry}
     metadata={metadata}
     onBack={() => undefined}
@@ -30,10 +31,14 @@ const markup = renderToStaticMarkup(
     onEditMetadata={() => undefined}
     onExport={() => undefined}
     onImportReplacement={() => undefined}
-  />,
+  />
 );
 
 describe("VocabularyFoundState", () => {
+  it("renders the route-aware back action", () => {
+    expect(markup).toContain("← Back to Library");
+  });
+
   it("makes direct editing primary while keeping JSON import advanced", () => {
     expect(markup).toContain("maintain");
     expect(markup).toContain("Edit entry");
@@ -71,15 +76,9 @@ describe("VocabularyFoundState", () => {
 
   it("renders the first three primary examples without a count chip", () => {
     expect(markup.match(/class="example-sentence-row"/g)).toHaveLength(3);
-    expect(markup).toContain(
-      "The hospital must maintain high standards of hygiene at all times.",
-    );
-    expect(markup).toContain(
-      "Hastane her zaman yüksek hijyen standartlarını korumalıdır.",
-    );
-    expect(markup).toContain(
-      "The technicians maintain the machines every three months.",
-    );
+    expect(markup).toContain("The hospital must maintain high standards of hygiene at all times.");
+    expect(markup).toContain("Hastane her zaman yüksek hijyen standartlarını korumalıdır.");
+    expect(markup).toContain("The technicians maintain the machines every three months.");
     expect(markup).not.toContain("Exactly 10");
   });
 

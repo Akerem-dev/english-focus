@@ -2,8 +2,8 @@ import type {
   SaveVocabularyEntryInput,
   SaveVocabularyUserMetadataInput,
   StoredVocabularyEntry,
-  VocabularyUserMetadata,
   VocabularyStorageLayer,
+  VocabularyUserMetadata
 } from "@platform/domain";
 
 import { PasteGeneratedJsonDialog } from "../../import-export";
@@ -11,7 +11,7 @@ import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyEntryEditorDialog,
   VocabularyFoundState,
-  VocabularyMetadataDialog,
+  VocabularyMetadataDialog
 } from "../components";
 
 type FoundSearchState = Extract<VocabularySearchState, { kind: "found" }>;
@@ -19,6 +19,7 @@ type FoundSearchState = Extract<VocabularySearchState, { kind: "found" }>;
 interface VocabularyFoundRouteProps {
   readonly state: FoundSearchState;
   readonly metadata?: VocabularyUserMetadata | undefined;
+  readonly backLabel: string;
   readonly editLayer: VocabularyStorageLayer;
   readonly editorOpen: boolean;
   readonly editorSaving: boolean;
@@ -28,14 +29,10 @@ interface VocabularyFoundRouteProps {
   readonly onBack: () => void;
   readonly onOpenEditor: () => void;
   readonly onCloseEditor: () => void;
-  readonly onSaveEntry: (
-    input: SaveVocabularyEntryInput,
-  ) => Promise<StoredVocabularyEntry>;
+  readonly onSaveEntry: (input: SaveVocabularyEntryInput) => Promise<StoredVocabularyEntry>;
   readonly onOpenMetadata: () => void;
   readonly onCloseMetadata: () => void;
-  readonly onSaveMetadata: (
-    input: SaveVocabularyUserMetadataInput,
-  ) => Promise<void>;
+  readonly onSaveMetadata: (input: SaveVocabularyUserMetadataInput) => Promise<void>;
   readonly onExport: () => void;
   readonly onOpenImport: () => void;
   readonly onCloseImport: () => void;
@@ -43,6 +40,7 @@ interface VocabularyFoundRouteProps {
 }
 
 export function VocabularyFoundRoute({
+  backLabel,
   editLayer,
   editorOpen,
   editorSaving,
@@ -61,11 +59,12 @@ export function VocabularyFoundRoute({
   onOpenSavedEntry,
   onSaveEntry,
   onSaveMetadata,
-  state,
+  state
 }: VocabularyFoundRouteProps) {
   return (
     <>
       <VocabularyFoundState
+        backLabel={backLabel}
         entry={state.entry}
         metadata={metadata}
         onBack={onBack}

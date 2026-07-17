@@ -7,6 +7,7 @@ import { presentVocabularyEntry } from "../presenters/VocabularyEntryPresenter";
 interface VocabularyHeaderProps {
   readonly entry: VocabularyEntry;
   readonly metadata?: VocabularyUserMetadata | undefined;
+  readonly backLabel?: string;
   readonly onBack: () => void;
   readonly onEditEntry: () => void;
   readonly onEditMetadata: () => void;
@@ -15,6 +16,7 @@ interface VocabularyHeaderProps {
 }
 
 export function VocabularyHeader({
+  backLabel = "Back to vocabulary",
   entry,
   metadata,
   onBack,
@@ -28,7 +30,7 @@ export function VocabularyHeader({
   return (
     <header className="vocabulary-detail-header">
       <Button className="vocabulary-detail-header__back" onClick={onBack} variant="ghost">
-        ← Back to vocabulary
+        ← {backLabel}
       </Button>
 
       <div className="vocabulary-detail-header__title-row">
@@ -64,7 +66,12 @@ export function VocabularyHeader({
             >
               Export JSON
             </Button>
-            <Button onClick={onImportReplacement} size="small" variant="ghost">
+            <Button
+              onClick={onImportReplacement}
+              size="small"
+              title="Advanced JSON replacement"
+              variant="ghost"
+            >
               Import JSON
             </Button>
           </div>
