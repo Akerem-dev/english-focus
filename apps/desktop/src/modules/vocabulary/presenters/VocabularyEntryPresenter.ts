@@ -73,7 +73,6 @@ export interface VocabularyEntryPresentation {
   readonly partOfSpeechLabel: string;
   readonly registerLabels: readonly string[];
   readonly sourceLabel: string;
-  readonly reviewLabel: string;
 }
 
 export function presentVocabularyEntry(entry: VocabularyEntry): VocabularyEntryPresentation {
@@ -85,11 +84,7 @@ export function presentVocabularyEntry(entry: VocabularyEntry): VocabularyEntryP
     primaryTranslation: primaryTranslations.join(", "),
     partOfSpeechLabel: entry.partsOfSpeech.map(formatPartOfSpeech).join(" · "),
     registerLabels: entry.registers.map(formatRegister),
-    sourceLabel: entry.source.sourceLabel ?? "Local vocabulary",
-    reviewLabel:
-      entry.generation.validationStatus === "reviewed"
-        ? "Editorially reviewed"
-        : formatPlainLabel(entry.generation.validationStatus)
+    sourceLabel: entry.source.sourceLabel ?? "Local vocabulary"
   };
 }
 
