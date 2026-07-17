@@ -1,9 +1,9 @@
+import { createVocabularyUserMetadataBuilder } from "@platform/testing";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { maintainVocabularyEntry } from "../../../src/content";
 import { VocabularyMetadataDialog } from "../../../src/modules/vocabulary/components";
-import { createVocabularyUserMetadataBuilder } from "@platform/testing";
 
 const metadata = createVocabularyUserMetadataBuilder()
   .with({
@@ -27,12 +27,15 @@ const markup = renderToStaticMarkup(
 );
 
 describe("VocabularyMetadataDialog", () => {
-  it("renders all editable personal metadata fields", () => {
-    expect(markup).toContain("Edit personal study details");
+  it("renders favorites, tags, notes, and local activity without status controls", () => {
+    expect(markup).toContain("Edit personal details");
     expect(markup).toContain("Favorited");
-    expect(markup).toContain("Learning status");
-    expect(markup).toContain("Review status");
+    expect(markup).toContain("Tags");
     expect(markup).toContain("Personal note");
     expect(markup).toContain("SQLite · local only");
+    expect(markup).not.toContain("Learning status");
+    expect(markup).not.toContain("Review status");
+    expect(markup).not.toContain(">Known<");
+    expect(markup).not.toContain(">Reviewed<");
   });
 });
