@@ -23,39 +23,66 @@ jobs:
       - name: Check repository structure
         id: structure
         continue-on-error: true
-        run: npm run check:structure 2>&1 | tee quality-reports/structure.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run check:structure 2>&1 | tee quality-reports/structure.txt
       - name: Check forbidden patterns
         id: forbidden
         continue-on-error: true
-        run: npm run check:forbidden 2>&1 | tee quality-reports/forbidden.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run check:forbidden 2>&1 | tee quality-reports/forbidden.txt
       - name: Check CSS custom properties
         id: css_tokens
         continue-on-error: true
-        run: npm run check:css-tokens 2>&1 | tee quality-reports/css-tokens.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run check:css-tokens 2>&1 | tee quality-reports/css-tokens.txt
       - name: Check dead code
         id: dead_code
         continue-on-error: true
-        run: npm run check:dead-code 2>&1 | tee quality-reports/dead-code.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run check:dead-code 2>&1 | tee quality-reports/dead-code.txt
       - name: Check formatting
         id: formatting
         continue-on-error: true
-        run: npm run format:check 2>&1 | tee quality-reports/formatting.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run format:check 2>&1 | tee quality-reports/formatting.txt
       - name: Lint
         id: lint
         continue-on-error: true
-        run: npm run lint 2>&1 | tee quality-reports/lint.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run lint 2>&1 | tee quality-reports/lint.txt
       - name: Typecheck
         id: typecheck
         continue-on-error: true
-        run: npm run typecheck 2>&1 | tee quality-reports/typecheck.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee quality-reports/typecheck.txt
       - name: Test
         id: test
         continue-on-error: true
-        run: npm run test 2>&1 | tee quality-reports/test.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run test 2>&1 | tee quality-reports/test.txt
       - name: Build
         id: build
         continue-on-error: true
-        run: npm run build 2>&1 | tee quality-reports/build.txt
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee quality-reports/build.txt
 
       - name: Upload quality reports
         if: always()
