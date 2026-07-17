@@ -21,7 +21,9 @@ describe("BuildVocabularyInstruction", () => {
     expect(first.text).toContain("TARGET WORD: allocate");
     expect(first.text).toContain("PRIMARY EXAMPLE SENTENCES: 3");
     expect(first.text).toContain("Provide 3 primary examples");
-    expect(first.text).toContain("Keep wordFamily, collocations, relatedWords, and commonMistakes empty");
+    expect(first.text).toContain(
+      "Keep wordFamily, collocations, relatedWords, and commonMistakes empty"
+    );
     expect(first.text).toContain(
       "Keep grammar.patterns, grammar.tenseExamples, grammar.sentenceForms, and grammar.prepositionPatterns empty"
     );
