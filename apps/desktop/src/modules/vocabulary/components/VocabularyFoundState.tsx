@@ -14,6 +14,7 @@ interface VocabularyFoundStateProps {
   readonly entry: VocabularyEntry;
   readonly metadata?: VocabularyUserMetadata | undefined;
   readonly onBack: () => void;
+  readonly onEditEntry: () => void;
   readonly onEditMetadata: () => void;
   readonly onImportReplacement: () => void;
   readonly onExport: () => void;
@@ -23,21 +24,24 @@ const BASE_DETAIL_LINKS = [
   ["overview", "Overview"],
   ["meanings", "Meanings"],
   ["examples", "Examples"],
-  ["etymology", "Etymology"]
+  ["etymology", "Etymology"],
 ] as const;
 
 export function VocabularyFoundState({
   entry,
   metadata,
   onBack,
+  onEditEntry,
   onEditMetadata,
   onExport,
-  onImportReplacement
+  onImportReplacement,
 }: VocabularyFoundStateProps) {
   const settingsContext = useOptionalSettings();
   const showEtymology = settingsContext?.settings.content.showEtymology ?? true;
   const detailLinks = BASE_DETAIL_LINKS.filter(
-    ([target]) => target !== "etymology" || (showEtymology && entry.etymology !== undefined)
+    ([target]) =>
+      target !== "etymology" ||
+      (showEtymology && entry.etymology !== undefined),
   );
 
   return (
@@ -49,12 +53,16 @@ export function VocabularyFoundState({
         entry={entry}
         metadata={metadata}
         onBack={onBack}
+        onEditEntry={onEditEntry}
         onEditMetadata={onEditMetadata}
         onExport={onExport}
         onImportReplacement={onImportReplacement}
       />
 
-      <nav className="vocabulary-detail-nav" aria-label="Vocabulary entry sections">
+      <nav
+        className="vocabulary-detail-nav"
+        aria-label="Vocabulary entry sections"
+      >
         {detailLinks.map(([target, label]) => (
           <button
             key={target}
@@ -77,7 +85,10 @@ export function VocabularyFoundState({
           <ExampleSentenceList entry={entry} />
         </div>
 
-        <aside className="vocabulary-detail-aside" aria-label="Supporting vocabulary details">
+        <aside
+          className="vocabulary-detail-aside"
+          aria-label="Supporting vocabulary details"
+        >
           <PronunciationSection entry={entry} />
           <MorphologySection entry={entry} />
           {showEtymology ? <EtymologySection entry={entry} /> : null}

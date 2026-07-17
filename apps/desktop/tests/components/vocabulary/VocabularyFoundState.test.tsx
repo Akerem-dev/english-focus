@@ -15,9 +15,9 @@ const metadata = createVocabularyUserMetadataBuilder()
         id: "tag.ielts",
         name: "IELTS",
         normalizedName: "ielts",
-        createdAt: "2026-01-01T00:00:00.000Z"
-      }
-    ]
+        createdAt: "2026-01-01T00:00:00.000Z",
+      },
+    ],
   })
   .build();
 
@@ -26,16 +26,23 @@ const markup = renderToStaticMarkup(
     entry={maintainVocabularyEntry}
     metadata={metadata}
     onBack={() => undefined}
+    onEditEntry={() => undefined}
     onEditMetadata={() => undefined}
     onExport={() => undefined}
     onImportReplacement={() => undefined}
-  />
+  />,
 );
 
 describe("VocabularyFoundState", () => {
-  it("renders essential vocabulary identity without review or learning-status chips", () => {
+  it("makes direct editing primary while keeping JSON import advanced", () => {
     expect(markup).toContain("maintain");
-    expect(markup).toContain("Import replacement JSON");
+    expect(markup).toContain("Edit entry");
+    expect(markup).toContain("Import JSON");
+    expect(markup).toContain('title="Advanced JSON replacement"');
+    expect(markup).not.toContain("Import replacement JSON");
+  });
+
+  it("renders essential vocabulary identity without review or learning-status chips", () => {
     expect(markup).toContain("sürdürmek");
     expect(markup).toContain("CEFR B2");
     expect(markup).toContain("IELTS");
@@ -64,9 +71,15 @@ describe("VocabularyFoundState", () => {
 
   it("renders the first three primary examples without a count chip", () => {
     expect(markup.match(/class="example-sentence-row"/g)).toHaveLength(3);
-    expect(markup).toContain("The hospital must maintain high standards of hygiene at all times.");
-    expect(markup).toContain("Hastane her zaman yüksek hijyen standartlarını korumalıdır.");
-    expect(markup).toContain("The technicians maintain the machines every three months.");
+    expect(markup).toContain(
+      "The hospital must maintain high standards of hygiene at all times.",
+    );
+    expect(markup).toContain(
+      "Hastane her zaman yüksek hijyen standartlarını korumalıdır.",
+    );
+    expect(markup).toContain(
+      "The technicians maintain the machines every three months.",
+    );
     expect(markup).not.toContain("Exactly 10");
   });
 

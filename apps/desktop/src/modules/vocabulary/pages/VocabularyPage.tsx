@@ -1,70 +1,34 @@
-import { useEffect, useEffectEvent, useMemo, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../../../app/command-bar";
 import {
-  useToast,
-  useFileTransfer,
-  useUndo,
+  APP_COMMAND_EVENT,
+  type AppCommandEventDetail,
+} from "../../../app/command-bar";
+import {
   useActivity,
+  useFileTransfer,
+  useToast,
+  useUndo,
   useVocabularyMetadata,
-  useVocabularyRepository
+  useVocabularyRepository,
 } from "../../../app/providers";
-import { Button, ErrorState, SearchInput } from "../../../components";
-import { AppIcon } from "../../../design-system";
-import { AiInstructionDialog } from "../../instruction";
-import { PasteGeneratedJsonDialog, exportVocabularyEntry } from "../../import-export";
+import { exportVocabularyEntry } from "../../import-export";
 import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
-import {
-  VocabularyFoundState,
-  VocabularyInvalidSearchState,
-  VocabularyMetadataDialog,
-  VocabularyNotFoundState,
-  VocabularySearchingState
-} from "../components";
-import { createVocabularyUserMetadata } from "../application";
 import type { VocabularySearchState } from "../../search/state";
-
-interface WordListCardProps {
-  readonly title: string;
-  readonly eyebrow: string;
-  readonly words: readonly string[];
-  readonly onOpenWord: (word: string) => void;
-  readonly emptyMessage: string;
-}
-
-function WordListCard({ emptyMessage, eyebrow, onOpenWord, title, words }: WordListCardProps) {
-  return (
-    <section className="word-list-card">
-      <header className="word-list-card__header">
-        <h2>{title}</h2>
-        <span>{eyebrow}</span>
-      </header>
-      <div className="word-list-card__rows">
-        {words.length === 0 ? <p className="word-list-card__empty">{emptyMessage}</p> : null}
-        {words.map((word) => {
-          return (
-            <button
-              className="word-list-row"
-              key={word}
-              onClick={() => {
-                onOpenWord(word);
-              }}
-              title={`Open ${word}`}
-              type="button"
-            >
-              <span className="word-list-row__word">
-                <AppIcon name="book-open" size={16} />
-                {word}
-              </span>
-              <span className="word-list-row__meta">Open entry</span>
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
+import {
+  createVocabularyUserMetadata,
+  resolveVocabularyEditLayer,
+} from "../application";
+import { VocabularyFoundRoute } from "./VocabularyFoundRoute";
+import { VocabularyLookupView } from "./VocabularyLookupView";
 
 function toPageState(result: SearchVocabularyResult): VocabularySearchState {
   switch (result.kind) {
@@ -74,48 +38,66 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
         query: result.query,
         entry: result.entry,
         matchKind: result.matchKind,
-        matchedForm: result.matchedForm
+        matchedForm: result.matchedForm,
       };
     case "invalid":
       return {
         kind: "invalid",
         query: result.query,
         validationCode: result.validationCode,
-        message: result.message
+        message: result.message,
       };
     case "not-found":
       return {
         kind: "not-found",
         query: result.query,
         normalizedQuery: result.normalizedQuery,
-        suggestions: result.suggestions
+        suggestions: result.suggestions,
       };
   }
 }
 
 export function VocabularyPage() {
-  const { contentSource, storedEntries } = useVocabularyRepository();
+  const { contentSource, saveEntry, storedEntries } = useVocabularyRepository();
   const { activity } = useActivity();
-  const { getMetadata, recordView, saveMetadata, status: metadataStatus } = useVocabularyMetadata();
+  const {
+    getMetadata,
+    recordView,
+    saveMetadata,
+    status: metadataStatus,
+  } = useVocabularyMetadata();
   const { showToast } = useToast();
   const { exporter } = useFileTransfer();
   const { runUndoableAction } = useUndo();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState("");
-  const [searchState, setSearchState] = useState<VocabularySearchState>({ kind: "initial" });
+  const [searchState, setSearchState] = useState<VocabularySearchState>({
+    kind: "initial",
+  });
   const [instructionWord, setInstructionWord] = useState<string | undefined>();
   const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
   const [metadataWord, setMetadataWord] = useState<string | undefined>();
+  const [entryEditorOpen, setEntryEditorOpen] = useState(false);
+  const [entrySaving, setEntrySaving] = useState(false);
   const searchSequence = useRef(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const deepLinkHandled = useRef<string | undefined>(undefined);
-  const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
+  const searchVocabulary = useMemo(
+    () => new SearchVocabulary(contentSource),
+    [contentSource],
+  );
+
   const recentWords = useMemo(() => {
     const seen = new Set<string>();
     return activity
-      .filter((record) => record.kind === "vocabulary-viewed" && record.target !== undefined)
+      .filter(
+        (record) =>
+          record.kind === "vocabulary-viewed" && record.target !== undefined,
+      )
       .map((record) => record.target as string)
-      .filter((word) => contentSource.getEntryByNormalizedWord(word) !== undefined)
+      .filter(
+        (word) => contentSource.getEntryByNormalizedWord(word) !== undefined,
+      )
       .filter((word) => {
         if (seen.has(word)) {
           return false;
@@ -125,13 +107,16 @@ export function VocabularyPage() {
       })
       .slice(0, 4);
   }, [activity, contentSource]);
+
   const recentAdditions = useMemo(
     () =>
       [...storedEntries]
-        .sort((left, right) => right.entry.createdAt.localeCompare(left.entry.createdAt))
+        .sort((left, right) =>
+          right.entry.createdAt.localeCompare(left.entry.createdAt),
+        )
         .slice(0, 4)
         .map((record) => record.entry.normalizedWord),
-    [storedEntries]
+    [storedEntries],
   );
 
   function executeSearch(nextQuery: string) {
@@ -153,13 +138,15 @@ export function VocabularyPage() {
         }
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : "The local vocabulary could not be searched.";
+          error instanceof Error
+            ? error.message
+            : "The local vocabulary could not be searched.";
         setSearchState({ kind: "repository-error", query: nextQuery, message });
         showToast({
           title: "Vocabulary search failed",
           message,
           tone: "error",
-          dedupeKey: "vocabulary-search-error"
+          dedupeKey: "vocabulary-search-error",
         });
       }
     });
@@ -169,7 +156,6 @@ export function VocabularyPage() {
 
   useEffect(() => {
     const routeWord = searchParams.get("word")?.trim();
-
     if (
       routeWord === undefined ||
       routeWord.length === 0 ||
@@ -183,20 +169,21 @@ export function VocabularyPage() {
     setSearchParams({}, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    executeSearch(query);
-  }
-
   function returnToInitial() {
     searchSequence.current += 1;
+    setEntryEditorOpen(false);
+    setMetadataWord(undefined);
     setQuery("");
     setSearchState({ kind: "initial" });
   }
 
   function editCurrentSearch() {
     searchSequence.current += 1;
-    setSearchState(query.trim().length === 0 ? { kind: "initial" } : { kind: "typing", query });
+    setSearchState(
+      query.trim().length === 0
+        ? { kind: "initial" }
+        : { kind: "typing", query },
+    );
   }
 
   async function exportCurrentEntry() {
@@ -206,19 +193,26 @@ export function VocabularyPage() {
 
     const exported = exportVocabularyEntry(searchState.entry);
     try {
-      await exporter.saveText(exported.fileName, exported.json, "application/json");
+      await exporter.saveText(
+        exported.fileName,
+        exported.json,
+        "application/json",
+      );
       showToast({
         title: "Vocabulary JSON exported",
         message: `${exported.fileName} was created locally.`,
         tone: "success",
-        dedupeKey: "vocabulary-export"
+        dedupeKey: "vocabulary-export",
       });
     } catch (cause) {
       showToast({
         title: "Vocabulary JSON could not be exported",
-        message: cause instanceof Error ? cause.message : "The local file could not be created.",
+        message:
+          cause instanceof Error
+            ? cause.message
+            : "The local file could not be created.",
         tone: "error",
-        dedupeKey: "vocabulary-export"
+        dedupeKey: "vocabulary-export",
       });
     }
   }
@@ -232,29 +226,22 @@ export function VocabularyPage() {
     const current =
       getMetadata(searchState.entry.normalizedWord) ??
       createVocabularyUserMetadata(searchState.entry.normalizedWord, now);
-
     const nextFavorite = !current.favorite;
-    const nextMetadata = {
-      ...current,
-      favorite: nextFavorite,
-      updatedAt: now
-    };
 
     try {
       await runUndoableAction({
-        perform: () => saveMetadata(nextMetadata),
-        undo: async () => {
-          await saveMetadata({
-            ...current,
-            updatedAt: new Date().toISOString()
-          });
-        },
-        successTitle: nextFavorite ? "Added to favorites" : "Removed from favorites",
+        perform: () =>
+          saveMetadata({ ...current, favorite: nextFavorite, updatedAt: now }),
+        undo: () =>
+          saveMetadata({ ...current, updatedAt: new Date().toISOString() }),
+        successTitle: nextFavorite
+          ? "Added to favorites"
+          : "Removed from favorites",
         successMessage: `“${searchState.entry.word}” study metadata was updated locally.`,
         undoSuccessTitle: "Favorite change undone",
         undoSuccessMessage: `“${searchState.entry.word}” returned to its previous favorite state.`,
         failureTitle: "Favorite could not be updated",
-        undoFailureTitle: "Favorite change could not be undone"
+        undoFailureTitle: "Favorite chane could not be undone",
       });
     } catch {
       // The undo provider already presented a standardized user-facing error toast.
@@ -269,10 +256,7 @@ export function VocabularyPage() {
         if (searchState.kind === "found") {
           returnToInitial();
         }
-
-        window.requestAnimationFrame(() => {
-          searchInputRef.current?.focus();
-        });
+        window.requestAnimationFrame(() => searchInputRef.current?.focus());
         return;
       case "export-current":
         void exportCurrentEntry();
@@ -292,204 +276,114 @@ export function VocabularyPage() {
 
   useEffect(() => {
     window.addEventListener(APP_COMMAND_EVENT, handleAppCommand);
-
-    return () => {
+    return () =>
       window.removeEventListener(APP_COMMAND_EVENT, handleAppCommand);
-    };
   }, []);
 
   if (searchState.kind === "found") {
     const entryMetadata = getMetadata(searchState.entry.normalizedWord);
+    const editLayer = resolveVocabularyEditLayer(
+      searchState.entry.normalizedWord,
+      storedEntries,
+    );
 
     return (
-      <>
-        <VocabularyFoundState
-          entry={searchState.entry}
-          metadata={entryMetadata}
-          onBack={returnToInitial}
-          onEditMetadata={() => {
-            setMetadataWord(searchState.entry.normalizedWord);
-          }}
-          onExport={() => {
-            void exportCurrentEntry();
-          }}
-          onImportReplacement={() => {
-            setPasteJsonWord(searchState.entry.normalizedWord);
-          }}
-        />
-        {metadataWord === undefined ? null : (
-          <VocabularyMetadataDialog
-            entry={searchState.entry}
-            metadata={entryMetadata}
-            onClose={() => {
-              setMetadataWord(undefined);
-            }}
-            onSave={async (input) => {
-              await saveMetadata(input);
-              setMetadataWord(undefined);
-              showToast({
-                title: "Study details saved",
-                message: `Personal metadata for “${searchState.entry.word}” is stored locally.`,
-                tone: "success",
-                dedupeKey: "study-details-saved"
-              });
-            }}
-            open
-            saving={metadataStatus === "saving"}
-          />
-        )}
-        {pasteJsonWord === undefined ? null : (
-          <PasteGeneratedJsonDialog
-            expectedWord={pasteJsonWord}
-            onClose={() => {
-              setPasteJsonWord(undefined);
-            }}
-            onOpenSavedEntry={(word) => {
-              setPasteJsonWord(undefined);
-              executeSearch(word);
-            }}
-            open
-          />
-        )}
-      </>
+      <VocabularyFoundRoute
+        editLayer={editLayer}
+        editorOpen={entryEditorOpen}
+        editorSaving={entrySaving}
+        importWord={pasteJsonWord}
+        metadata={entryMetadata}
+        metadataOpen={metadataWord !== undefined}
+        metadataSaving={metadataStatus === "saving"}
+        onBack={returnToInitial}
+        onCloseEditor={() => setEntryEditorOpen(false)}
+        onCloseImport={() => setPasteJsonWord(undefined)}
+        onCloseMetadata={() => setMetadataWord(undefined)}
+        onExport={() => void exportCurrentEntry()}
+        onOpenEditor={() => setEntryEditorOpen(true)}
+        onOpenImport={() => setPasteJsonWord(searchState.entry.normalizedWord)}
+        onOpenMetadata={() => setMetadataWord(searchState.entry.normalizedWord)}
+        onOpenSavedEntry={(word) => {
+          setPasteJsonWord(undefined);
+          executeSearch(word);
+        }}
+        onSaveEntry={async (input) => {
+          setEntrySaving(true);
+          try {
+            const saved = await saveEntry(input);
+            setSearchState((current) =>
+              current.kind === "found"
+                ? {
+                    ...current,
+                    query: saved.entry.word,
+                    entry: saved.entry,
+                    matchKind: "exact",
+                    matchedForm: saved.entry.word,
+                  }
+                : current,
+            );
+            showToast({
+              title: "Vocabulary entry saved",
+              message:
+                input.layer === "override"
+                  ? `A local override for “${saved.entry.word}” now appears in the app.`
+                  : `“${saved.entry.word}” was updated in local SQLite storage.`,
+              tone: "success",
+              dedupeKey: "vocabulary-entry-saved",
+            });
+            return saved;
+          } finally {
+            setEntrySaving(false);
+          }
+        }}
+        onSaveMetadata={async (input) => {
+          await saveMetadata(input);
+          setMetadataWord(undefined);
+          showToast({
+            title: "Personal details saved",
+            message: `Personal metadata for “${searchState.entry.word}” is stored locally.`,
+            tone: "success",
+            dedupeKey: "study-details-saved",
+          });
+        }}
+        state={searchState}
+      />
     );
   }
 
   return (
-    <div className="route-page route-page--vocabulary">
-      <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
-        <p className="route-page__eyebrow">Local English vocabulary</p>
-        <h1 id="vocabulary-heading">Look up an English word</h1>
-        <p className="vocabulary-hero__description">
-          Meaning, Turkish translation, grammar usage, word family, and carefully structured example
-          sentences—all stored on this device.
-        </p>
-        <form
-          aria-label="Vocabulary search"
-          className="vocabulary-search"
-          onSubmit={handleSubmit}
-          role="search"
-        >
-          <SearchInput
-            ref={searchInputRef}
-            aria-label="Search vocabulary"
-            label="Search vocabulary"
-            onChange={(event) => {
-              const nextQuery = event.currentTarget.value;
-              searchSequence.current += 1;
-              setQuery(nextQuery);
-              setSearchState(
-                nextQuery.trim().length === 0
-                  ? { kind: "initial" }
-                  : { kind: "typing", query: nextQuery }
-              );
-            }}
-            onClear={returnToInitial}
-            placeholder="Type an English word"
-            value={query}
-          />
-          <Button
-            aria-label="Search word"
-            className="vocabulary-search__button"
-            isLoading={searchState.kind === "searching"}
-            leadingIcon={<AppIcon name="search" size={18} />}
-            size="large"
-            type="submit"
-            variant="primary"
-          >
-            Search
-          </Button>
-        </form>
-        <p className="vocabulary-hero__hint">
-          Exact, case-insensitive, alias, and inflected-form lookup runs entirely on this device.
-        </p>
-      </section>
-
-      {searchState.kind === "searching" ? (
-        <VocabularySearchingState query={searchState.query} />
-      ) : null}
-
-      {searchState.kind === "invalid" ? (
-        <VocabularyInvalidSearchState
-          message={searchState.message}
-          onEditSearch={editCurrentSearch}
-        />
-      ) : null}
-
-      {searchState.kind === "not-found" ? (
-        <VocabularyNotFoundState
-          normalizedQuery={searchState.normalizedQuery}
-          onEditSearch={editCurrentSearch}
-          onOpenInstruction={() => {
-            setInstructionWord(searchState.normalizedQuery);
-          }}
-          onOpenPasteGeneratedJson={() => {
-            setPasteJsonWord(searchState.normalizedQuery);
-          }}
-          onSelectSuggestion={executeSearch}
-          suggestions={searchState.suggestions}
-        />
-      ) : null}
-
-      {searchState.kind === "repository-error" ? (
-        <ErrorState
-          actions={
-            <Button
-              onClick={() => {
-                executeSearch(searchState.query);
-              }}
-              variant="secondary"
-            >
-              Try again
-            </Button>
-          }
-          description={searchState.message}
-          title="Local vocabulary search failed"
-        />
-      ) : null}
-
-      {instructionWord === undefined ? null : (
-        <AiInstructionDialog
-          onClose={() => {
-            setInstructionWord(undefined);
-          }}
-          open
-          targetWord={instructionWord}
-        />
-      )}
-
-      {pasteJsonWord === undefined ? null : (
-        <PasteGeneratedJsonDialog
-          expectedWord={pasteJsonWord}
-          onClose={() => {
-            setPasteJsonWord(undefined);
-          }}
-          onOpenSavedEntry={(word) => {
-            setPasteJsonWord(undefined);
-            executeSearch(word);
-          }}
-          open
-        />
-      )}
-
-      {searchState.kind === "initial" || searchState.kind === "typing" ? (
-        <div className="vocabulary-dashboard">
-          <WordListCard
-            emptyMessage="Words you open will appear here."
-            eyebrow="Recent"
-            onOpenWord={executeSearch}
-            title="Recent searches"
-            words={recentWords}
-          />
-          <WordListCard
-            emptyMessage="Imported and user-created entries will appear here."
-            eyebrow="Added locally"
-            onOpenWord={executeSearch}
-            title="Recent additions"
-            words={recentAdditions}
-          />
-        </div>
-      ) : null}
-    </div>
+    <VocabularyLookupView
+      importWord={pasteJsonWord}
+      instructionWord={instructionWord}
+      onClear={returnToInitial}
+      onCloseImport={() => setPasteJsonWord(undefined)}
+      onCloseInstruction={() => setInstructionWord(undefined)}
+      onEditSearch={editCurrentSearch}
+      onOpenImport={setPasteJsonWord}
+      onOpenInstruction={setInstructionWord}
+      onQueryChange={(nextQuery) => {
+        searchSequence.current += 1;
+        setQuery(nextQuery);
+        setSearchState(
+          nextQuery.trim().length === 0
+            ? { kind: "initial" }
+            : { kind: "typing", query: nextQuery },
+        );
+      }}
+      onSearch={(word) => {
+        setPasteJsonWord(undefined);
+        executeSearch(word);
+      }}
+      onSubmit={(event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+      executeSearch(query);
+      }}
+      query={query}
+      recentAdditions={recentAdditions}
+      recentWords={recentWords}
+      searchInputRef={searchInputRef}
+      state={searchState}
+    />
   );
 }

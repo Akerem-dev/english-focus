@@ -8,6 +8,7 @@ interface VocabularyHeaderProps {
   readonly entry: VocabularyEntry;
   readonly metadata?: VocabularyUserMetadata | undefined;
   readonly onBack: () => void;
+  readonly onEditEntry: () => void;
   readonly onEditMetadata: () => void;
   readonly onImportReplacement: () => void;
   readonly onExport: () => void;
@@ -17,15 +18,20 @@ export function VocabularyHeader({
   entry,
   metadata,
   onBack,
+  onEditEntry,
   onEditMetadata,
   onExport,
-  onImportReplacement
+  onImportReplacement,
 }: VocabularyHeaderProps) {
   const presentation = presentVocabularyEntry(entry);
 
   return (
     <header className="vocabulary-detail-header">
-      <Button className="vocabulary-detail-header__back" onClick={onBack} variant="ghost">
+      <Button
+        className="vocabulary-detail-header__back"
+        onClick={onBack}
+        variant="ghost"
+      >
         ← Back to vocabulary
       </Button>
 
@@ -33,11 +39,16 @@ export function VocabularyHeader({
         <div>
           <p className="route-page__eyebrow">Local vocabulary entry</p>
           <h1 className="word-title">{entry.word}</h1>
-          <p className="vocabulary-detail-header__translation">{presentation.primaryTranslation}</p>
+          <p className="vocabulary-detail-header__translation">
+            {presentation.primaryTranslation}
+          </p>
         </div>
         <div className="vocabulary-detail-header__source">
           <span>{presentation.sourceLabel}</span>
           <div className="vocabulary-detail-header__actions">
+            <Button onClick={onEditEntry} size="small" variant="primary">
+              Edit entry
+            </Button>
             <Button
               leadingIcon={<AppIcon name="star" size={16} />}
               onClick={onEditMetadata}
@@ -54,14 +65,22 @@ export function VocabularyHeader({
             >
               Export JSON
             </Button>
-            <Button onClick={onImportReplacement} size="small" variant="secondary">
-              Import replacement JSON
+            <Button
+              onClick={onImportReplacement}
+              size="small"
+              title="Advanced JSON replacement"
+              variant="ghost"
+            >
+              Import JSON
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="vocabulary-detail-header__metadata" aria-label="Vocabulary metadata">
+      <div
+        className="vocabulary-detail-header__metadata"
+        aria-label="Vocabulary metadata"
+      >
         <StatusBadge tone="accent">CEFR {entry.cefr}</StatusBadge>
         <StatusBadge>{presentation.partOfSpeechLabel}</StatusBadge>
         {presentation.registerLabels.map((register) => (
