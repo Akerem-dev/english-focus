@@ -14,6 +14,10 @@ describe("SettingsPage", () => {
 
     expect(markup).toContain("Settings");
     expect(markup).toContain("Show etymology");
+    expect(markup).toContain("Example sentences shown");
+    expect(markup).toContain("First 3");
+    expect(markup).not.toContain("All 10");
+    expect(markup).not.toContain("Exactly 10");
     expect(markup).toContain("Core vocabulary");
     expect(markup).toContain("1.0.0-reviewed.1");
     expect(markup).toContain("Editorially reviewed");
