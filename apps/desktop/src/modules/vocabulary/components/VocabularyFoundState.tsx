@@ -103,7 +103,7 @@ export function VocabularyFoundState({
           <TenseExamplesSection entry={entry} />
           <SentenceFormsSection entry={entry} />
           <PrepositionPatternsSection entry={entry} />
-          <ExampleSentenceList entry={entry} limit={contentSettings.exampleSentenceCount} />
+          <ExampleSentenceList entry={entry} limit={3} />
         </div>
 
         <aside className="vocabulary-detail-aside" aria-label="Supporting vocabulary details">
