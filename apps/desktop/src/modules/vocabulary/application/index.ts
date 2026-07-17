@@ -2,7 +2,6 @@ export { createVocabularyUserMetadata } from "./CreateVocabularyUserMetadata";
 export {
   prepareVocabularyEntryEdit,
   resolveVocabularyEditLayer,
-  type PrepareVocabularyEntryEditResult,
-  type VocabularyEntryEditIssue,
+  type VocabularyEntryEditIssue
 } from "./PrepareVocabularyEntryEdit";
 export { parseVocabularyTags } from "./UpdateVocabularyTags";
