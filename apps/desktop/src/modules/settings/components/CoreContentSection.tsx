@@ -1,9 +1,6 @@
-import { StatusBadge } from "../../../components";
 import { coreVocabularyEntries, coreVocabularyManifest } from "../../../content";
 
 export function CoreContentSection() {
-  const sampleWords = coreVocabularyManifest.qualityPolicy.manualSampleWords.join(", ");
-
   return (
     <div className="core-content-status" data-testid="core-content-status">
       <div className="settings-value-row">
@@ -19,16 +16,12 @@ export function CoreContentSection() {
         <strong>{coreVocabularyManifest.schemaVersion}</strong>
       </div>
       <div className="settings-value-row">
-        <span>Validation state</span>
-        <StatusBadge tone="success">Editorially reviewed</StatusBadge>
-      </div>
-      <div className="settings-value-row settings-value-row--stacked">
-        <span>Reviewed entries</span>
-        <strong>{sampleWords}</strong>
+        <span>Storage</span>
+        <strong>Read-only · local</strong>
       </div>
       <p className="settings-supporting-copy">
-        Core content is read-only and versioned. Personal notes, favorites, learning status, and
-        overrides remain separate in local SQLite storage.
+        Bundled content remains versioned and read-only. Personal notes, favorites, and overrides
+        stay separate in local SQLite storage.
       </p>
     </div>
   );
