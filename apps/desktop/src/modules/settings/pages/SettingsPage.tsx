@@ -53,7 +53,7 @@ export function SettingsPage() {
         <div>
           <p className="route-page__eyebrow">Application preferences</p>
           <h1>Settings</h1>
-          <p>Customize content presentation, local data behavior, and accessibility preferences.</p>
+          <p>Customize essential vocabulary content, local data, and accessibility preferences.</p>
         </div>
         <div className="settings-page-header__actions" aria-live="polite">
           {status === "loading" ? <StatusBadge>Loading settings</StatusBadge> : null}
@@ -77,7 +77,7 @@ export function SettingsPage() {
 
       <div className="settings-grid">
         <SettingsPanel
-          description="Choose how vocabulary explanations and supporting details appear."
+          description="Choose how essential vocabulary information appears."
           icon="book-open"
           title="Content"
         >
@@ -90,18 +90,6 @@ export function SettingsPage() {
               const showEtymology = event.currentTarget.checked;
               void updateSettings((current) =>
                 updateContentSettings(current, { ...current.content, showEtymology })
-              );
-            }}
-          />
-          <SwitchField
-            checked={settings.content.showCommonMistakes}
-            description="Highlight common learner errors and confusing usages."
-            disabled={isBusy}
-            label="Show common mistakes"
-            onChange={(event) => {
-              const showCommonMistakes = event.currentTarget.checked;
-              void updateSettings((current) =>
-                updateContentSettings(current, { ...current.content, showCommonMistakes })
               );
             }}
           />
