@@ -16,21 +16,40 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Apply cleanup patch
+      - name: Check cleanup patch
+        id: patch_check
+        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
           cat .phase7/patch.* | base64 -d > /tmp/phase7.patch.gz
-          echo "compressed sha256: $(sha256sum /tmp/phase7.patch.gz | cut -d' ' -f1)"
-          gzip -t /tmp/phase7.patch.gz
-          gunzip -c /tmp/phase7.patch.gz > /tmp/phase7.patch
-          echo "patch sha256: $(sha256sum /tmp/phase7.patch | cut -d' ' -f1)"
-          git apply --check --verbose /tmp/phase7.patch
+          {
+            echo "compressed sha256: $(sha256sum /tmp/phase7.patch.gz | cut -d' ' -f1)"
+            gzip -t /tmp/phase7.patch.gz
+            gunzip -c /tmp/phase7.patch.gz > /tmp/phase7.patch
+            echo "patch sha256: $(sha256sum /tmp/phase7.patch | cut -d' ' -f1)"
+            git apply --check --verbose /tmp/phase7.patch
+          } > /tmp/phase7-diagnostic.txt 2>&1
+
+      - name: Upload patch diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase7-patch-diagnostic
+          path: /tmp/phase7-diagnostic.txt
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Apply cleanup patch
+        if: steps.patch_check.outcome == 'success'
+        shell: bash
+        run: |
           git apply --index --whitespace=nowarn /tmp/phase7.patch
           rm -rf .phase7
           rm .github/workflows/apply-phase7-cleanup.yml
 
       - name: Commit phase seven cleanup
+        if: steps.patch_check.outcome == 'success'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -38,3 +57,8 @@ jobs:
           git add --all
           git commit -m "refactor: finalize simplified vocabulary contracts"
           git push origin HEAD:${{ github.head_ref }}
+
+      - name: Enforce patch check
+        if: always()
+        shell: bash
+        run: test "${{ steps.patch_check.outcome }}" = "success"
