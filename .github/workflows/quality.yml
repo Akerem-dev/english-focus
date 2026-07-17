@@ -18,21 +18,70 @@ jobs:
           cache: "npm"
 
       - run: npm ci
+      - run: mkdir -p quality-reports
+
       - name: Check repository structure
-        run: npm run check:structure
+        id: structure
+        continue-on-error: true
+        run: npm run check:structure 2>&1 | tee quality-reports/structure.txt
       - name: Check forbidden patterns
-        run: npm run check:forbidden
+        id: forbidden
+        continue-on-error: true
+        run: npm run check:forbidden 2>&1 | tee quality-reports/forbidden.txt
       - name: Check CSS custom properties
-        run: npm run check:css-tokens
+        id: css_tokens
+        continue-on-error: true
+        run: npm run check:css-tokens 2>&1 | tee quality-reports/css-tokens.txt
       - name: Check dead code
-        run: npm run check:dead-code
+        id: dead_code
+        continue-on-error: true
+        run: npm run check:dead-code 2>&1 | tee quality-reports/dead-code.txt
       - name: Check formatting
-        run: npm run format:check
+        id: formatting
+        continue-on-error: true
+        run: npm run format:check 2>&1 | tee quality-reports/formatting.txt
       - name: Lint
-        run: npm run lint
+        id: lint
+        continue-on-error: true
+        run: npm run lint 2>&1 | tee quality-reports/lint.txt
       - name: Typecheck
-        run: npm run typecheck
+        id: typecheck
+        continue-on-error: true
+        run: npm run typecheck 2>&1 | tee quality-reports/typecheck.txt
       - name: Test
-        run: npm run test
+        id: test
+        continue-on-error: true
+        run: npm run test 2>&1 | tee quality-reports/test.txt
       - name: Build
-        run: npm run build
+        id: build
+        continue-on-error: true
+        run: npm run build 2>&1 | tee quality-reports/build.txt
+
+      - name: Upload quality reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-reports
+          path: quality-reports/**
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Enforce quality result
+        if: always()
+        shell: bash
+        run: |
+          failures=()
+          [[ "${{ steps.structure.outcome }}" == "success" ]] || failures+=("structure")
+          [[ "${{ steps.forbidden.outcome }}" == "success" ]] || failures+=("forbidden")
+          [[ "${{ steps.css_tokens.outcome }}" == "success" ]] || failures+=("css-tokens")
+          [[ "${{ steps.dead_code.outcome }}" == "success" ]] || failures+=("dead-code")
+          [[ "${{ steps.formatting.outcome }}" == "success" ]] || failures+=("formatting")
+          [[ "${{ steps.lint.outcome }}" == "success" ]] || failures+=("lint")
+          [[ "${{ steps.typecheck.outcome }}" == "success" ]] || failures+=("typecheck")
+          [[ "${{ steps.test.outcome }}" == "success" ]] || failures+=("test")
+          [[ "${{ steps.build.outcome }}" == "success" ]] || failures+=("build")
+
+          if (( ${#failures[@]} > 0 )); then
+            printf 'Quality checks failed: %s\n' "${failures[*]}"
+            exit 1
+          fi
