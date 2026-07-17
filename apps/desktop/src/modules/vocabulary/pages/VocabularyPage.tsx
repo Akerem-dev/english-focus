@@ -241,7 +241,7 @@ export function VocabularyPage() {
         undoSuccessTitle: "Favorite change undone",
         undoSuccessMessage: `“${searchState.entry.word}” returned to its previous favorite state.`,
         failureTitle: "Favorite could not be updated",
-        undoFailureTitle: "Favorite chane could not be undone",
+        undoFailureTitle: "Favorite change could not be undone",
       });
     } catch {
       // The undo provider already presented a standardized user-facing error toast.
@@ -377,7 +377,7 @@ export function VocabularyPage() {
       }}
       onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-      executeSearch(query);
+        executeSearch(query);
       }}
       query={query}
       recentAdditions={recentAdditions}
