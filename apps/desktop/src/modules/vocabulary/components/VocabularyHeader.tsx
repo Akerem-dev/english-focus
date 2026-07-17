@@ -13,10 +13,6 @@ interface VocabularyHeaderProps {
   readonly onExport: () => void;
 }
 
-function labelStatus(value: string): string {
-  return value.charAt(0).toLocaleUpperCase("en-US") + value.slice(1);
-}
-
 export function VocabularyHeader({
   entry,
   metadata,
@@ -40,7 +36,6 @@ export function VocabularyHeader({
           <p className="vocabulary-detail-header__translation">{presentation.primaryTranslation}</p>
         </div>
         <div className="vocabulary-detail-header__source">
-          <StatusBadge tone="success">{presentation.reviewLabel}</StatusBadge>
           <span>{presentation.sourceLabel}</span>
           <div className="vocabulary-detail-header__actions">
             <Button
@@ -49,7 +44,7 @@ export function VocabularyHeader({
               size="small"
               variant={metadata?.favorite === true ? "primary" : "secondary"}
             >
-              {metadata?.favorite === true ? "Favorited" : "Study details"}
+              {metadata?.favorite === true ? "Favorited" : "Personal details"}
             </Button>
             <Button
               leadingIcon={<AppIcon name="download" size={16} />}
@@ -72,17 +67,7 @@ export function VocabularyHeader({
         {presentation.registerLabels.map((register) => (
           <TagChip key={register}>{register}</TagChip>
         ))}
-        {metadata === undefined ? null : (
-          <>
-            <StatusBadge tone={metadata.learningStatus === "known" ? "success" : "neutral"}>
-              {labelStatus(metadata.learningStatus)}
-            </StatusBadge>
-            <StatusBadge>{labelStatus(metadata.reviewStatus)}</StatusBadge>
-            {metadata.tags.slice(0, 4).map((tag) => (
-              <TagChip key={tag.id}>{tag.name}</TagChip>
-            ))}
-          </>
-        )}
+        {metadata?.tags.slice(0, 4).map((tag) => <TagChip key={tag.id}>{tag.name}</TagChip>)}
       </div>
     </header>
   );
