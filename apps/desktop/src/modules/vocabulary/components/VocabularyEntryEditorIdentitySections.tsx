@@ -1,20 +1,12 @@
-import type {
-  CefrLevel,
-  PartOfSpeech,
-  Register,
-  VocabularyEntry,
-} from "@platform/domain";
+import type { CefrLevel, PartOfSpeech, Register, VocabularyEntry } from "@platform/domain";
 import { CEFR_LEVELS, PARTS_OF_SPEECH, REGISTERS } from "@platform/domain";
 
 import { SelectField, TextAreaField, TextField } from "../../../components";
-import {
-  formatPartOfSpeech,
-  formatPlainLabel,
-} from "../presenters/VocabularyEntryPresenter";
+import { formatPartOfSpeech, formatPlainLabel } from "../presenters/VocabularyEntryPresenter";
 import {
   firstIssue,
   replaceAt,
-  type VocabularyEditorSectionProps,
+  type VocabularyEditorSectionProps
 } from "./VocabularyEntryEditorHelpers";
 
 interface IdentitySectionsProps extends VocabularyEditorSectionProps {
@@ -25,12 +17,9 @@ export function VocabularyEntryEditorIdentitySections({
   draft,
   issues,
   original,
-  setDraft,
+  setDraft
 }: IdentitySectionsProps) {
-  function updateMeaning(
-    index: number,
-    patch: Partial<VocabularyEntry["meanings"][number]>,
-  ) {
+  function updateMeaning(index: number, patch: Partial<VocabularyEntry["meanings"][number]>) {
     setDraft((current) => {
       const meaning = current.meanings[index];
       if (meaning === undefined) {
@@ -39,12 +28,12 @@ export function VocabularyEntryEditorIdentitySections({
 
       const meanings = replaceAt(current.meanings, index, {
         ...meaning,
-        ...patch,
+        ...patch
       });
       return {
         ...current,
         meanings,
-        partsOfSpeech: [...new Set(meanings.map((item) => item.partOfSpeech))],
+        partsOfSpeech: [...new Set(meanings.map((item) => item.partOfSpeech))]
       };
     });
   }
@@ -54,7 +43,7 @@ export function VocabularyEntryEditorIdentitySections({
       ...current,
       registers: current.registers.includes(register)
         ? current.registers.filter((value) => value !== register)
-        : [...current.registers, register],
+        : [...current.registers, register]
     }));
   }
 
@@ -65,10 +54,7 @@ export function VocabularyEntryEditorIdentitySections({
           <span>1</span>
           <div>
             <h3>Identity and level</h3>
-            <p>
-              The normalized identity is protected to prevent accidental
-              duplicate records.
-            </p>
+            <p>The normalized identity is protected to prevent accidental duplicate records.</p>
           </div>
         </header>
         <div className="vocabulary-entry-editor__grid vocabulary-entry-editor__grid--three">
@@ -81,7 +67,7 @@ export function VocabularyEntryEditorIdentitySections({
             onChange={(event) =>
               setDraft((current) => ({
                 ...current,
-                word: event.currentTarget.value,
+                word: event.currentTarget.value
               }))
             }
             value={draft.word}
@@ -92,7 +78,7 @@ export function VocabularyEntryEditorIdentitySections({
             onChange={(event) =>
               setDraft((current) => ({
                 ...current,
-                cefr: event.currentTarget.value as CefrLevel,
+                cefr: event.currentTarget.value as CefrLevel
               }))
             }
             value={draft.cefr}
@@ -105,7 +91,7 @@ export function VocabularyEntryEditorIdentitySections({
             label="Primary part of speech"
             onChange={(event) =>
               updateMeaning(0, {
-                partOfSpeech: event.currentTarget.value as PartOfSpeech,
+                partOfSpeech: event.currentTarget.value as PartOfSpeech
               })
             }
             value={draft.meanings[0]?.partOfSpeech ?? "other"}
@@ -151,7 +137,7 @@ export function VocabularyEntryEditorIdentitySections({
                   label="Part of speech"
                   onChange={(event) =>
                     updateMeaning(index, {
-                      partOfSpeech: event.currentTarget.value as PartOfSpeech,
+                      partOfSpeech: event.currentTarget.value as PartOfSpeech
                     })
                   }
                   value={meaning.partOfSpeech}
@@ -163,14 +149,11 @@ export function VocabularyEntryEditorIdentitySections({
                   ))}
                 </SelectField>
                 <TextField
-                  error={firstIssue(
-                    issues,
-                    `meanings[${index}].translationsTr`,
-                  )}
+                  error={firstIssue(issues, `meanings[${index}].translationsTr`)}
                   label="Turkish translations"
                   onChange={(event) =>
                     updateMeaning(index, {
-                      translationsTr: [event.currentTarget.value],
+                      translationsTr: [event.currentTarget.value]
                     })
                   }
                   value={meaning.translationsTr.join(", ")}
@@ -181,7 +164,7 @@ export function VocabularyEntryEditorIdentitySections({
                 label="English definition"
                 onChange={(event) =>
                   updateMeaning(index, {
-                    definitionEn: event.currentTarget.value,
+                    definitionEn: event.currentTarget.value
                   })
                 }
                 rows={3}
@@ -192,7 +175,7 @@ export function VocabularyEntryEditorIdentitySections({
                   label="Turkish usage note"
                   onChange={(event) =>
                     updateMeaning(index, {
-                      usageNoteTr: event.currentTarget.value,
+                      usageNoteTr: event.currentTarget.value
                     })
                   }
                   rows={3}
@@ -202,7 +185,7 @@ export function VocabularyEntryEditorIdentitySections({
                   label="English usage note"
                   onChange={(event) =>
                     updateMeaning(index, {
-                      usageNoteEn: event.currentTarget.value,
+                      usageNoteEn: event.currentTarget.value
                     })
                   }
                   rows={3}

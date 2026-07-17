@@ -34,10 +34,7 @@ export function VocabularyEntryEditorDialog({
   const [issues, setIssues] = useState<readonly VocabularyEntryEditIssue[]>([]);
   const [saveError, setSaveError] = useState<string | undefined>();
 
-  const dirty = useMemo(
-    () => JSON.stringify(draft) !== JSON.stringify(entry),
-    [draft, entry]
-  );
+  const dirty = useMemo(() => JSON.stringify(draft) !== JSON.stringify(entry), [draft, entry]);
 
   function requestClose() {
     if (saving) {
@@ -86,9 +83,7 @@ export function VocabularyEntryEditorDialog({
       onClose();
     } catch (cause) {
       setSaveError(
-        cause instanceof Error
-          ? cause.message
-          : "The vocabulary entry could not be saved locally."
+        cause instanceof Error ? cause.message : "The vocabulary entry could not be saved locally."
       );
     }
   }
@@ -169,16 +164,8 @@ export function VocabularyEntryEditorDialog({
           original={entry}
           setDraft={setDraft}
         />
-        <VocabularyEntryEditorLanguageSections
-          draft={draft}
-          issues={issues}
-          setDraft={setDraft}
-        />
-        <VocabularyEntryEditorContentSections
-          draft={draft}
-          issues={issues}
-          setDraft={setDraft}
-        />
+        <VocabularyEntryEditorLanguageSections draft={draft} issues={issues} setDraft={setDraft} />
+        <VocabularyEntryEditorContentSections draft={draft} issues={issues} setDraft={setDraft} />
 
         <p className="vocabulary-entry-editor__shortcut">
           Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> to validate and save.

@@ -8,7 +8,7 @@ import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
   VocabularyNotFoundState,
-  VocabularySearchingState,
+  VocabularySearchingState
 } from "../components";
 
 interface WordListCardProps {
@@ -19,13 +19,7 @@ interface WordListCardProps {
   readonly emptyMessage: string;
 }
 
-function WordListCard({
-  emptyMessage,
-  eyebrow,
-  onOpenWord,
-  title,
-  words,
-}: WordListCardProps) {
+function WordListCard({ emptyMessage, eyebrow, onOpenWord, title, words }: WordListCardProps) {
   return (
     <section className="word-list-card">
       <header className="word-list-card__header">
@@ -33,9 +27,7 @@ function WordListCard({
         <span>{eyebrow}</span>
       </header>
       <div className="word-list-card__rows">
-        {words.length === 0 ? (
-          <p className="word-list-card__empty">{emptyMessage}</p>
-        ) : null}
+        {words.length === 0 ? <p className="word-list-card__empty">{emptyMessage}</p> : null}
         {words.map((word) => (
           <button
             className="word-list-row"
@@ -91,7 +83,7 @@ export function VocabularyLookupView({
   recentAdditions,
   recentWords,
   searchInputRef,
-  state,
+  state
 }: VocabularyLookupViewProps) {
   return (
     <div className="route-page route-page--vocabulary">
@@ -99,8 +91,8 @@ export function VocabularyLookupView({
         <p className="route-page__eyebrow">Local English vocabulary</p>
         <h1 id="vocabulary-heading">Look up an English word</h1>
         <p className="vocabulary-hero__description">
-          Meanings, Turkish translations, pronunciation, word forms, concise
-          usage, and practical examples—all stored on this device.
+          Meanings, Turkish translations, pronunciation, word forms, concise usage, and practical
+          examples—all stored on this device.
         </p>
         <form
           aria-label="Vocabulary search"
@@ -130,19 +122,13 @@ export function VocabularyLookupView({
           </Button>
         </form>
         <p className="vocabulary-hero__hint">
-          Exact, case-insensitive, alias, and inflected-form lookup runs
-          entirely on this device.
+          Exact, case-insensitive, alias, and inflected-form lookup runs entirely on this device.
         </p>
       </section>
 
-      {state.kind === "searching" ? (
-        <VocabularySearchingState query={state.query} />
-      ) : null}
+      {state.kind === "searching" ? <VocabularySearchingState query={state.query} /> : null}
       {state.kind === "invalid" ? (
-        <VocabularyInvalidSearchState
-          message={state.message}
-          onEditSearch={onEditSearch}
-        />
+        <VocabularyInvalidSearchState message={state.message} onEditSearch={onEditSearch} />
       ) : null}
       {state.kind === "not-found" ? (
         <VocabularyNotFoundState
@@ -167,11 +153,7 @@ export function VocabularyLookupView({
       ) : null}
 
       {instructionWord === undefined ? null : (
-        <AiInstructionDialog
-          onClose={onCloseInstruction}
-          open
-          targetWord={instructionWord}
-        />
+        <AiInstructionDialog onClose={onCloseInstruction} open targetWord={instructionWord} />
       )}
       {importWord === undefined ? null : (
         <PasteGeneratedJsonDialog

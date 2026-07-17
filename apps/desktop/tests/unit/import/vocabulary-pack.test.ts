@@ -53,9 +53,9 @@ describe("vocabulary pack transfer", () => {
       expect(result.analysis.validCount).toBe(2);
       expect(result.analysis.invalidCount).toBe(0);
       expect(result.analysis.entries.every((entry) => entry.status === "valid")).toBe(true);
-      expect(
-        result.analysis.entries.every((entry) => entry.entry?.examples.length === 3)
-      ).toBe(true);
+      expect(result.analysis.entries.every((entry) => entry.entry?.examples.length === 3)).toBe(
+        true
+      );
     }
   });
 

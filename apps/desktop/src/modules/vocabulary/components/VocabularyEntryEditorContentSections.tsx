@@ -6,18 +6,15 @@ import { formatPlainLabel } from "../presenters/VocabularyEntryPresenter";
 import {
   firstIssue,
   replaceAt,
-  type VocabularyEditorSectionProps,
+  type VocabularyEditorSectionProps
 } from "./VocabularyEntryEditorHelpers";
 
 export function VocabularyEntryEditorContentSections({
   draft,
   issues,
-  setDraft,
+  setDraft
 }: VocabularyEditorSectionProps) {
-  function updateExample(
-    index: number,
-    patch: Partial<VocabularyEntry["examples"][number]>,
-  ) {
+  function updateExample(index: number, patch: Partial<VocabularyEntry["examples"][number]>) {
     setDraft((current) => {
       const example = current.examples[index];
       return example === undefined
@@ -26,8 +23,8 @@ export function VocabularyEntryEditorContentSections({
             ...current,
             examples: replaceAt(current.examples, index, {
               ...example,
-              ...patch,
-            }),
+              ...patch
+            })
           };
     });
   }
@@ -51,8 +48,8 @@ export function VocabularyEntryEditorContentSections({
                 ...current,
                 grammar: {
                   ...current.grammar,
-                  summaryTr: event.currentTarget.value,
-                },
+                  summaryTr: event.currentTarget.value
+                }
               }))
             }
             rows={5}
@@ -66,8 +63,8 @@ export function VocabularyEntryEditorContentSections({
                 ...current,
                 grammar: {
                   ...current.grammar,
-                  summaryEn: event.currentTarget.value,
-                },
+                  summaryEn: event.currentTarget.value
+                }
               }))
             }
             rows={5}
@@ -93,7 +90,7 @@ export function VocabularyEntryEditorContentSections({
                 label="English sentence"
                 onChange={(event) =>
                   updateExample(index, {
-                    sentenceEn: event.currentTarget.value,
+                    sentenceEn: event.currentTarget.value
                   })
                 }
                 rows={3}
@@ -104,7 +101,7 @@ export function VocabularyEntryEditorContentSections({
                 label="Turkish translation"
                 onChange={(event) =>
                   updateExample(index, {
-                    translationTr: event.currentTarget.value,
+                    translationTr: event.currentTarget.value
                   })
                 }
                 rows={3}
@@ -133,9 +130,9 @@ export function VocabularyEntryEditorContentSections({
                   ? (current.etymology ?? {
                       explanationEn: "",
                       explanationTr: "",
-                      certainty: "medium",
+                      certainty: "medium"
                     })
-                  : undefined,
+                  : undefined
               }))
             }
             type="checkbox"
@@ -155,9 +152,8 @@ export function VocabularyEntryEditorContentSections({
                         ? undefined
                         : {
                             ...current.etymology,
-                            certainty: event.currentTarget
-                              .value as EtymologyCertainty,
-                          },
+                            certainty: event.currentTarget.value as EtymologyCertainty
+                          }
                   }))
                 }
                 value={draft.etymology.certainty}
@@ -178,8 +174,8 @@ export function VocabularyEntryEditorContentSections({
                         ? undefined
                         : {
                             ...current.etymology,
-                            originLanguage: event.currentTarget.value,
-                          },
+                            originLanguage: event.currentTarget.value
+                          }
                   }))
                 }
                 value={draft.etymology.originLanguage ?? ""}
@@ -194,8 +190,8 @@ export function VocabularyEntryEditorContentSections({
                         ? undefined
                         : {
                             ...current.etymology,
-                            originForm: event.currentTarget.value,
-                          },
+                            originForm: event.currentTarget.value
+                          }
                   }))
                 }
                 value={draft.etymology.originForm ?? ""}
@@ -213,8 +209,8 @@ export function VocabularyEntryEditorContentSections({
                         ? undefined
                         : {
                             ...current.etymology,
-                            explanationTr: event.currentTarget.value,
-                          },
+                            explanationTr: event.currentTarget.value
+                          }
                   }))
                 }
                 rows={4}
@@ -231,8 +227,8 @@ export function VocabularyEntryEditorContentSections({
                         ? undefined
                         : {
                             ...current.etymology,
-                            explanationEn: event.currentTarget.value,
-                          },
+                            explanationEn: event.currentTarget.value
+                          }
                   }))
                 }
                 rows={4}

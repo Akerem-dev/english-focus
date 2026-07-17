@@ -2,7 +2,7 @@ import type {
   SaveVocabularyEntryInput,
   StoredVocabularyEntry,
   VocabularyEntry,
-  VocabularyStorageLayer,
+  VocabularyStorageLayer
 } from "@platform/domain";
 import { vocabularyEntrySchema } from "@platform/schemas";
 
@@ -62,23 +62,22 @@ function issuePath(path: readonly PropertyKey[]): string {
 
 function createFailure(
   message: string,
-  issues: readonly VocabularyEntryEditIssue[],
+  issues: readonly VocabularyEntryEditIssue[]
 ): PrepareVocabularyEntryEditResult {
   return {
     kind: "failure",
     message,
-    issues: Object.freeze([...issues]),
+    issues: Object.freeze([...issues])
   };
 }
 
 export function resolveVocabularyEditLayer(
   normalizedWord: string,
-  storedEntries: readonly StoredVocabularyEntry[],
+  storedEntries: readonly StoredVocabularyEntry[]
 ): VocabularyStorageLayer {
   return (
-    storedEntries.find(
-      (record) => record.entry.normalizedWord === normalizedWord,
-    )?.layer ?? "override"
+    storedEntries.find((record) => record.entry.normalizedWord === normalizedWord)?.layer ??
+    "override"
   );
 }
 
@@ -90,20 +89,17 @@ export function prepareVocabularyEntryEdit({
   draft,
   layer,
   original,
-  updatedAt,
+  updatedAt
 }: PrepareVocabularyEntryEditOptions): PrepareVocabularyEntryEditResult {
   const normalizedDraftWord = normalizeEditableWord(draft.word);
 
   if (normalizedDraftWord !== original.normalizedWord) {
-    return createFailure(
-      "The entry identity cannot be changed from this editor.",
-      [
-        {
-          path: "word",
-          message: `Keep the headword as “${original.word}”. Create a separate entry for a different word.`,
-        },
-      ],
-    );
+    return createFailure("The entry identity cannot be changed from this editor.", [
+      {
+        path: "word",
+        message: `Keep the headword as “${original.word}”. Create a separate entry for a different word.`
+      }
+    ]);
   }
 
   const candidate: VocabularyEntry = {
@@ -116,14 +112,11 @@ export function prepareVocabularyEntryEdit({
       ...pronunciation,
       ipa: pronunciation.ipa.trim(),
       syllableBreakdown: trimOptional(pronunciation.syllableBreakdown),
-      stress: trimOptional(pronunciation.stress),
+      stress: trimOptional(pronunciation.stress)
     })),
     registers: [...new Set(draft.registers)],
     partsOfSpeech: [
-      ...new Set([
-        ...draft.partsOfSpeech,
-        ...draft.meanings.map((meaning) => meaning.partOfSpeech),
-      ]),
+      ...new Set([...draft.partsOfSpeech, ...draft.meanings.map((meaning) => meaning.partOfSpeech)])
     ],
     meanings: draft.meanings.map((meaning) => ({
       ...meaning,
@@ -132,7 +125,7 @@ export function prepareVocabularyEntryEdit({
       translationsTr: splitTranslations(meaning.translationsTr),
       registers: [...new Set(meaning.registers)],
       usageNoteEn: trimOptional(meaning.usageNoteEn),
-      usageNoteTr: trimOptional(meaning.usageNoteTr),
+      usageNoteTr: trimOptional(meaning.usageNoteTr)
     })),
     morphology: {
       ...draft.morphology,
@@ -145,8 +138,8 @@ export function prepareVocabularyEntryEdit({
       inflectedForms: draft.morphology.inflectedForms.map((form) => ({
         ...form,
         form: form.form.trim(),
-        normalizedForm: normalizeEditableWord(form.form),
-      })),
+        normalizedForm: normalizeEditableWord(form.form)
+      }))
     },
     etymology:
       draft.etymology === undefined
@@ -156,12 +149,12 @@ export function prepareVocabularyEntryEdit({
             explanationEn: draft.etymology.explanationEn.trim(),
             explanationTr: draft.etymology.explanationTr.trim(),
             originLanguage: trimOptional(draft.etymology.originLanguage),
-            originForm: trimOptional(draft.etymology.originForm),
+            originForm: trimOptional(draft.etymology.originForm)
           },
     grammar: {
       ...draft.grammar,
       summaryEn: draft.grammar.summaryEn.trim(),
-      summaryTr: draft.grammar.summaryTr.trim(),
+      summaryTr: draft.grammar.summaryTr.trim()
     },
     examples: draft.examples.map((example) => ({
       ...example,
@@ -169,42 +162,35 @@ export function prepareVocabularyEntryEdit({
       translationTr: example.translationTr.trim(),
       grammarLabel: trimOptional(example.grammarLabel),
       targetForm: trimOptional(example.targetForm),
-      context: trimOptional(example.context),
+      context: trimOptional(example.context)
     })),
     source: {
       kind: layer,
-      ...(original.source.sourceId === undefined
-        ? {}
-        : { sourceId: original.source.sourceId }),
-      sourceLabel:
-        layer === "override"
-          ? "Local edit of bundled vocabulary"
-          : "Local vocabulary",
+      ...(original.source.sourceId === undefined ? {} : { sourceId: original.source.sourceId }),
+      sourceLabel: layer === "override" ? "Local edit of bundled vocabulary" : "Local vocabulary"
     },
     generation: {
       method: "manual",
       generatedAt: updatedAt,
       validationStatus: "schema-valid",
       generatorLabel: "English Focus entry editor",
-      warnings: [],
+      warnings: []
     },
     createdAt: original.createdAt,
-    updatedAt,
+    updatedAt
   };
 
   const result = vocabularyEntrySchema.safeParse(candidate);
 
   if (!result.success) {
-    const issues = result.error.issues.map<VocabularyEntryEditIssue>(
-      (issue) => ({
-        path: issuePath(issue.path),
-        message: issue.message,
-      }),
-    );
+    const issues = result.error.issues.map<VocabularyEntryEditIssue>((issue) => ({
+      path: issuePath(issue.path),
+      message: issue.message
+    }));
 
     return createFailure(
       "Some vocabulary fields need attention before this entry can be saved.",
-      issues,
+      issues
     );
   }
 
@@ -212,7 +198,7 @@ export function prepareVocabularyEntryEdit({
     kind: "success",
     input: {
       entry: result.data,
-      layer,
-    },
+      layer
+    }
   };
 }

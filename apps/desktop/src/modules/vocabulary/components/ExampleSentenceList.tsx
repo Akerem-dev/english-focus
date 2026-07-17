@@ -14,10 +14,7 @@ export function ExampleSentenceList({
   entry,
   limit = DEFAULT_VISIBLE_EXAMPLE_COUNT
 }: ExampleSentenceListProps) {
-  const visibleExamples = entry.examples.slice(
-    0,
-    Math.min(limit, DEFAULT_VISIBLE_EXAMPLE_COUNT)
-  );
+  const visibleExamples = entry.examples.slice(0, Math.min(limit, DEFAULT_VISIBLE_EXAMPLE_COUNT));
 
   return (
     <Section

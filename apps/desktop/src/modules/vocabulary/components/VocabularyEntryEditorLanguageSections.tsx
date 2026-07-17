@@ -1,29 +1,25 @@
-import type {
-  InflectionType,
-  PronunciationVariant,
-  VocabularyEntry,
-} from "@platform/domain";
+import type { InflectionType, PronunciationVariant, VocabularyEntry } from "@platform/domain";
 import { INFLECTION_TYPES, PRONUNCIATION_VARIANTS } from "@platform/domain";
 
 import { SelectField, TextField } from "../../../components";
 import {
   formatInflectionType,
-  formatPronunciationVariant,
+  formatPronunciationVariant
 } from "../presenters/VocabularyEntryPresenter";
 import {
   firstIssue,
   replaceAt,
-  type VocabularyEditorSectionProps,
+  type VocabularyEditorSectionProps
 } from "./VocabularyEntryEditorHelpers";
 
 export function VocabularyEntryEditorLanguageSections({
   draft,
   issues,
-  setDraft,
+  setDraft
 }: VocabularyEditorSectionProps) {
   function updatePronunciation(
     index: number,
-    patch: Partial<VocabularyEntry["pronunciations"][number]>,
+    patch: Partial<VocabularyEntry["pronunciations"][number]>
   ) {
     setDraft((current) => {
       const pronunciation = current.pronunciations[index];
@@ -33,15 +29,15 @@ export function VocabularyEntryEditorLanguageSections({
             ...current,
             pronunciations: replaceAt(current.pronunciations, index, {
               ...pronunciation,
-              ...patch,
-            }),
+              ...patch
+            })
           };
     });
   }
 
   function updateForm(
     index: number,
-    patch: Partial<VocabularyEntry["morphology"]["inflectedForms"][number]>,
+    patch: Partial<VocabularyEntry["morphology"]["inflectedForms"][number]>
   ) {
     setDraft((current) => {
       const form = current.morphology.inflectedForms[index];
@@ -51,15 +47,11 @@ export function VocabularyEntryEditorLanguageSections({
             ...current,
             morphology: {
               ...current.morphology,
-              inflectedForms: replaceAt(
-                current.morphology.inflectedForms,
-                index,
-                {
-                  ...form,
-                  ...patch,
-                },
-              ),
-            },
+              inflectedForms: replaceAt(current.morphology.inflectedForms, index, {
+                ...form,
+                ...patch
+              })
+            }
           };
     });
   }
@@ -86,7 +78,7 @@ export function VocabularyEntryEditorLanguageSections({
                   label="IPA"
                   onChange={(event) =>
                     updatePronunciation(index, {
-                      ipa: event.currentTarget.value,
+                      ipa: event.currentTarget.value
                     })
                   }
                   value={pronunciation.ipa}
@@ -95,8 +87,7 @@ export function VocabularyEntryEditorLanguageSections({
                   label="Variant"
                   onChange={(event) =>
                     updatePronunciation(index, {
-                      variant: event.currentTarget
-                        .value as PronunciationVariant,
+                      variant: event.currentTarget.value as PronunciationVariant
                     })
                   }
                   value={pronunciation.variant}
@@ -111,7 +102,7 @@ export function VocabularyEntryEditorLanguageSections({
                   label="Syllable breakdown"
                   onChange={(event) =>
                     updatePronunciation(index, {
-                      syllableBreakdown: event.currentTarget.value,
+                      syllableBreakdown: event.currentTarget.value
                     })
                   }
                   value={pronunciation.syllableBreakdown ?? ""}
@@ -120,7 +111,7 @@ export function VocabularyEntryEditorLanguageSections({
                   label="Stress note"
                   onChange={(event) =>
                     updatePronunciation(index, {
-                      stress: event.currentTarget.value,
+                      stress: event.currentTarget.value
                     })
                   }
                   value={pronunciation.stress ?? ""}
@@ -148,8 +139,8 @@ export function VocabularyEntryEditorLanguageSections({
                 ...current,
                 morphology: {
                   ...current.morphology,
-                  baseForm: event.currentTarget.value,
-                },
+                  baseForm: event.currentTarget.value
+                }
               }))
             }
             value={draft.morphology.baseForm}
@@ -161,8 +152,8 @@ export function VocabularyEntryEditorLanguageSections({
                 ...current,
                 morphology: {
                   ...current.morphology,
-                  root: event.currentTarget.value,
-                },
+                  root: event.currentTarget.value
+                }
               }))
             }
             value={draft.morphology.root ?? ""}
@@ -170,15 +161,12 @@ export function VocabularyEntryEditorLanguageSections({
         </div>
         <div className="vocabulary-entry-editor__stack">
           {draft.morphology.inflectedForms.map((form, index) => (
-            <article
-              className="vocabulary-entry-editor__inline-card"
-              key={`${index}-${form.type}`}
-            >
+            <article className="vocabulary-entry-editor__inline-card" key={`${index}-${form.type}`}>
               <SelectField
                 label={`Form ${index + 1} type`}
                 onChange={(event) =>
                   updateForm(index, {
-                    type: event.currentTarget.value as InflectionType,
+                    type: event.currentTarget.value as InflectionType
                   })
                 }
                 value={form.type}
@@ -190,15 +178,12 @@ export function VocabularyEntryEditorLanguageSections({
                 ))}
               </SelectField>
               <TextField
-                error={firstIssue(
-                  issues,
-                  `morphology.inflectedForms[${index}].form`,
-                )}
+                error={firstIssue(issues, `morphology.inflectedForms[${index}].form`)}
                 label={`Form ${index + 1}`}
                 onChange={(event) =>
                   updateForm(index, {
                     form: event.currentTarget.value,
-                    normalizedForm: event.currentTarget.value,
+                    normalizedForm: event.currentTarget.value
                   })
                 }
                 value={form.form}

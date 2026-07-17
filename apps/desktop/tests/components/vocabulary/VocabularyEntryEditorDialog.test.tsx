@@ -14,7 +14,7 @@ describe("VocabularyEntryEditorDialog", () => {
         onSave={async (input) => ({ entry: input.entry, layer: input.layer })}
         open
         saving={false}
-      />,
+      />
     );
 
     expect(markup).toContain("Edit vocabulary entry");
@@ -39,7 +39,7 @@ describe("VocabularyEntryEditorDialog", () => {
         onSave={async (input) => ({ entry: input.entry, layer: input.layer })}
         open={false}
         saving={false}
-      />,
+      />
     );
 
     expect(markup).toBe("");
