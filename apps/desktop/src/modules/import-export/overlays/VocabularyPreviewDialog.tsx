@@ -1,12 +1,11 @@
 import { useState } from "react";
 
-import { Button, Modal, StatusBadge, TagChip } from "../../../components";
+import { Button, CefrBadge, Modal, StatusBadge, TagChip } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import {
   formatPartOfSpeech,
   formatPronunciationVariant,
-  formatRegister,
-  formatSentenceForm
+  formatRegister
 } from "../../vocabulary/presenters/VocabularyEntryPresenter";
 import type { VocabularyImportPreview } from "../application";
 import type { PreviewApprovalState } from "../state";
@@ -22,14 +21,13 @@ export interface VocabularyPreviewDialogProps {
   readonly onEditJson: () => void;
 }
 
-type PreviewTab = "overview" | "meanings" | "grammar" | "examples" | "supporting";
+type PreviewTab = "overview" | "meanings" | "examples" | "details";
 
 const PREVIEW_TABS: readonly { readonly id: PreviewTab; readonly label: string }[] = [
   { id: "overview", label: "Overview" },
   { id: "meanings", label: "Meanings" },
-  { id: "grammar", label: "Grammar" },
   { id: "examples", label: "Examples" },
-  { id: "supporting", label: "Supporting content" }
+  { id: "details", label: "Details" }
 ] as const;
 
 export function VocabularyPreviewDialog({
@@ -105,7 +103,7 @@ export function VocabularyPreviewDialog({
           <p className="vocabulary-preview__translation">{preview.primaryTranslation}</p>
         </div>
         <div className="vocabulary-preview__header-badges">
-          <StatusBadge tone="accent">CEFR {entry.cefr}</StatusBadge>
+          <CefrBadge level={entry.cefr} />
           {entry.partsOfSpeech.map((partOfSpeech) => (
             <StatusBadge key={partOfSpeech}>{formatPartOfSpeech(partOfSpeech)}</StatusBadge>
           ))}
@@ -164,53 +162,20 @@ export function VocabularyPreviewDialog({
                   <dd>{preview.counts.examples}</dd>
                 </div>
                 <div>
-                  <dt>Grammar patterns</dt>
-                  <dd>{preview.counts.grammarPatterns}</dd>
+                  <dt>Pronunciations</dt>
+                  <dd>{entry.pronunciations.length}</dd>
                 </div>
                 <div>
-                  <dt>Collocations</dt>
-                  <dd>{preview.counts.collocations}</dd>
+                  <dt>Word forms</dt>
+                  <dd>{entry.morphology.inflectedForms.length}</dd>
                 </div>
               </dl>
 
               <div className="vocabulary-preview__summary-copy">
-                <h5>Grammar overview</h5>
+                <h5>Usage overview</h5>
                 <p>{entry.grammar.summaryTr}</p>
                 <p lang="en">{entry.grammar.summaryEn}</p>
               </div>
-            </section>
-
-            <section className="vocabulary-preview__panel vocabulary-preview__panel--wide">
-              <h4>Pronunciation and provenance</h4>
-              <div className="vocabulary-preview__pronunciations">
-                {entry.pronunciations.map((pronunciation) => (
-                  <article key={`${pronunciation.variant}-${pronunciation.ipa}`}>
-                    <StatusBadge>{formatPronunciationVariant(pronunciation.variant)}</StatusBadge>
-                    <strong>{pronunciation.ipa}</strong>
-                    {pronunciation.syllableBreakdown === undefined ? null : (
-                      <span>{pronunciation.syllableBreakdown}</span>
-                    )}
-                  </article>
-                ))}
-              </div>
-              <dl className="vocabulary-preview__provenance">
-                <div>
-                  <dt>Source</dt>
-                  <dd>{entry.source.sourceLabel ?? entry.source.kind}</dd>
-                </div>
-                <div>
-                  <dt>Generation</dt>
-                  <dd>{entry.generation.generatorLabel ?? entry.generation.method}</dd>
-                </div>
-                <div>
-                  <dt>Validation status</dt>
-                  <dd>{entry.generation.validationStatus}</dd>
-                </div>
-                <div>
-                  <dt>Generated at</dt>
-                  <dd>{entry.generation.generatedAt}</dd>
-                </div>
-              </dl>
             </section>
           </div>
         ) : null}
@@ -240,78 +205,6 @@ export function VocabularyPreviewDialog({
           </ol>
         ) : null}
 
-        {activeTab === "grammar" ? (
-          <div className="vocabulary-preview__grammar-grid">
-            <section className="vocabulary-preview__panel">
-              <h4>Grammar patterns</h4>
-              {entry.grammar.patterns.length === 0 ? (
-                <p className="vocabulary-preview__empty">No reliable grammar pattern supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.grammar.patterns.map((pattern) => (
-                    <article key={pattern.pattern}>
-                      <strong>{pattern.pattern}</strong>
-                      <p>{pattern.explanationTr}</p>
-                      <small>{pattern.explanationEn}</small>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="vocabulary-preview__panel">
-              <h4>Tense examples</h4>
-              {entry.grammar.tenseExamples.length === 0 ? (
-                <p className="vocabulary-preview__empty">No reliable tense examples supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.grammar.tenseExamples.map((example) => (
-                    <article key={`${example.tense}-${example.sentenceEn}`}>
-                      <strong>{example.tense}</strong>
-                      <p>{example.sentenceEn}</p>
-                      <small>{example.translationTr}</small>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="vocabulary-preview__panel">
-              <h4>Sentence forms</h4>
-              {entry.grammar.sentenceForms.length === 0 ? (
-                <p className="vocabulary-preview__empty">No sentence-form examples supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.grammar.sentenceForms.map((example) => (
-                    <article key={`${example.form}-${example.sentenceEn}`}>
-                      <strong>{formatSentenceForm(example.form)}</strong>
-                      <p>{example.sentenceEn}</p>
-                      <small>{example.translationTr}</small>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="vocabulary-preview__panel">
-              <h4>Preposition patterns</h4>
-              {entry.grammar.prepositionPatterns.length === 0 ? (
-                <p className="vocabulary-preview__empty">No preposition pattern supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.grammar.prepositionPatterns.map((pattern) => (
-                    <article key={pattern.pattern}>
-                      <strong>{pattern.pattern}</strong>
-                      <p>{pattern.explanationTr}</p>
-                      <small>{pattern.explanationEn}</small>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-          </div>
-        ) : null}
-
         {activeTab === "examples" ? (
           <ol className="vocabulary-preview__example-list">
             {entry.examples.map((example, index) => (
@@ -337,85 +230,71 @@ export function VocabularyPreviewDialog({
           </ol>
         ) : null}
 
-        {activeTab === "supporting" ? (
+        {activeTab === "details" ? (
           <div className="vocabulary-preview__supporting-grid">
             <section className="vocabulary-preview__panel">
-              <h4>Word family</h4>
-              {entry.wordFamily.length === 0 ? (
-                <p className="vocabulary-preview__empty">No reliable word-family item supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.wordFamily.map((item) => (
-                    <article key={`${item.normalizedWord}-${item.partOfSpeech}`}>
-                      <strong>{item.word}</strong>
-                      <p>{item.translationTr ?? item.relation}</p>
-                    </article>
-                  ))}
-                </div>
-              )}
+              <h4>Pronunciation</h4>
+              <div className="vocabulary-preview__pronunciations">
+                {entry.pronunciations.map((pronunciation) => (
+                  <article key={`${pronunciation.variant}-${pronunciation.ipa}`}>
+                    <StatusBadge>{formatPronunciationVariant(pronunciation.variant)}</StatusBadge>
+                    <strong>{pronunciation.ipa}</strong>
+                    {pronunciation.syllableBreakdown === undefined ? null : (
+                      <span>{pronunciation.syllableBreakdown}</span>
+                    )}
+                  </article>
+                ))}
+              </div>
             </section>
 
             <section className="vocabulary-preview__panel">
-              <h4>Collocations</h4>
-              {entry.collocations.length === 0 ? (
-                <p className="vocabulary-preview__empty">No reliable collocation supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.collocations.map((collocation) => (
-                    <article key={collocation.phrase}>
-                      <strong>{collocation.phrase}</strong>
-                      <p>{collocation.translationTr}</p>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="vocabulary-preview__panel">
-              <h4>Related words</h4>
-              {entry.relatedWords.length === 0 ? (
-                <p className="vocabulary-preview__empty">No reliable related word supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.relatedWords.map((relatedWord) => (
-                    <article key={relatedWord.normalizedWord}>
-                      <strong>{relatedWord.word}</strong>
-                      <p>{relatedWord.distinctionTr ?? relatedWord.relationship}</p>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="vocabulary-preview__panel">
-              <h4>Common mistakes</h4>
-              {entry.commonMistakes.length === 0 ? (
-                <p className="vocabulary-preview__empty">No reliable common mistake supplied.</p>
-              ) : (
-                <div className="vocabulary-preview__compact-list">
-                  {entry.commonMistakes.map((mistake) => (
-                    <article key={mistake.incorrect}>
-                      <strong>{mistake.incorrect}</strong>
-                      <p>{mistake.correct}</p>
-                      <small>{mistake.explanationTr}</small>
-                    </article>
-                  ))}
-                </div>
-              )}
+              <h4>Word forms</h4>
+              <div className="vocabulary-preview__compact-list">
+                <article>
+                  <strong>{entry.morphology.baseForm}</strong>
+                  <p>Base form</p>
+                </article>
+                {entry.morphology.inflectedForms.map((form) => (
+                  <article key={`${form.type}-${form.normalizedForm}`}>
+                    <strong>{form.form}</strong>
+                    <p>{form.type}</p>
+                  </article>
+                ))}
+              </div>
             </section>
 
             <section className="vocabulary-preview__panel vocabulary-preview__panel--wide">
               <h4>Etymology</h4>
               {entry.etymology === undefined ? (
-                <p className="vocabulary-preview__empty">
-                  No reliable etymology supplied. Leaving it empty is preferred over invention.
-                </p>
+                <p className="vocabulary-preview__empty">No reliable etymology supplied.</p>
               ) : (
                 <>
                   <p>{entry.etymology.explanationTr}</p>
                   <small>{entry.etymology.explanationEn}</small>
                 </>
               )}
+            </section>
+
+            <section className="vocabulary-preview__panel vocabulary-preview__panel--wide">
+              <h4>Source and validation</h4>
+              <dl className="vocabulary-preview__provenance">
+                <div>
+                  <dt>Source</dt>
+                  <dd>{entry.source.sourceLabel ?? entry.source.kind}</dd>
+                </div>
+                <div>
+                  <dt>Generation</dt>
+                  <dd>{entry.generation.generatorLabel ?? entry.generation.method}</dd>
+                </div>
+                <div>
+                  <dt>Validation status</dt>
+                  <dd>{entry.generation.validationStatus}</dd>
+                </div>
+                <div>
+                  <dt>Generated at</dt>
+                  <dd>{entry.generation.generatedAt}</dd>
+                </div>
+              </dl>
             </section>
           </div>
         ) : null}
@@ -451,7 +330,7 @@ export function VocabularyPreviewDialog({
             <span>
               <strong>I reviewed this vocabulary entry.</strong>
               <small>
-                I checked the target word, primary meanings, Turkish translations, and all ten
+                I checked the target word, primary meanings, Turkish translations, and all three
                 example sentences. Quality warnings remain advisory.
               </small>
             </span>
