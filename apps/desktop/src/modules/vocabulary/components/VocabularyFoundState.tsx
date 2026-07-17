@@ -13,7 +13,7 @@ import { VocabularyQuickSummary } from "./VocabularyQuickSummary";
 interface VocabularyFoundStateProps {
   readonly entry: VocabularyEntry;
   readonly metadata?: VocabularyUserMetadata | undefined;
-  readonly backLabel?: string;
+  readonly backLabel?: string | undefined;
   readonly onBack: () => void;
   readonly onEditEntry: () => void;
   readonly onEditMetadata: () => void;
@@ -29,7 +29,7 @@ const BASE_DETAIL_LINKS = [
 ] as const;
 
 export function VocabularyFoundState({
-  backLabel,
+  backLabel = "Back to vocabulary",
   entry,
   metadata,
   onBack,
