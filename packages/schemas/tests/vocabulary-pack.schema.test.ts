@@ -24,7 +24,7 @@ describe("vocabularyPackSchema", () => {
     const legacyEntry = {
       ...entry,
       examples: Array.from({ length: 10 }, (_, index) => ({
-        ...entry.examples[index % entry.examples.length],
+        ...entry.examples[index % entry.examples.length]!,
         id: `legacy-example-${index + 1}`
       }))
     };
