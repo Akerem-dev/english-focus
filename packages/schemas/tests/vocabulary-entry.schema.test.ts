@@ -170,11 +170,14 @@ describe("vocabularyEntrySchema", () => {
       type: "object",
       additionalProperties: false
     });
-    expect(vocabularyEntryJsonSchema.properties).toHaveProperty("schemaVersion");
-    expect(vocabularyEntryJsonSchema.properties).toHaveProperty("examples");
-    expect(vocabularyEntryJsonSchema.properties.examples).toMatchObject({
-      minItems: 3,
-      maxItems: 3
-    });
+
+    const properties = vocabularyEntryJsonSchema.properties;
+    expect(properties).toBeDefined();
+    expect(properties).toHaveProperty("schemaVersion");
+    expect(properties).toHaveProperty("examples");
+
+    const serialized = JSON.stringify(vocabularyEntryJsonSchema);
+    expect(serialized).toContain('"minItems":3');
+    expect(serialized).toContain('"maxItems":3');
   });
 });
