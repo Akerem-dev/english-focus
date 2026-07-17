@@ -87,31 +87,34 @@ export const vocabularyEntrySchema = createVocabularyEntryContract(
   z.array(exampleSentenceSchema).length(3)
 );
 
-/** Read-only compatibility contract for V1 entries that still contain ten examples. */
-export const legacyVocabularyEntrySchema = createVocabularyEntryContract(
+/** Read-only native compatibility contract for V1 entries that still contain ten examples. */
+export const vocabularyEntryNativeCompatibilitySchema = createVocabularyEntryContract(
   z.array(exampleSentenceSchema).length(10)
 );
 
-/**
- * Accepts canonical three-example entries and legacy ten-example entries.
- * Legacy input is normalized before it enters application or persistence layers.
- */
-export const vocabularyEntryInputSchema = z
-  .union([vocabularyEntrySchema, legacyVocabularyEntrySchema])
-  .transform(
-    (entry): VocabularyEntry =>
-      entry.examples.length === 3
-        ? entry
-        : {
-            ...entry,
-            examples: entry.examples.slice(0, 3)
-          }
-  );
+function normalizeLegacyExamples(value: unknown): unknown {
+  if (typeof value !== "object" || value === null || !("examples" in value)) {
+    return value;
+  }
+
+  const examples = (value as { readonly examples?: unknown }).examples;
+  if (!Array.isArray(examples) || examples.length !== 10) {
+    return value;
+  }
+
+  return {
+    ...value,
+    examples: examples.slice(0, 3)
+  };
+}
 
 /**
- * Temporary native boundary contract.
- * Rust adapts canonical three-example entries before validating against this legacy shape.
+ * Accepts canonical three-example entries and legacy ten-example entries.
+ * Legacy examples beyond the first three are removed before canonical validation.
  */
-export const vocabularyEntryNativeCompatibilitySchema = legacyVocabularyEntrySchema;
+export const vocabularyEntryInputSchema: z.ZodType<VocabularyEntry> = z.preprocess(
+  normalizeLegacyExamples,
+  vocabularyEntrySchema
+);
 
 export type ParsedVocabularyEntry = z.infer<typeof vocabularyEntrySchema>;
