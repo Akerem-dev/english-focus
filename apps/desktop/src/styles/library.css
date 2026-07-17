@@ -257,6 +257,7 @@
 
 .library-selection__control {
   display: inline-grid;
+  pointer-events: none;
   width: 1.25rem;
   height: 1.25rem;
   place-items: center;
