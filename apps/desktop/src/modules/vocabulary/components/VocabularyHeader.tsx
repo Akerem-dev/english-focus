@@ -67,7 +67,9 @@ export function VocabularyHeader({
         {presentation.registerLabels.map((register) => (
           <TagChip key={register}>{register}</TagChip>
         ))}
-        {metadata?.tags.slice(0, 4).map((tag) => <TagChip key={tag.id}>{tag.name}</TagChip>)}
+        {metadata?.tags.slice(0, 4).map((tag) => (
+          <TagChip key={tag.id}>{tag.name}</TagChip>
+        ))}
       </div>
     </header>
   );
