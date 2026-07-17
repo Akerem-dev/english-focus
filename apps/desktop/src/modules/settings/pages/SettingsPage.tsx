@@ -1,10 +1,5 @@
 import type { ReactNode } from "react";
-import type {
-  BackupFrequency,
-  ExampleSentenceDisplayCount,
-  InterfaceSize,
-  ThemePreference
-} from "@platform/domain";
+import type { BackupFrequency, InterfaceSize, ThemePreference } from "@platform/domain";
 
 import { SelectField, StatusBadge, SwitchField } from "../../../components";
 import { useSettings } from "../../../app/providers";
@@ -110,22 +105,10 @@ export function SettingsPage() {
               );
             }}
           />
-          <SelectField
-            disabled={isBusy}
-            label="Example sentences shown"
-            onChange={(event) => {
-              const exampleSentenceCount = Number(
-                event.currentTarget.value
-              ) as ExampleSentenceDisplayCount;
-              void updateSettings((current) =>
-                updateContentSettings(current, { ...current.content, exampleSentenceCount })
-              );
-            }}
-            value={String(settings.content.exampleSentenceCount)}
-          >
-            <option value="5">First 5</option>
-            <option value="10">All 10</option>
-          </SelectField>
+          <div className="settings-value-row">
+            <span>Example sentences shown</span>
+            <strong>First 3</strong>
+          </div>
         </SettingsPanel>
 
         <SettingsPanel
