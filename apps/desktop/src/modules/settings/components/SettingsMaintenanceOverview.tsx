@@ -1,4 +1,3 @@
-import { Button } from "../../../components";
 import { AppIcon, type AppIconName } from "../../../design-system";
 
 export type SettingsManagementView = "activity" | "diagnostics" | "local-data";
@@ -25,33 +24,45 @@ function MaintenanceCard({
   meta,
   onOpen,
   title,
-  tone = "default"
+  tone = "default",
 }: MaintenanceCardProps) {
   return (
-    <article className="settings-management-card" data-tone={tone}>
+    <button
+      className="settings-management-card"
+      data-settings-management-trigger
+      data-tone={tone}
+      onClick={onOpen}
+      type="button"
+    >
       <span aria-hidden="true" className="settings-management-card__icon">
         <AppIcon name={icon} size={20} />
       </span>
-      <div className="settings-management-card__copy">
-        <div>
-          <h3>{title}</h3>
-          <p>{description}</p>
-        </div>
+      <span className="settings-management-card__copy">
+        <span>
+          <strong className="settings-management-card__title">{title}</strong>
+          <span className="settings-management-card__description">
+            {description}
+          </span>
+        </span>
         <span className="settings-management-card__meta">{meta}</span>
-      </div>
-      <Button onClick={onOpen} size="small" variant={tone === "danger" ? "danger" : "secondary"}>
+      </span>
+      <span className="settings-management-card__action">
         {actionLabel}
-      </Button>
-    </article>
+        <span aria-hidden="true">→</span>
+      </span>
+    </button>
   );
 }
 
 export function SettingsMaintenanceOverview({
   activitySummary,
-  onOpen
+  onOpen,
 }: SettingsMaintenanceOverviewProps) {
   return (
-    <section aria-label="Privacy and maintenance tools" className="settings-management-overview">
+    <section
+      aria-label="Privacy and maintenance tools"
+      className="settings-management-overview"
+    >
       <MaintenanceCard
         actionLabel="View activity"
         description="Review the privacy-safe timeline stored only inside English Focus."

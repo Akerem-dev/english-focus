@@ -6,6 +6,11 @@ export { CoreContentSection } from "./CoreContentSection";
 export { DiagnosticsSection } from "./DiagnosticsSection";
 export { LocalDataControlsSection } from "./LocalDataControlsSection";
 export {
+  SettingsCategoryNavigation,
+  settingsCategoryLabel,
+} from "./SettingsCategoryNavigation";
+export {
   SettingsMaintenanceOverview,
-  type SettingsManagementView
+  type SettingsManagementView,
 } from "./SettingsMaintenanceOverview";
+export { SettingsManagementDetail } from "./SettingsManagementDetail";

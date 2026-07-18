@@ -1,93 +1,52 @@
-import { useState, type ReactNode } from "react";
-import type { BackupFrequency, InterfaceSize, ThemePreference } from "@platform/domain";
+import { useRef, useState, type ReactNode } from "react";
+import type {
+  BackupFrequency,
+  InterfaceSize,
+  ThemePreference,
+} from "@platform/domain";
 
-import { Button, SelectField, SwitchField } from "../../../components";
+import { SelectField, SwitchField } from "../../../components";
 import { useActivity, useSettings } from "../../../app/providers";
-import { AppIcon } from "../../../design-system";
+import { AppIcon, type AppIconName } from "../../../design-system";
 import {
   updateAppearanceSettings,
   updateContentSettings,
-  updateDataSettings
+  updateDataSettings,
+  type SettingsCategoryId,
 } from "../application";
 import {
-  ActivitySection,
   BackupSettingsSection,
   CoreContentSection,
-  DiagnosticsSection,
   InstructionSettingsSection,
-  LocalDataControlsSection,
+  SettingsCategoryNavigation,
   SettingsMaintenanceOverview,
-  type SettingsManagementView
+  SettingsManagementDetail,
+  settingsCategoryLabel,
+  type SettingsManagementView,
 } from "../components";
-
-type SettingsCategoryId = "general" | "content" | "data" | "privacy";
-type SettingsIcon = "book-open" | "command" | "settings" | "upload" | "warning";
-
-interface SettingsCategory {
-  readonly id: SettingsCategoryId;
-  readonly label: string;
-  readonly description: string;
-  readonly icon: SettingsIcon;
-}
-
-const SETTINGS_CATEGORIES = [
-  {
-    id: "general",
-    label: "General",
-    description: "Appearance and accessibility preferences.",
-    icon: "settings"
-  },
-  {
-    id: "content",
-    label: "Vocabulary content",
-    description: "Vocabulary display and explanation preferences.",
-    icon: "book-open"
-  },
-  {
-    id: "data",
-    label: "Data & backups",
-    description: "Local backup and retention preferences.",
-    icon: "upload"
-  },
-  {
-    id: "privacy",
-    label: "Privacy & maintenance",
-    description: "Activity, diagnostics, and protected data controls.",
-    icon: "warning"
-  }
-] as const satisfies readonly SettingsCategory[];
-
-const MANAGEMENT_VIEW_DETAILS: Record<
-  SettingsManagementView,
-  { readonly title: string; readonly description: string }
-> = {
-  activity: {
-    title: "Recent activity",
-    description: "Review the small privacy-safe timeline stored only on this device."
-  },
-  diagnostics: {
-    title: "System diagnostics",
-    description: "Run a read-only health scan and review safe recovery guidance."
-  },
-  "local-data": {
-    title: "Local data",
-    description: "Review record counts and carefully remove only the data you choose."
-  }
-};
 
 interface SettingsPanelProps {
   readonly className?: string | undefined;
-  readonly icon?: SettingsIcon | undefined;
+  readonly icon?: AppIconName | undefined;
   readonly title?: string | undefined;
   readonly description?: string | undefined;
   readonly children: ReactNode;
 }
 
-function SettingsPanel({ children, className, description, icon, title }: SettingsPanelProps) {
-  const hasHeader = icon !== undefined && title !== undefined && description !== undefined;
+function SettingsPanel({
+  children,
+  className,
+  description,
+  icon,
+  title,
+}: SettingsPanelProps) {
+  const hasHeader =
+    icon !== undefined && title !== undefined && description !== undefined;
 
   return (
-    <section className={["settings-panel", className].filter(Boolean).join(" ")}>
+    <section
+      className={["settings-panel", className].filter(Boolean).join(" ")}
+    >
       {hasHeader ? (
         <header className="settings-panel__header">
           <span aria-hidden="true" className="settings-panel__icon">
@@ -110,12 +69,18 @@ interface StaticPreferenceRowProps {
   readonly value: string;
 }
 
-function StaticPreferenceRow({ description, label, value }: StaticPreferenceRowProps) {
+function StaticPreferenceRow({
+  description,
+  label,
+  value,
+}: StaticPreferenceRowProps) {
   return (
     <div className="settings-preference-row settings-preference-row--static">
       <span className="settings-preference-row__copy">
         <span className="settings-preference-row__label">{label}</span>
-        <span className="settings-preference-row__description">{description}</span>
+        <span className="settings-preference-row__description">
+          {description}
+        </span>
       </span>
       <strong className="settings-preference-row__value">{value}</strong>
     </div>
@@ -141,45 +106,20 @@ function SettingsSaveNote({ status }: { readonly status: string }) {
   );
 }
 
-function SettingsManagementView({
-  onBack,
-  view
-}: {
-  readonly onBack: () => void;
-  readonly view: SettingsManagementView;
-}) {
-  const details = MANAGEMENT_VIEW_DETAILS[view];
-
-  return (
-    <div className="settings-management-view">
-      <header className="settings-management-view__header">
-        <Button onClick={onBack} size="small" variant="ghost">
-          ← Back to privacy & maintenance
-        </Button>
-        <div>
-          <p className="route-page__eyebrow">Privacy & maintenance</p>
-          <h3>{details.title}</h3>
-          <p>{details.description}</p>
-        </div>
-      </header>
-      <div className="settings-management-view__body">
-        {view === "activity" ? <ActivitySection /> : null}
-        {view === "diagnostics" ? <DiagnosticsSection /> : null}
-        {view === "local-data" ? <LocalDataControlsSection /> : null}
-      </div>
-    </div>
-  );
-}
-
 export function SettingsPage() {
-  const { activity, error: activityError, status: activityStatus } = useActivity();
+  const {
+    activity,
+    error: activityError,
+    status: activityStatus,
+  } = useActivity();
   const { error, settings, status, updateSettings } = useSettings();
-  const [selectedCategory, setSelectedCategory] = useState<SettingsCategoryId>("content");
-  const [managementView, setManagementView] = useState<SettingsManagementView | undefined>();
+  const [selectedCategory, setSelectedCategory] =
+    useState<SettingsCategoryId>("content");
+  const [managementView, setManagementView] = useState<
+    SettingsManagementView | undefined
+  >();
+  const privacyContentRef = useRef<HTMLDivElement>(null);
   const isBusy = status === "loading" || status === "saving";
-  const selectedCategoryDetails =
-    SETTINGS_CATEGORIES.find((category) => category.id === selectedCategory) ??
-    SETTINGS_CATEGORIES[0];
   const activitySummary =
     activityError !== undefined
       ? "Activity needs attention"
@@ -192,13 +132,24 @@ export function SettingsPage() {
     setSelectedCategory(category);
   }
 
+  function closeManagementView() {
+    setManagementView(undefined);
+    window.requestAnimationFrame(() => {
+      privacyContentRef.current
+        ?.querySelector<HTMLButtonElement>("[data-settings-management-trigger]")
+        ?.focus();
+    });
+  }
+
   return (
     <div className="route-page route-page--settings">
       <header className="route-page__header settings-page-header">
         <div>
           <p className="route-page__eyebrow">Application preferences</p>
           <h1>Settings</h1>
-          <p>Customize the English Focus experience around the way you learn.</p>
+          <p>
+            Customize the English Focus experience around the way you learn.
+          </p>
         </div>
       </header>
 
@@ -211,31 +162,15 @@ export function SettingsPage() {
 
       <div className="settings-workspace">
         <div className="settings-workspace__rail">
-          <nav aria-label="Settings categories" className="settings-category-nav" role="tablist">
-            {SETTINGS_CATEGORIES.map((category) => {
-              const active = category.id === selectedCategory;
+          <SettingsCategoryNavigation
+            onSelect={selectCategory}
+            selectedCategory={selectedCategory}
+          />
 
-              return (
-                <button
-                  aria-controls={`settings-category-panel-${category.id}`}
-                  aria-selected={active}
-                  className="settings-category-nav__item"
-                  data-active={active || undefined}
-                  id={`settings-category-tab-${category.id}`}
-                  key={category.id}
-                  onClick={() => selectCategory(category.id)}
-                  role="tab"
-                  title={category.description}
-                  type="button"
-                >
-                  <AppIcon name={category.icon} size={19} />
-                  <strong>{category.label}</strong>
-                </button>
-              );
-            })}
-          </nav>
-
-          <aside aria-label="Application information" className="settings-about-card">
+          <aside
+            aria-label="Application information"
+            className="settings-about-card"
+          >
             <CoreContentSection />
           </aside>
         </div>
@@ -244,13 +179,13 @@ export function SettingsPage() {
           aria-busy={isBusy}
           aria-labelledby={`settings-category-tab-${selectedCategory}`}
           className="settings-category-view"
-          id={`settings-category-panel-${selectedCategory}`}
+          id="settings-category-panel"
           role="tabpanel"
         >
-          <h2 className="sr-only">{selectedCategoryDetails.label}</h2>
+          <h2 className="sr-only">{settingsCategoryLabel(selectedCategory)}</h2>
 
           {selectedCategory === "general" ? (
-            <div className="settings-category-view__content">
+            <div className="settings-category-view__content settings-category-view__content--preferences">
               <SettingsPanel className="settings-panel--preference-list">
                 <SelectField
                   disabled={isBusy}
@@ -262,8 +197,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateAppearanceSettings(current, {
                         ...current.appearance,
-                        theme
-                      })
+                        theme,
+                      }),
                     );
                   }}
                   value={settings.appearance.theme}
@@ -283,8 +218,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateAppearanceSettings(current, {
                         ...current.appearance,
-                        reducedMotion
-                      })
+                        reducedMotion,
+                      }),
                     );
                   }}
                 />
@@ -294,12 +229,13 @@ export function SettingsPage() {
                   helperText="Adjust the overall density of controls and content."
                   label="Interface size"
                   onChange={(event) => {
-                    const interfaceSize = event.currentTarget.value as InterfaceSize;
+                    const interfaceSize = event.currentTarget
+                      .value as InterfaceSize;
                     void updateSettings((current) =>
                       updateAppearanceSettings(current, {
                         ...current.appearance,
-                        interfaceSize
-                      })
+                        interfaceSize,
+                      }),
                     );
                   }}
                   value={settings.appearance.interfaceSize}
@@ -313,7 +249,7 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "content" ? (
-            <div className="settings-category-view__content">
+            <div className="settings-category-view__content settings-category-view__content--preferences">
               <SettingsPanel className="settings-panel--preference-list">
                 <SwitchField
                   checked={settings.content.showEtymology}
@@ -326,8 +262,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateContentSettings(current, {
                         ...current.content,
-                        showEtymology
-                      })
+                        showEtymology,
+                      }),
                     );
                   }}
                 />
@@ -342,7 +278,7 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "data" ? (
-            <div className="settings-category-view__content">
+            <div className="settings-category-view__content settings-category-view__content--preferences">
               <SettingsPanel className="settings-panel--preference-list">
                 <SwitchField
                   checked={settings.data.automaticBackups}
@@ -355,8 +291,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateDataSettings(current, {
                         ...current.data,
-                        automaticBackups
-                      })
+                        automaticBackups,
+                      }),
                     );
                   }}
                 />
@@ -366,12 +302,13 @@ export function SettingsPage() {
                   helperText="Choose how often an automatic local backup is retained."
                   label="Backup frequency"
                   onChange={(event) => {
-                    const backupFrequency = event.currentTarget.value as BackupFrequency;
+                    const backupFrequency = event.currentTarget
+                      .value as BackupFrequency;
                     void updateSettings((current) =>
                       updateDataSettings(current, {
                         ...current.data,
-                        backupFrequency
-                      })
+                        backupFrequency,
+                      }),
                     );
                   }}
                   value={settings.data.backupFrequency}
@@ -386,22 +323,27 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "privacy" ? (
-            <div className="settings-category-view__content">
+            <div
+              className="settings-category-view__content"
+              ref={privacyContentRef}
+            >
               {managementView === undefined ? (
                 <SettingsMaintenanceOverview
                   activitySummary={activitySummary}
                   onOpen={setManagementView}
                 />
               ) : (
-                <SettingsManagementView
-                  onBack={() => setManagementView(undefined)}
+                <SettingsManagementDetail
+                  onBack={closeManagementView}
                   view={managementView}
                 />
               )}
             </div>
           ) : null}
 
-          {selectedCategory === "privacy" ? null : <SettingsSaveNote status={status} />}
+          {selectedCategory === "privacy" ? null : (
+            <SettingsSaveNote status={status} />
+          )}
         </section>
       </div>
     </div>
