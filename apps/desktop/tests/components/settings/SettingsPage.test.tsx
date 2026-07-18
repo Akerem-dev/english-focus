@@ -29,6 +29,13 @@ describe("SettingsPage", () => {
     expect(markup).toContain('aria-labelledby="settings-category-tab-content"');
   });
 
+  it("renders the selected category as one direct preference surface", () => {
+    expect(markup).toContain('class="settings-preference-list"');
+    expect(markup).toContain('aria-label="Vocabulary content preferences"');
+    expect(markup).not.toContain('class="settings-panel"');
+    expect(markup).not.toContain('class="settings-panel__body"');
+  });
+
   it("opens the focused vocabulary content category by default", () => {
     expect(markup).toContain("Show etymology");
     expect(markup).toContain("Example sentences shown");
@@ -48,7 +55,8 @@ describe("SettingsPage", () => {
     expect(markup).not.toContain("Review full local reset");
   });
 
-  it("keeps technical application information compact and secondary", () => {
+  it("moves compact application information below the primary workspace", () => {
+    expect(markup).toContain('class="settings-about-footer"');
     expect(markup).toContain("About this app");
     expect(markup).toContain("English Focus");
     expect(markup).toContain("1.0.0");

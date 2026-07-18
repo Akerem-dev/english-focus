@@ -5,6 +5,10 @@ export { updateDataSettings } from "./UpdateDataSettings";
 export { updateInstructionSettings } from "./UpdateInstructionSettings";
 export { createDiagnosticSummary, runDiagnostics, runSafeMaintenance } from "./RunDiagnostics";
 export {
+  presentDiagnosticHealth,
+  type DiagnosticHealthPresentation
+} from "./PresentDiagnosticHealth";
+export {
   SETTINGS_CATEGORY_IDS,
   resolveSettingsCategoryNavigation,
   settingsCategoryLabel,
@@ -12,7 +16,8 @@ export {
 } from "./settingsCategories";
 export {
   FULL_LOCAL_RESET_CATEGORIES,
+  RESET_APPLICATION_CONFIRMATION,
   canCreateSafetyBackup,
-  requiredLocalDataConfirmation,
+  isFullResetConfirmation,
   selectedLocalDataCount
 } from "./ManageLocalData";

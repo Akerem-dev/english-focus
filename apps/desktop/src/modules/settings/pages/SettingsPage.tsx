@@ -3,11 +3,11 @@ import type { BackupFrequency, InterfaceSize, ThemePreference } from "@platform/
 
 import { SelectField, SwitchField } from "../../../components";
 import { useActivity, useSettings } from "../../../app/providers";
-import { AppIcon, type AppIconName } from "../../../design-system";
+import { AppIcon } from "../../../design-system";
 import {
+  settingsCategoryLabel,
   updateAppearanceSettings,
   updateContentSettings,
-  settingsCategoryLabel,
   updateDataSettings,
   type SettingsCategoryId
 } from "../application";
@@ -21,31 +21,15 @@ import {
   type SettingsManagementView
 } from "../components";
 
-interface SettingsPanelProps {
-  readonly className?: string | undefined;
-  readonly icon?: AppIconName | undefined;
-  readonly title?: string | undefined;
-  readonly description?: string | undefined;
+interface SettingsPreferenceListProps {
+  readonly ariaLabel: string;
   readonly children: ReactNode;
 }
 
-function SettingsPanel({ children, className, description, icon, title }: SettingsPanelProps) {
-  const hasHeader = icon !== undefined && title !== undefined && description !== undefined;
-
+function SettingsPreferenceList({ ariaLabel, children }: SettingsPreferenceListProps) {
   return (
-    <section className={["settings-panel", className].filter(Boolean).join(" ")}>
-      {hasHeader ? (
-        <header className="settings-panel__header">
-          <span aria-hidden="true" className="settings-panel__icon">
-            <AppIcon name={icon} size={20} />
-          </span>
-          <div>
-            <h3>{title}</h3>
-            <p>{description}</p>
-          </div>
-        </header>
-      ) : null}
-      <div className="settings-panel__body">{children}</div>
+    <section aria-label={ariaLabel} className="settings-preference-list">
+      {children}
     </section>
   );
 }
@@ -96,10 +80,10 @@ export function SettingsPage() {
   const isBusy = status === "loading" || status === "saving";
   const activitySummary =
     activityError !== undefined
-      ? "Activity needs attention"
+      ? "Some activity cannot be shown"
       : activityStatus === "loading"
-        ? "Loading local activity"
-        : `${activity.length} recent ${activity.length === 1 ? "event" : "events"}`;
+        ? "Loading activity"
+        : `${activity.length} activity ${activity.length === 1 ? "item" : "items"}`;
 
   function selectCategory(category: SettingsCategoryId) {
     setManagementView(undefined);
@@ -138,10 +122,6 @@ export function SettingsPage() {
             onSelect={selectCategory}
             selectedCategory={selectedCategory}
           />
-
-          <aside aria-label="Application information" className="settings-about-card">
-            <CoreContentSection />
-          </aside>
         </div>
 
         <section
@@ -155,7 +135,7 @@ export function SettingsPage() {
 
           {selectedCategory === "general" ? (
             <div className="settings-category-view__content settings-category-view__content--preferences">
-              <SettingsPanel className="settings-panel--preference-list">
+              <SettingsPreferenceList ariaLabel="General preferences">
                 <SelectField
                   disabled={isBusy}
                   fieldClassName="settings-inline-select"
@@ -212,13 +192,13 @@ export function SettingsPage() {
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
                 </SelectField>
-              </SettingsPanel>
+              </SettingsPreferenceList>
             </div>
           ) : null}
 
           {selectedCategory === "content" ? (
             <div className="settings-category-view__content settings-category-view__content--preferences">
-              <SettingsPanel className="settings-panel--preference-list">
+              <SettingsPreferenceList ariaLabel="Vocabulary content preferences">
                 <SwitchField
                   checked={settings.content.showEtymology}
                   containerClassName="settings-preference-row"
@@ -241,17 +221,17 @@ export function SettingsPage() {
                   value="First 3"
                 />
                 <InstructionSettingsSection disabled={isBusy} />
-              </SettingsPanel>
+              </SettingsPreferenceList>
             </div>
           ) : null}
 
           {selectedCategory === "data" ? (
             <div className="settings-category-view__content settings-category-view__content--preferences">
-              <SettingsPanel className="settings-panel--preference-list">
+              <SettingsPreferenceList ariaLabel="Backup preferences">
                 <SwitchField
                   checked={settings.data.automaticBackups}
                   containerClassName="settings-preference-row"
-                  description="Create a retained local backup when the selected interval is due."
+                  description="Create a backup automatically on the schedule you choose."
                   disabled={isBusy}
                   label="Automatic backups"
                   onChange={(event) => {
@@ -267,7 +247,7 @@ export function SettingsPage() {
                 <SelectField
                   disabled={isBusy || !settings.data.automaticBackups}
                   fieldClassName="settings-inline-select"
-                  helperText="Choose how often an automatic local backup is retained."
+                  helperText="Choose how often English Focus creates a backup."
                   label="Backup frequency"
                   onChange={(event) => {
                     const backupFrequency = event.currentTarget.value as BackupFrequency;
@@ -285,7 +265,7 @@ export function SettingsPage() {
                   <option value="manual">Manual only</option>
                 </SelectField>
                 <BackupSettingsSection />
-              </SettingsPanel>
+              </SettingsPreferenceList>
             </div>
           ) : null}
 
@@ -304,6 +284,10 @@ export function SettingsPage() {
 
           {selectedCategory === "privacy" ? null : <SettingsSaveNote status={status} />}
         </section>
+
+        <aside aria-label="Application information" className="settings-about-footer">
+          <CoreContentSection />
+        </aside>
       </div>
     </div>
   );

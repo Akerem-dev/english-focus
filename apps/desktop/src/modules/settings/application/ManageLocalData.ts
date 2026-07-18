@@ -8,17 +8,10 @@ export const FULL_LOCAL_RESET_CATEGORIES: readonly LocalDataCategory[] = Object.
   "activity"
 ]);
 
-export function requiredLocalDataConfirmation(
-  categories: readonly LocalDataCategory[]
-): "DELETE BACKUPS" | "DELETE SELECTED DATA" | "RESET LOCAL DATA" {
-  if (categories.includes("backups")) {
-    return categories.length === 1 ? "DELETE BACKUPS" : "RESET LOCAL DATA";
-  }
+export const RESET_APPLICATION_CONFIRMATION = "RESET ENGLISH FOCUS";
 
-  const isFullReset = FULL_LOCAL_RESET_CATEGORIES.every((category) =>
-    categories.includes(category)
-  );
-  return isFullReset ? "RESET LOCAL DATA" : "DELETE SELECTED DATA";
+export function isFullResetConfirmation(value: string): boolean {
+  return value.trim() === RESET_APPLICATION_CONFIRMATION;
 }
 
 export function canCreateSafetyBackup(categories: readonly LocalDataCategory[]): boolean {

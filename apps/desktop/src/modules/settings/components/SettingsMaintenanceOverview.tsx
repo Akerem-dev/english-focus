@@ -67,20 +67,20 @@ export function SettingsMaintenanceOverview({
         title="Recent activity"
       />
       <MaintenanceCard
-        actionLabel="Run diagnostics"
-        description="Check SQLite integrity, recovery readiness, and local data consistency."
+        actionLabel="Check app health"
+        description="Check whether your words, settings, and backups are working normally."
         icon="settings"
-        meta="Read-only until maintenance is approved"
+        meta="The check does not change your data"
         onOpen={() => onOpen("diagnostics")}
-        title="System diagnostics"
+        title="App health"
       />
       <MaintenanceCard
-        actionLabel="Manage local data"
-        description="Remove selected local records or review a guarded full local reset."
+        actionLabel="Manage my data"
+        description="Review or remove the words, notes, settings, activity, and backups stored on this device."
         icon="warning"
-        meta="Bundled vocabulary is always protected"
+        meta="Built-in vocabulary is always kept"
         onOpen={() => onOpen("local-data")}
-        title="Local data"
+        title="My data"
         tone="danger"
       />
     </section>

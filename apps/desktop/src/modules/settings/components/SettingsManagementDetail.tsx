@@ -15,12 +15,12 @@ const MANAGEMENT_VIEW_DETAILS: Record<
     description: "Review the small privacy-safe timeline stored only on this device."
   },
   diagnostics: {
-    title: "System diagnostics",
-    description: "Run a read-only health scan and review safe recovery guidance."
+    title: "App health",
+    description: "Check whether your local words, settings, and backups are working normally."
   },
   "local-data": {
-    title: "Local data",
-    description: "Review record counts and carefully remove only the data you choose."
+    title: "My data",
+    description: "Review what is stored on this device and remove only what you choose."
   }
 };
 
@@ -52,9 +52,9 @@ export function SettingsManagementDetail({ onBack, view }: SettingsManagementVie
         </div>
       </header>
       <div className="settings-management-view__body">
-        {view === "activity" ? <ActivitySection /> : null}
+        {view === "activity" ? <ActivitySection showHeading={false} /> : null}
         {view === "diagnostics" ? <DiagnosticsSection /> : null}
-        {view === "local-data" ? <LocalDataControlsSection /> : null}
+        {view === "local-data" ? <LocalDataControlsSection showHeading={false} /> : null}
       </div>
     </div>
   );

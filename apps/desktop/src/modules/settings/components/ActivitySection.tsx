@@ -2,36 +2,44 @@ import { useMemo, useState } from "react";
 import type { ActivityFilter } from "@platform/domain";
 
 import { useActivity, useToast } from "../../../app/providers";
-import { Button, SelectField, StatusBadge } from "../../../components";
+import { Button, SelectField } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { activityKindLabel, activityScopeLabel, formatActivityTime } from "../../history";
 
-export function ActivitySection() {
+interface ActivitySectionProps {
+  readonly showHeading?: boolean;
+}
+
+export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
   const { activity, clearActivity, error, status } = useActivity();
   const { showToast } = useToast();
   const [filter, setFilter] = useState<ActivityFilter>("all");
-  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearReviewOpen, setClearReviewOpen] = useState(false);
 
   const filteredActivity = useMemo(
     () => (filter === "all" ? activity : activity.filter((record) => record.scope === filter)),
     [activity, filter]
   );
   const isBusy = status === "loading" || status === "recording" || status === "clearing";
+  const countLabel =
+    status === "loading"
+      ? "Loading"
+      : `${activity.length} ${activity.length === 1 ? "item" : "items"}`;
 
   const handleClear = async () => {
     try {
       const cleared = await clearActivity();
-      setConfirmClear(false);
+      setClearReviewOpen(false);
       showToast({
         title: "Recent activity cleared",
-        message: `${cleared} local activity ${cleared === 1 ? "record" : "records"} removed.`,
+        message: `${cleared} local activity ${cleared === 1 ? "item" : "items"} removed.`,
         tone: "success",
         dedupeKey: "activity-cleared"
       });
     } catch {
       showToast({
         title: "Recent activity could not be cleared",
-        message: "The local history remains unchanged. Try again after reopening the app.",
+        message: "The activity list is unchanged. Reopen the app and try again.",
         tone: "error",
         dedupeKey: "activity-clear-error"
       });
@@ -39,77 +47,76 @@ export function ActivitySection() {
   };
 
   return (
-    <div className="activity-section">
-      <div className="activity-section__intro">
-        <div>
-          <h3>Recent activity</h3>
-          <p>
-            A short local record of important actions. Personal notes, definitions, pasted JSON, and
-            file paths are never stored here.
-          </p>
+    <div className="activity-section activity-section--focused">
+      {showHeading ? (
+        <header className="activity-section__intro">
+          <div>
+            <h3>Recent activity</h3>
+            <p>A simple list of important actions saved only on this device.</p>
+          </div>
+          <span className="activity-section__count" aria-live="polite">
+            {countLabel}
+          </span>
+        </header>
+      ) : (
+        <div className="activity-section__compact-summary" aria-live="polite">
+          <span>{countLabel}</span>
+          <span>Only on this device</span>
         </div>
-        <StatusBadge
-          tone={error !== undefined ? "danger" : status === "loading" ? "neutral" : "success"}
-        >
-          {status === "loading" ? "Loading" : `${activity.length} recent`}
-        </StatusBadge>
-      </div>
+      )}
 
       {error === undefined ? null : (
-        <div className="activity-section__error" role="alert">
+        <section className="activity-section__error" role="alert">
           <AppIcon name="warning" size={18} />
           <div>
-            <strong>Recent activity could not be loaded.</strong>
-            <p>Some older local activity records may be incompatible with this app version.</p>
+            <strong>Some older activity was skipped.</strong>
+            <p>Your words, notes, settings, and backups are not affected.</p>
             <details className="activity-section__technical-error">
-              <summary>View technical details</summary>
+              <summary>Technical details</summary>
               <pre>{error}</pre>
             </details>
           </div>
-        </div>
+        </section>
       )}
 
       <div className="activity-section__toolbar">
         <SelectField
           disabled={isBusy}
-          label="Activity area"
+          label="Show"
           onChange={(event) => {
             setFilter(event.currentTarget.value as ActivityFilter);
           }}
           value={filter}
         >
-          <option value="all">All activity</option>
-          <option value="vocabulary">Vocabulary</option>
+          <option value="all">All actions</option>
+          <option value="vocabulary">Words</option>
           <option value="library">Library</option>
           <option value="settings">Settings</option>
-          <option value="backup">Backup</option>
+          <option value="backup">Backups</option>
           <option value="system">System</option>
         </SelectField>
-        <div className="activity-section__privacy">
-          <AppIcon name="check" size={18} />
-          <span>Stored only in this app · excluded from exports and backups</span>
-        </div>
+        <p className="activity-section__privacy">
+          <AppIcon name="check" size={17} />
+          <span>Stored only on this device</span>
+        </p>
       </div>
 
       {filteredActivity.length === 0 ? (
         <div className="activity-section__empty">
           <AppIcon name="book-open" size={22} />
           <div>
-            <strong>No activity in this view</strong>
-            <p>Open a vocabulary entry or complete a local action to create a history item.</p>
+            <strong>Nothing to show here</strong>
+            <p>Open a word or use the app to start building this list.</p>
           </div>
         </div>
       ) : (
-        <ol aria-label="Recent local activity" className="activity-list">
+        <ol aria-label="Recent local activity" className="activity-list activity-list--focused">
           {filteredActivity.map((record) => (
             <li className="activity-list__item" key={record.id}>
-              <span aria-hidden="true" className="activity-list__marker" />
               <div className="activity-list__content">
-                <div className="activity-list__heading">
-                  <strong>{record.label || activityKindLabel(record.kind)}</strong>
-                  <StatusBadge>{activityScopeLabel(record.scope)}</StatusBadge>
-                </div>
+                <strong>{record.label || activityKindLabel(record.kind)}</strong>
                 <div className="activity-list__meta">
+                  <span>{activityScopeLabel(record.scope)}</span>
                   {record.target === undefined ? null : <span>{record.target}</span>}
                   <time dateTime={record.occurredAt}>{formatActivityTime(record.occurredAt)}</time>
                 </div>
@@ -119,36 +126,56 @@ export function ActivitySection() {
         </ol>
       )}
 
-      <div className="activity-clear-boundary">
-        <div>
-          <strong>Clear recent activity</strong>
-          <p>
-            This removes only the local activity timeline. Vocabulary, study details, settings, and
-            backups are not changed.
-          </p>
-        </div>
-        <label className="activity-clear-boundary__confirmation">
-          <input
-            checked={confirmClear}
-            disabled={isBusy || activity.length === 0}
-            onChange={(event) => {
-              setConfirmClear(event.currentTarget.checked);
-            }}
-            type="checkbox"
-          />
-          <span>I understand this clears the retained activity timeline.</span>
-        </label>
-        <Button
-          disabled={!confirmClear || isBusy || activity.length === 0}
-          onClick={() => {
-            void handleClear();
-          }}
-          size="small"
-          variant="secondary"
-        >
-          {status === "clearing" ? "Clearing activity" : "Clear recent activity"}
-        </Button>
-      </div>
+      <section className="activity-clear-boundary activity-clear-boundary--focused">
+        {clearReviewOpen ? (
+          <div className="activity-clear-review">
+            <div>
+              <strong>Clear the activity list?</strong>
+              <p>Your words, notes, settings, and backups will stay unchanged.</p>
+            </div>
+            <div className="activity-clear-review__actions">
+              <Button
+                disabled={isBusy}
+                onClick={() => {
+                  setClearReviewOpen(false);
+                }}
+                size="small"
+                variant="ghost"
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isBusy || activity.length === 0}
+                isLoading={status === "clearing"}
+                onClick={() => {
+                  void handleClear();
+                }}
+                size="small"
+                variant="danger"
+              >
+                Clear activity
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="activity-clear-entry">
+            <div>
+              <strong>Clear recent activity</strong>
+              <p>This removes only this activity list.</p>
+            </div>
+            <Button
+              disabled={isBusy || activity.length === 0}
+              onClick={() => {
+                setClearReviewOpen(true);
+              }}
+              size="small"
+              variant="ghost"
+            >
+              Clear activity
+            </Button>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
