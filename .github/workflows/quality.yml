@@ -11,8 +11,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -21,53 +19,3 @@ jobs:
 
       - run: npm ci
       - run: npm run quality
-
-      - name: Collect phase seven changed files
-        if: github.event_name == 'pull_request' && github.head_ref == 'feat/simplified-vocabulary-experience'
-        shell: bash
-        run: |
-          set -euo pipefail
-          base='ccc8aca71459933f373addc8d16b8c4f00de68a6'
-          root='phase7-export/files'
-          mkdir -p "$root"
-          : > phase7-export/CHANGED_FILES.txt
-          : > "$root/DELETE_THESE_FILES.txt"
-
-          while IFS=$'\t' read -r status first second; do
-            path="$first"
-            if [[ "$status" == R* ]]; then
-              path="$second"
-            fi
-
-            if [[ "$path" == '.github/workflows/quality.yml' ]]; then
-              continue
-            fi
-
-            printf '%s\t%s\n' "$status" "$path" >> phase7-export/CHANGED_FILES.txt
-
-            case "$status" in
-              D*)
-                printf '%s\n' "$path" >> "$root/DELETE_THESE_FILES.txt"
-                ;;
-              *)
-                mkdir -p "$root/$(dirname "$path")"
-                cp "$path" "$root/$path"
-                ;;
-            esac
-          done < <(git diff --name-status "$base" HEAD)
-
-          cp phase7-export/CHANGED_FILES.txt "$root/CHANGED_FILES.txt"
-          printf '%s\n' "$(git rev-parse HEAD)" > "$root/PHASE_7_COMMIT.txt"
-          (
-            cd "$root"
-            zip -qr ../english-focus-phase-7-changed-files.zip .
-          )
-
-      - name: Upload phase seven changed files
-        if: github.event_name == 'pull_request' && github.head_ref == 'feat/simplified-vocabulary-experience'
-        uses: actions/upload-artifact@v4
-        with:
-          name: english-focus-phase-7-changed-files
-          path: phase7-export/english-focus-phase-7-changed-files.zip
-          if-no-files-found: error
-          retention-days: 3
