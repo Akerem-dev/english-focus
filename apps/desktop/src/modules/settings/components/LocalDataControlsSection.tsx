@@ -10,14 +10,19 @@ import {
   useVocabularyMetadata,
   useVocabularyRepository
 } from "../../../app/providers";
-import { Button, Modal, StatusBadge, TextField } from "../../../components";
+import { Button } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import {
   FULL_LOCAL_RESET_CATEGORIES,
   canCreateSafetyBackup,
-  requiredLocalDataConfirmation,
+  isFullResetConfirmation,
   selectedLocalDataCount
 } from "../application";
+import {
+  ResetApplicationDialog,
+  SelectiveDataRemovalDialog,
+  type LocalDataCategoryOption
+} from "./LocalDataRemovalDialogs";
 
 const emptySnapshot: LocalDataSnapshot = Object.freeze({
   studyMetadataRecords: 0,
@@ -28,57 +33,10 @@ const emptySnapshot: LocalDataSnapshot = Object.freeze({
   backupFiles: 0
 });
 
-interface CategoryDefinition {
-  readonly category: LocalDataCategory;
-  readonly title: string;
-  readonly description: string;
-  readonly count: (snapshot: LocalDataSnapshot) => number;
-}
+type DialogMode = "selective" | "full-reset" | undefined;
 
-const categoryDefinitions: readonly CategoryDefinition[] = Object.freeze([
-  {
-    category: "study-metadata",
-    title: "Favorites, tags & notes",
-    description: "Your favorites, tags, personal notes, and word-view history.",
-    count: (snapshot) => snapshot.studyMetadataRecords
-  },
-  {
-    category: "user-vocabulary",
-    title: "Words I added",
-    description:
-      "Words you created or imported. Their linked favorites, tags, and notes are removed too.",
-    count: (snapshot) => snapshot.userVocabularyEntries
-  },
-  {
-    category: "overrides",
-    title: "Built-in words I edited",
-    description: "Your edits are removed and the original built-in versions are shown again.",
-    count: (snapshot) => snapshot.overrideVocabularyEntries
-  },
-  {
-    category: "settings",
-    title: "Application settings",
-    description:
-      "Theme, content, accessibility, backup, and explanation preferences return to their defaults.",
-    count: (snapshot) => snapshot.settingsRecords
-  },
-  {
-    category: "activity",
-    title: "Recent activity",
-    description: "Only the activity list saved on this device is cleared.",
-    count: (snapshot) => snapshot.activityRecords
-  },
-  {
-    category: "backups",
-    title: "Saved backups",
-    description:
-      "Every saved backup is permanently deleted. A recovery copy cannot be created for this choice.",
-    count: (snapshot) => snapshot.backupFiles
-  }
-]);
-
-function formatCount(value: number, singular: string, plural = `${singular}s`): string {
-  return `${value} ${value === 1 ? singular : plural}`;
+interface LocalDataControlsSectionProps {
+  readonly showHeading?: boolean;
 }
 
 function deletedSummary(result: ResetLocalDataResult): string {
@@ -90,10 +48,10 @@ function deletedSummary(result: ResetLocalDataResult): string {
     deleted.settingsRecords +
     deleted.activityRecords +
     deleted.backupFiles;
-  return formatCount(total, "local record");
+  return `${total} ${total === 1 ? "item" : "items"}`;
 }
 
-export function LocalDataControlsSection() {
+export function LocalDataControlsSection({ showHeading = true }: LocalDataControlsSectionProps) {
   const { localDataRepository: repository } = useMaintenance();
   const { refreshActivity, recordActivity } = useActivity();
   const { refreshBackups } = useBackup();
@@ -104,7 +62,7 @@ export function LocalDataControlsSection() {
   const [snapshot, setSnapshot] = useState<LocalDataSnapshot>(emptySnapshot);
   const [status, setStatus] = useState<"loading" | "ready" | "resetting" | "error">("loading");
   const [error, setError] = useState<string | undefined>();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<DialogMode>();
   const [selectedCategories, setSelectedCategories] = useState<readonly LocalDataCategory[]>([]);
   const [reviewConfirmed, setReviewConfirmed] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
@@ -122,7 +80,7 @@ export function LocalDataControlsSection() {
       return next;
     } catch (cause) {
       const message =
-        cause instanceof Error ? cause.message : "Local data counts could not be loaded.";
+        cause instanceof Error ? cause.message : "Your data summary could not be loaded.";
       setError(message);
       setStatus("error");
       throw cause;
@@ -138,15 +96,54 @@ export function LocalDataControlsSection() {
     };
   }, [refreshSnapshot]);
 
-  const expectedPhrase = requiredLocalDataConfirmation(selectedCategories);
-  const safetyAvailable = canCreateSafetyBackup(selectedCategories);
+  const categoryOptions: readonly LocalDataCategoryOption[] = Object.freeze([
+    {
+      category: "study-metadata",
+      title: "Favorites, tags & notes",
+      description: "Your favorites, personal notes, tags, and word-view history.",
+      count: snapshot.studyMetadataRecords
+    },
+    {
+      category: "user-vocabulary",
+      title: "Words I added",
+      description: "Words you created or imported, including their linked personal details.",
+      count: snapshot.userVocabularyEntries
+    },
+    {
+      category: "overrides",
+      title: "Built-in words I edited",
+      description: "Your edits are removed and the original built-in versions return.",
+      count: snapshot.overrideVocabularyEntries
+    },
+    {
+      category: "settings",
+      title: "Application preferences",
+      description: "Theme, accessibility, backup, content, and explanation preferences.",
+      count: snapshot.settingsRecords
+    },
+    {
+      category: "activity",
+      title: "Recent activity",
+      description: "Only the activity timeline stored on this device.",
+      count: snapshot.activityRecords
+    },
+    {
+      category: "backups",
+      title: "Saved backups",
+      description: "Every saved backup on this device. This cannot be recovered afterward.",
+      count: snapshot.backupFiles
+    }
+  ]);
+
+  const selectiveSafetyAvailable = canCreateSafetyBackup(selectedCategories);
   const selectedCount = selectedLocalDataCount(snapshot, selectedCategories);
-  const canSubmit =
+  const selectiveCanSubmit =
     selectedCategories.length > 0 &&
     reviewConfirmed &&
-    confirmationText.trim() === expectedPhrase &&
     status !== "resetting" &&
     lastResult === undefined;
+  const fullResetCanSubmit =
+    isFullResetConfirmation(confirmationText) && status !== "resetting" && lastResult === undefined;
 
   const resetDialogState = useCallback(() => {
     setSelectedCategories([]);
@@ -160,17 +157,13 @@ export function LocalDataControlsSection() {
     if (status === "resetting") {
       return;
     }
-    setDialogOpen(false);
+    setDialogMode(undefined);
     resetDialogState();
   }, [resetDialogState, status]);
 
-  function openWithSelection(categories: readonly LocalDataCategory[]) {
-    setSelectedCategories(Object.freeze([...categories]));
-    setReviewConfirmed(false);
-    setConfirmationText("");
-    setCreateSafetyBackup(canCreateSafetyBackup(categories));
-    setLastResult(undefined);
-    setDialogOpen(true);
+  function openDialog(mode: Exclude<DialogMode, undefined>) {
+    resetDialogState();
+    setDialogMode(mode);
   }
 
   function toggleCategory(category: LocalDataCategory, checked: boolean) {
@@ -179,24 +172,20 @@ export function LocalDataControlsSection() {
         ? [...current.filter((item) => item !== category), category]
         : current.filter((item) => item !== category);
       setReviewConfirmed(false);
-      setConfirmationText("");
       setCreateSafetyBackup(canCreateSafetyBackup(next));
       return Object.freeze(next);
     });
   }
 
-  async function performReset() {
-    if (!canSubmit) {
-      return;
-    }
-
+  async function performReset(categories: readonly LocalDataCategory[], fullReset: boolean) {
     setStatus("resetting");
     setError(undefined);
     setLastResult(undefined);
 
     try {
+      const safetyAvailable = canCreateSafetyBackup(categories);
       const result = await repository.resetLocalData({
-        categories: selectedCategories,
+        categories,
         createSafetyBackup: safetyAvailable && createSafetyBackup,
         requestedAt: new Date().toISOString()
       });
@@ -209,11 +198,11 @@ export function LocalDataControlsSection() {
         refreshBackups()
       ]);
 
-      if (!selectedCategories.includes("activity")) {
+      if (!categories.includes("activity")) {
         await recordActivity({
           kind: "local-data-reset",
           scope: "settings",
-          label: "Selected local data removed"
+          label: fullReset ? "English Focus reset" : "Selected data removed"
         }).catch(() => undefined);
       }
 
@@ -222,241 +211,142 @@ export function LocalDataControlsSection() {
       setLastResult(result);
       setStatus("ready");
       showToast({
-        title: "Local data removal completed",
-        message: `${deletedSummary(result)} removed${result.safetyBackup === undefined ? "." : "; a safety backup was created first."}`,
+        title: fullReset ? "English Focus was reset" : "Selected data was removed",
+        message: `${deletedSummary(result)} removed${result.safetyBackup === undefined ? "." : "; a recovery copy was created first."}`,
         tone: "success",
-        dedupeKey: "local-data-reset-success"
+        dedupeKey: fullReset ? "full-local-reset-success" : "selected-local-data-reset-success"
       });
     } catch (cause) {
       const message =
-        cause instanceof Error ? cause.message : "Selected local data could not be removed.";
+        cause instanceof Error
+          ? cause.message
+          : fullReset
+            ? "English Focus could not be reset."
+            : "The selected data could not be removed.";
       setError(message);
       setStatus("error");
       showToast({
-        title: "Local data was not removed",
+        title: fullReset ? "English Focus was not reset" : "Selected data was not removed",
         message: "The operation did not complete. Review the message and try again.",
         tone: "error",
-        dedupeKey: "local-data-reset-error"
+        dedupeKey: fullReset ? "full-local-reset-error" : "selected-local-data-reset-error"
       });
     }
   }
 
+  const resultMessage =
+    lastResult === undefined
+      ? undefined
+      : `${deletedSummary(lastResult)} removed. ${
+          lastResult.safetyBackup === undefined
+            ? "No recovery copy was created."
+            : "A recovery copy was created first."
+        }`;
+
   return (
     <div className="local-data-controls">
-      <div className="local-data-controls__intro">
-        <div>
+      {showHeading ? (
+        <header className="local-data-controls__intro">
           <h3>My data</h3>
-          <p>
-            Review what English Focus stores on this device and remove only what you choose.
-            Built-in vocabulary is always kept.
-          </p>
-        </div>
-        <StatusBadge tone={error === undefined ? "success" : "danger"}>
-          {status === "loading"
-            ? "Loading"
-            : status === "resetting"
-              ? "Removing"
-              : "Your data stays protected"}
-        </StatusBadge>
-      </div>
+          <p>Review what is stored on this device. Built-in vocabulary is always kept.</p>
+        </header>
+      ) : null}
 
       {error === undefined ? null : (
         <section className="local-data-controls__error" role="alert">
           <AppIcon name="warning" size={19} />
           <div>
-            <strong>Your data could not be loaded.</strong>
+            <strong>Your data summary could not be loaded.</strong>
             <p>{error}</p>
           </div>
         </section>
       )}
 
-      <dl className="local-data-summary">
-        <div>
-          <dt>User vocabulary</dt>
-          <dd>{snapshot.userVocabularyEntries}</dd>
-        </div>
-        <div>
-          <dt>Edited built-in words</dt>
-          <dd>{snapshot.overrideVocabularyEntries}</dd>
-        </div>
-        <div>
-          <dt>Study details</dt>
-          <dd>{snapshot.studyMetadataRecords}</dd>
-        </div>
-        <div>
-          <dt>Activity items</dt>
-          <dd>{snapshot.activityRecords}</dd>
-        </div>
-        <div>
-          <dt>Retained backups</dt>
-          <dd>{snapshot.backupFiles}</dd>
-        </div>
-      </dl>
+      <section className="local-data-overview" aria-labelledby="stored-data-heading">
+        <header>
+          <h3 id="stored-data-heading">Stored on this device</h3>
+          <p>These totals help you understand what can be managed or removed.</p>
+        </header>
+        <dl>
+          {categoryOptions.map((option) => (
+            <div key={option.category}>
+              <dt>{option.title}</dt>
+              <dd>{option.count}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
-      <div className="local-data-presets">
+      <section className="local-data-action-row">
+        <div>
+          <h3>Remove selected data</h3>
+          <p>Choose individual data groups. Nothing is selected when the window opens.</p>
+        </div>
         <Button
           disabled={status === "loading" || status === "resetting"}
           onClick={() => {
-            openWithSelection([]);
+            openDialog("selective");
           }}
           variant="secondary"
         >
-          Choose what to remove
+          Choose data
         </Button>
+      </section>
+
+      <section className="local-data-reset-entry">
+        <div>
+          <p className="route-page__eyebrow">Reset</p>
+          <h3>Reset English Focus</h3>
+          <p>
+            Remove added words, edits, personal details, settings, and activity. Built-in words and
+            saved backups stay available.
+          </p>
+        </div>
         <Button
           disabled={status === "loading" || status === "resetting"}
           onClick={() => {
-            openWithSelection(FULL_LOCAL_RESET_CATEGORIES);
+            openDialog("full-reset");
           }}
           variant="danger"
         >
-          Reset the app
+          Open reset options
         </Button>
-      </div>
+      </section>
 
-      <p className="local-data-controls__boundary">
-        Resetting removes your added words, edits, notes, settings, and activity. Saved backups stay
-        available unless you choose to remove them too.
-      </p>
-
-      <Modal
-        description="Choose what you want to remove from this device. Nothing is deleted until you confirm."
-        footer={
-          <>
-            <Button disabled={status === "resetting"} onClick={closeDialog} variant="ghost">
-              {lastResult === undefined ? "Cancel" : "Close"}
-            </Button>
-            <Button
-              disabled={!canSubmit}
-              isLoading={status === "resetting"}
-              onClick={() => {
-                void performReset();
-              }}
-              variant="danger"
-            >
-              Remove selected local data
-            </Button>
-          </>
-        }
+      <SelectiveDataRemovalDialog
+        busy={status === "resetting"}
+        canSubmit={selectiveCanSubmit}
+        categories={categoryOptions}
+        createSafetyBackup={createSafetyBackup}
         onClose={closeDialog}
-        open={dialogOpen}
-        size="large"
-        title="Remove data from this device"
-      >
-        <div className="local-data-dialog">
-          <section className="local-data-dialog__selection">
-            <header>
-              <p className="route-page__eyebrow">Step 1</p>
-              <h3>Choose what to remove</h3>
-              <p>Built-in vocabulary is always kept.</p>
-            </header>
-            <div className="local-data-category-list">
-              {categoryDefinitions.map((definition) => {
-                const selected = selectedCategories.includes(definition.category);
-                const count = definition.count(snapshot);
-                return (
-                  <label
-                    className="local-data-category"
-                    data-selected={selected || undefined}
-                    key={definition.category}
-                  >
-                    <input
-                      checked={selected}
-                      disabled={status === "resetting"}
-                      onChange={(event) => {
-                        toggleCategory(definition.category, event.currentTarget.checked);
-                      }}
-                      type="checkbox"
-                    />
-                    <span>
-                      <span className="local-data-category__heading">
-                        <strong>{definition.title}</strong>
-                        <StatusBadge>{formatCount(count, "item")}</StatusBadge>
-                      </span>
-                      <small>{definition.description}</small>
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </section>
+        onCreateSafetyBackupChange={setCreateSafetyBackup}
+        onReviewConfirmedChange={setReviewConfirmed}
+        onSubmit={() => {
+          void performReset(selectedCategories, false);
+        }}
+        onToggleCategory={toggleCategory}
+        open={dialogMode === "selective"}
+        resultMessage={resultMessage}
+        reviewConfirmed={reviewConfirmed}
+        safetyAvailable={selectiveSafetyAvailable}
+        selectedCategories={selectedCategories}
+        selectedCount={selectedCount}
+      />
 
-          <section className="local-data-dialog__safety">
-            <p className="route-page__eyebrow">Step 2</p>
-            <h3>Keep a recovery copy</h3>
-            <label className="local-data-safety-option">
-              <input
-                checked={safetyAvailable && createSafetyBackup}
-                disabled={!safetyAvailable || status === "resetting"}
-                onChange={(event) => {
-                  setCreateSafetyBackup(event.currentTarget.checked);
-                }}
-                type="checkbox"
-              />
-              <span>
-                <strong>Back up before removing anything</strong>
-                <small>
-                  {safetyAvailable
-                    ? "Recommended. Your words, notes, and settings can be restored later."
-                    : selectedCategories.includes("backups")
-                      ? "Unavailable because saved backups are included in this removal."
-                      : "Not needed for what you selected."}
-                </small>
-              </span>
-            </label>
-          </section>
-
-          <section className="local-data-dialog__confirmation">
-            <p className="route-page__eyebrow">Step 3</p>
-            <h3>Confirm removal</h3>
-            <div className="local-data-impact-summary">
-              <span>Selected items</span>
-              <strong>{selectedCategories.length}</strong>
-              <span>Items found</span>
-              <strong>{selectedCount}</strong>
-            </div>
-            <label className="local-data-review-check">
-              <input
-                checked={reviewConfirmed}
-                disabled={selectedCategories.length === 0 || status === "resetting"}
-                onChange={(event) => {
-                  setReviewConfirmed(event.currentTarget.checked);
-                }}
-                type="checkbox"
-              />
-              <span>I reviewed my choices and understand that this cannot be undone.</span>
-            </label>
-            <TextField
-              autoComplete="off"
-              data-autofocus="true"
-              disabled={selectedCategories.length === 0 || status === "resetting"}
-              helperText={`For extra safety, type ${expectedPhrase} exactly.`}
-              label="Type to confirm"
-              onChange={(event) => {
-                setConfirmationText(event.currentTarget.value);
-              }}
-              placeholder={expectedPhrase}
-              spellCheck={false}
-              value={confirmationText}
-            />
-          </section>
-
-          {lastResult === undefined ? null : (
-            <section className="local-data-dialog__result" role="status">
-              <AppIcon name="check" size={20} />
-              <div>
-                <strong>Your selected data was removed</strong>
-                <p>
-                  {deletedSummary(lastResult)} removed.{" "}
-                  {lastResult.safetyBackup === undefined
-                    ? "No recovery copy was created."
-                    : "A recovery copy was created first."}
-                </p>
-              </div>
-            </section>
-          )}
-        </div>
-      </Modal>
+      <ResetApplicationDialog
+        busy={status === "resetting"}
+        canSubmit={fullResetCanSubmit}
+        confirmationText={confirmationText}
+        createSafetyBackup={createSafetyBackup}
+        onClose={closeDialog}
+        onConfirmationTextChange={setConfirmationText}
+        onCreateSafetyBackupChange={setCreateSafetyBackup}
+        onSubmit={() => {
+          void performReset(FULL_LOCAL_RESET_CATEGORIES, true);
+        }}
+        open={dialogMode === "full-reset"}
+        resultMessage={resultMessage}
+      />
     </div>
   );
 }
