@@ -21,6 +21,26 @@ describe("activityRecordSchema", () => {
     );
   });
 
+  it("accepts older desktop records whose optional target was stored as null", () => {
+    expect(
+      activityRecordSchema.parse({
+        id: "activity-legacy",
+        kind: "settings-updated",
+        scope: "settings",
+        label: "Settings updated",
+        target: null,
+        occurredAt: "2026-07-16T00:00:00.000Z"
+      })
+    ).toEqual({
+      id: "activity-legacy",
+      kind: "settings-updated",
+      scope: "settings",
+      label: "Settings updated",
+      target: undefined,
+      occurredAt: "2026-07-16T00:00:00.000Z"
+    });
+  });
+
   it("rejects arbitrary detail fields so notes and JSON cannot leak into history", () => {
     expect(() =>
       activityRecordSchema.parse({
