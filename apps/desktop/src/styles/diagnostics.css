@@ -83,25 +83,20 @@
   height: 2.5rem;
 }
 
-.diagnostics-health-summary[data-status="healthy"]
-  .diagnostics-health-summary__icon,
+.diagnostics-health-summary[data-status="healthy"] .diagnostics-health-summary__icon,
 .diagnostics-health-facts li[data-tone="good"] .diagnostics-health-facts__icon,
 .diagnostics-health-facts li[data-tone="good"] strong {
   color: var(--color-success);
 }
 
-.diagnostics-health-summary[data-status="attention"]
-  .diagnostics-health-summary__icon,
+.diagnostics-health-summary[data-status="attention"] .diagnostics-health-summary__icon,
 .diagnostics-health-facts li[data-tone="check"] .diagnostics-health-facts__icon,
 .diagnostics-health-facts li[data-tone="check"] strong {
   color: var(--color-warning);
 }
 
-.diagnostics-health-summary[data-status="critical"]
-  .diagnostics-health-summary__icon,
-.diagnostics-health-facts
-  li[data-tone="problem"]
-  .diagnostics-health-facts__icon,
+.diagnostics-health-summary[data-status="critical"] .diagnostics-health-summary__icon,
+.diagnostics-health-facts li[data-tone="problem"] .diagnostics-health-facts__icon,
 .diagnostics-health-facts li[data-tone="problem"] strong {
   color: var(--color-danger);
 }

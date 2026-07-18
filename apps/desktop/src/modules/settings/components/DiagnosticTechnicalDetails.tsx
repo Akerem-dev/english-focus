@@ -1,8 +1,4 @@
-import type {
-  DiagnosticCheck,
-  DiagnosticCheckStatus,
-  DiagnosticReport,
-} from "@platform/domain";
+import type { DiagnosticCheck, DiagnosticCheckStatus, DiagnosticReport } from "@platform/domain";
 
 import { Button } from "../../../components";
 import { AppIcon } from "../../../design-system";
@@ -13,25 +9,15 @@ const FRIENDLY_CHECK_TITLES: Readonly<Record<string, string>> = Object.freeze({
   "schema-version": "App data compatibility",
   "database-pragmas": "Data protection settings",
   "data-consistency": "Saved data",
-  "backup-availability": "Backup availability",
+  "backup-availability": "Backup availability"
 });
 
 function checkStatusLabel(status: DiagnosticCheckStatus): string {
-  return status === "passed"
-    ? "Good"
-    : status === "warning"
-      ? "Check"
-      : "Problem";
+  return status === "passed" ? "Good" : status === "warning" ? "Check" : "Problem";
 }
 
-function checkTone(
-  status: DiagnosticCheckStatus,
-): "good" | "check" | "problem" {
-  return status === "passed"
-    ? "good"
-    : status === "warning"
-      ? "check"
-      : "problem";
+function checkTone(status: DiagnosticCheckStatus): "good" | "check" | "problem" {
+  return status === "passed" ? "good" : status === "warning" ? "check" : "problem";
 }
 
 function friendlyCheckTitle(check: DiagnosticCheck): string {
@@ -49,7 +35,7 @@ function formatGeneratedAt(value: string): string {
     month: "short",
     day: "2-digit",
     hour: "2-digit",
-    minute: "2-digit",
+    minute: "2-digit"
   });
 }
 
@@ -62,7 +48,7 @@ interface DiagnosticTechnicalDetailsProps {
 export function DiagnosticTechnicalDetails({
   copyStatus,
   onCopy,
-  report,
+  report
 }: DiagnosticTechnicalDetailsProps) {
   return (
     <details className="diagnostics-technical-details">
@@ -73,9 +59,8 @@ export function DiagnosticTechnicalDetails({
       <div className="diagnostics-technical-details__body">
         <div className="diagnostics-technical-details__actions">
           <p>
-            These details are mainly useful for troubleshooting or support. No
-            action is required when the summary above says everything looks
-            good.
+            These details are mainly useful for troubleshooting or support. No action is required
+            when the summary above says everything looks good.
           </p>
           <Button
             leadingIcon={<AppIcon name="copy" size={16} />}

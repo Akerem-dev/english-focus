@@ -9,7 +9,7 @@ import {
   createDiagnosticSummary,
   presentDiagnosticHealth,
   runDiagnostics,
-  runSafeMaintenance,
+  runSafeMaintenance
 } from "../application";
 import { DiagnosticHealthResult } from "./DiagnosticHealthResult";
 import { DiagnosticTechnicalDetails } from "./DiagnosticTechnicalDetails";
@@ -20,18 +20,14 @@ interface DiagnosticsSectionProps {
 
 type DiagnosticsStatus = "idle" | "running" | "ready" | "maintaining" | "error";
 
-export function DiagnosticsSection({
-  repository: providedRepository,
-}: DiagnosticsSectionProps) {
+export function DiagnosticsSection({ repository: providedRepository }: DiagnosticsSectionProps) {
   const clipboard = useClipboard();
   const { diagnosticsRepository } = useMaintenance();
   const repository = providedRepository ?? diagnosticsRepository;
   const [status, setStatus] = useState<DiagnosticsStatus>("idle");
   const [report, setReport] = useState<DiagnosticReport | undefined>();
   const [error, setError] = useState<string | undefined>();
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
-    "idle",
-  );
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
 
   async function handleRunDiagnostics() {
     setStatus("running");
@@ -43,15 +39,13 @@ export function DiagnosticsSection({
       publishActivity({
         kind: "diagnostics-run",
         scope: "settings",
-        label: "App health check completed",
+        label: "App health check completed"
       });
       setReport(nextReport);
       setStatus("ready");
     } catch (cause) {
       setError(
-        cause instanceof Error
-          ? cause.message
-          : "The app health check could not be completed.",
+        cause instanceof Error ? cause.message : "The app health check could not be completed."
       );
       setStatus("error");
     }
@@ -66,11 +60,7 @@ export function DiagnosticsSection({
       setReport(result.report);
       setStatus("ready");
     } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "The safe fix could not be completed.",
-      );
+      setError(cause instanceof Error ? cause.message : "The safe fix could not be completed.");
       setStatus("error");
     }
   }
@@ -94,8 +84,8 @@ export function DiagnosticsSection({
         <div>
           <strong>Check your app</strong>
           <p>
-            English Focus checks your words, settings, and backups on this
-            device. It does not upload or change anything.
+            English Focus checks your words, settings, and backups on this device. It does not
+            upload or change anything.
           </p>
         </div>
         <Button
@@ -115,9 +105,7 @@ export function DiagnosticsSection({
           <AppIcon name="warning" size={20} />
           <div>
             <strong>The check could not finish</strong>
-            <p>
-              Try again. Your existing words and settings have not been changed.
-            </p>
+            <p>Try again. Your existing words and settings have not been changed.</p>
             <details>
               <summary>Technical details</summary>
               <pre>{error}</pre>

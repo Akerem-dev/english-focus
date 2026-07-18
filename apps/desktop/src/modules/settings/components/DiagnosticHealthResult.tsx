@@ -15,7 +15,7 @@ export function DiagnosticHealthResult({
   onRepair,
   presentation,
   report,
-  repairing,
+  repairing
 }: DiagnosticHealthResultProps) {
   return (
     <>
@@ -25,10 +25,7 @@ export function DiagnosticHealthResult({
         data-status={report.overallStatus}
       >
         <span aria-hidden="true" className="diagnostics-health-summary__icon">
-          <AppIcon
-            name={report.overallStatus === "healthy" ? "check" : "warning"}
-            size={23}
-          />
+          <AppIcon name={report.overallStatus === "healthy" ? "check" : "warning"} size={23} />
         </span>
         <div>
           <h3>{presentation.title}</h3>
@@ -40,10 +37,7 @@ export function DiagnosticHealthResult({
         {presentation.facts.map((fact) => (
           <li data-tone={fact.tone} key={fact.id}>
             <span aria-hidden="true" className="diagnostics-health-facts__icon">
-              <AppIcon
-                name={fact.tone === "good" ? "check" : "warning"}
-                size={16}
-              />
+              <AppIcon name={fact.tone === "good" ? "check" : "warning"} size={16} />
             </span>
             <span>{fact.label}</span>
             <strong>{fact.value}</strong>
@@ -56,8 +50,8 @@ export function DiagnosticHealthResult({
           <div>
             <strong>A safe fix is available</strong>
             <p>
-              English Focus can restore the app storage it needs. Your words,
-              notes, settings, and backups will not be deleted.
+              English Focus can restore the app storage it needs. Your words, notes, settings, and
+              backups will not be deleted.
             </p>
           </div>
           <Button
@@ -78,8 +72,8 @@ export function DiagnosticHealthResult({
           <div>
             <strong>Use a checked backup</strong>
             <p>
-              This issue cannot be fixed automatically. Open Data & backups and
-              restore the newest backup that passes the check.
+              This issue cannot be fixed automatically. Open Data & backups and restore the newest
+              backup that passes the check.
             </p>
           </div>
         </section>

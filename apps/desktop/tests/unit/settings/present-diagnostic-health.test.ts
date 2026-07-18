@@ -3,9 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { presentDiagnosticHealth } from "../../../src/modules/settings/application";
 
-function createReport(
-  overrides: Partial<DiagnosticReport> = {},
-): DiagnosticReport {
+function createReport(overrides: Partial<DiagnosticReport> = {}): DiagnosticReport {
   return {
     generatedAt: "2026-07-18T19:00:00.000Z",
     appVersion: "1.0.0",
@@ -18,7 +16,7 @@ function createReport(
         status: "passed",
         summary: "ok",
         details: [],
-        repairable: false,
+        repairable: false
       },
       {
         id: "backup-availability",
@@ -26,8 +24,8 @@ function createReport(
         status: "passed",
         summary: "ok",
         details: [],
-        repairable: false,
-      },
+        repairable: false
+      }
     ],
     counts: {
       vocabularyEntries: 2,
@@ -37,10 +35,10 @@ function createReport(
       invalidVocabularyJson: 0,
       invalidMetadataJson: 0,
       invalidSettingsJson: 0,
-      normalizedWordMismatches: 0,
+      normalizedWordMismatches: 0
     },
     recommendations: ["No action is needed."],
-    ...overrides,
+    ...overrides
   };
 }
 
@@ -56,8 +54,8 @@ describe("presentDiagnosticHealth", () => {
         id: "next-step",
         label: "Next step",
         value: "Nothing to do",
-        tone: "good",
-      },
+        tone: "good"
+      }
     ]);
   });
 
@@ -72,7 +70,7 @@ describe("presentDiagnosticHealth", () => {
             status: "warning",
             summary: "needs repair",
             details: [],
-            repairable: true,
+            repairable: true
           },
           {
             id: "backup-availability",
@@ -80,10 +78,10 @@ describe("presentDiagnosticHealth", () => {
             status: "passed",
             summary: "ok",
             details: [],
-            repairable: false,
-          },
-        ],
-      }),
+            repairable: false
+          }
+        ]
+      })
     );
 
     expect(presentation.title).toBe("A small issue was found");
@@ -92,7 +90,7 @@ describe("presentDiagnosticHealth", () => {
       id: "next-step",
       label: "Next step",
       value: "Safe fix available",
-      tone: "check",
+      tone: "check"
     });
   });
 
@@ -107,7 +105,7 @@ describe("presentDiagnosticHealth", () => {
             status: "failed",
             summary: "invalid data",
             details: [],
-            repairable: false,
+            repairable: false
           },
           {
             id: "backup-availability",
@@ -115,16 +113,16 @@ describe("presentDiagnosticHealth", () => {
             status: "warning",
             summary: "none",
             details: [],
-            repairable: false,
-          },
-        ],
-      }),
+            repairable: false
+          }
+        ]
+      })
     );
 
     expect(presentation.title).toBe("Your data needs attention");
     expect(presentation.nonRepairableFailureCount).toBe(1);
-    expect(
-      presentation.facts.find((fact) => fact.id === "next-step")?.value,
-    ).toBe("Restore a checked backup");
+    expect(presentation.facts.find((fact) => fact.id === "next-step")?.value).toBe(
+      "Restore a checked backup"
+    );
   });
 });

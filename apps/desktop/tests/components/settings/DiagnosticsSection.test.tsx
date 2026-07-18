@@ -7,7 +7,7 @@ import { DiagnosticsSection } from "../../../src/modules/settings/components/Dia
 const markup = renderToStaticMarkup(
   <AppProviders>
     <DiagnosticsSection />
-  </AppProviders>,
+  </AppProviders>
 );
 
 describe("DiagnosticsSection", () => {
