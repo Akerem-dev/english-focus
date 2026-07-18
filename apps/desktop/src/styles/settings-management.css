@@ -1,0 +1,188 @@
+.backup-settings-compact {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-top: var(--border-width-hairline) solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-muted) 42%, var(--color-surface));
+}
+
+.backup-settings-compact .backup-settings-summary {
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.backup-settings-compact .backup-settings-summary > div {
+  min-height: 5.25rem;
+  align-content: center;
+  padding: var(--space-4);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+}
+
+.backup-settings-compact .backup-settings-actions {
+  margin: 0;
+}
+
+.backup-settings-compact .backup-settings-note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.settings-management-overview {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.settings-management-card {
+  display: grid;
+  min-height: 7rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  transition:
+    border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard);
+}
+
+.settings-management-card:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 94%, var(--color-accent-soft));
+}
+
+.settings-management-card[data-tone="danger"] {
+  border-color: color-mix(in srgb, var(--color-danger) 22%, var(--color-border));
+  background: color-mix(in srgb, var(--color-danger-soft) 28%, var(--color-surface));
+}
+
+.settings-management-card__icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.settings-management-card[data-tone="danger"] .settings-management-card__icon {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.settings-management-card__copy {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+.settings-management-card__copy h3 {
+  font-size: var(--font-size-3);
+}
+
+.settings-management-card__copy p {
+  max-width: 46rem;
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-2);
+  line-height: 1.5;
+}
+
+.settings-management-card__meta {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.settings-management-view {
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+}
+
+.settings-management-view__header {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-bottom: var(--border-width-hairline) solid var(--color-border);
+}
+
+.settings-management-view__header .button {
+  justify-self: start;
+}
+
+.settings-management-view__header h3 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-5);
+  font-weight: var(--font-weight-regular);
+}
+
+.settings-management-view__header p:last-child {
+  max-width: 48rem;
+  margin-top: var(--space-2);
+  color: var(--color-text-secondary);
+}
+
+.settings-management-view__body {
+  min-width: 0;
+  padding: var(--space-5);
+}
+
+.activity-section__technical-error {
+  margin-top: var(--space-3);
+}
+
+.activity-section__technical-error summary {
+  color: var(--color-accent);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.activity-section__technical-error pre {
+  max-height: 12rem;
+  margin-top: var(--space-2);
+  overflow: auto;
+  padding: var(--space-3);
+  border: var(--border-width-hairline) solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-1);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 60rem) {
+  .settings-management-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .settings-management-card .button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 42rem) {
+  .backup-settings-compact .backup-settings-summary,
+  .settings-management-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-management-card .button {
+    grid-column: auto;
+  }
+
+  .settings-management-view__header,
+  .settings-management-view__body {
+    padding: var(--space-4);
+  }
+}
