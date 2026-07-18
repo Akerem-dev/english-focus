@@ -65,7 +65,9 @@ function backupContentsSummary(backup: BackupDescriptor): string {
     return "App settings only";
   }
 
-  return `${words} saved ${words === 1 ? "word" : "words"} · ${personalItems} personal ${personalItems === 1 ? "item" : "items"}`;
+  return `${words} saved ${words === 1 ? "word" : "words"} · ${personalItems} personal ${
+    personalItems === 1 ? "item" : "items"
+  }`;
 }
 
 export function BackupRestoreDialog({
@@ -137,52 +139,64 @@ export function BackupRestoreDialog({
 
   return (
     <Modal
-      description="Choose a saved backup, check it, and restore it only when you need to."
+      description="Choose a backup to review or restore."
       footer={
         <>
           <Button disabled={busy} onClick={closeDialog} variant="ghost">
             Close
           </Button>
-          <Button
-            disabled={selected === undefined || busy}
-            onClick={() => {
-              void validateSelected();
-            }}
-            variant="secondary"
-          >
-            {validation === undefined ? "Check backup" : "Check again"}
-          </Button>
-          <Button
-            disabled={
-              selected === undefined ||
-              validation?.valid !== true ||
-              !confirmed ||
-              busy
-            }
-            onClick={() => {
-              void restoreSelected();
-            }}
-            variant="primary"
-          >
-            Restore backup
-          </Button>
+
+          {validation?.valid === true ? (
+            <>
+              <Button
+                disabled={selected === undefined || busy}
+                onClick={() => {
+                  void validateSelected();
+                }}
+                variant="secondary"
+              >
+                Check again
+              </Button>
+              <Button
+                disabled={selected === undefined || !confirmed || busy}
+                onClick={() => {
+                  void restoreSelected();
+                }}
+                variant="primary"
+              >
+                Restore backup
+              </Button>
+            </>
+          ) : (
+            <Button
+              disabled={selected === undefined || busy}
+              onClick={() => {
+                void validateSelected();
+              }}
+              variant="primary"
+            >
+              {validation === undefined ? "Check backup" : "Check again"}
+            </Button>
+          )}
         </>
       }
       onClose={closeDialog}
       open={open}
       size="large"
-      title="Your backups"
+      title="Backups"
     >
       {error === undefined ? null : (
         <section className="backup-alert backup-alert--error" role="alert">
-          <strong>The backup action did not finish.</strong>
-          <p>
-            Your existing data is unchanged. Close this window and try again.
-          </p>
-          <details className="backup-technical-details">
-            <summary>Technical details</summary>
-            <p>{error}</p>
-          </details>
+          <div>
+            <strong>The backup action did not finish.</strong>
+            <p>
+              Your existing data is unchanged. Close this window and try again.
+            </p>
+            <details className="backup-technical-details">
+              <summary>Technical details</summary>
+              <p>{error}</p>
+            </details>
+          </div>
         </section>
       )}
 
@@ -209,7 +223,7 @@ export function BackupRestoreDialog({
           <p>Create one from Data & backups whenever you want.</p>
         </section>
       ) : (
-        <div className="backup-manager-layout backup-manager-layout--focused">
+        <div className="backup-manager-layout backup-manager-layout--task-focused">
           <section className="backup-list" aria-label="Saved backups">
             {backups.map((backup) => {
               const selectedState = backup.fileName === selectedFileName;
@@ -237,7 +251,9 @@ export function BackupRestoreDialog({
                         {formatSize(backup.sizeBytes)}
                       </span>
                     </span>
-                    <span>{reasonLabel(backup.reason)}</span>
+                    <span className="backup-list-item__kind">
+                      {reasonLabel(backup.reason)}
+                    </span>
                     <small>{backupContentsSummary(backup)}</small>
                   </span>
                 </label>
@@ -250,7 +266,7 @@ export function BackupRestoreDialog({
               <div className="backup-inspector__placeholder">
                 <AppIcon name="search" size={28} />
                 <h3>Select a backup</h3>
-                <p>Choose one from the list to review its contents.</p>
+                <p>Choose one from the list to see what it contains.</p>
               </div>
             ) : (
               <>
@@ -282,24 +298,6 @@ export function BackupRestoreDialog({
                   </div>
                 </dl>
 
-                <details className="backup-technical-details">
-                  <summary>Technical details</summary>
-                  <dl>
-                    <div>
-                      <dt>File</dt>
-                      <dd>{selected.fileName}</dd>
-                    </div>
-                    <div>
-                      <dt>Backup version</dt>
-                      <dd>{selected.backupVersion}</dd>
-                    </div>
-                    <div>
-                      <dt>Storage format</dt>
-                      <dd>{selected.databaseSchemaVersion}</dd>
-                    </div>
-                  </dl>
-                </details>
-
                 {validation === undefined ? (
                   <p className="backup-inspector__note">
                     Check this backup before restoring it. The check stays on
@@ -310,7 +308,10 @@ export function BackupRestoreDialog({
                     <AppIcon name="check" size={19} />
                     <div>
                       <strong>Ready to restore</strong>
-                      <p>Confirm below to enable the restore button.</p>
+                      <p>
+                        Review the confirmation below, then restore when you are
+                        ready.
+                      </p>
                     </div>
                   </section>
                 ) : (
@@ -356,53 +357,77 @@ export function BackupRestoreDialog({
                   </label>
                 ) : null}
 
-                <div className="backup-delete-disclosure">
-                  {deleteReviewOpen ? (
-                    <div
-                      className="backup-delete-review"
-                      role="group"
-                      aria-label="Delete backup"
-                    >
-                      <div>
-                        <strong>Delete this backup?</strong>
-                        <p>This removes only this saved backup file.</p>
-                      </div>
-                      <div className="backup-delete-review__actions">
+                <details className="backup-secondary-options">
+                  <summary>More options</summary>
+
+                  <div className="backup-secondary-options__content">
+                    <details className="backup-technical-details">
+                      <summary>Technical details</summary>
+                      <dl>
+                        <div>
+                          <dt>File</dt>
+                          <dd>{selected.fileName}</dd>
+                        </div>
+                        <div>
+                          <dt>Backup version</dt>
+                          <dd>{selected.backupVersion}</dd>
+                        </div>
+                        <div>
+                          <dt>Storage format</dt>
+                          <dd>{selected.databaseSchemaVersion}</dd>
+                        </div>
+                      </dl>
+                    </details>
+
+                    <div className="backup-delete-disclosure">
+                      {deleteReviewOpen ? (
+                        <div
+                          className="backup-delete-review"
+                          role="group"
+                          aria-label="Delete backup"
+                        >
+                          <div>
+                            <strong>Delete this backup?</strong>
+                            <p>This removes only this saved backup file.</p>
+                          </div>
+                          <div className="backup-delete-review__actions">
+                            <Button
+                              disabled={busy}
+                              onClick={() => {
+                                setDeleteReviewOpen(false);
+                              }}
+                              size="small"
+                              variant="ghost"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              disabled={busy}
+                              onClick={() => {
+                                void deleteSelected();
+                              }}
+                              size="small"
+                              variant="danger"
+                            >
+                              Delete backup
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
                         <Button
                           disabled={busy}
                           onClick={() => {
-                            setDeleteReviewOpen(false);
+                            setDeleteReviewOpen(true);
                           }}
                           size="small"
                           variant="ghost"
                         >
-                          Cancel
+                          Delete this backup
                         </Button>
-                        <Button
-                          disabled={busy}
-                          onClick={() => {
-                            void deleteSelected();
-                          }}
-                          size="small"
-                          variant="danger"
-                        >
-                          Delete backup
-                        </Button>
-                      </div>
+                      )}
                     </div>
-                  ) : (
-                    <Button
-                      disabled={busy}
-                      onClick={() => {
-                        setDeleteReviewOpen(true);
-                      }}
-                      size="small"
-                      variant="ghost"
-                    >
-                      Delete this backup
-                    </Button>
-                  )}
-                </div>
+                  </div>
+                </details>
               </>
             )}
           </aside>
