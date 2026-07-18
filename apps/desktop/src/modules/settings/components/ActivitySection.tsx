@@ -59,8 +59,12 @@ export function ActivitySection() {
         <div className="activity-section__error" role="alert">
           <AppIcon name="warning" size={18} />
           <div>
-            <strong>Recent activity needs attention.</strong>
-            <p>{error}</p>
+            <strong>Recent activity could not be loaded.</strong>
+            <p>Some older local activity records may be incompatible with this app version.</p>
+            <details className="activity-section__technical-error">
+              <summary>View technical details</summary>
+              <pre>{error}</pre>
+            </details>
           </div>
         </div>
       )}
