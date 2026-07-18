@@ -1,13 +1,12 @@
 import { useState } from "react";
 import type {
   DiagnosticCheck,
-  DiagnosticCheckStatus,
   DiagnosticOverallStatus,
   DiagnosticReport,
   DiagnosticsRepository
 } from "@platform/domain";
 
-import { Button, StatusBadge } from "../../../components";
+import { Button } from "../../../components";
 import { useClipboard, useMaintenance } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
 import { publishActivity } from "../../history";
@@ -15,29 +14,10 @@ import { createDiagnosticSummary, runDiagnostics, runSafeMaintenance } from "../
 
 interface DiagnosticsSectionProps {
   readonly repository?: DiagnosticsRepository;
+  readonly showHeading?: boolean;
 }
 
 type DiagnosticsStatus = "idle" | "running" | "ready" | "maintaining" | "error";
-
-function badgeTone(status: DiagnosticCheckStatus) {
-  if (status === "passed") {
-    return "success" as const;
-  }
-  if (status === "warning") {
-    return "warning" as const;
-  }
-  return "danger" as const;
-}
-
-function overallTone(status: DiagnosticOverallStatus) {
-  if (status === "healthy") {
-    return "success" as const;
-  }
-  if (status === "attention") {
-    return "warning" as const;
-  }
-  return "danger" as const;
-}
 
 const FRIENDLY_CHECK_COPY: Readonly<
   Record<
@@ -69,13 +49,13 @@ const FRIENDLY_CHECK_COPY: Readonly<
     failed: "Your saved data is not compatible with this version."
   },
   "database-pragmas": {
-    title: "Data protection settings",
-    passed: "Recommended local protection settings are active.",
+    title: "Data protection",
+    passed: "Recommended local protection is active.",
     warning: "A local protection setting should be reapplied.",
     failed: "A local protection setting is unavailable."
   },
   "data-consistency": {
-    title: "Saved data",
+    title: "Saved information",
     passed: "Your words, notes, and settings passed the local checks.",
     warning: "Some saved information should be reviewed.",
     failed: "Some saved information could not be verified."
@@ -90,6 +70,7 @@ const FRIENDLY_CHECK_COPY: Readonly<
 
 function friendlyDiagnosticCheck(check: DiagnosticCheck) {
   const copy = FRIENDLY_CHECK_COPY[check.id];
+
   if (copy === undefined) {
     return {
       title: "App check",
@@ -108,25 +89,13 @@ function friendlyDiagnosticCheck(check: DiagnosticCheck) {
   };
 }
 
-function diagnosticStatusLabel(status: DiagnosticCheckStatus): string {
+function diagnosticStatusLabel(status: DiagnosticCheck["status"]): string {
   return status === "passed" ? "Good" : status === "warning" ? "Check" : "Problem";
-}
-
-function friendlyRecommendation(recommendation: string): string {
-  if (recommendation.includes("No action")) {
-    return "No action is needed.";
-  }
-  if (recommendation.toLowerCase().includes("maintenance")) {
-    return "Use the safe repair option below.";
-  }
-  if (recommendation.toLowerCase().includes("backup")) {
-    return "Open Data & backups and restore the newest backup that passes the check.";
-  }
-  return "Follow the suggested recovery step or keep a copy of this report for support.";
 }
 
 function formatGeneratedAt(value: string): string {
   const parsed = new Date(value);
+
   if (Number.isNaN(parsed.getTime())) {
     return value;
   }
@@ -140,7 +109,60 @@ function formatGeneratedAt(value: string): string {
   });
 }
 
-export function DiagnosticsSection({ repository: providedRepository }: DiagnosticsSectionProps) {
+function outcomeCopy(status: DiagnosticOverallStatus) {
+  if (status === "healthy") {
+    return {
+      title: "Everything looks good",
+      description: "Your words, settings, and backups are available. No action is needed."
+    };
+  }
+
+  if (status === "attention") {
+    return {
+      title: "A small issue was found",
+      description: "Your data is still available. Review the suggested action below."
+    };
+  }
+
+  return {
+    title: "A problem needs attention",
+    description: "Keep the app open and follow the recovery guidance before making more changes."
+  };
+}
+
+function issueCount(report: DiagnosticReport): number {
+  return (
+    report.counts.invalidVocabularyJson +
+    report.counts.invalidMetadataJson +
+    report.counts.invalidSettingsJson +
+    report.counts.normalizedWordMismatches
+  );
+}
+
+function recommendedAction(
+  report: DiagnosticReport,
+  repairableIssues: readonly DiagnosticCheck[],
+  nonRepairableFailures: readonly DiagnosticCheck[]
+): string {
+  if (nonRepairableFailures.length > 0) {
+    return "Restore a checked backup";
+  }
+
+  if (repairableIssues.length > 0) {
+    return "Safe repair available";
+  }
+
+  if (report.overallStatus === "healthy") {
+    return "No action needed";
+  }
+
+  return "Review technical details";
+}
+
+export function DiagnosticsSection({
+  repository: providedRepository,
+  showHeading = true
+}: DiagnosticsSectionProps) {
   const clipboard = useClipboard();
   const { diagnosticsRepository } = useMaintenance();
   const repository = providedRepository ?? diagnosticsRepository;
@@ -206,13 +228,10 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
 
   return (
     <div className="diagnostics-section">
-      <div className="diagnostics-intro">
+      <div className="diagnostics-toolbar">
         <div>
-          <strong>App health</strong>
-          <p>
-            Check whether your local words, settings, and backups are working normally. Nothing is
-            uploaded.
-          </p>
+          {showHeading ? <strong>App health</strong> : null}
+          <p>This check reads local information only. It does not change or upload anything.</p>
         </div>
         <Button
           isLoading={status === "running"}
@@ -230,174 +249,87 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
         <div className="diagnostics-error" role="alert">
           <AppIcon name="warning" size={20} />
           <div>
-            <strong>The app health check could not finish</strong>
-            <p>{error}</p>
+            <strong>The check could not finish</strong>
+            <p>Nothing was changed. Try again, or open the technical details for support.</p>
+            <details className="diagnostics-technical-error">
+              <summary>Technical details</summary>
+              <pre>{error}</pre>
+            </details>
           </div>
         </div>
       )}
 
       {report === undefined ? (
         <div className="diagnostics-empty">
-          <AppIcon name="settings" size={26} />
+          <AppIcon name="check" size={22} />
           <div>
-            <strong>No app health check has been run yet.</strong>
-            <p>This check only reads local data and does not change anything.</p>
+            <strong>No check has been run yet</strong>
+            <p>Run a quick local check whenever something does not look right.</p>
           </div>
         </div>
       ) : (
         <>
-          <section className="diagnostics-overview" data-status={report.overallStatus}>
-            <div className="diagnostics-overview__icon" aria-hidden="true">
+          <section className="diagnostics-summary" data-status={report.overallStatus}>
+            <span className="diagnostics-summary__icon" aria-hidden="true">
               <AppIcon name={report.overallStatus === "healthy" ? "check" : "warning"} size={22} />
-            </div>
+            </span>
             <div>
-              <div className="diagnostics-overview__heading">
-                <h3>
-                  {report.overallStatus === "healthy"
-                    ? "Everything looks good"
-                    : report.overallStatus === "attention"
-                      ? "A small issue was found"
-                      : "Action is needed"}
-                </h3>
-                <StatusBadge tone={overallTone(report.overallStatus)}>
-                  {report.overallStatus}
-                </StatusBadge>
-              </div>
-              <p>
-                Checked {formatGeneratedAt(report.generatedAt)} · English Focus {report.appVersion}
-              </p>
+              <h3>{outcomeCopy(report.overallStatus).title}</h3>
+              <p>{outcomeCopy(report.overallStatus).description}</p>
+              <small>Checked {formatGeneratedAt(report.generatedAt)}</small>
             </div>
           </section>
 
-          <div className="diagnostics-counts" aria-label="Diagnostic record counts">
-            <article>
-              <span>Saved words</span>
-              <strong>{report.counts.vocabularyEntries}</strong>
-              <small>words you added or edited</small>
-            </article>
-            <article>
-              <span>Personal learning details</span>
-              <strong>{report.counts.vocabularyMetadata}</strong>
-              <small>favorites, tags, notes, and progress</small>
-            </article>
-            <article>
-              <span>Backups</span>
-              <strong>{report.counts.retainedBackups}</strong>
-              <small>saved recovery copies</small>
-            </article>
-            <article>
-              <span>Issues found</span>
-              <strong>
-                {report.counts.invalidVocabularyJson +
-                  report.counts.invalidMetadataJson +
-                  report.counts.invalidSettingsJson +
-                  report.counts.normalizedWordMismatches}
-              </strong>
-              <small>saved items that need attention</small>
-            </article>
-          </div>
+          <dl className="diagnostics-summary-list">
+            <div>
+              <dt>Saved information</dt>
+              <dd>{issueCount(report) === 0 ? "Ready" : `${issueCount(report)} item(s) to review`}</dd>
+            </div>
+            <div>
+              <dt>Backups</dt>
+              <dd>{report.counts.retainedBackups > 0 ? "Available" : "Not available"}</dd>
+            </div>
+            <div>
+              <dt>Recommended action</dt>
+              <dd>{recommendedAction(report, repairableIssues, nonRepairableFailures)}</dd>
+            </div>
+          </dl>
 
-          <section className="diagnostics-checks" aria-labelledby="diagnostic-checks-heading">
-            <header>
+          {nonRepairableFailures.length === 0 ? null : (
+            <div className="diagnostics-guidance" role="alert">
+              <AppIcon name="warning" size={18} />
               <div>
-                <h3 id="diagnostic-checks-heading">What was checked</h3>
-                <p>Detailed results from this device.</p>
-              </div>
-              <Button
-                leadingIcon={<AppIcon name="copy" size={16} />}
-                onClick={() => {
-                  void handleCopySummary();
-                }}
-                size="small"
-                variant="secondary"
-              >
-                {copyStatus === "copied"
-                  ? "Report copied"
-                  : copyStatus === "failed"
-                    ? "Could not copy"
-                    : "Copy report"}
-              </Button>
-            </header>
-
-            <div className="diagnostics-check-list">
-              {report.checks.map((check) => (
-                <article className="diagnostics-check" data-status={check.status} key={check.id}>
-                  <span className="diagnostics-check__icon" aria-hidden="true">
-                    <AppIcon name={check.status === "passed" ? "check" : "warning"} size={17} />
-                  </span>
-                  <div>
-                    <div className="diagnostics-check__heading">
-                      <strong>{friendlyDiagnosticCheck(check).title}</strong>
-                      <StatusBadge tone={badgeTone(check.status)}>
-                        {diagnosticStatusLabel(check.status)}
-                      </StatusBadge>
-                    </div>
-                    <p>{friendlyDiagnosticCheck(check).summary}</p>
-                    {check.details.length === 0 ? null : (
-                      <ul>
-                        {check.details.map((detail) => (
-                          <li key={detail}>{detail}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="diagnostics-recommendations">
-            <h3>What to do next</h3>
-            <ol>
-              {report.recommendations.map((recommendation) => (
-                <li key={recommendation}>{friendlyRecommendation(recommendation)}</li>
-              ))}
-            </ol>
-          </section>
-
-          <section className="diagnostics-maintenance">
-            <div>
-              <p className="route-page__eyebrow">Safe repair</p>
-              <h3>Fix app storage</h3>
-              <p>
-                English Focus can restore missing app storage and recommended protection settings.
-                It does not delete your words, notes, settings, or backups.
-              </p>
-            </div>
-
-            {nonRepairableFailures.length === 0 ? null : (
-              <div className="diagnostics-maintenance__boundary">
-                <AppIcon name="warning" size={18} />
+                <strong>Use a checked backup</strong>
                 <p>
-                  {nonRepairableFailures.length} serious issue(s) cannot be fixed automatically.
-                  Restore a checked backup instead.
+                  This issue cannot be fixed automatically. Open Data & backups and restore the newest
+                  backup that passes its check.
                 </p>
               </div>
-            )}
+            </div>
+          )}
 
-            <label className="diagnostics-maintenance__confirmation">
-              <input
-                checked={maintenanceConfirmed}
-                disabled={repairableIssues.length === 0 || status === "maintaining"}
-                onChange={(event) => {
-                  setMaintenanceConfirmed(event.currentTarget.checked);
-                }}
-                type="checkbox"
-              />
-              <span>
-                <strong>I understand this repair will not delete my data.</strong>
-                <small>It only restores app storage and protection settings.</small>
-              </span>
-            </label>
-
-            <div className="diagnostics-maintenance__footer">
-              <span>
-                {repairableIssues.length === 0
-                  ? "No issue that can be fixed here was found."
-                  : `${repairableIssues.length} repairable issue${repairableIssues.length === 1 ? "" : "s"} detected.`}
-              </span>
+          {repairableIssues.length === 0 ? null : (
+            <section className="diagnostics-repair">
+              <div>
+                <h3>Fix this safely</h3>
+                <p>
+                  English Focus can restore the app storage it needs. Your words, notes, settings, and
+                  backups are not deleted.
+                </p>
+              </div>
+              <label>
+                <input
+                  checked={maintenanceConfirmed}
+                  disabled={status === "maintaining"}
+                  onChange={(event) => {
+                    setMaintenanceConfirmed(event.currentTarget.checked);
+                  }}
+                  type="checkbox"
+                />
+                <span>I understand this repair does not remove my data.</span>
+              </label>
               <Button
-                disabled={!maintenanceConfirmed || repairableIssues.length === 0}
+                disabled={!maintenanceConfirmed}
                 isLoading={status === "maintaining"}
                 leadingIcon={<AppIcon name="settings" size={17} />}
                 onClick={() => {
@@ -407,8 +339,65 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
               >
                 Fix issue
               </Button>
+            </section>
+          )}
+
+          <details className="diagnostics-technical">
+            <summary>Technical details</summary>
+            <div className="diagnostics-technical__body">
+              <header>
+                <div>
+                  <strong>Local check report</strong>
+                  <p>
+                    English Focus {report.appVersion} · {report.checks.length} checks
+                  </p>
+                </div>
+                <Button
+                  leadingIcon={<AppIcon name="copy" size={16} />}
+                  onClick={() => {
+                    void handleCopySummary();
+                  }}
+                  size="small"
+                  variant="secondary"
+                >
+                  {copyStatus === "copied"
+                    ? "Report copied"
+                    : copyStatus === "failed"
+                      ? "Could not copy"
+                      : "Copy report"}
+                </Button>
+              </header>
+
+              <div className="diagnostics-technical__checks">
+                {report.checks.map((check) => {
+                  const friendlyCheck = friendlyDiagnosticCheck(check);
+
+                  return (
+                    <article key={check.id}>
+                      <span aria-hidden="true">
+                        <AppIcon name={check.status === "passed" ? "check" : "warning"} size={16} />
+                      </span>
+                      <div>
+                        <strong>{friendlyCheck.title}</strong>
+                        <p>{friendlyCheck.summary}</p>
+                        {check.details.length === 0 ? null : (
+                          <details className="diagnostics-technical__notes">
+                            <summary>Show check notes</summary>
+                            <ul>
+                              {check.details.map((detail) => (
+                                <li key={detail}>{detail}</li>
+                              ))}
+                            </ul>
+                          </details>
+                        )}
+                      </div>
+                      <small data-status={check.status}>{diagnosticStatusLabel(check.status)}</small>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
-          </section>
+          </details>
         </>
       )}
     </div>
