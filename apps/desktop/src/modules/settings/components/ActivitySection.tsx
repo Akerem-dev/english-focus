@@ -44,14 +44,16 @@ export function ActivitySection() {
         <div>
           <h3>Recent activity</h3>
           <p>
-            A short local record of important actions. Personal notes, definitions, pasted JSON, and
-            file paths are never stored here.
+            A short history of important actions saved on this device. Your word content, notes,
+            imported text, and file locations are not included.
           </p>
         </div>
         <StatusBadge
           tone={error !== undefined ? "danger" : status === "loading" ? "neutral" : "success"}
         >
-          {status === "loading" ? "Loading" : `${activity.length} recent`}
+          {status === "loading"
+            ? "Loading"
+            : `${activity.length} ${activity.length === 1 ? "item" : "items"}`}
         </StatusBadge>
       </div>
 
@@ -59,10 +61,13 @@ export function ActivitySection() {
         <div className="activity-section__error" role="alert">
           <AppIcon name="warning" size={18} />
           <div>
-            <strong>Recent activity could not be loaded.</strong>
-            <p>Some older local activity records may be incompatible with this app version.</p>
+            <strong>Some activity could not be shown.</strong>
+            <p>
+              Older history items may not work with this version. Your words and settings are
+              unaffected.
+            </p>
             <details className="activity-section__technical-error">
-              <summary>View technical details</summary>
+              <summary>Technical details</summary>
               <pre>{error}</pre>
             </details>
           </div>
@@ -72,22 +77,22 @@ export function ActivitySection() {
       <div className="activity-section__toolbar">
         <SelectField
           disabled={isBusy}
-          label="Activity area"
+          label="Show"
           onChange={(event) => {
             setFilter(event.currentTarget.value as ActivityFilter);
           }}
           value={filter}
         >
-          <option value="all">All activity</option>
-          <option value="vocabulary">Vocabulary</option>
+          <option value="all">All actions</option>
+          <option value="vocabulary">Words</option>
           <option value="library">Library</option>
           <option value="settings">Settings</option>
-          <option value="backup">Backup</option>
+          <option value="backup">Backups</option>
           <option value="system">System</option>
         </SelectField>
         <div className="activity-section__privacy">
           <AppIcon name="check" size={18} />
-          <span>Stored only in this app · excluded from exports and backups</span>
+          <span>Saved only on this device · not included in exports or backups</span>
         </div>
       </div>
 
@@ -95,8 +100,8 @@ export function ActivitySection() {
         <div className="activity-section__empty">
           <AppIcon name="book-open" size={22} />
           <div>
-            <strong>No activity in this view</strong>
-            <p>Open a vocabulary entry or complete a local action to create a history item.</p>
+            <strong>Nothing to show here</strong>
+            <p>Open a word or use the app to start building this list.</p>
           </div>
         </div>
       ) : (
@@ -123,8 +128,8 @@ export function ActivitySection() {
         <div>
           <strong>Clear recent activity</strong>
           <p>
-            This removes only the local activity timeline. Vocabulary, study details, settings, and
-            backups are not changed.
+            This clears only the activity list. Your words, notes, settings, and backups stay
+            unchanged.
           </p>
         </div>
         <label className="activity-clear-boundary__confirmation">
@@ -136,7 +141,7 @@ export function ActivitySection() {
             }}
             type="checkbox"
           />
-          <span>I understand this clears the retained activity timeline.</span>
+          <span>I understand this clears the activity list.</span>
         </label>
         <Button
           disabled={!confirmClear || isBusy || activity.length === 0}

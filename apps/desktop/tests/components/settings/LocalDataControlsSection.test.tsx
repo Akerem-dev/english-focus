@@ -12,10 +12,10 @@ describe("LocalDataControlsSection", () => {
       </AppProviders>
     );
 
-    expect(markup).toContain("Local data controls");
-    expect(markup).toContain("Choose data to remove");
-    expect(markup).toContain("Review full local reset");
-    expect(markup).toContain("bundled core vocabulary");
-    expect(markup).toContain("Retained backups stay available");
+    expect(markup).toContain("My data");
+    expect(markup).toContain("Choose what to remove");
+    expect(markup).toContain("Reset the app");
+    expect(markup).toContain("Built-in vocabulary");
+    expect(markup).toContain("Saved backups stay");
   });
 });

@@ -20,7 +20,7 @@ const descriptor: BackupDescriptor = {
 };
 
 describe("BackupRestoreDialog", () => {
-  it("renders retained backups and requires validation before restore", () => {
+  it("renders saved backups and requires a check before restore", () => {
     const markup = renderToStaticMarkup(
       <BackupRestoreDialog
         backups={[descriptor]}
@@ -39,10 +39,10 @@ describe("BackupRestoreDialog", () => {
       />
     );
 
-    expect(markup).toContain("Backup management");
+    expect(markup).toContain("Your backups");
     expect(markup).toContain("Manual");
-    expect(markup).toContain("Validate selected");
-    expect(markup).toContain("Restore selected backup");
+    expect(markup).toContain("Check backup");
+    expect(markup).toContain("Restore backup");
     expect(markup).toContain("disabled");
   });
 });

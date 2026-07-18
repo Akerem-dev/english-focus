@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type {
+  DiagnosticCheck,
   DiagnosticCheckStatus,
   DiagnosticOverallStatus,
   DiagnosticReport,
@@ -36,6 +37,92 @@ function overallTone(status: DiagnosticOverallStatus) {
     return "warning" as const;
   }
   return "danger" as const;
+}
+
+const FRIENDLY_CHECK_COPY: Readonly<
+  Record<
+    string,
+    {
+      readonly title: string;
+      readonly passed: string;
+      readonly warning: string;
+      readonly failed: string;
+    }
+  >
+> = Object.freeze({
+  "sqlite-integrity": {
+    title: "App data files",
+    passed: "Your local data files can be read normally.",
+    warning: "One local data file may need attention.",
+    failed: "A local data file could not be read safely."
+  },
+  "schema-objects": {
+    title: "Required app storage",
+    passed: "Everything English Focus needs is available.",
+    warning: "A required storage item may need to be restored.",
+    failed: "A required storage item is missing."
+  },
+  "schema-version": {
+    title: "App data compatibility",
+    passed: "Your saved data matches this version of English Focus.",
+    warning: "Your saved data needs a small compatibility update.",
+    failed: "Your saved data is not compatible with this version."
+  },
+  "database-pragmas": {
+    title: "Data protection settings",
+    passed: "Recommended local protection settings are active.",
+    warning: "A local protection setting should be reapplied.",
+    failed: "A local protection setting is unavailable."
+  },
+  "data-consistency": {
+    title: "Saved data",
+    passed: "Your words, notes, and settings passed the local checks.",
+    warning: "Some saved information should be reviewed.",
+    failed: "Some saved information could not be verified."
+  },
+  "backup-availability": {
+    title: "Backup availability",
+    passed: "At least one backup is available on this device.",
+    warning: "No backup is currently available.",
+    failed: "Backups could not be checked."
+  }
+});
+
+function friendlyDiagnosticCheck(check: DiagnosticCheck) {
+  const copy = FRIENDLY_CHECK_COPY[check.id];
+  if (copy === undefined) {
+    return {
+      title: "App check",
+      summary: check.status === "passed" ? "This check passed." : "This check needs attention."
+    };
+  }
+
+  return {
+    title: copy.title,
+    summary:
+      check.status === "passed"
+        ? copy.passed
+        : check.status === "warning"
+          ? copy.warning
+          : copy.failed
+  };
+}
+
+function diagnosticStatusLabel(status: DiagnosticCheckStatus): string {
+  return status === "passed" ? "Good" : status === "warning" ? "Check" : "Problem";
+}
+
+function friendlyRecommendation(recommendation: string): string {
+  if (recommendation.includes("No action")) {
+    return "No action is needed.";
+  }
+  if (recommendation.toLowerCase().includes("maintenance")) {
+    return "Use the safe repair option below.";
+  }
+  if (recommendation.toLowerCase().includes("backup")) {
+    return "Open Data & backups and restore the newest backup that passes the check.";
+  }
+  return "Follow the suggested recovery step or keep a copy of this report for support.";
 }
 
 function formatGeneratedAt(value: string): string {
@@ -77,12 +164,14 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
       publishActivity({
         kind: "diagnostics-run",
         scope: "settings",
-        label: "Local diagnostics completed"
+        label: "App health check completed"
       });
       setReport(nextReport);
       setStatus("ready");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Diagnostics could not be completed.");
+      setError(
+        cause instanceof Error ? cause.message : "The app health check could not be completed."
+      );
       setStatus("error");
     }
   }
@@ -97,7 +186,7 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
       setMaintenanceConfirmed(false);
       setStatus("ready");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Safe maintenance could not be completed.");
+      setError(cause instanceof Error ? cause.message : "The safe repair could not be completed.");
       setStatus("error");
     }
   }
@@ -119,10 +208,10 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
     <div className="diagnostics-section">
       <div className="diagnostics-intro">
         <div>
-          <strong>Local database health</strong>
+          <strong>App health</strong>
           <p>
-            Scan SQLite integrity, schema objects, stored JSON, recovery readiness, and local data
-            consistency. No vocabulary content is uploaded.
+            Check whether your local words, settings, and backups are working normally. Nothing is
+            uploaded.
           </p>
         </div>
         <Button
@@ -133,7 +222,7 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
           }}
           variant="primary"
         >
-          {report === undefined ? "Run diagnostics" : "Run diagnostics again"}
+          {report === undefined ? "Check app health" : "Check again"}
         </Button>
       </div>
 
@@ -141,7 +230,7 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
         <div className="diagnostics-error" role="alert">
           <AppIcon name="warning" size={20} />
           <div>
-            <strong>Diagnostics needs attention</strong>
+            <strong>The app health check could not finish</strong>
             <p>{error}</p>
           </div>
         </div>
@@ -151,8 +240,8 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
         <div className="diagnostics-empty">
           <AppIcon name="settings" size={26} />
           <div>
-            <strong>No diagnostic scan has been run in this session.</strong>
-            <p>The scan is read-only until you explicitly approve safe maintenance.</p>
+            <strong>No app health check has been run yet.</strong>
+            <p>This check only reads local data and does not change anything.</p>
           </div>
         </div>
       ) : (
@@ -165,55 +254,54 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
               <div className="diagnostics-overview__heading">
                 <h3>
                   {report.overallStatus === "healthy"
-                    ? "Local storage is healthy"
+                    ? "Everything looks good"
                     : report.overallStatus === "attention"
-                      ? "Local storage needs minor attention"
-                      : "Local storage needs recovery attention"}
+                      ? "A small issue was found"
+                      : "Action is needed"}
                 </h3>
                 <StatusBadge tone={overallTone(report.overallStatus)}>
                   {report.overallStatus}
                 </StatusBadge>
               </div>
               <p>
-                Generated {formatGeneratedAt(report.generatedAt)} · app {report.appVersion} ·
-                database schema {report.databaseSchemaVersion}
+                Checked {formatGeneratedAt(report.generatedAt)} · English Focus {report.appVersion}
               </p>
             </div>
           </section>
 
           <div className="diagnostics-counts" aria-label="Diagnostic record counts">
             <article>
-              <span>Vocabulary</span>
+              <span>Saved words</span>
               <strong>{report.counts.vocabularyEntries}</strong>
-              <small>user and override records</small>
+              <small>words you added or edited</small>
             </article>
             <article>
-              <span>Study metadata</span>
+              <span>Personal learning details</span>
               <strong>{report.counts.vocabularyMetadata}</strong>
-              <small>favorite, tags, notes, and progress</small>
+              <small>favorites, tags, notes, and progress</small>
             </article>
             <article>
               <span>Backups</span>
               <strong>{report.counts.retainedBackups}</strong>
-              <small>retained recovery files</small>
+              <small>saved recovery copies</small>
             </article>
             <article>
-              <span>Consistency issues</span>
+              <span>Issues found</span>
               <strong>
                 {report.counts.invalidVocabularyJson +
                   report.counts.invalidMetadataJson +
                   report.counts.invalidSettingsJson +
                   report.counts.normalizedWordMismatches}
               </strong>
-              <small>invalid JSON or identity mismatches</small>
+              <small>saved items that need attention</small>
             </article>
           </div>
 
           <section className="diagnostics-checks" aria-labelledby="diagnostic-checks-heading">
             <header>
               <div>
-                <h3 id="diagnostic-checks-heading">Health checks</h3>
-                <p>Every result comes from the local Tauri and SQLite runtime.</p>
+                <h3 id="diagnostic-checks-heading">What was checked</h3>
+                <p>Detailed results from this device.</p>
               </div>
               <Button
                 leadingIcon={<AppIcon name="copy" size={16} />}
@@ -224,10 +312,10 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
                 variant="secondary"
               >
                 {copyStatus === "copied"
-                  ? "Summary copied"
+                  ? "Report copied"
                   : copyStatus === "failed"
-                    ? "Copy blocked"
-                    : "Copy summary"}
+                    ? "Could not copy"
+                    : "Copy report"}
               </Button>
             </header>
 
@@ -239,10 +327,12 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
                   </span>
                   <div>
                     <div className="diagnostics-check__heading">
-                      <strong>{check.title}</strong>
-                      <StatusBadge tone={badgeTone(check.status)}>{check.status}</StatusBadge>
+                      <strong>{friendlyDiagnosticCheck(check).title}</strong>
+                      <StatusBadge tone={badgeTone(check.status)}>
+                        {diagnosticStatusLabel(check.status)}
+                      </StatusBadge>
                     </div>
-                    <p>{check.summary}</p>
+                    <p>{friendlyDiagnosticCheck(check).summary}</p>
                     {check.details.length === 0 ? null : (
                       <ul>
                         {check.details.map((detail) => (
@@ -257,22 +347,21 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
           </section>
 
           <section className="diagnostics-recommendations">
-            <h3>Recommended next actions</h3>
+            <h3>What to do next</h3>
             <ol>
               {report.recommendations.map((recommendation) => (
-                <li key={recommendation}>{recommendation}</li>
+                <li key={recommendation}>{friendlyRecommendation(recommendation)}</li>
               ))}
             </ol>
           </section>
 
           <section className="diagnostics-maintenance">
             <div>
-              <p className="route-page__eyebrow">Non-destructive maintenance</p>
-              <h3>Reapply safe database maintenance</h3>
+              <p className="route-page__eyebrow">Safe repair</p>
+              <h3>Fix app storage</h3>
               <p>
-                This can recreate missing schema objects, restore SQLite safety settings, and run
-                query-planner optimization. It never deletes vocabulary, metadata, settings, or
-                backups.
+                English Focus can restore missing app storage and recommended protection settings.
+                It does not delete your words, notes, settings, or backups.
               </p>
             </div>
 
@@ -280,8 +369,8 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
               <div className="diagnostics-maintenance__boundary">
                 <AppIcon name="warning" size={18} />
                 <p>
-                  {nonRepairableFailures.length} critical consistency result(s) cannot be repaired
-                  automatically. Validate and restore a retained backup instead.
+                  {nonRepairableFailures.length} serious issue(s) cannot be fixed automatically.
+                  Restore a checked backup instead.
                 </p>
               </div>
             )}
@@ -296,18 +385,15 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
                 type="checkbox"
               />
               <span>
-                <strong>I understand this maintenance is non-destructive.</strong>
-                <small>
-                  It repairs schema and SQLite configuration only; it does not rewrite corrupt
-                  vocabulary content.
-                </small>
+                <strong>I understand this repair will not delete my data.</strong>
+                <small>It only restores app storage and protection settings.</small>
               </span>
             </label>
 
             <div className="diagnostics-maintenance__footer">
               <span>
                 {repairableIssues.length === 0
-                  ? "No repairable schema or SQLite configuration issue was found."
+                  ? "No issue that can be fixed here was found."
                   : `${repairableIssues.length} repairable issue${repairableIssues.length === 1 ? "" : "s"} detected.`}
               </span>
               <Button
@@ -319,7 +405,7 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
                 }}
                 variant="secondary"
               >
-                Run safe maintenance
+                Fix issue
               </Button>
             </div>
           </section>

@@ -96,10 +96,10 @@ export function SettingsPage() {
   const isBusy = status === "loading" || status === "saving";
   const activitySummary =
     activityError !== undefined
-      ? "Activity needs attention"
+      ? "Some activity cannot be shown"
       : activityStatus === "loading"
-        ? "Loading local activity"
-        : `${activity.length} recent ${activity.length === 1 ? "event" : "events"}`;
+        ? "Loading activity"
+        : `${activity.length} activity ${activity.length === 1 ? "item" : "items"}`;
 
   function selectCategory(category: SettingsCategoryId) {
     setManagementView(undefined);
@@ -251,7 +251,7 @@ export function SettingsPage() {
                 <SwitchField
                   checked={settings.data.automaticBackups}
                   containerClassName="settings-preference-row"
-                  description="Create a retained local backup when the selected interval is due."
+                  description="Create a backup automatically on the schedule you choose."
                   disabled={isBusy}
                   label="Automatic backups"
                   onChange={(event) => {
@@ -267,7 +267,7 @@ export function SettingsPage() {
                 <SelectField
                   disabled={isBusy || !settings.data.automaticBackups}
                   fieldClassName="settings-inline-select"
-                  helperText="Choose how often an automatic local backup is retained."
+                  helperText="Choose how often English Focus creates a backup."
                   label="Backup frequency"
                   onChange={(event) => {
                     const backupFrequency = event.currentTarget.value as BackupFrequency;

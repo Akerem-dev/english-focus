@@ -21,7 +21,7 @@ test("settings categories support roving keyboard navigation and focused managem
   await expect(privacyTab).toBeFocused();
   await expect(privacyTab).toHaveAttribute("aria-selected", "true");
 
-  await page.getByRole("button", { name: /System diagnostics/ }).click();
+  await page.getByRole("button", { name: /App health/ }).click();
   await expect(page.getByRole("heading", { name: "System diagnostics", level: 2 })).toBeFocused();
 
   await page.getByRole("button", { name: /Back to privacy & maintenance/ }).click();

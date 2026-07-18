@@ -45,14 +45,14 @@ export function BackupSettingsSection() {
   const latest = backups[0];
 
   return (
-    <section aria-label="Backup summary and actions" className="backup-settings-compact">
+    <section aria-label="Backup status and actions" className="backup-settings-compact">
       <div className="backup-settings-summary">
         <div>
-          <span>Retained backups</span>
+          <span>Saved backups</span>
           <strong>{backups.length}</strong>
         </div>
         <div>
-          <span>Latest backup</span>
+          <span>Most recent backup</span>
           <strong>{formatDate(latest?.createdAt)}</strong>
         </div>
       </div>
@@ -67,7 +67,7 @@ export function BackupSettingsSection() {
           }}
           variant="primary"
         >
-          Create backup now
+          Back up now
         </Button>
         <Button
           disabled={status === "loading"}
@@ -77,19 +77,19 @@ export function BackupSettingsSection() {
           }}
           variant="secondary"
         >
-          Manage backups
+          View backups
         </Button>
       </div>
 
       {status === "error" ? (
         <p className="backup-settings-status" role="alert">
-          Backup needs attention. Open the backup manager for details.
+          A backup action could not be completed. Open your backups for details.
         </p>
       ) : null}
 
       <p className="backup-settings-note">
-        Backups stay on this device. Automatic backups keep the newest seven and restore safety
-        backups keep the newest five.
+        Backups stay on this device. English Focus keeps recent automatic backups and recovery
+        copies so older files do not pile up.
       </p>
 
       <BackupRestoreDialog

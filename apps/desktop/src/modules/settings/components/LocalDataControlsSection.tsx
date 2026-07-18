@@ -38,43 +38,41 @@ interface CategoryDefinition {
 const categoryDefinitions: readonly CategoryDefinition[] = Object.freeze([
   {
     category: "study-metadata",
-    title: "Study details",
-    description:
-      "Favorites, tags, personal notes, learning status, review status, and view history.",
+    title: "Favorites, tags & notes",
+    description: "Your favorites, tags, personal notes, and word-view history.",
     count: (snapshot) => snapshot.studyMetadataRecords
   },
   {
     category: "user-vocabulary",
-    title: "User vocabulary",
+    title: "Words I added",
     description:
-      "Vocabulary entries created or imported by you. Their linked study details are removed too.",
+      "Words you created or imported. Their linked favorites, tags, and notes are removed too.",
     count: (snapshot) => snapshot.userVocabularyEntries
   },
   {
     category: "overrides",
-    title: "Core vocabulary overrides",
-    description:
-      "Your replacement versions are removed; bundled core entries become visible again.",
+    title: "Built-in words I edited",
+    description: "Your edits are removed and the original built-in versions are shown again.",
     count: (snapshot) => snapshot.overrideVocabularyEntries
   },
   {
     category: "settings",
     title: "Application settings",
     description:
-      "Theme, content display, accessibility, backup, and AI instruction preferences return to defaults.",
+      "Theme, content, accessibility, backup, and explanation preferences return to their defaults.",
     count: (snapshot) => snapshot.settingsRecords
   },
   {
     category: "activity",
     title: "Recent activity",
-    description: "Only the privacy-safe local activity timeline is cleared.",
+    description: "Only the activity list saved on this device is cleared.",
     count: (snapshot) => snapshot.activityRecords
   },
   {
     category: "backups",
-    title: "Retained backups",
+    title: "Saved backups",
     description:
-      "Every retained backup file is permanently deleted. This cannot create a safety backup.",
+      "Every saved backup is permanently deleted. A recovery copy cannot be created for this choice.",
     count: (snapshot) => snapshot.backupFiles
   }
 ]);
@@ -247,18 +245,18 @@ export function LocalDataControlsSection() {
     <div className="local-data-controls">
       <div className="local-data-controls__intro">
         <div>
-          <h3>Local data controls</h3>
+          <h3>My data</h3>
           <p>
-            Review exact record counts, remove only selected categories, or return the application
-            to a clean local state without touching bundled core vocabulary.
+            Review what English Focus stores on this device and remove only what you choose.
+            Built-in vocabulary is always kept.
           </p>
         </div>
         <StatusBadge tone={error === undefined ? "success" : "danger"}>
           {status === "loading"
-            ? "Loading counts"
+            ? "Loading"
             : status === "resetting"
-              ? "Removing locally"
-              : "Protected actions"}
+              ? "Removing"
+              : "Your data stays protected"}
         </StatusBadge>
       </div>
 
@@ -266,7 +264,7 @@ export function LocalDataControlsSection() {
         <section className="local-data-controls__error" role="alert">
           <AppIcon name="warning" size={19} />
           <div>
-            <strong>Local data controls need attention.</strong>
+            <strong>Your data could not be loaded.</strong>
             <p>{error}</p>
           </div>
         </section>
@@ -278,7 +276,7 @@ export function LocalDataControlsSection() {
           <dd>{snapshot.userVocabularyEntries}</dd>
         </div>
         <div>
-          <dt>Core overrides</dt>
+          <dt>Edited built-in words</dt>
           <dd>{snapshot.overrideVocabularyEntries}</dd>
         </div>
         <div>
@@ -286,7 +284,7 @@ export function LocalDataControlsSection() {
           <dd>{snapshot.studyMetadataRecords}</dd>
         </div>
         <div>
-          <dt>Activity records</dt>
+          <dt>Activity items</dt>
           <dd>{snapshot.activityRecords}</dd>
         </div>
         <div>
@@ -303,7 +301,7 @@ export function LocalDataControlsSection() {
           }}
           variant="secondary"
         >
-          Choose data to remove
+          Choose what to remove
         </Button>
         <Button
           disabled={status === "loading" || status === "resetting"}
@@ -312,17 +310,17 @@ export function LocalDataControlsSection() {
           }}
           variant="danger"
         >
-          Review full local reset
+          Reset the app
         </Button>
       </div>
 
       <p className="local-data-controls__boundary">
-        Full local reset removes user vocabulary, overrides, study details, settings, and activity.
-        Retained backups stay available unless you explicitly select backup deletion.
+        Resetting removes your added words, edits, notes, settings, and activity. Saved backups stay
+        available unless you choose to remove them too.
       </p>
 
       <Modal
-        description="Select only the local data categories you intend to remove. No operation begins until every confirmation step is complete."
+        description="Choose what you want to remove from this device. Nothing is deleted until you confirm."
         footer={
           <>
             <Button disabled={status === "resetting"} onClick={closeDialog} variant="ghost">
@@ -343,14 +341,14 @@ export function LocalDataControlsSection() {
         onClose={closeDialog}
         open={dialogOpen}
         size="large"
-        title="Review local data removal"
+        title="Remove data from this device"
       >
         <div className="local-data-dialog">
           <section className="local-data-dialog__selection">
             <header>
               <p className="route-page__eyebrow">Step 1</p>
-              <h3>Choose categories</h3>
-              <p>Bundled core vocabulary is never deleted by these controls.</p>
+              <h3>Choose what to remove</h3>
+              <p>Built-in vocabulary is always kept.</p>
             </header>
             <div className="local-data-category-list">
               {categoryDefinitions.map((definition) => {
@@ -373,7 +371,7 @@ export function LocalDataControlsSection() {
                     <span>
                       <span className="local-data-category__heading">
                         <strong>{definition.title}</strong>
-                        <StatusBadge>{formatCount(count, "record")}</StatusBadge>
+                        <StatusBadge>{formatCount(count, "item")}</StatusBadge>
                       </span>
                       <small>{definition.description}</small>
                     </span>
@@ -385,7 +383,7 @@ export function LocalDataControlsSection() {
 
           <section className="local-data-dialog__safety">
             <p className="route-page__eyebrow">Step 2</p>
-            <h3>Recovery boundary</h3>
+            <h3>Keep a recovery copy</h3>
             <label className="local-data-safety-option">
               <input
                 checked={safetyAvailable && createSafetyBackup}
@@ -396,13 +394,13 @@ export function LocalDataControlsSection() {
                 type="checkbox"
               />
               <span>
-                <strong>Create a safety backup before removal</strong>
+                <strong>Back up before removing anything</strong>
                 <small>
                   {safetyAvailable
-                    ? "Recommended. Vocabulary, study details, and settings can be restored later."
+                    ? "Recommended. Your words, notes, and settings can be restored later."
                     : selectedCategories.includes("backups")
-                      ? "Unavailable because retained backups are included in this deletion."
-                      : "Not needed for the currently selected category."}
+                      ? "Unavailable because saved backups are included in this removal."
+                      : "Not needed for what you selected."}
                 </small>
               </span>
             </label>
@@ -410,11 +408,11 @@ export function LocalDataControlsSection() {
 
           <section className="local-data-dialog__confirmation">
             <p className="route-page__eyebrow">Step 3</p>
-            <h3>Explicit confirmation</h3>
+            <h3>Confirm removal</h3>
             <div className="local-data-impact-summary">
-              <span>Selected categories</span>
+              <span>Selected items</span>
               <strong>{selectedCategories.length}</strong>
-              <span>Current matching records</span>
+              <span>Items found</span>
               <strong>{selectedCount}</strong>
             </div>
             <label className="local-data-review-check">
@@ -426,16 +424,14 @@ export function LocalDataControlsSection() {
                 }}
                 type="checkbox"
               />
-              <span>
-                I reviewed the selected categories and understand the removal is permanent.
-              </span>
+              <span>I reviewed my choices and understand that this cannot be undone.</span>
             </label>
             <TextField
               autoComplete="off"
               data-autofocus="true"
               disabled={selectedCategories.length === 0 || status === "resetting"}
-              helperText={`Type ${expectedPhrase} exactly to enable the final action.`}
-              label="Confirmation phrase"
+              helperText={`For extra safety, type ${expectedPhrase} exactly.`}
+              label="Type to confirm"
               onChange={(event) => {
                 setConfirmationText(event.currentTarget.value);
               }}
@@ -449,12 +445,12 @@ export function LocalDataControlsSection() {
             <section className="local-data-dialog__result" role="status">
               <AppIcon name="check" size={20} />
               <div>
-                <strong>Removal completed</strong>
+                <strong>Your selected data was removed</strong>
                 <p>
                   {deletedSummary(lastResult)} removed.{" "}
                   {lastResult.safetyBackup === undefined
-                    ? "No safety backup was created."
-                    : "A retained safety backup was created before the transaction."}
+                    ? "No recovery copy was created."
+                    : "A recovery copy was created first."}
                 </p>
               </div>
             </section>

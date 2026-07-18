@@ -22,8 +22,8 @@ interface BackupRestoreDialogProps {
 }
 
 function describeBackup(backup: BackupDescriptor): string {
-  const reason = backup.reason === "pre-restore" ? "Safety backup" : `${backup.reason} backup`;
-  return `${reason} · ${backup.counts.vocabularyEntries} entries · ${backup.counts.vocabularyMetadata} metadata records`;
+  const reason = backup.reason === "pre-restore" ? "Recovery copy" : `${backup.reason} backup`;
+  return `${reason} · ${backup.counts.vocabularyEntries} saved words · ${backup.counts.vocabularyMetadata} personal details`;
 }
 
 function formatDate(value: string): string {
@@ -56,7 +56,7 @@ function formatSize(bytes: number): string {
 
 function reasonLabel(reason: BackupDescriptor["reason"]): string {
   if (reason === "pre-restore") {
-    return "Safety backup";
+    return "Recovery copy";
   }
 
   return reason === "automatic" ? "Automatic" : "Manual";
@@ -124,7 +124,7 @@ export function BackupRestoreDialog({
 
   return (
     <Modal
-      description="Review retained local backups, validate integrity, and restore only after an explicit confirmation."
+      description="Review backups saved on this device and restore one when you need it."
       footer={
         <>
           <Button disabled={busy} onClick={closeDialog} variant="ghost">
@@ -137,7 +137,7 @@ export function BackupRestoreDialog({
             }}
             variant="secondary"
           >
-            Validate selected
+            Check backup
           </Button>
           <Button
             disabled={selected === undefined || validation?.valid !== true || !confirmed || busy}
@@ -146,18 +146,18 @@ export function BackupRestoreDialog({
             }}
             variant="primary"
           >
-            Restore selected backup
+            Restore backup
           </Button>
         </>
       }
       onClose={closeDialog}
       open={open}
       size="large"
-      title="Backup management"
+      title="Your backups"
     >
       {error === undefined ? null : (
         <section className="backup-alert backup-alert--error" role="alert">
-          <strong>Backup operation needs attention.</strong>
+          <strong>This backup action could not be completed.</strong>
           <p>{error}</p>
         </section>
       )}
@@ -168,11 +168,11 @@ export function BackupRestoreDialog({
             <AppIcon name="check" size={20} />
           </span>
           <div>
-            <strong>Backup restored successfully</strong>
+            <strong>Backup restored</strong>
             <p>
-              {lastRestore.restored.vocabularyEntries} vocabulary entries and{" "}
-              {lastRestore.restored.vocabularyMetadata} metadata records were restored. A safety
-              backup was created first.
+              {lastRestore.restored.vocabularyEntries} saved words and{" "}
+              {lastRestore.restored.vocabularyMetadata} personal details were restored. A recovery
+              copy was created first.
             </p>
           </div>
         </section>
@@ -181,12 +181,12 @@ export function BackupRestoreDialog({
       {backups.length === 0 ? (
         <section className="backup-empty-state">
           <AppIcon name="download" size={34} />
-          <h3>No retained backups yet</h3>
-          <p>Create a manual backup from the Data settings panel.</p>
+          <h3>No backups yet</h3>
+          <p>Create one from Data & backups whenever you want.</p>
         </section>
       ) : (
         <div className="backup-manager-layout">
-          <section className="backup-list" aria-label="Retained backups">
+          <section className="backup-list" aria-label="Saved backups">
             {backups.map((backup) => {
               const selectedState = backup.fileName === selectedFileName;
 
@@ -228,53 +228,54 @@ export function BackupRestoreDialog({
               <div className="backup-inspector__placeholder">
                 <AppIcon name="search" size={30} />
                 <h3>Select a backup</h3>
-                <p>Choose one retained backup to inspect its counts and validate its checksum.</p>
+                <p>Choose a backup to see what it contains and check that it can be restored.</p>
               </div>
             ) : (
               <>
                 <header>
                   <p className="route-page__eyebrow">Selected backup</p>
                   <h3>{reasonLabel(selected.reason)}</h3>
-                  <p>{selected.fileName}</p>
+                  <p>
+                    {formatDate(selected.createdAt)} · {formatSize(selected.sizeBytes)}
+                  </p>
                 </header>
 
                 <dl className="backup-inspector__facts">
                   <div>
-                    <dt>Vocabulary entries</dt>
+                    <dt>Saved words</dt>
                     <dd>{selected.counts.vocabularyEntries}</dd>
                   </div>
                   <div>
-                    <dt>Study metadata</dt>
+                    <dt>Favorites, notes & progress</dt>
                     <dd>{selected.counts.vocabularyMetadata}</dd>
                   </div>
                   <div>
-                    <dt>Settings records</dt>
+                    <dt>App settings</dt>
                     <dd>{selected.counts.settingsRecords}</dd>
                   </div>
                   <div>
-                    <dt>Database schema</dt>
+                    <dt>Backup format</dt>
                     <dd>{selected.databaseSchemaVersion}</dd>
                   </div>
                 </dl>
 
                 {validation === undefined ? (
                   <p className="backup-inspector__note">
-                    Validate the selected file before restore. English Focus checks the backup type,
-                    version, item counts, and checksum locally.
+                    Check this backup before restoring it. The check happens only on this device.
                   </p>
                 ) : validation.valid ? (
                   <section className="backup-validation backup-validation--valid">
                     <AppIcon name="check" size={20} />
                     <div>
-                      <strong>Integrity checks passed</strong>
-                      <p>The backup is ready for an explicit restore confirmation.</p>
+                      <strong>Backup is ready</strong>
+                      <p>You can restore it after confirming below.</p>
                     </div>
                   </section>
                 ) : (
                   <section className="backup-validation backup-validation--invalid" role="alert">
                     <AppIcon name="warning" size={20} />
                     <div>
-                      <strong>Backup is not safe to restore</strong>
+                      <strong>This backup cannot be restored</strong>
                       <ul>
                         {validation.issues.map((issue) => (
                           <li key={issue}>{issue}</li>
@@ -295,9 +296,10 @@ export function BackupRestoreDialog({
                   />
                   <span>
                     <strong>
-                      I understand this replaces local vocabulary, study metadata, and settings.
+                      I understand this will replace my saved words, personal learning details, and
+                      app settings.
                     </strong>
-                    <small>A pre-restore safety backup will be created automatically.</small>
+                    <small>English Focus will create a recovery copy first.</small>
                   </span>
                 </label>
 
@@ -311,7 +313,7 @@ export function BackupRestoreDialog({
                       }}
                       type="checkbox"
                     />
-                    Allow deletion of this retained backup
+                    I want to delete this backup
                   </label>
                   <Button
                     disabled={!deleteConfirmed || busy}
@@ -321,7 +323,7 @@ export function BackupRestoreDialog({
                     size="small"
                     variant="danger"
                   >
-                    Delete selected backup
+                    Delete backup
                   </Button>
                 </div>
               </>
