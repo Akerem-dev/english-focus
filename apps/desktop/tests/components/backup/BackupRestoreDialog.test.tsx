@@ -20,7 +20,7 @@ const descriptor: BackupDescriptor = {
 };
 
 describe("BackupRestoreDialog", () => {
-  it("starts with one clear backup-check action and keeps secondary options collapsed", () => {
+  it("starts with one clear backup-check action before a backup is selected", () => {
     const markup = renderToStaticMarkup(
       <BackupRestoreDialog
         backups={[descriptor]}
@@ -44,7 +44,7 @@ describe("BackupRestoreDialog", () => {
     expect(markup).toContain("2 saved words · 2 personal items");
     expect(markup).toContain("Check backup");
     expect(markup).not.toContain(">Restore backup<");
-    expect(markup).toContain("More options");
+    expect(markup).not.toContain("Delete this backup");
     expect(markup).not.toContain("Backup version");
     expect(markup).not.toContain("Storage format");
     expect(markup).toContain('class="backup-list-item__size"');
