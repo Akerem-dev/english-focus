@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import type {
   BackupDescriptor,
   BackupRestoreResult,
-  BackupValidationResult,
+  BackupValidationResult
 } from "@platform/domain";
 
 import { Button, Modal } from "../../../components";
@@ -33,7 +33,7 @@ function formatDate(value: string): string {
     month: "short",
     day: "2-digit",
     hour: "2-digit",
-    minute: "2-digit",
+    minute: "2-digit"
   });
 }
 
@@ -80,20 +80,16 @@ export function BackupRestoreDialog({
   onDelete,
   onRestore,
   onValidate,
-  open,
+  open
 }: BackupRestoreDialogProps) {
-  const [selectedFileName, setSelectedFileName] = useState<
-    string | undefined
-  >();
-  const [validation, setValidation] = useState<
-    BackupValidationResult | undefined
-  >();
+  const [selectedFileName, setSelectedFileName] = useState<string | undefined>();
+  const [validation, setValidation] = useState<BackupValidationResult | undefined>();
   const [confirmed, setConfirmed] = useState(false);
   const [deleteReviewOpen, setDeleteReviewOpen] = useState(false);
 
   const selected = useMemo(
     () => backups.find((backup) => backup.fileName === selectedFileName),
-    [backups, selectedFileName],
+    [backups, selectedFileName]
   );
 
   function resetSelectionState() {
@@ -189,9 +185,7 @@ export function BackupRestoreDialog({
         <section className="backup-alert backup-alert--error" role="alert">
           <div>
             <strong>The backup action did not finish.</strong>
-            <p>
-              Your existing data is unchanged. Close this window and try again.
-            </p>
+            <p>Your existing data is unchanged. Close this window and try again.</p>
             <details className="backup-technical-details">
               <summary>Technical details</summary>
               <p>{error}</p>
@@ -209,8 +203,8 @@ export function BackupRestoreDialog({
             <strong>Backup restored</strong>
             <p>
               {lastRestore.restored.vocabularyEntries} saved words and{" "}
-              {lastRestore.restored.vocabularyMetadata} personal details were
-              restored. A recovery copy was created first.
+              {lastRestore.restored.vocabularyMetadata} personal details were restored. A recovery
+              copy was created first.
             </p>
           </div>
         </section>
@@ -247,13 +241,9 @@ export function BackupRestoreDialog({
                   <span className="backup-list-item__content">
                     <span className="backup-list-item__header">
                       <strong>{formatDate(backup.createdAt)}</strong>
-                      <span className="backup-list-item__size">
-                        {formatSize(backup.sizeBytes)}
-                      </span>
+                      <span className="backup-list-item__size">{formatSize(backup.sizeBytes)}</span>
                     </span>
-                    <span className="backup-list-item__kind">
-                      {reasonLabel(backup.reason)}
-                    </span>
+                    <span className="backup-list-item__kind">{reasonLabel(backup.reason)}</span>
                     <small>{backupContentsSummary(backup)}</small>
                   </span>
                 </label>
@@ -274,8 +264,7 @@ export function BackupRestoreDialog({
                   <p className="route-page__eyebrow">Selected backup</p>
                   <h3>{formatDate(selected.createdAt)}</h3>
                   <p>
-                    {reasonLabel(selected.reason)} ·{" "}
-                    {formatSize(selected.sizeBytes)}
+                    {reasonLabel(selected.reason)} · {formatSize(selected.sizeBytes)}
                   </p>
                 </header>
 
@@ -290,35 +279,24 @@ export function BackupRestoreDialog({
                   </div>
                   <div>
                     <dt>App settings</dt>
-                    <dd>
-                      {selected.counts.settingsRecords > 0
-                        ? "Included"
-                        : "Not included"}
-                    </dd>
+                    <dd>{selected.counts.settingsRecords > 0 ? "Included" : "Not included"}</dd>
                   </div>
                 </dl>
 
                 {validation === undefined ? (
                   <p className="backup-inspector__note">
-                    Check this backup before restoring it. The check stays on
-                    this device.
+                    Check this backup before restoring it. The check stays on this device.
                   </p>
                 ) : validation.valid ? (
                   <section className="backup-validation backup-validation--valid">
                     <AppIcon name="check" size={19} />
                     <div>
                       <strong>Ready to restore</strong>
-                      <p>
-                        Review the confirmation below, then restore when you are
-                        ready.
-                      </p>
+                      <p>Review the confirmation below, then restore when you are ready.</p>
                     </div>
                   </section>
                 ) : (
-                  <section
-                    className="backup-validation backup-validation--invalid"
-                    role="alert"
-                  >
+                  <section className="backup-validation backup-validation--invalid" role="alert">
                     <AppIcon name="warning" size={19} />
                     <div>
                       <strong>This backup cannot be restored</strong>
@@ -346,13 +324,8 @@ export function BackupRestoreDialog({
                       type="checkbox"
                     />
                     <span>
-                      <strong>
-                        Replace my current saved data with this backup.
-                      </strong>
-                      <small>
-                        A recovery copy of the current data will be created
-                        first.
-                      </small>
+                      <strong>Replace my current saved data with this backup.</strong>
+                      <small>A recovery copy of the current data will be created first.</small>
                     </span>
                   </label>
                 ) : null}

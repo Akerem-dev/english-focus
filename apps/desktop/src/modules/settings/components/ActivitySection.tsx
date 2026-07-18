@@ -4,11 +4,7 @@ import type { ActivityFilter } from "@platform/domain";
 import { useActivity, useToast } from "../../../app/providers";
 import { Button, SelectField } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import {
-  activityKindLabel,
-  activityScopeLabel,
-  formatActivityTime,
-} from "../../history";
+import { activityKindLabel, activityScopeLabel, formatActivityTime } from "../../history";
 
 interface ActivitySectionProps {
   readonly showHeading?: boolean;
@@ -21,14 +17,10 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
   const [clearReviewOpen, setClearReviewOpen] = useState(false);
 
   const filteredActivity = useMemo(
-    () =>
-      filter === "all"
-        ? activity
-        : activity.filter((record) => record.scope === filter),
-    [activity, filter],
+    () => (filter === "all" ? activity : activity.filter((record) => record.scope === filter)),
+    [activity, filter]
   );
-  const isBusy =
-    status === "loading" || status === "recording" || status === "clearing";
+  const isBusy = status === "loading" || status === "recording" || status === "clearing";
   const countLabel =
     status === "loading"
       ? "Loading"
@@ -42,15 +34,14 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
         title: "Recent activity cleared",
         message: `${cleared} local activity ${cleared === 1 ? "item" : "items"} removed.`,
         tone: "success",
-        dedupeKey: "activity-cleared",
+        dedupeKey: "activity-cleared"
       });
     } catch {
       showToast({
         title: "Recent activity could not be cleared",
-        message:
-          "The activity list is unchanged. Reopen the app and try again.",
+        message: "The activity list is unchanged. Reopen the app and try again.",
         tone: "error",
-        dedupeKey: "activity-clear-error",
+        dedupeKey: "activity-clear-error"
       });
     }
   };
@@ -119,24 +110,15 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
           </div>
         </div>
       ) : (
-        <ol
-          aria-label="Recent local activity"
-          className="activity-list activity-list--focused"
-        >
+        <ol aria-label="Recent local activity" className="activity-list activity-list--focused">
           {filteredActivity.map((record) => (
             <li className="activity-list__item" key={record.id}>
               <div className="activity-list__content">
-                <strong>
-                  {record.label || activityKindLabel(record.kind)}
-                </strong>
+                <strong>{record.label || activityKindLabel(record.kind)}</strong>
                 <div className="activity-list__meta">
                   <span>{activityScopeLabel(record.scope)}</span>
-                  {record.target === undefined ? null : (
-                    <span>{record.target}</span>
-                  )}
-                  <time dateTime={record.occurredAt}>
-                    {formatActivityTime(record.occurredAt)}
-                  </time>
+                  {record.target === undefined ? null : <span>{record.target}</span>}
+                  <time dateTime={record.occurredAt}>{formatActivityTime(record.occurredAt)}</time>
                 </div>
               </div>
             </li>
@@ -149,9 +131,7 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
           <div className="activity-clear-review">
             <div>
               <strong>Clear the activity list?</strong>
-              <p>
-                Your words, notes, settings, and backups will stay unchanged.
-              </p>
+              <p>Your words, notes, settings, and backups will stay unchanged.</p>
             </div>
             <div className="activity-clear-review__actions">
               <Button

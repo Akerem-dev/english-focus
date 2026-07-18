@@ -15,8 +15,8 @@ const descriptor: BackupDescriptor = {
   counts: {
     vocabularyEntries: 2,
     vocabularyMetadata: 2,
-    settingsRecords: 1,
-  },
+    settingsRecords: 1
+  }
 };
 
 describe("BackupRestoreDialog", () => {
@@ -32,11 +32,11 @@ describe("BackupRestoreDialog", () => {
           restoredAt: "2026-07-15T13:00:00.000Z",
           restored: descriptor.counts,
           sourceBackup: descriptor,
-          safetyBackup: { ...descriptor, reason: "pre-restore" },
+          safetyBackup: { ...descriptor, reason: "pre-restore" }
         })}
         onValidate={async () => ({ valid: true, issues: [], descriptor })}
         open
-      />,
+      />
     );
 
     expect(markup).toContain("Backups");

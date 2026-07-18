@@ -1,13 +1,9 @@
 import { expect, test } from "./app.fixture";
 
-test("backup manager exposes an honest empty desktop state", async ({
-  page,
-}) => {
+test("backup manager exposes an honest empty desktop state", async ({ page }) => {
   await page.goto("/#/settings");
   await page.getByRole("tab", { name: /Data & backups/ }).click();
   await page.getByRole("button", { name: "View backups" }).click();
   await expect(page.getByRole("dialog", { name: "Backups" })).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "No backups yet" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "No backups yet" })).toBeVisible();
 });

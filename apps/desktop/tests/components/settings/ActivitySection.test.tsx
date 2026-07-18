@@ -9,7 +9,7 @@ describe("ActivitySection", () => {
     const markup = renderToStaticMarkup(
       <AppProviders>
         <ActivitySection />
-      </AppProviders>,
+      </AppProviders>
     );
 
     expect(markup).toContain("Recent activity");
@@ -24,7 +24,7 @@ describe("ActivitySection", () => {
     const markup = renderToStaticMarkup(
       <AppProviders>
         <ActivitySection showHeading={false} />
-      </AppProviders>,
+      </AppProviders>
     );
 
     expect(markup).not.toContain("<h3>Recent activity</h3>");
