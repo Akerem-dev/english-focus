@@ -52,9 +52,7 @@ export const APP_ROUTES = [
     label: "Library",
     title: "Library",
     icon: "books",
-    element: (
-      <LibraryRouteFrame>{createRouteElement("Library", <LibraryPage />)}</LibraryRouteFrame>
-    )
+    element: <LibraryRouteFrame>{createRouteElement("Library", <LibraryPage />)}</LibraryRouteFrame>
   },
   {
     id: "settings",
