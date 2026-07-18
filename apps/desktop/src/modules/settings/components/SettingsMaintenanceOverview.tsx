@@ -24,7 +24,7 @@ function MaintenanceCard({
   meta,
   onOpen,
   title,
-  tone = "default",
+  tone = "default"
 }: MaintenanceCardProps) {
   return (
     <button
@@ -40,9 +40,7 @@ function MaintenanceCard({
       <span className="settings-management-card__copy">
         <span>
           <strong className="settings-management-card__title">{title}</strong>
-          <span className="settings-management-card__description">
-            {description}
-          </span>
+          <span className="settings-management-card__description">{description}</span>
         </span>
         <span className="settings-management-card__meta">{meta}</span>
       </span>
@@ -56,13 +54,10 @@ function MaintenanceCard({
 
 export function SettingsMaintenanceOverview({
   activitySummary,
-  onOpen,
+  onOpen
 }: SettingsMaintenanceOverviewProps) {
   return (
-    <section
-      aria-label="Privacy and maintenance tools"
-      className="settings-management-overview"
-    >
+    <section aria-label="Privacy and maintenance tools" className="settings-management-overview">
       <MaintenanceCard
         actionLabel="View activity"
         description="Review the privacy-safe timeline stored only inside English Focus."

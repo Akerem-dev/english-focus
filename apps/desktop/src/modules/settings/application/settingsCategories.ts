@@ -4,12 +4,12 @@ export const SETTINGS_CATEGORY_IDS = [
   "general",
   "content",
   "data",
-  "privacy",
+  "privacy"
 ] as const satisfies readonly SettingsCategoryId[];
 
 export function resolveSettingsCategoryNavigation(
   current: SettingsCategoryId,
-  key: string,
+  key: string
 ): SettingsCategoryId | undefined {
   const currentIndex = SETTINGS_CATEGORY_IDS.indexOf(current);
 
@@ -33,8 +33,7 @@ export function resolveSettingsCategoryNavigation(
   }
 
   const nextIndex =
-    (currentIndex + direction + SETTINGS_CATEGORY_IDS.length) %
-    SETTINGS_CATEGORY_IDS.length;
+    (currentIndex + direction + SETTINGS_CATEGORY_IDS.length) % SETTINGS_CATEGORY_IDS.length;
 
   return SETTINGS_CATEGORY_IDS[nextIndex];
 }

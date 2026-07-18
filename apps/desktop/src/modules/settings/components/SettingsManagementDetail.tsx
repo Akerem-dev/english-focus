@@ -12,19 +12,16 @@ const MANAGEMENT_VIEW_DETAILS: Record<
 > = {
   activity: {
     title: "Recent activity",
-    description:
-      "Review the small privacy-safe timeline stored only on this device.",
+    description: "Review the small privacy-safe timeline stored only on this device."
   },
   diagnostics: {
     title: "System diagnostics",
-    description:
-      "Run a read-only health scan and review safe recovery guidance.",
+    description: "Run a read-only health scan and review safe recovery guidance."
   },
   "local-data": {
     title: "Local data",
-    description:
-      "Review record counts and carefully remove only the data you choose.",
-  },
+    description: "Review record counts and carefully remove only the data you choose."
+  }
 };
 
 interface SettingsManagementViewProps {
@@ -32,10 +29,7 @@ interface SettingsManagementViewProps {
   readonly view: SettingsManagementView;
 }
 
-export function SettingsManagementDetail({
-  onBack,
-  view,
-}: SettingsManagementViewProps) {
+export function SettingsManagementDetail({ onBack, view }: SettingsManagementViewProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const details = MANAGEMENT_VIEW_DETAILS[view];
 

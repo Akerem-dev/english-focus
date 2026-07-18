@@ -1,10 +1,7 @@
 import { useRef, type KeyboardEvent } from "react";
 
 import { AppIcon, type AppIconName } from "../../../design-system";
-import {
-  resolveSettingsCategoryNavigation,
-  type SettingsCategoryId,
-} from "../application";
+import { resolveSettingsCategoryNavigation, type SettingsCategoryId } from "../application";
 
 interface SettingsCategory {
   readonly id: SettingsCategoryId;
@@ -18,26 +15,26 @@ const SETTINGS_CATEGORIES = [
     id: "general",
     label: "General",
     description: "Appearance and accessibility preferences.",
-    icon: "settings",
+    icon: "settings"
   },
   {
     id: "content",
     label: "Vocabulary content",
     description: "Vocabulary display and explanation preferences.",
-    icon: "book-open",
+    icon: "book-open"
   },
   {
     id: "data",
     label: "Data & backups",
     description: "Local backup and retention preferences.",
-    icon: "upload",
+    icon: "upload"
   },
   {
     id: "privacy",
     label: "Privacy & maintenance",
     description: "Activity, diagnostics, and protected data controls.",
-    icon: "warning",
-  },
+    icon: "warning"
+  }
 ] as const satisfies readonly SettingsCategory[];
 
 interface SettingsCategoryNavigationProps {
@@ -46,15 +43,12 @@ interface SettingsCategoryNavigationProps {
 }
 
 export function settingsCategoryLabel(category: SettingsCategoryId): string {
-  return (
-    SETTINGS_CATEGORIES.find((item) => item.id === category)?.label ??
-    "Settings"
-  );
+  return SETTINGS_CATEGORIES.find((item) => item.id === category)?.label ?? "Settings";
 }
 
 export function SettingsCategoryNavigation({
   onSelect,
-  selectedCategory,
+  selectedCategory
 }: SettingsCategoryNavigationProps) {
   const tabRefs = useRef(new Map<SettingsCategoryId, HTMLButtonElement>());
 
@@ -67,12 +61,9 @@ export function SettingsCategoryNavigation({
 
   function handleKeyDown(
     event: KeyboardEvent<HTMLButtonElement>,
-    currentCategory: SettingsCategoryId,
+    currentCategory: SettingsCategoryId
   ) {
-    const nextCategory = resolveSettingsCategoryNavigation(
-      currentCategory,
-      event.key,
-    );
+    const nextCategory = resolveSettingsCategoryNavigation(currentCategory, event.key);
 
     if (nextCategory === undefined) {
       return;

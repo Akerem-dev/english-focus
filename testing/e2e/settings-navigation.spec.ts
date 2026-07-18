@@ -1,7 +1,7 @@
 import { expect, test } from "./app.fixture";
 
 test("settings categories support roving keyboard navigation and focused management views", async ({
-  page,
+  page
 }) => {
   await page.goto("/settings");
 
@@ -15,23 +15,15 @@ test("settings categories support roving keyboard navigation and focused managem
 
   await expect(dataTab).toBeFocused();
   await expect(dataTab).toHaveAttribute("aria-selected", "true");
-  await expect(
-    page.getByText("Automatic backups", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByText("Automatic backups", { exact: true })).toBeVisible();
 
   await page.keyboard.press("End");
   await expect(privacyTab).toBeFocused();
   await expect(privacyTab).toHaveAttribute("aria-selected", "true");
 
   await page.getByRole("button", { name: /System diagnostics/ }).click();
-  await expect(
-    page.getByRole("heading", { name: "System diagnostics", level: 2 }),
-  ).toBeFocused();
+  await expect(page.getByRole("heading", { name: "System diagnostics", level: 2 })).toBeFocused();
 
-  await page
-    .getByRole("button", { name: /Back to privacy & maintenance/ })
-    .click();
-  await expect(
-    page.getByRole("button", { name: /Recent activity/ }),
-  ).toBeFocused();
+  await page.getByRole("button", { name: /Back to privacy & maintenance/ }).click();
+  await expect(page.getByRole("button", { name: /Recent activity/ })).toBeFocused();
 });

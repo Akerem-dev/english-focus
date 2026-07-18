@@ -7,7 +7,7 @@ import { SettingsPage } from "../../../src/modules/settings/pages";
 const markup = renderToStaticMarkup(
   <AppProviders>
     <SettingsPage />
-  </AppProviders>,
+  </AppProviders>
 );
 
 describe("SettingsPage", () => {
@@ -24,12 +24,8 @@ describe("SettingsPage", () => {
   });
 
   it("uses a roving tab stop with vocabulary content selected by default", () => {
-    expect(markup).toContain(
-      'id="settings-category-tab-content" role="tab" tabindex="0"',
-    );
-    expect(markup).toContain(
-      'id="settings-category-tab-general" role="tab" tabindex="-1"',
-    );
+    expect(markup).toContain('id="settings-category-tab-content" role="tab" tabindex="0"');
+    expect(markup).toContain('id="settings-category-tab-general" role="tab" tabindex="-1"');
     expect(markup).toContain('aria-labelledby="settings-category-tab-content"');
   });
 

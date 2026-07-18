@@ -22,11 +22,7 @@
 }
 
 .settings-category-nav__item[data-active="true"] {
-  background: color-mix(
-    in srgb,
-    var(--color-accent-soft) 62%,
-    var(--color-surface)
-  );
+  background: color-mix(in srgb, var(--color-accent-soft) 62%, var(--color-surface));
 }
 
 .settings-category-nav__item:focus-visible,
@@ -97,28 +93,16 @@
 
 .settings-management-card:hover {
   border-color: var(--color-border);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-muted) 58%,
-    var(--color-surface)
-  );
+  background: color-mix(in srgb, var(--color-surface-muted) 58%, var(--color-surface));
 }
 
 .settings-management-card[data-tone="danger"] {
   border-color: var(--color-border);
-  background: color-mix(
-    in srgb,
-    var(--color-danger-soft) 16%,
-    var(--color-surface)
-  );
+  background: color-mix(in srgb, var(--color-danger-soft) 16%, var(--color-surface));
 }
 
 .settings-management-card[data-tone="danger"]:hover {
-  background: color-mix(
-    in srgb,
-    var(--color-danger-soft) 28%,
-    var(--color-surface)
-  );
+  background: color-mix(in srgb, var(--color-danger-soft) 28%, var(--color-surface));
 }
 
 .settings-management-card__copy > span:first-child {
@@ -150,8 +134,7 @@
   white-space: nowrap;
 }
 
-.settings-management-card[data-tone="danger"]
-  .settings-management-card__action {
+.settings-management-card[data-tone="danger"] .settings-management-card__action {
   color: var(--color-danger);
 }
 

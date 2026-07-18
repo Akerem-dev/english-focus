@@ -1,9 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
-import type {
-  BackupFrequency,
-  InterfaceSize,
-  ThemePreference,
-} from "@platform/domain";
+import type { BackupFrequency, InterfaceSize, ThemePreference } from "@platform/domain";
 
 import { SelectField, SwitchField } from "../../../components";
 import { useActivity, useSettings } from "../../../app/providers";
@@ -12,7 +8,7 @@ import {
   updateAppearanceSettings,
   updateContentSettings,
   updateDataSettings,
-  type SettingsCategoryId,
+  type SettingsCategoryId
 } from "../application";
 import {
   BackupSettingsSection,
@@ -22,7 +18,7 @@ import {
   SettingsMaintenanceOverview,
   SettingsManagementDetail,
   settingsCategoryLabel,
-  type SettingsManagementView,
+  type SettingsManagementView
 } from "../components";
 
 interface SettingsPanelProps {
@@ -33,20 +29,11 @@ interface SettingsPanelProps {
   readonly children: ReactNode;
 }
 
-function SettingsPanel({
-  children,
-  className,
-  description,
-  icon,
-  title,
-}: SettingsPanelProps) {
-  const hasHeader =
-    icon !== undefined && title !== undefined && description !== undefined;
+function SettingsPanel({ children, className, description, icon, title }: SettingsPanelProps) {
+  const hasHeader = icon !== undefined && title !== undefined && description !== undefined;
 
   return (
-    <section
-      className={["settings-panel", className].filter(Boolean).join(" ")}
-    >
+    <section className={["settings-panel", className].filter(Boolean).join(" ")}>
       {hasHeader ? (
         <header className="settings-panel__header">
           <span aria-hidden="true" className="settings-panel__icon">
@@ -69,18 +56,12 @@ interface StaticPreferenceRowProps {
   readonly value: string;
 }
 
-function StaticPreferenceRow({
-  description,
-  label,
-  value,
-}: StaticPreferenceRowProps) {
+function StaticPreferenceRow({ description, label, value }: StaticPreferenceRowProps) {
   return (
     <div className="settings-preference-row settings-preference-row--static">
       <span className="settings-preference-row__copy">
         <span className="settings-preference-row__label">{label}</span>
-        <span className="settings-preference-row__description">
-          {description}
-        </span>
+        <span className="settings-preference-row__description">{description}</span>
       </span>
       <strong className="settings-preference-row__value">{value}</strong>
     </div>
@@ -107,17 +88,10 @@ function SettingsSaveNote({ status }: { readonly status: string }) {
 }
 
 export function SettingsPage() {
-  const {
-    activity,
-    error: activityError,
-    status: activityStatus,
-  } = useActivity();
+  const { activity, error: activityError, status: activityStatus } = useActivity();
   const { error, settings, status, updateSettings } = useSettings();
-  const [selectedCategory, setSelectedCategory] =
-    useState<SettingsCategoryId>("content");
-  const [managementView, setManagementView] = useState<
-    SettingsManagementView | undefined
-  >();
+  const [selectedCategory, setSelectedCategory] = useState<SettingsCategoryId>("content");
+  const [managementView, setManagementView] = useState<SettingsManagementView | undefined>();
   const privacyContentRef = useRef<HTMLDivElement>(null);
   const isBusy = status === "loading" || status === "saving";
   const activitySummary =
@@ -147,9 +121,7 @@ export function SettingsPage() {
         <div>
           <p className="route-page__eyebrow">Application preferences</p>
           <h1>Settings</h1>
-          <p>
-            Customize the English Focus experience around the way you learn.
-          </p>
+          <p>Customize the English Focus experience around the way you learn.</p>
         </div>
       </header>
 
@@ -167,10 +139,7 @@ export function SettingsPage() {
             selectedCategory={selectedCategory}
           />
 
-          <aside
-            aria-label="Application information"
-            className="settings-about-card"
-          >
+          <aside aria-label="Application information" className="settings-about-card">
             <CoreContentSection />
           </aside>
         </div>
@@ -197,8 +166,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateAppearanceSettings(current, {
                         ...current.appearance,
-                        theme,
-                      }),
+                        theme
+                      })
                     );
                   }}
                   value={settings.appearance.theme}
@@ -218,8 +187,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateAppearanceSettings(current, {
                         ...current.appearance,
-                        reducedMotion,
-                      }),
+                        reducedMotion
+                      })
                     );
                   }}
                 />
@@ -229,13 +198,12 @@ export function SettingsPage() {
                   helperText="Adjust the overall density of controls and content."
                   label="Interface size"
                   onChange={(event) => {
-                    const interfaceSize = event.currentTarget
-                      .value as InterfaceSize;
+                    const interfaceSize = event.currentTarget.value as InterfaceSize;
                     void updateSettings((current) =>
                       updateAppearanceSettings(current, {
                         ...current.appearance,
-                        interfaceSize,
-                      }),
+                        interfaceSize
+                      })
                     );
                   }}
                   value={settings.appearance.interfaceSize}
@@ -262,8 +230,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateContentSettings(current, {
                         ...current.content,
-                        showEtymology,
-                      }),
+                        showEtymology
+                      })
                     );
                   }}
                 />
@@ -291,8 +259,8 @@ export function SettingsPage() {
                     void updateSettings((current) =>
                       updateDataSettings(current, {
                         ...current.data,
-                        automaticBackups,
-                      }),
+                        automaticBackups
+                      })
                     );
                   }}
                 />
@@ -302,13 +270,12 @@ export function SettingsPage() {
                   helperText="Choose how often an automatic local backup is retained."
                   label="Backup frequency"
                   onChange={(event) => {
-                    const backupFrequency = event.currentTarget
-                      .value as BackupFrequency;
+                    const backupFrequency = event.currentTarget.value as BackupFrequency;
                     void updateSettings((current) =>
                       updateDataSettings(current, {
                         ...current.data,
-                        backupFrequency,
-                      }),
+                        backupFrequency
+                      })
                     );
                   }}
                   value={settings.data.backupFrequency}
@@ -323,27 +290,19 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "privacy" ? (
-            <div
-              className="settings-category-view__content"
-              ref={privacyContentRef}
-            >
+            <div className="settings-category-view__content" ref={privacyContentRef}>
               {managementView === undefined ? (
                 <SettingsMaintenanceOverview
                   activitySummary={activitySummary}
                   onOpen={setManagementView}
                 />
               ) : (
-                <SettingsManagementDetail
-                  onBack={closeManagementView}
-                  view={managementView}
-                />
+                <SettingsManagementDetail onBack={closeManagementView} view={managementView} />
               )}
             </div>
           ) : null}
 
-          {selectedCategory === "privacy" ? null : (
-            <SettingsSaveNote status={status} />
-          )}
+          {selectedCategory === "privacy" ? null : <SettingsSaveNote status={status} />}
         </section>
       </div>
     </div>
