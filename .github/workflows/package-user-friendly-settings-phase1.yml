@@ -3,6 +3,8 @@ name: Package User-Friendly Settings Phase 1
 on:
   push:
     branches: [feat/user-friendly-settings-language]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -15,6 +17,8 @@ jobs:
     steps:
       - name: Check out branch
         uses: actions/checkout@v4
+        with:
+          ref: feat/user-friendly-settings-language
 
       - name: Collect changed files
         shell: bash
