@@ -10,7 +10,11 @@ import {
   formatActivityTime,
 } from "../../history";
 
-export function ActivitySection() {
+interface ActivitySectionProps {
+  readonly showHeading?: boolean;
+}
+
+export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
   const { activity, clearActivity, error, status } = useActivity();
   const { showToast } = useToast();
   const [filter, setFilter] = useState<ActivityFilter>("all");
@@ -25,6 +29,10 @@ export function ActivitySection() {
   );
   const isBusy =
     status === "loading" || status === "recording" || status === "clearing";
+  const countLabel =
+    status === "loading"
+      ? "Loading"
+      : `${activity.length} ${activity.length === 1 ? "item" : "items"}`;
 
   const handleClear = async () => {
     try {
@@ -49,17 +57,22 @@ export function ActivitySection() {
 
   return (
     <div className="activity-section activity-section--focused">
-      <header className="activity-section__intro">
-        <div>
-          <h3>Recent activity</h3>
-          <p>A simple list of important actions saved only on this device.</p>
+      {showHeading ? (
+        <header className="activity-section__intro">
+          <div>
+            <h3>Recent activity</h3>
+            <p>A simple list of important actions saved only on this device.</p>
+          </div>
+          <span className="activity-section__count" aria-live="polite">
+            {countLabel}
+          </span>
+        </header>
+      ) : (
+        <div className="activity-section__compact-summary" aria-live="polite">
+          <span>{countLabel}</span>
+          <span>Only on this device</span>
         </div>
-        <span className="activity-section__count" aria-live="polite">
-          {status === "loading"
-            ? "Loading"
-            : `${activity.length} ${activity.length === 1 ? "item" : "items"}`}
-        </span>
-      </header>
+      )}
 
       {error === undefined ? null : (
         <section className="activity-section__error" role="alert">
