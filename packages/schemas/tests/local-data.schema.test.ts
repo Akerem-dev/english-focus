@@ -16,6 +16,18 @@ describe("local data schemas", () => {
     expect(localDataSnapshotSchema.parse(emptySnapshot)).toEqual(emptySnapshot);
   });
 
+  it("treats a desktop null safety backup as no recovery copy", () => {
+    expect(
+      resetLocalDataResultSchema.parse({
+        deleted: emptySnapshot,
+        safetyBackup: null
+      })
+    ).toEqual({
+      deleted: emptySnapshot,
+      safetyBackup: undefined
+    });
+  });
+
   it("rejects impossible negative deletion counts", () => {
     expect(() =>
       resetLocalDataResultSchema.parse({
