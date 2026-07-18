@@ -13,8 +13,9 @@ This phase corrects the Library row alignment and replaces the conventional CEFR
 - Removed the pill border, background, padding, and chip silhouette from Library CEFR values.
 - Kept CEFR color meaning while presenting the level as restrained display text.
 - Aligned the book icon with the word's first line instead of the combined word-and-part-of-speech block.
-- Applied a one-pixel optical adjustment to the word line for a more natural baseline.
+- Applied a subtle optical adjustment to the word line for a more natural baseline.
 - Kept the row structure, selection behavior, navigation, filtering, sorting, and export behavior unchanged.
+- Added component coverage for the Library alignment hooks.
 
 ## Design boundary
 
