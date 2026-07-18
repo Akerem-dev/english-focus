@@ -2,11 +2,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { AppProviders } from "../../../src/app/providers";
+import { LocalDataControlsSection } from "../../../src/modules/settings/components";
 import {
-  LocalDataControlsSection,
   ResetApplicationDialog,
   SelectiveDataRemovalDialog
-} from "../../../src/modules/settings/components";
+} from "../../../src/modules/settings/components/LocalDataRemovalDialogs";
 
 const categories = [
   {
