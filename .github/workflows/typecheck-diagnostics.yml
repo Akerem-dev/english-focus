@@ -1,0 +1,38 @@
+name: Typecheck Diagnostics
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Capture typecheck output
+        shell: bash
+        run: |
+          set +e
+          npm run typecheck > typecheck.txt 2>&1
+          status=$?
+          echo "$status" > typecheck-exit-code.txt
+          exit 0
+      - name: Upload typecheck report
+        uses: actions/upload-artifact@v4
+        with:
+          name: settings-phase-five-typecheck
+          path: |
+            typecheck.txt
+            typecheck-exit-code.txt
+          if-no-files-found: error
+          retention-days: 1
