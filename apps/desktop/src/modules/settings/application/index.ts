@@ -7,6 +7,7 @@ export { createDiagnosticSummary, runDiagnostics, runSafeMaintenance } from "./R
 export {
   SETTINGS_CATEGORY_IDS,
   resolveSettingsCategoryNavigation,
+  settingsCategoryLabel,
   type SettingsCategoryId
 } from "./settingsCategories";
 export {

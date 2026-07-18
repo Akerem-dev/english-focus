@@ -1,7 +1,10 @@
 import { useRef, type KeyboardEvent } from "react";
 
 import { AppIcon, type AppIconName } from "../../../design-system";
-import { resolveSettingsCategoryNavigation, type SettingsCategoryId } from "../application";
+import {
+  resolveSettingsCategoryNavigation,
+  type SettingsCategoryId
+} from "../application";
 
 interface SettingsCategory {
   readonly id: SettingsCategoryId;
@@ -40,10 +43,6 @@ const SETTINGS_CATEGORIES = [
 interface SettingsCategoryNavigationProps {
   readonly onSelect: (category: SettingsCategoryId) => void;
   readonly selectedCategory: SettingsCategoryId;
-}
-
-export function settingsCategoryLabel(category: SettingsCategoryId): string {
-  return SETTINGS_CATEGORIES.find((item) => item.id === category)?.label ?? "Settings";
 }
 
 export function SettingsCategoryNavigation({

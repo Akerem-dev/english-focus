@@ -7,6 +7,17 @@ export const SETTINGS_CATEGORY_IDS = [
   "privacy"
 ] as const satisfies readonly SettingsCategoryId[];
 
+const SETTINGS_CATEGORY_LABELS: Record<SettingsCategoryId, string> = {
+  general: "General",
+  content: "Vocabulary content",
+  data: "Data & backups",
+  privacy: "Privacy & maintenance"
+};
+
+export function settingsCategoryLabel(category: SettingsCategoryId): string {
+  return SETTINGS_CATEGORY_LABELS[category];
+}
+
 export function resolveSettingsCategoryNavigation(
   current: SettingsCategoryId,
   key: string

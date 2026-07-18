@@ -7,6 +7,7 @@ import { AppIcon, type AppIconName } from "../../../design-system";
 import {
   updateAppearanceSettings,
   updateContentSettings,
+  settingsCategoryLabel,
   updateDataSettings,
   type SettingsCategoryId
 } from "../application";
@@ -17,7 +18,6 @@ import {
   SettingsCategoryNavigation,
   SettingsMaintenanceOverview,
   SettingsManagementDetail,
-  settingsCategoryLabel,
   type SettingsManagementView
 } from "../components";
 
