@@ -5,7 +5,7 @@ import type {
   VocabularyUserMetadata
 } from "@platform/domain";
 
-import { Button, Modal, StatusBadge, TextAreaField, TextField } from "../../../components";
+import { Button, Modal, TextAreaField, TextField } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { createVocabularyUserMetadata, parseVocabularyTags } from "../application";
 
@@ -187,10 +187,6 @@ export function VocabularyMetadataDialog({
           <div>
             <span>Last viewed</span>
             <strong>{formatDate(initialMetadata.lastViewedAt)}</strong>
-          </div>
-          <div>
-            <span>Storage</span>
-            <StatusBadge tone="success">SQLite · local only</StatusBadge>
           </div>
         </section>
       </div>
