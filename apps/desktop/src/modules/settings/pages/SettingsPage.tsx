@@ -28,7 +28,7 @@ interface SettingsCategory {
   readonly icon: SettingsIcon;
 }
 
-const SETTINGS_CATEGORIES: readonly SettingsCategory[] = [
+const SETTINGS_CATEGORIES = [
   {
     id: "general",
     label: "General",
@@ -53,7 +53,7 @@ const SETTINGS_CATEGORIES: readonly SettingsCategory[] = [
     description: "Review activity, diagnostics, and protected data controls.",
     icon: "warning"
   }
-] as const;
+] as const satisfies readonly SettingsCategory[];
 
 interface SettingsPanelProps {
   readonly className?: string | undefined;
