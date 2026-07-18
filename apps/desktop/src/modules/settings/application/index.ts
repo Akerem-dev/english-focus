@@ -12,7 +12,6 @@ export {
   SETTINGS_CATEGORY_IDS,
   resolveSettingsCategoryNavigation,
   type SettingsCategoryId,
-  type SettingsCategoryNavigationKey,
 } from "./settingsCategories";
 export {
   FULL_LOCAL_RESET_CATEGORIES,

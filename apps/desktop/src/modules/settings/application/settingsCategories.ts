@@ -1,13 +1,5 @@
 export type SettingsCategoryId = "general" | "content" | "data" | "privacy";
 
-export type SettingsCategoryNavigationKey =
-  | "ArrowDown"
-  | "ArrowLeft"
-  | "ArrowRight"
-  | "ArrowUp"
-  | "End"
-  | "Home";
-
 export const SETTINGS_CATEGORY_IDS = [
   "general",
   "content",
