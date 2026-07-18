@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import type { LocalDataCategory, LocalDataSnapshot, ResetLocalDataResult } from "@platform/domain";
+import type {
+  LocalDataCategory,
+  LocalDataSnapshot,
+  ResetLocalDataResult
+} from "@platform/domain";
 
 import {
   useActivity,
@@ -61,7 +65,9 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
   const { refresh: refreshMetadata } = useVocabularyMetadata();
   const { refresh: refreshVocabulary } = useVocabularyRepository();
   const [snapshot, setSnapshot] = useState<LocalDataSnapshot>(emptySnapshot);
-  const [status, setStatus] = useState<"loading" | "ready" | "resetting" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "ready" | "resetting" | "error">(
+    "loading"
+  );
   const [errorState, setErrorState] = useState<LocalDataErrorState>();
   const [dialogMode, setDialogMode] = useState<DialogMode>();
   const [selectedCategories, setSelectedCategories] = useState<readonly LocalDataCategory[]>([]);
@@ -142,7 +148,9 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
     status !== "resetting" &&
     lastResult === undefined;
   const fullResetCanSubmit =
-    isFullResetConfirmation(confirmationText) && status !== "resetting" && lastResult === undefined;
+    isFullResetConfirmation(confirmationText) &&
+    status !== "resetting" &&
+    lastResult === undefined;
 
   const resetDialogState = useCallback(() => {
     setSelectedCategories([]);
@@ -211,7 +219,9 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
       setStatus("ready");
       showToast({
         title: fullReset ? "English Focus was reset" : "Selected data was removed",
-        message: `${deletedSummary(result)} removed${result.safetyBackup === undefined ? "." : "; a recovery copy was created first."}`,
+        message: `${deletedSummary(result)} removed${
+          result.safetyBackup === undefined ? "." : "; a recovery copy was created first."
+        }`,
         tone: "success",
         dedupeKey: fullReset ? "full-local-reset-success" : "selected-local-data-reset-success"
       });
