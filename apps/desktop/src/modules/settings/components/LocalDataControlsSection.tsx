@@ -34,6 +34,7 @@ const emptySnapshot: LocalDataSnapshot = Object.freeze({
 });
 
 type DialogMode = "selective" | "full-reset" | undefined;
+type LocalDataErrorState = "summary" | "action" | undefined;
 
 interface LocalDataControlsSectionProps {
   readonly showHeading?: boolean;
@@ -61,7 +62,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
   const { refresh: refreshVocabulary } = useVocabularyRepository();
   const [snapshot, setSnapshot] = useState<LocalDataSnapshot>(emptySnapshot);
   const [status, setStatus] = useState<"loading" | "ready" | "resetting" | "error">("loading");
-  const [error, setError] = useState<string | undefined>();
+  const [errorState, setErrorState] = useState<LocalDataErrorState>();
   const [dialogMode, setDialogMode] = useState<DialogMode>();
   const [selectedCategories, setSelectedCategories] = useState<readonly LocalDataCategory[]>([]);
   const [reviewConfirmed, setReviewConfirmed] = useState(false);
@@ -71,7 +72,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
 
   const refreshSnapshot = useCallback(async () => {
     setStatus("loading");
-    setError(undefined);
+    setErrorState(undefined);
 
     try {
       const next = await repository.getSnapshot();
@@ -79,9 +80,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
       setStatus("ready");
       return next;
     } catch (cause) {
-      const message =
-        cause instanceof Error ? cause.message : "Your data summary could not be loaded.";
-      setError(message);
+      setErrorState("summary");
       setStatus("error");
       throw cause;
     }
@@ -179,7 +178,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
 
   async function performReset(categories: readonly LocalDataCategory[], fullReset: boolean) {
     setStatus("resetting");
-    setError(undefined);
+    setErrorState(undefined);
     setLastResult(undefined);
 
     try {
@@ -216,18 +215,12 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
         tone: "success",
         dedupeKey: fullReset ? "full-local-reset-success" : "selected-local-data-reset-success"
       });
-    } catch (cause) {
-      const message =
-        cause instanceof Error
-          ? cause.message
-          : fullReset
-            ? "English Focus could not be reset."
-            : "The selected data could not be removed.";
-      setError(message);
+    } catch {
+      setErrorState("action");
       setStatus("error");
       showToast({
         title: fullReset ? "English Focus was not reset" : "Selected data was not removed",
-        message: "The operation did not complete. Review the message and try again.",
+        message: "Nothing was removed. Refresh the summary and try again.",
         tone: "error",
         dedupeKey: fullReset ? "full-local-reset-error" : "selected-local-data-reset-error"
       });
@@ -252,12 +245,31 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
         </header>
       ) : null}
 
-      {error === undefined ? null : (
+      {errorState === undefined ? null : (
         <section className="local-data-controls__error" role="alert">
           <AppIcon name="warning" size={19} />
           <div>
-            <strong>Your data summary could not be loaded.</strong>
-            <p>{error}</p>
+            <strong>
+              {errorState === "summary"
+                ? "We could not refresh this page."
+                : "That change was not completed."}
+            </strong>
+            <p>
+              {errorState === "summary"
+                ? "Your words, personal details, settings, and backups are still available."
+                : "Nothing was removed. Your saved information is unchanged."}
+            </p>
+            <Button
+              disabled={status === "loading" || status === "resetting"}
+              isLoading={status === "loading"}
+              onClick={() => {
+                void refreshSnapshot().catch(() => undefined);
+              }}
+              size="small"
+              variant="secondary"
+            >
+              Try again
+            </Button>
           </div>
         </section>
       )}
