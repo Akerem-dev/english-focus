@@ -11,7 +11,7 @@ interface ActivitySectionProps {
 }
 
 export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
-  const { activity, clearActivity, error, status } = useActivity();
+  const { activity, clearActivity, error, refreshActivity, status } = useActivity();
   const { showToast } = useToast();
   const [filter, setFilter] = useState<ActivityFilter>("all");
   const [clearReviewOpen, setClearReviewOpen] = useState(false);
@@ -25,6 +25,19 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
     status === "loading"
       ? "Loading"
       : `${activity.length} ${activity.length === 1 ? "item" : "items"}`;
+
+  const handleRetry = async () => {
+    try {
+      await refreshActivity();
+    } catch {
+      showToast({
+        title: "Recent activity is still unavailable",
+        message: "Your saved words and personal details are not affected.",
+        tone: "error",
+        dedupeKey: "activity-refresh-error"
+      });
+    }
+  };
 
   const handleClear = async () => {
     try {
@@ -69,12 +82,19 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
         <section className="activity-section__error" role="alert">
           <AppIcon name="warning" size={18} />
           <div>
-            <strong>Some older activity was skipped.</strong>
-            <p>Your words, notes, settings, and backups are not affected.</p>
-            <details className="activity-section__technical-error">
-              <summary>Technical details</summary>
-              <pre>{error}</pre>
-            </details>
+            <strong>Recent activity needs a refresh.</strong>
+            <p>We could not read a few older items. Your words, notes, settings, and backups are safe.</p>
+            <Button
+              disabled={isBusy}
+              isLoading={status === "loading"}
+              onClick={() => {
+                void handleRetry();
+              }}
+              size="small"
+              variant="secondary"
+            >
+              Try again
+            </Button>
           </div>
         </section>
       )}
