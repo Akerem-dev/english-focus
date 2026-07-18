@@ -6,7 +6,7 @@ import type {
   VocabularyStorageLayer
 } from "@platform/domain";
 
-import { Button, Modal, StatusBadge } from "../../../components";
+import { Button, Modal } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { prepareVocabularyEntryEdit, type VocabularyEntryEditIssue } from "../application";
 import { VocabularyEntryEditorContentSections } from "./VocabularyEntryEditorContentSections";
@@ -133,17 +133,6 @@ export function VocabularyEntryEditorDialog({
       title="Edit vocabulary entry"
     >
       <div className="vocabulary-entry-editor">
-        <div className="vocabulary-entry-editor__status">
-          <StatusBadge tone="accent">
-            {layer === "override" ? "Creates local override" : "Updates local entry"}
-          </StatusBadge>
-          <span>
-            {layer === "override"
-              ? "The bundled core record stays unchanged."
-              : "The current user-owned record will be updated."}
-          </span>
-        </div>
-
         {saveError === undefined ? null : (
           <section className="vocabulary-entry-editor__error" role="alert">
             <strong>Entry needs attention</strong>
