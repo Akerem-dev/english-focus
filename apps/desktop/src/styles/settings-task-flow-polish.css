@@ -33,7 +33,11 @@
 
 .backup-manager-layout--task-focused .backup-list-item[data-selected] {
   border-color: var(--color-border);
-  background: color-mix(in srgb, var(--color-accent-soft) 42%, var(--color-surface));
+  background: color-mix(
+    in srgb,
+    var(--color-accent-soft) 42%,
+    var(--color-surface)
+  );
 }
 
 .backup-manager-layout--task-focused .backup-list-item[data-selected]::before {
