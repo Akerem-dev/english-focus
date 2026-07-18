@@ -25,7 +25,24 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
       - name: Run release quality checks
-        run: npm run quality:release
+        id: release_quality
+        continue-on-error: true
+        shell: powershell
+        run: npm run quality:release *> release-quality-report.txt
+      - name: Upload release quality report
+        if: steps.release_quality.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release-quality-report
+          path: release-quality-report.txt
+          if-no-files-found: error
+          retention-days: 1
+      - name: Enforce release quality result
+        if: steps.release_quality.outcome == 'failure'
+        shell: powershell
+        run: |
+          Get-Content release-quality-report.txt
+          exit 1
       - name: Build unsigned MSI and NSIS test installers
         shell: powershell
         run: npm run tauri --workspace=@app/desktop -- build --bundles msi,nsis --ci --no-sign
