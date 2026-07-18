@@ -44,9 +44,3 @@
   letter-spacing: 0.025em;
   line-height: var(--line-height-tight);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .library-word-link strong {
-    transform: none;
-  }
-}
