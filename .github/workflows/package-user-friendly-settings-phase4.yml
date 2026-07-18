@@ -1,0 +1,44 @@
+name: Package User Friendly Settings Phase 4
+
+on:
+  push:
+    branches: [chore/package-user-friendly-settings-phase4]
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare phase archive
+        shell: bash
+        run: |
+          mkdir -p phase-4/apps/desktop/src/modules/settings/components
+          mkdir -p phase-4/apps/desktop/src/styles
+          mkdir -p phase-4/apps/desktop/tests/components/settings
+          mkdir -p phase-4/docs/product
+          cp apps/desktop/src/modules/settings/components/DiagnosticsSection.tsx phase-4/apps/desktop/src/modules/settings/components/
+          cp apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx phase-4/apps/desktop/src/modules/settings/components/
+          cp apps/desktop/src/styles/diagnostics.css phase-4/apps/desktop/src/styles/
+          cp apps/desktop/tests/components/settings/DiagnosticsSection.test.tsx phase-4/apps/desktop/tests/components/settings/
+          cp docs/product/USER_FRIENDLY_SETTINGS_PHASE_4.md phase-4/docs/product/
+          printf '%s\n' \
+            apps/desktop/src/modules/settings/components/DiagnosticsSection.tsx \
+            apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx \
+            apps/desktop/src/styles/diagnostics.css \
+            apps/desktop/tests/components/settings/DiagnosticsSection.test.tsx \
+            docs/product/USER_FRIENDLY_SETTINGS_PHASE_4.md \
+            > phase-4/CHANGED_FILES.txt
+          printf '%s\n' de37f6f4b776b53f48a10e045736310ca413afc5 > phase-4/PHASE_4_COMMIT.txt
+
+      - name: Upload phase archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: english-focus-user-friendly-settings-phase-4
+          path: phase-4/**
+          if-no-files-found: error
+          retention-days: 1
