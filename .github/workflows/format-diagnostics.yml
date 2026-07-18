@@ -19,14 +19,12 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Capture formatting differences
-        shell: bash
-        run: |
-          npx prettier --list-different . > format-differences.txt || true
-      - name: Upload formatting report
+      - name: Format local data component
+        run: npx prettier --write apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx
+      - name: Upload formatted component
         uses: actions/upload-artifact@v4
         with:
-          name: interface-polish-format-report
-          path: format-differences.txt
+          name: interface-polish-formatted-component
+          path: apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx
           if-no-files-found: error
           retention-days: 1
