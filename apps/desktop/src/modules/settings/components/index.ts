@@ -5,3 +5,7 @@ export { BackupSettingsSection } from "./BackupSettingsSection";
 export { CoreContentSection } from "./CoreContentSection";
 export { DiagnosticsSection } from "./DiagnosticsSection";
 export { LocalDataControlsSection } from "./LocalDataControlsSection";
+export {
+  SettingsMaintenanceOverview,
+  type SettingsManagementView
+} from "./SettingsMaintenanceOverview";
