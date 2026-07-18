@@ -45,13 +45,13 @@ export function BackupSettingsSection() {
   const latest = backups[0];
 
   return (
-    <section aria-label="Backup status and actions" className="backup-settings-compact">
-      <div className="backup-settings-summary">
-        <div>
+    <section aria-label="Backup status and actions" className="backup-settings-inline">
+      <div className="backup-settings-inline__facts">
+        <div className="backup-settings-inline__fact">
           <span>Saved backups</span>
           <strong>{backups.length}</strong>
         </div>
-        <div>
+        <div className="backup-settings-inline__fact">
           <span>Most recent backup</span>
           <strong>{formatDate(latest?.createdAt)}</strong>
         </div>
