@@ -38,3 +38,7 @@ The surfaces avoid nested cards, decorative metrics, glowing markers, repeated w
 - No restore, validation, deletion, or retention changes
 - No activity persistence changes
 - No vocabulary data changes
+
+## Verification
+
+Repository structure, forbidden-pattern, CSS-token, dead-code, formatting, lint, typecheck, test, and production-build checks are required to pass before the phase is considered complete.
