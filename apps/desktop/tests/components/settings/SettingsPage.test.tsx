@@ -4,41 +4,47 @@ import { describe, expect, it } from "vitest";
 import { AppProviders } from "../../../src/app/providers";
 import { SettingsPage } from "../../../src/modules/settings/pages";
 
-describe("SettingsPage", () => {
-  it("renders simplified content, data, appearance, backup, instruction, and diagnostics settings", () => {
-    const markup = renderToStaticMarkup(
-      <AppProviders>
-        <SettingsPage />
-      </AppProviders>
-    );
+const markup = renderToStaticMarkup(
+  <AppProviders>
+    <SettingsPage />
+  </AppProviders>
+);
 
+describe("SettingsPage", () => {
+  it("renders the premium four-category settings workspace", () => {
     expect(markup).toContain("Settings");
+    expect(markup).toContain("General");
+    expect(markup).toContain("Vocabulary content");
+    expect(markup).toContain("Data &amp; backups");
+    expect(markup).toContain("Privacy &amp; maintenance");
+    expect(markup).toContain('role="tablist"');
+    expect(markup).toContain('role="tabpanel"');
+  });
+
+  it("opens the focused vocabulary content category by default", () => {
+    expect(markup).toContain("Vocabulary display");
     expect(markup).toContain("Show etymology");
     expect(markup).toContain("Example sentences shown");
     expect(markup).toContain("First 3");
+    expect(markup).toContain("Explanation preferences");
+    expect(markup).toContain("Include grammar notes");
+    expect(markup).not.toContain("Appearance &amp; accessibility");
+    expect(markup).not.toContain("Automatic backups");
+    expect(markup).not.toContain("Local database health");
+    expect(markup).not.toContain("Review full local reset");
+  });
+
+  it("removes technical ready chips from the primary settings experience", () => {
+    expect(markup).not.toContain("SQLite settings ready");
+    expect(markup).not.toContain("Local retention ready");
+    expect(markup).not.toContain("Saved locally");
+    expect(markup).toContain("Loading local settings");
+  });
+
+  it("keeps obsolete vocabulary controls hidden", () => {
     expect(markup).not.toContain("Show common mistakes");
     expect(markup).not.toContain("Include word family");
-    expect(markup).not.toContain("Include common mistakes");
     expect(markup).not.toContain("Editorially reviewed");
     expect(markup).not.toContain("Learning status");
-    expect(markup).toContain("Core vocabulary");
-    expect(markup).toContain("1.0.0-reviewed.1");
-    expect(markup).toContain("Read-only · local");
-    expect(markup).toContain("Automatic backups");
-    expect(markup).toContain("Create backup now");
-    expect(markup).toContain("Manage backups");
-    expect(markup).toContain("Reduced motion");
-    expect(markup).toContain("AI instruction");
-    expect(markup).toContain("Include grammar notes");
-    expect(markup).toContain("Include etymology");
-    expect(markup).toContain("Include usage tips");
-    expect(markup).toContain("Run diagnostics");
-    expect(markup).toContain("Local database health");
-    expect(markup).toContain("Privacy &amp; activity");
-    expect(markup).toContain("Recent activity");
-    expect(markup).toContain("excluded from exports and backups");
-    expect(markup).toContain("Local data reset");
-    expect(markup).toContain("Review full local reset");
-    expect(markup).toContain("Loading settings");
   });
 });

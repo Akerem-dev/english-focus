@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useBackup } from "../../../app/providers";
-import { Button, StatusBadge } from "../../../components";
+import { Button } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { BackupProgressDialog, BackupRestoreDialog } from "../../backup";
 
@@ -79,12 +79,13 @@ export function BackupSettingsSection() {
         >
           Manage backups
         </Button>
-        {status === "error" ? (
-          <StatusBadge tone="danger">Backup needs attention</StatusBadge>
-        ) : (
-          <StatusBadge tone="success">Local retention ready</StatusBadge>
-        )}
       </div>
+
+      {status === "error" ? (
+        <p className="backup-settings-status" role="alert">
+          Backup needs attention. Open the backup manager for details.
+        </p>
+      ) : null}
 
       <p className="backup-settings-note">
         Manual backups are retained until you delete them. Automatic backups keep the newest seven;
