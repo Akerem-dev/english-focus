@@ -27,12 +27,15 @@ const markup = renderToStaticMarkup(
 );
 
 describe("VocabularyMetadataDialog", () => {
-  it("renders favorites, tags, notes, and local activity without status controls", () => {
+  it("renders personal details without technical storage labels", () => {
     expect(markup).toContain("Edit personal details");
     expect(markup).toContain("Favorited");
     expect(markup).toContain("Tags");
     expect(markup).toContain("Personal note");
-    expect(markup).toContain("SQLite · local only");
+    expect(markup).toContain("Views");
+    expect(markup).toContain("Last viewed");
+    expect(markup).not.toContain("SQLite · local only");
+    expect(markup).not.toContain(">Storage<");
     expect(markup).not.toContain("Learning status");
     expect(markup).not.toContain("Review status");
     expect(markup).not.toContain(">Known<");
