@@ -1,0 +1,61 @@
+name: Apply Settings Language Phase 1
+
+on:
+  push:
+    branches: [feat/user-friendly-settings-language]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-language:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/user-friendly-settings-language
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply user-friendly language
+        run: node scripts/apply-settings-language-phase1.mjs
+
+      - name: Format changed files
+        run: >-
+          npx prettier --write
+          apps/desktop/src/modules/settings/components/BackupSettingsSection.tsx
+          apps/desktop/src/modules/backup/overlays/BackupRestoreDialog.tsx
+          apps/desktop/src/modules/settings/components/ActivitySection.tsx
+          apps/desktop/src/modules/settings/components/SettingsMaintenanceOverview.tsx
+          apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx
+          apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx
+          apps/desktop/src/modules/settings/components/DiagnosticsSection.tsx
+          apps/desktop/src/modules/settings/pages/SettingsPage.tsx
+          apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx
+          apps/desktop/tests/components/settings/LocalDataControlsSection.test.tsx
+          apps/desktop/tests/components/settings/SettingsMaintenanceOverview.test.tsx
+          testing/e2e/backup-restore.spec.ts
+          testing/e2e/settings-navigation.spec.ts
+
+      - name: Run quality checks
+        run: npm run quality
+
+      - name: Commit language changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/desktop testing/e2e
+          git commit -m "feat: simplify settings language" || exit 0
+          git push origin HEAD:feat/user-friendly-settings-language
