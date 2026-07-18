@@ -29,10 +29,7 @@ export function LibraryRouteFrame({ children }: LibraryRouteFrameProps) {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(
-        LIBRARY_MOTION_STORAGE_KEY,
-        motionPreference ? "on" : "off"
-      );
+      window.localStorage.setItem(LIBRARY_MOTION_STORAGE_KEY, motionPreference ? "on" : "off");
     } catch {
       // The atmosphere remains usable even when local preferences cannot be persisted.
     }
@@ -68,7 +65,9 @@ export function LibraryRouteFrame({ children }: LibraryRouteFrameProps) {
       >
         <span className="library-motion-control__label">Animation</span>
         <input
-          aria-label={motionActive ? "Turn background animation off" : "Turn background animation on"}
+          aria-label={
+            motionActive ? "Turn background animation off" : "Turn background animation on"
+          }
           checked={motionActive}
           disabled={reducedMotion}
           onChange={(event) => {
