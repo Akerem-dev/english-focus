@@ -1,0 +1,29 @@
+name: Format Settings Phase 3
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/user-friendly-settings-language
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx prettier --write apps/desktop/src/modules/backup/overlays/BackupRestoreDialog.tsx apps/desktop/src/modules/settings/components/ActivitySection.tsx apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx apps/desktop/src/styles/settings-task-flow-polish.css apps/desktop/src/styles/settings-task-simplification.css apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx apps/desktop/tests/components/settings/ActivitySection.test.tsx testing/e2e/backup-restore.spec.ts
+      - name: Commit formatted files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/desktop/src/modules/backup/overlays/BackupRestoreDialog.tsx apps/desktop/src/modules/settings/components/ActivitySection.tsx apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx apps/desktop/src/styles/settings-task-flow-polish.css apps/desktop/src/styles/settings-task-simplification.css apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx apps/desktop/tests/components/settings/ActivitySection.test.tsx testing/e2e/backup-restore.spec.ts
+          git diff --cached --quiet || git commit -m "style: format Settings phase three"
+          git push origin HEAD:feat/user-friendly-settings-language
