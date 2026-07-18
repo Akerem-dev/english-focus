@@ -83,7 +83,9 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
           <AppIcon name="warning" size={18} />
           <div>
             <strong>Recent activity needs a refresh.</strong>
-            <p>We could not read a few older items. Your words, notes, settings, and backups are safe.</p>
+            <p>
+              We could not read a few older items. Your words, notes, settings, and backups are safe.
+            </p>
             <Button
               disabled={isBusy}
               isLoading={status === "loading"}
