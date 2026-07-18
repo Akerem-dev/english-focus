@@ -32,51 +32,73 @@ const SETTINGS_CATEGORIES = [
   {
     id: "general",
     label: "General",
-    description: "Appearance, accessibility, and application information.",
+    description: "Appearance and accessibility preferences.",
     icon: "settings"
   },
   {
     id: "content",
     label: "Vocabulary content",
-    description: "Choose how vocabulary explanations are presented.",
+    description: "Vocabulary display and explanation preferences.",
     icon: "book-open"
   },
   {
     id: "data",
     label: "Data & backups",
-    description: "Manage local backup and retention preferences.",
+    description: "Local backup and retention preferences.",
     icon: "upload"
   },
   {
     id: "privacy",
     label: "Privacy & maintenance",
-    description: "Review activity, diagnostics, and protected data controls.",
+    description: "Activity, diagnostics, and protected data controls.",
     icon: "warning"
   }
 ] as const satisfies readonly SettingsCategory[];
 
 interface SettingsPanelProps {
   readonly className?: string | undefined;
-  readonly icon: SettingsIcon;
-  readonly title: string;
-  readonly description: string;
+  readonly icon?: SettingsIcon | undefined;
+  readonly title?: string | undefined;
+  readonly description?: string | undefined;
   readonly children: ReactNode;
 }
 
 function SettingsPanel({ children, className, description, icon, title }: SettingsPanelProps) {
+  const hasHeader = icon !== undefined && title !== undefined && description !== undefined;
+
   return (
     <section className={["settings-panel", className].filter(Boolean).join(" ")}>
-      <header className="settings-panel__header">
-        <span aria-hidden="true" className="settings-panel__icon">
-          <AppIcon name={icon} size={20} />
-        </span>
-        <div>
-          <h2>{title}</h2>
-          <p>{description}</p>
-        </div>
-      </header>
+      {hasHeader ? (
+        <header className="settings-panel__header">
+          <span aria-hidden="true" className="settings-panel__icon">
+            <AppIcon name={icon} size={20} />
+          </span>
+          <div>
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </div>
+        </header>
+      ) : null}
       <div className="settings-panel__body">{children}</div>
     </section>
+  );
+}
+
+interface StaticPreferenceRowProps {
+  readonly description: string;
+  readonly label: string;
+  readonly value: string;
+}
+
+function StaticPreferenceRow({ description, label, value }: StaticPreferenceRowProps) {
+  return (
+    <div className="settings-preference-row settings-preference-row--static">
+      <span className="settings-preference-row__copy">
+        <span className="settings-preference-row__label">{label}</span>
+        <span className="settings-preference-row__description">{description}</span>
+      </span>
+      <strong className="settings-preference-row__value">{value}</strong>
+    </div>
   );
 }
 
@@ -113,7 +135,7 @@ export function SettingsPage() {
         <div>
           <p className="route-page__eyebrow">Application preferences</p>
           <h1>Settings</h1>
-          <p>Customize the English Focus experience without exposing technical complexity.</p>
+          <p>Customize the English Focus experience around the way you learn.</p>
         </div>
       </header>
 
@@ -125,33 +147,37 @@ export function SettingsPage() {
       )}
 
       <div className="settings-workspace">
-        <nav aria-label="Settings categories" className="settings-category-nav" role="tablist">
-          {SETTINGS_CATEGORIES.map((category) => {
-            const active = category.id === selectedCategory;
+        <div className="settings-workspace__rail">
+          <nav aria-label="Settings categories" className="settings-category-nav" role="tablist">
+            {SETTINGS_CATEGORIES.map((category) => {
+              const active = category.id === selectedCategory;
 
-            return (
-              <button
-                aria-controls={`settings-category-panel-${category.id}`}
-                aria-selected={active}
-                className="settings-category-nav__item"
-                data-active={active || undefined}
-                id={`settings-category-tab-${category.id}`}
-                key={category.id}
-                onClick={() => {
-                  setSelectedCategory(category.id);
-                }}
-                role="tab"
-                type="button"
-              >
-                <AppIcon name={category.icon} size={19} />
-                <span>
+              return (
+                <button
+                  aria-controls={`settings-category-panel-${category.id}`}
+                  aria-selected={active}
+                  className="settings-category-nav__item"
+                  data-active={active || undefined}
+                  id={`settings-category-tab-${category.id}`}
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                  }}
+                  role="tab"
+                  title={category.description}
+                  type="button"
+                >
+                  <AppIcon name={category.icon} size={19} />
                   <strong>{category.label}</strong>
-                  <small>{category.description}</small>
-                </span>
-              </button>
-            );
-          })}
-        </nav>
+                </button>
+              );
+            })}
+          </nav>
+
+          <aside aria-label="Application information" className="settings-about-card">
+            <CoreContentSection />
+          </aside>
+        </div>
 
         <section
           aria-busy={isBusy}
@@ -160,23 +186,15 @@ export function SettingsPage() {
           id={`settings-category-panel-${selectedCategory}`}
           role="tabpanel"
         >
-          <header className="settings-category-view__header">
-            <div>
-              <p className="route-page__eyebrow">Selected category</p>
-              <h2>{selectedCategoryDetails.label}</h2>
-              <p>{selectedCategoryDetails.description}</p>
-            </div>
-          </header>
+          <h2 className="sr-only">{selectedCategoryDetails.label}</h2>
 
           {selectedCategory === "general" ? (
-            <div className="settings-category-view__grid">
-              <SettingsPanel
-                description="Keep the interface comfortable across display scales and input methods."
-                icon="settings"
-                title="Appearance & accessibility"
-              >
+            <div className="settings-category-view__content">
+              <SettingsPanel className="settings-panel--preference-list">
                 <SelectField
                   disabled={isBusy}
+                  fieldClassName="settings-inline-select"
+                  helperText="Choose how English Focus follows your system appearance."
                   label="Theme"
                   onChange={(event) => {
                     const theme = event.currentTarget.value as ThemePreference;
@@ -195,7 +213,8 @@ export function SettingsPage() {
                 </SelectField>
                 <SwitchField
                   checked={settings.appearance.reducedMotion}
-                  description="Minimize non-essential interface motion and smooth scrolling."
+                  containerClassName="settings-preference-row"
+                  description="Minimize non-essential motion and smooth scrolling."
                   disabled={isBusy}
                   label="Reduced motion"
                   onChange={(event) => {
@@ -210,6 +229,8 @@ export function SettingsPage() {
                 />
                 <SelectField
                   disabled={isBusy}
+                  fieldClassName="settings-inline-select"
+                  helperText="Adjust the overall density of controls and content."
                   label="Interface size"
                   onChange={(event) => {
                     const interfaceSize = event.currentTarget.value as InterfaceSize;
@@ -227,27 +248,16 @@ export function SettingsPage() {
                   <option value="large">Large</option>
                 </SelectField>
               </SettingsPanel>
-
-              <SettingsPanel
-                description="Inspect concise information about the bundled read-only vocabulary."
-                icon="book-open"
-                title="Application information"
-              >
-                <CoreContentSection />
-              </SettingsPanel>
             </div>
           ) : null}
 
           {selectedCategory === "content" ? (
-            <div className="settings-category-view__grid">
-              <SettingsPanel
-                description="Choose how essential vocabulary information appears."
-                icon="book-open"
-                title="Vocabulary display"
-              >
+            <div className="settings-category-view__content">
+              <SettingsPanel className="settings-panel--preference-list">
                 <SwitchField
                   checked={settings.content.showEtymology}
-                  description="Display reliable word origins when available."
+                  containerClassName="settings-preference-row"
+                  description="Display reliable word origins when they are available."
                   disabled={isBusy}
                   label="Show etymology"
                   onChange={(event) => {
@@ -260,24 +270,18 @@ export function SettingsPage() {
                     );
                   }}
                 />
-                <div className="settings-value-row">
-                  <span>Example sentences shown</span>
-                  <strong>First 3</strong>
-                </div>
-              </SettingsPanel>
-
-              <SettingsPanel
-                description="Control the provider-independent instruction copied for words missing locally."
-                icon="command"
-                title="Explanation preferences"
-              >
-                <InstructionSettingsSection />
+                <StaticPreferenceRow
+                  description="Every vocabulary entry shows its first three translated examples."
+                  label="Example sentences shown"
+                  value="First 3"
+                />
+                <InstructionSettingsSection disabled={isBusy} />
               </SettingsPanel>
             </div>
           ) : null}
 
           {selectedCategory === "data" ? (
-            <div className="settings-category-view__grid settings-category-view__grid--single">
+            <div className="settings-category-view__content settings-category-view__content--stacked">
               <SettingsPanel
                 description="Create, retain, validate, and restore local backups without uploading data."
                 icon="upload"
@@ -322,7 +326,7 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "privacy" ? (
-            <div className="settings-category-view__grid settings-category-view__grid--single">
+            <div className="settings-category-view__content settings-category-view__content--stacked">
               <SettingsPanel
                 description="Run local database health checks and receive safe recovery guidance."
                 icon="settings"

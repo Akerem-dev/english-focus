@@ -22,16 +22,30 @@ describe("SettingsPage", () => {
   });
 
   it("opens the focused vocabulary content category by default", () => {
-    expect(markup).toContain("Vocabulary display");
     expect(markup).toContain("Show etymology");
     expect(markup).toContain("Example sentences shown");
     expect(markup).toContain("First 3");
-    expect(markup).toContain("Explanation preferences");
-    expect(markup).toContain("Include grammar notes");
+    expect(markup).toContain("Target proficiency");
+    expect(markup).toContain("Explanation language");
+    expect(markup).toContain("Turkish");
+    expect(markup).toContain("Explanation detail");
+    expect(markup).toContain("Concise");
+    expect(markup).toContain("Balanced");
+    expect(markup).toContain("Detailed");
+    expect(markup).toContain("Advanced customization");
+    expect(markup).not.toContain(">Maximum<");
     expect(markup).not.toContain("Appearance &amp; accessibility");
     expect(markup).not.toContain("Automatic backups");
     expect(markup).not.toContain("Local database health");
     expect(markup).not.toContain("Review full local reset");
+  });
+
+  it("keeps technical application information compact and secondary", () => {
+    expect(markup).toContain("About this app");
+    expect(markup).toContain("English Focus");
+    expect(markup).toContain("1.0.0");
+    expect(markup).toContain("Local SQLite storage");
+    expect(markup).toContain("View version details");
   });
 
   it("removes technical ready chips from the primary settings experience", () => {
