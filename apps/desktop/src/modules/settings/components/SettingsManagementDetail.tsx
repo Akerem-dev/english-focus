@@ -54,7 +54,7 @@ export function SettingsManagementDetail({ onBack, view }: SettingsManagementVie
       <div className="settings-management-view__body">
         {view === "activity" ? <ActivitySection showHeading={false} /> : null}
         {view === "diagnostics" ? <DiagnosticsSection showHeading={false} /> : null}
-        {view === "local-data" ? <LocalDataControlsSection /> : null}
+        {view === "local-data" ? <LocalDataControlsSection showHeading={false} /> : null}
       </div>
     </div>
   );
