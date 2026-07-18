@@ -4,34 +4,34 @@ Status: implemented on `feat/user-friendly-settings-language`
 
 ## Scope
 
-This phase turns App health from a technical diagnostics dashboard into a short, user-facing check while preserving the existing local diagnostics and safe-repair behavior.
+This phase turns App health from a technical diagnostics dashboard into a short user-facing check while keeping the existing diagnostic and repair behavior intact.
 
 ## Completed
 
-- Replaced the large diagnostics dashboard with one clear check action and one concise result summary.
-- Removed the four diagnostic metric cards from the primary experience.
-- Replaced status chips with plain language and restrained icon feedback.
-- Reduced the result to three user-facing facts: saved information, backup availability, and the recommended action.
-- Moved individual checks, report metadata, raw check notes, and report copying under Technical details.
-- Hid raw runtime errors under a collapsed Technical details disclosure.
-- Shows safe repair only when a repairable issue exists.
-- Shows backup recovery guidance only when an issue cannot be repaired automatically.
-- Removed the repeated App health heading inside the focused maintenance screen.
-- Replaced nested diagnostic cards with dividers and one reading surface.
-- Added component coverage for the simplified entry state and focused-heading behavior.
+- Replaced the large status card, four metric cards, six check cards, recommendation card, and permanent maintenance panel with one concise result.
+- Added three plain-language facts: Your data, Backups, and Next step.
+- Shows `Everything looks good`, `A small issue was found`, or `Your data needs attention` according to the existing report status.
+- Shows the safe fix action only when a repairable issue exists.
+- Shows backup recovery guidance only when an issue cannot be fixed automatically.
+- Removed the permanent repair confirmation checkbox because the existing safe maintenance action does not delete user data.
+- Moved counts, individual checks, raw details, app version, and report copying under `Check details`.
+- Keeps technical errors behind `Technical details` while explaining the user impact first.
+- Added a presentation helper so diagnostic decisions are testable without UI rendering.
+- Added unit, component, and Playwright coverage for the simplified health flow.
 
 ## Design boundary
 
-The screen uses typography, spacing, dividers, and progressive disclosure. It avoids dashboard metrics, repeated panels, decorative status chips, gradients, glass effects, and generic AI-generated admin-panel styling.
+The health screen uses one result, three facts, progressive disclosure, and a single conditional action. It avoids dashboard metrics, nested cards, status-chip walls, database terminology, and decorative visuals that resemble generated admin panels.
 
-## Safety boundary
+## Compatibility
 
 - No SQLite schema changes.
-- No diagnostics repository changes.
+- No settings migrations.
+- No diagnostic command changes.
 - No safe-maintenance behavior changes.
-- No backup format or restore changes.
-- No vocabulary or settings migrations.
+- No backup-format changes.
+- No vocabulary-data changes.
 
 ## Next phase
 
-Phase 5 will separate selective data removal from full application reset, remove default selections from destructive flows, complete final verification, and prepare the pull request for merge.
+Phase 5 will separate selected-data removal from full app reset, remove default destructive selections, and finish the guarded My data experience.
