@@ -37,11 +37,15 @@ describe("application routes", () => {
     expect(markup).toContain('href="#main-content"');
   });
 
-  it("renders the library route loading boundary", () => {
+  it("renders the library route loading boundary with its restrained atmosphere control", () => {
     const markup = renderRoute(ROUTE_PATHS.library);
 
     expect(markup).toContain("Loading Library");
     expect(markup).toContain("Library page loaded");
+    expect(markup).toContain('class="library-atmosphere"');
+    expect(markup).toContain("Animation");
+    expect(markup).toContain('aria-label="Turn background animation off"');
+    expect(markup).toContain('data-motion="on"');
   });
 
   it("renders the settings route loading boundary", () => {
