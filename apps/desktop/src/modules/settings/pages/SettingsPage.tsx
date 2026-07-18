@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from "react";
 import type { BackupFrequency, InterfaceSize, ThemePreference } from "@platform/domain";
 
-import { SelectField, SwitchField } from "../../../components";
-import { useSettings } from "../../../app/providers";
+import { Button, SelectField, SwitchField } from "../../../components";
+import { useActivity, useSettings } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
 import {
   updateAppearanceSettings,
@@ -15,7 +15,9 @@ import {
   CoreContentSection,
   DiagnosticsSection,
   InstructionSettingsSection,
-  LocalDataControlsSection
+  LocalDataControlsSection,
+  SettingsMaintenanceOverview,
+  type SettingsManagementView
 } from "../components";
 
 type SettingsCategoryId = "general" | "content" | "data" | "privacy";
@@ -54,6 +56,24 @@ const SETTINGS_CATEGORIES = [
     icon: "warning"
   }
 ] as const satisfies readonly SettingsCategory[];
+
+const MANAGEMENT_VIEW_DETAILS: Record<
+  SettingsManagementView,
+  { readonly title: string; readonly description: string }
+> = {
+  activity: {
+    title: "Recent activity",
+    description: "Review the small privacy-safe timeline stored only on this device."
+  },
+  diagnostics: {
+    title: "System diagnostics",
+    description: "Run a read-only health scan and review safe recovery guidance."
+  },
+  "local-data": {
+    title: "Local data",
+    description: "Review record counts and carefully remove only the data you choose."
+  }
+};
 
 interface SettingsPanelProps {
   readonly className?: string | undefined;
@@ -121,13 +141,56 @@ function SettingsSaveNote({ status }: { readonly status: string }) {
   );
 }
 
+function SettingsManagementView({
+  onBack,
+  view
+}: {
+  readonly onBack: () => void;
+  readonly view: SettingsManagementView;
+}) {
+  const details = MANAGEMENT_VIEW_DETAILS[view];
+
+  return (
+    <div className="settings-management-view">
+      <header className="settings-management-view__header">
+        <Button onClick={onBack} size="small" variant="ghost">
+          ← Back to privacy & maintenance
+        </Button>
+        <div>
+          <p className="route-page__eyebrow">Privacy & maintenance</p>
+          <h3>{details.title}</h3>
+          <p>{details.description}</p>
+        </div>
+      </header>
+      <div className="settings-management-view__body">
+        {view === "activity" ? <ActivitySection /> : null}
+        {view === "diagnostics" ? <DiagnosticsSection /> : null}
+        {view === "local-data" ? <LocalDataControlsSection /> : null}
+      </div>
+    </div>
+  );
+}
+
 export function SettingsPage() {
+  const { activity, error: activityError, status: activityStatus } = useActivity();
   const { error, settings, status, updateSettings } = useSettings();
   const [selectedCategory, setSelectedCategory] = useState<SettingsCategoryId>("content");
+  const [managementView, setManagementView] = useState<SettingsManagementView | undefined>();
   const isBusy = status === "loading" || status === "saving";
   const selectedCategoryDetails =
     SETTINGS_CATEGORIES.find((category) => category.id === selectedCategory) ??
     SETTINGS_CATEGORIES[0];
+  const activitySummary =
+    activityError !== undefined
+      ? "Activity needs attention"
+      : activityStatus === "loading"
+        ? "Loading local activity"
+        : `${activity.length} recent ${activity.length === 1 ? "event" : "events"}`;
+
+  function selectCategory(category: SettingsCategoryId) {
+    setManagementView(undefined);
+    setSelectedCategory(category);
+  }
 
   return (
     <div className="route-page route-page--settings">
@@ -160,9 +223,7 @@ export function SettingsPage() {
                   data-active={active || undefined}
                   id={`settings-category-tab-${category.id}`}
                   key={category.id}
-                  onClick={() => {
-                    setSelectedCategory(category.id);
-                  }}
+                  onClick={() => selectCategory(category.id)}
                   role="tab"
                   title={category.description}
                   type="button"
@@ -281,14 +342,11 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "data" ? (
-            <div className="settings-category-view__content settings-category-view__content--stacked">
-              <SettingsPanel
-                description="Create, retain, validate, and restore local backups without uploading data."
-                icon="upload"
-                title="Data & backups"
-              >
+            <div className="settings-category-view__content">
+              <SettingsPanel className="settings-panel--preference-list">
                 <SwitchField
                   checked={settings.data.automaticBackups}
+                  containerClassName="settings-preference-row"
                   description="Create a retained local backup when the selected interval is due."
                   disabled={isBusy}
                   label="Automatic backups"
@@ -304,6 +362,8 @@ export function SettingsPage() {
                 />
                 <SelectField
                   disabled={isBusy || !settings.data.automaticBackups}
+                  fieldClassName="settings-inline-select"
+                  helperText="Choose how often an automatic local backup is retained."
                   label="Backup frequency"
                   onChange={(event) => {
                     const backupFrequency = event.currentTarget.value as BackupFrequency;
@@ -326,35 +386,22 @@ export function SettingsPage() {
           ) : null}
 
           {selectedCategory === "privacy" ? (
-            <div className="settings-category-view__content settings-category-view__content--stacked">
-              <SettingsPanel
-                description="Run local database health checks and receive safe recovery guidance."
-                icon="settings"
-                title="Diagnostics"
-              >
-                <DiagnosticsSection />
-              </SettingsPanel>
-
-              <SettingsPanel
-                description="Review privacy-safe local actions and clear the timeline independently."
-                icon="book-open"
-                title="Privacy & activity"
-              >
-                <ActivitySection />
-              </SettingsPanel>
-
-              <SettingsPanel
-                className="settings-panel--danger"
-                description="Remove selected local records or perform a guarded reset while keeping bundled vocabulary."
-                icon="warning"
-                title="Local data reset"
-              >
-                <LocalDataControlsSection />
-              </SettingsPanel>
+            <div className="settings-category-view__content">
+              {managementView === undefined ? (
+                <SettingsMaintenanceOverview
+                  activitySummary={activitySummary}
+                  onOpen={setManagementView}
+                />
+              ) : (
+                <SettingsManagementView
+                  onBack={() => setManagementView(undefined)}
+                  view={managementView}
+                />
+              )}
             </div>
           ) : null}
 
-          <SettingsSaveNote status={status} />
+          {selectedCategory === "privacy" ? null : <SettingsSaveNote status={status} />}
         </section>
       </div>
     </div>
