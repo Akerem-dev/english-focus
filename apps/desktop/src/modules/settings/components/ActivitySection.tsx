@@ -84,7 +84,8 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
           <div>
             <strong>Recent activity needs a refresh.</strong>
             <p>
-              We could not read a few older items. Your words, notes, settings, and backups are safe.
+              We could not read a few older items. Your words, notes, settings, and backups are
+              safe.
             </p>
             <Button
               disabled={isBusy}
