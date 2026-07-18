@@ -3,6 +3,8 @@ name: Apply Settings Language Phase 1
 on:
   push:
     branches: [feat/user-friendly-settings-language]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write
