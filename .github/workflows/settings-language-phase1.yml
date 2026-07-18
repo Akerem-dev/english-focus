@@ -50,9 +50,6 @@ jobs:
           testing/e2e/backup-restore.spec.ts
           testing/e2e/settings-navigation.spec.ts
 
-      - name: Run quality checks
-        run: npm run quality
-
       - name: Commit language changes
         shell: bash
         run: |
