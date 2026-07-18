@@ -17,6 +17,7 @@ This phase adds a restrained Library atmosphere with a small motion control whil
 - Added a system `prefers-reduced-motion` fallback that removes animation and switch transitions.
 - Kept all atmosphere elements outside the accessibility tree and interaction flow.
 - Added route coverage for the atmosphere and motion control.
+- Verified the final phase commit with the repository Quality workflow.
 
 ## Design boundary
 
