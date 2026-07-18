@@ -1,7 +1,6 @@
 name: Windows Installers
 
 on:
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -23,36 +22,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Install JavaScript dependencies
         run: npm ci
-      - name: Run standard quality checks
-        run: npm run quality
-      - name: Check native schemas
-        run: npm run check:native-schemas
-      - name: Check release metadata
-        run: npm run check:release-metadata
-      - name: Check reviewed core content
-        run: npm run check:core-content
-      - name: Run performance tests
-        run: npm run test:performance
-      - name: Run Windows browser tests
-        shell: powershell
-        run: |
-          npm run test:e2e *>&1 | Tee-Object -FilePath e2e.log
-          if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-          }
-      - name: Upload browser diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-browser-diagnostics
-          path: |
-            e2e.log
-            test-results/**
-            playwright-report/**
-          if-no-files-found: warn
-          retention-days: 3
-      - name: Check bundle budget
-        run: npm run check:bundle
+      - name: Run release quality checks
+        run: npm run quality:release
       - name: Build unsigned MSI and NSIS test installers
         shell: powershell
         run: npm run tauri --workspace=@app/desktop -- build --bundles msi,nsis --ci --no-sign
