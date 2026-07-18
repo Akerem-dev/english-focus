@@ -266,7 +266,7 @@
 
 .activity-clear-entry strong,
 .activity-clear-review strong {
-  font-family: var(--font-family-body);
+  font-family: var(--font-family-ui);
   font-size: var(--font-size-2);
   font-weight: var(--font-weight-semibold);
 }
