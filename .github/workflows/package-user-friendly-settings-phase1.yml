@@ -1,0 +1,53 @@
+name: Package User-Friendly Settings Phase 1
+
+on:
+  push:
+    branches: [feat/user-friendly-settings-language]
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+
+      - name: Collect changed files
+        shell: bash
+        run: |
+          package_root="phase1-package"
+          mkdir -p "$package_root"
+          files=(
+            "apps/desktop/src/modules/backup/overlays/BackupRestoreDialog.tsx"
+            "apps/desktop/src/modules/settings/components/ActivitySection.tsx"
+            "apps/desktop/src/modules/settings/components/BackupSettingsSection.tsx"
+            "apps/desktop/src/modules/settings/components/DiagnosticsSection.tsx"
+            "apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx"
+            "apps/desktop/src/modules/settings/components/SettingsMaintenanceOverview.tsx"
+            "apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx"
+            "apps/desktop/src/modules/settings/pages/SettingsPage.tsx"
+            "apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx"
+            "apps/desktop/tests/components/settings/LocalDataControlsSection.test.tsx"
+            "apps/desktop/tests/components/settings/SettingsMaintenanceOverview.test.tsx"
+            "docs/product/USER_FRIENDLY_SETTINGS_PHASE_1.md"
+            "testing/e2e/backup-restore.spec.ts"
+            "testing/e2e/settings-navigation.spec.ts"
+          )
+          for file in "${files[@]}"; do
+            mkdir -p "$package_root/$(dirname "$file")"
+            cp "$file" "$package_root/$file"
+          done
+          printf '%s\n' "${files[@]}" > "$package_root/CHANGED_FILES.txt"
+          printf '%s\n' "$GITHUB_SHA" > "$package_root/PHASE_1_COMMIT.txt"
+
+      - name: Upload phase package
+        uses: actions/upload-artifact@v4
+        with:
+          name: user-friendly-settings-phase1-package
+          path: phase1-package/**
+          if-no-files-found: error
+          retention-days: 1
