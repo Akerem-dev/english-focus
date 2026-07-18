@@ -22,9 +22,14 @@ export const localDataSnapshotSchema = z
   })
   .strict();
 
+const optionalSafetyBackupSchema = z
+  .union([backupDescriptorSchema, z.null()])
+  .optional()
+  .transform((value) => value ?? undefined);
+
 export const resetLocalDataResultSchema = z
   .object({
     deleted: localDataSnapshotSchema,
-    safetyBackup: backupDescriptorSchema.optional()
+    safetyBackup: optionalSafetyBackupSchema
   })
   .strict();
