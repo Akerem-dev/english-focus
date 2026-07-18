@@ -61,7 +61,7 @@ describe("LocalDataControlsSection", () => {
 
     expect(markup).toContain("Nothing is selected in advance");
     expect(markup).toContain("Select at least one data group to continue");
-    expect(markup).not.toContain("checked=\"\"");
+    expect(markup).not.toContain('checked=""');
     expect(markup).not.toContain("Type to confirm");
     expect(markup).not.toContain("RESET ENGLISH FOCUS");
   });
