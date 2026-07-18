@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useBackup } from "../../../app/providers";
-import { Button, StatusBadge } from "../../../components";
+import { Button } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { BackupProgressDialog, BackupRestoreDialog } from "../../backup";
 
@@ -45,7 +45,7 @@ export function BackupSettingsSection() {
   const latest = backups[0];
 
   return (
-    <>
+    <section aria-label="Backup summary and actions" className="backup-settings-compact">
       <div className="backup-settings-summary">
         <div>
           <span>Retained backups</span>
@@ -79,16 +79,17 @@ export function BackupSettingsSection() {
         >
           Manage backups
         </Button>
-        {status === "error" ? (
-          <StatusBadge tone="danger">Backup needs attention</StatusBadge>
-        ) : (
-          <StatusBadge tone="success">Local retention ready</StatusBadge>
-        )}
       </div>
 
+      {status === "error" ? (
+        <p className="backup-settings-status" role="alert">
+          Backup needs attention. Open the backup manager for details.
+        </p>
+      ) : null}
+
       <p className="backup-settings-note">
-        Manual backups are retained until you delete them. Automatic backups keep the newest seven;
-        restore safety backups keep the newest five.
+        Backups stay on this device. Automatic backups keep the newest seven and restore safety
+        backups keep the newest five.
       </p>
 
       <BackupRestoreDialog
@@ -111,6 +112,6 @@ export function BackupSettingsSection() {
         onClose={() => undefined}
         open={status === "creating" || status === "restoring"}
       />
-    </>
+    </section>
   );
 }

@@ -5,6 +5,12 @@ export { updateDataSettings } from "./UpdateDataSettings";
 export { updateInstructionSettings } from "./UpdateInstructionSettings";
 export { createDiagnosticSummary, runDiagnostics, runSafeMaintenance } from "./RunDiagnostics";
 export {
+  SETTINGS_CATEGORY_IDS,
+  resolveSettingsCategoryNavigation,
+  settingsCategoryLabel,
+  type SettingsCategoryId
+} from "./settingsCategories";
+export {
   FULL_LOCAL_RESET_CATEGORIES,
   canCreateSafetyBackup,
   requiredLocalDataConfirmation,
