@@ -1,10 +1,7 @@
 import { useRef, type KeyboardEvent } from "react";
 
 import { AppIcon, type AppIconName } from "../../../design-system";
-import {
-  resolveSettingsCategoryNavigation,
-  type SettingsCategoryId
-} from "../application";
+import { resolveSettingsCategoryNavigation, type SettingsCategoryId } from "../application";
 
 interface SettingsCategory {
   readonly id: SettingsCategoryId;
