@@ -16,7 +16,8 @@ export {
 } from "./settingsCategories";
 export {
   FULL_LOCAL_RESET_CATEGORIES,
+  RESET_APPLICATION_CONFIRMATION,
   canCreateSafetyBackup,
-  requiredLocalDataConfirmation,
+  isFullResetConfirmation,
   selectedLocalDataCount
 } from "./ManageLocalData";
