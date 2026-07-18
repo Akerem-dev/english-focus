@@ -1,6 +1,6 @@
 # Simplified Vocabulary — Phase 7
 
-Status: implemented on `feat/simplified-vocabulary-experience`
+Status: completed on `feat/simplified-vocabulary-experience`
 
 ## Completed
 
@@ -11,24 +11,27 @@ Status: implemented on `feat/simplified-vocabulary-experience`
 - Current saves, overrides, imports after normalization, packs, and exports write only the simplified canonical model.
 - Added native compatibility for both old full V1 records and new simplified records without mutating existing SQLite rows during startup.
 - Simplified duplicate comparison, duplicate merging, import preview, semantic validation, and quality inspection to use only retained fields.
-- Simplified external-AI instruction preferences and removed obsolete word-family/common-mistake/example-count settings from new writes.
+- Simplified external-AI instruction preferences and removed obsolete word-family, common-mistake, and example-count settings from new writes.
 - Legacy settings remain readable and are normalized to the simplified settings model before use.
 - Regenerated native JSON Schemas and updated the reviewed core fixture checksum.
 - Removed obsolete domain type files and their public exports.
-- Strengthened the Quality workflow so piped command failures are preserved and per-stage reports are uploaded.
+- Updated stale browser tests to match the simplified Library and advanced JSON-import labels.
+- Fixed the custom Library checkbox so native browser automation and keyboard interaction can reliably toggle selection.
 
 ## Compatibility boundary
 
 - Old ten-example vocabulary JSON and SQLite content remain accepted at input boundaries.
 - Removed legacy fields are ignored and are not written back by current versions.
-- Existing learning/review metadata is still preserved internally because it belongs to a separate user-metadata migration boundary; it is not shown in the simplified UI.
+- Existing learning and review metadata is still preserved internally because it belongs to a separate user-metadata migration boundary; it is not shown in the simplified UI.
 - The bundled core record is still immutable. Editing it creates a local override.
 
 ## Verification
 
-Local verification completed for structure, forbidden patterns, CSS tokens, dead code, formatting, lint, native-schema freshness, release metadata, core content, TypeScript, unit/component/integration tests, performance tests, production web build, and bundle budget.
+The repository Quality workflow completed successfully with repository-structure, forbidden-pattern, CSS-token, dead-code, formatting, lint, TypeScript, unit/component/integration test, and production-build checks.
 
-The local container did not include Microsoft Edge, so Playwright browser execution and the Windows MSI/NSIS build are verified through CI rather than claimed from the Linux container.
+Windows CI also completed successfully with native-schema freshness, release metadata, reviewed core content, performance tests, Microsoft Edge Playwright tests, bundle-budget verification, unsigned MSI and NSIS builds, installer verification, and installer artifact upload.
+
+The generated unsigned Windows installer artifact is retained by GitHub Actions for fourteen days from the successful verification run.
 
 ## Deleted files
 
