@@ -5,10 +5,10 @@ import { joinClassNames, joinDescriptionIds } from "../componentUtils";
 
 export interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
   readonly label: string;
-  readonly helperText?: string;
-  readonly error?: string;
-  readonly hideLabel?: boolean;
-  readonly fieldClassName?: string;
+  readonly helperText?: string | undefined;
+  readonly error?: string | undefined;
+  readonly hideLabel?: boolean | undefined;
+  readonly fieldClassName?: string | undefined;
 }
 
 export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(function SelectField(

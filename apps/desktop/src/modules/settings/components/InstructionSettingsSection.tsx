@@ -12,10 +12,6 @@ export function InstructionSettingsSection() {
         <span>Explanation language</span>
         <strong>Turkish</strong>
       </div>
-      <div className="settings-value-row">
-        <span>Primary examples</span>
-        <strong>Exactly {preferences.exampleCount}</strong>
-      </div>
       <SelectField
         label="Instruction detail level"
         onChange={handlers.onDetailLevelChange}
@@ -39,21 +35,9 @@ export function InstructionSettingsSection() {
       </SelectField>
       <SwitchField
         checked={preferences.includeGrammarNotes}
-        description="Ask for only naturally applicable grammar structures."
+        description="Request one short, practical grammar or usage explanation."
         label="Include grammar notes"
         onChange={handlers.onGrammarNotesChange}
-      />
-      <SwitchField
-        checked={preferences.includeWordFamily}
-        description="Request authentic derived and related forms."
-        label="Include word family"
-        onChange={handlers.onWordFamilyChange}
-      />
-      <SwitchField
-        checked={preferences.includeCommonMistakes}
-        description="Request useful learner errors without inventing filler."
-        label="Include common mistakes"
-        onChange={handlers.onCommonMistakesChange}
       />
       <SwitchField
         checked={preferences.includeEtymology}

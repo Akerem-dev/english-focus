@@ -4,12 +4,12 @@ import { joinClassNames, joinDescriptionIds } from "../componentUtils";
 
 export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   readonly label: string;
-  readonly helperText?: string;
-  readonly error?: string;
-  readonly hideLabel?: boolean;
-  readonly leadingIcon?: ReactNode;
-  readonly trailingAction?: ReactNode;
-  readonly fieldClassName?: string;
+  readonly helperText?: string | undefined;
+  readonly error?: string | undefined;
+  readonly hideLabel?: boolean | undefined;
+  readonly leadingIcon?: ReactNode | undefined;
+  readonly trailingAction?: ReactNode | undefined;
+  readonly fieldClassName?: string | undefined;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(

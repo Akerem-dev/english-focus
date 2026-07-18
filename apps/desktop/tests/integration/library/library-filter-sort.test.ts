@@ -11,18 +11,31 @@ function record(word: string, updatedAt: string): LibraryRecord {
   const base = createValidVocabularyEntry();
   return {
     layer: "user",
-    entry: { ...base, id: `entry-${word}`, word, normalizedWord: word, updatedAt }
+    entry: {
+      ...base,
+      id: `entry-${word}`,
+      word,
+      normalizedWord: word,
+      updatedAt
+    }
   };
 }
 
 describe("Library filtering and sorting", () => {
-  it("searches content together with user-owned notes and tags", () => {
+  it("searches visible content together with user-owned notes and tags", () => {
     const item = record("allocate", "2026-07-16T10:00:00.000Z");
     const metadata = createVocabularyUserMetadataBuilder()
-      .with({ normalizedWord: "allocate", note: "IELTS essay" })
+      .with({
+        normalizedWord: "allocate",
+        note: "IELTS essay",
+        learningStatus: "known",
+        reviewStatus: "reviewed"
+      })
       .build();
 
     expect(matchesSearch(item, metadata, "ielts")).toBe(true);
+    expect(matchesSearch(item, metadata, "known")).toBe(false);
+    expect(matchesSearch(item, metadata, "reviewed")).toBe(false);
     expect(matchesSearch(item, metadata, "missing phrase")).toBe(false);
   });
 

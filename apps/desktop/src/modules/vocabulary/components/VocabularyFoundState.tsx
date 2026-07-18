@@ -2,26 +2,20 @@ import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
 import { useOptionalSettings } from "../../../app/providers";
 
-import { CollocationsSection } from "./CollocationsSection";
-import { CommonMistakesSection } from "./CommonMistakesSection";
 import { EtymologySection } from "./EtymologySection";
 import { ExampleSentenceList } from "./ExampleSentenceList";
-import { GrammarSection } from "./GrammarSection";
 import { MeaningsSection } from "./MeaningsSection";
 import { MorphologySection } from "./MorphologySection";
-import { PrepositionPatternsSection } from "./PrepositionPatternsSection";
 import { PronunciationSection } from "./PronunciationSection";
-import { RelatedWordsSection } from "./RelatedWordsSection";
-import { SentenceFormsSection } from "./SentenceFormsSection";
-import { TenseExamplesSection } from "./TenseExamplesSection";
 import { VocabularyHeader } from "./VocabularyHeader";
 import { VocabularyQuickSummary } from "./VocabularyQuickSummary";
-import { WordFamilySection } from "./WordFamilySection";
 
 interface VocabularyFoundStateProps {
   readonly entry: VocabularyEntry;
   readonly metadata?: VocabularyUserMetadata | undefined;
+  readonly backLabel?: string | undefined;
   readonly onBack: () => void;
+  readonly onEditEntry: () => void;
   readonly onEditMetadata: () => void;
   readonly onImportReplacement: () => void;
   readonly onExport: () => void;
@@ -30,40 +24,25 @@ interface VocabularyFoundStateProps {
 const BASE_DETAIL_LINKS = [
   ["overview", "Overview"],
   ["meanings", "Meanings"],
-  ["grammar", "Grammar"],
   ["examples", "Examples"],
-  ["collocations", "Collocations"],
-  ["word-family", "Word family"],
-  ["related-words", "Related words"],
-  ["common-mistakes", "Common mistakes"],
   ["etymology", "Etymology"]
 ] as const;
 
 export function VocabularyFoundState({
+  backLabel = "Back to vocabulary",
   entry,
   metadata,
   onBack,
+  onEditEntry,
   onEditMetadata,
   onExport,
   onImportReplacement
 }: VocabularyFoundStateProps) {
   const settingsContext = useOptionalSettings();
-  const contentSettings = settingsContext?.settings.content ?? {
-    showEtymology: true,
-    showCommonMistakes: true,
-    exampleSentenceCount: 10 as const
-  };
-  const detailLinks = BASE_DETAIL_LINKS.filter(([target]) => {
-    if (target === "common-mistakes") {
-      return contentSettings.showCommonMistakes;
-    }
-
-    if (target === "etymology") {
-      return contentSettings.showEtymology;
-    }
-
-    return true;
-  });
+  const showEtymology = settingsContext?.settings.content.showEtymology ?? true;
+  const detailLinks = BASE_DETAIL_LINKS.filter(
+    ([target]) => target !== "etymology" || (showEtymology && entry.etymology !== undefined)
+  );
 
   return (
     <article
@@ -71,9 +50,11 @@ export function VocabularyFoundState({
       aria-label={`${entry.word} vocabulary entry`}
     >
       <VocabularyHeader
+        backLabel={backLabel}
         entry={entry}
         metadata={metadata}
         onBack={onBack}
+        onEditEntry={onEditEntry}
         onEditMetadata={onEditMetadata}
         onExport={onExport}
         onImportReplacement={onImportReplacement}
@@ -99,21 +80,13 @@ export function VocabularyFoundState({
         <div className="vocabulary-detail-main">
           <VocabularyQuickSummary entry={entry} />
           <MeaningsSection entry={entry} />
-          <GrammarSection entry={entry} />
-          <TenseExamplesSection entry={entry} />
-          <SentenceFormsSection entry={entry} />
-          <PrepositionPatternsSection entry={entry} />
-          <ExampleSentenceList entry={entry} limit={contentSettings.exampleSentenceCount} />
+          <ExampleSentenceList entry={entry} />
         </div>
 
         <aside className="vocabulary-detail-aside" aria-label="Supporting vocabulary details">
           <PronunciationSection entry={entry} />
           <MorphologySection entry={entry} />
-          <WordFamilySection entry={entry} />
-          <CollocationsSection entry={entry} />
-          <RelatedWordsSection entry={entry} />
-          {contentSettings.showCommonMistakes ? <CommonMistakesSection entry={entry} /> : null}
-          {contentSettings.showEtymology ? <EtymologySection entry={entry} /> : null}
+          {showEtymology ? <EtymologySection entry={entry} /> : null}
         </aside>
       </div>
     </article>

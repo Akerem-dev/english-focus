@@ -8,8 +8,8 @@ import {
   useCommandBar,
   type CommandDefinition
 } from "../command-bar";
-import { ROUTE_PATHS } from "../router";
 import { RouteAccessibilityManager } from "../performance";
+import { ROUTE_PATHS } from "../router";
 import { KeyboardShortcutsDialog, useGlobalShortcuts } from "../shortcuts";
 import { AppContent } from "./AppContent";
 import { AppSidebar } from "./AppSidebar";
@@ -21,6 +21,15 @@ export function AppLayout({ children }: PropsWithChildren) {
   const commandBar = useCommandBar();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const commands = useMemo(() => createCommandRegistry(location.pathname), [location.pathname]);
+
+  function openVocabularyHome() {
+    if (location.pathname === ROUTE_PATHS.vocabulary) {
+      dispatchAppCommand("open-vocabulary-home");
+      return;
+    }
+
+    navigate(ROUTE_PATHS.vocabulary);
+  }
 
   function focusCurrentSearch() {
     if (location.pathname === ROUTE_PATHS.library) {
@@ -42,6 +51,11 @@ export function AppLayout({ children }: PropsWithChildren) {
   function executeCommand(command: CommandDefinition) {
     switch (command.target.kind) {
       case "navigate":
+        if (command.target.path === ROUTE_PATHS.vocabulary) {
+          openVocabularyHome();
+          return;
+        }
+
         navigate(command.target.path);
         return;
       case "action":

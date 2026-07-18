@@ -3,8 +3,8 @@ import { dirname, resolve } from "node:path";
 import { format, resolveConfig } from "prettier";
 
 import {
-  appSettingsSchema,
-  vocabularyEntrySchema,
+  appSettingsNativeCompatibilitySchema,
+  vocabularyEntryNativeCompatibilitySchema,
   vocabularyUserMetadataSchema
 } from "@platform/schemas";
 import { z } from "zod";
@@ -15,11 +15,11 @@ const checkOnly = process.argv.includes("--check");
 const outputs = [
   {
     path: "apps/desktop/src-tauri/schemas/vocabulary-entry.schema.json",
-    schema: vocabularyEntrySchema
+    schema: vocabularyEntryNativeCompatibilitySchema
   },
   {
     path: "apps/desktop/src-tauri/schemas/app-settings.schema.json",
-    schema: appSettingsSchema
+    schema: appSettingsNativeCompatibilitySchema
   },
   {
     path: "apps/desktop/src-tauri/schemas/vocabulary-user-metadata.schema.json",

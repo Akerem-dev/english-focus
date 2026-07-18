@@ -6,7 +6,7 @@ import { AppProviders } from "../../../src/app/providers";
 import { LibraryPage } from "../../../src/modules/library/pages";
 
 describe("LibraryPage", () => {
-  it("renders the effective core library instead of a fake empty collection", () => {
+  it("renders the simplified effective library with direct detail navigation", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
         <AppProviders>
@@ -19,11 +19,16 @@ describe("LibraryPage", () => {
     expect(markup).toContain("<strong>1</strong><span>entry</span>");
     expect(markup).toContain("Browse library by first letter");
     expect(markup).toContain("Show words starting with M");
-    expect(markup).toContain(">B2</span>");
-    expect(markup).not.toContain("Core entry");
-    expect(markup).not.toContain("Local SQLite library");
-    expect(markup).not.toContain("Reviewed import");
-    expect(markup).not.toContain("after search, filters, and sorting");
-    expect(markup).not.toContain("Your Library is empty");
+    expect(markup).toContain('data-level="B2"');
+    expect(markup).toContain('aria-label="Open maintain details"');
+    expect(markup).toContain('class="library-selection__control"');
+    expect(markup).not.toContain(
+      "Search, organize, review, and export vocabulary entries stored on this device."
+    );
+    expect(markup).not.toContain("Filter by layer");
+    expect(markup).not.toContain("Learning status");
+    expect(markup).not.toContain("Grammar patterns");
+    expect(markup).not.toContain("Collocations");
+    expect(markup).not.toContain("Preview");
   });
 });

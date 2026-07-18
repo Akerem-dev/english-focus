@@ -14,9 +14,10 @@ describe("AiInstructionDialog", () => {
 
     expect(markup).toContain("AI instruction");
     expect(markup).toContain("Word: allocate");
-    expect(markup).toContain("Exactly 10 examples");
+    expect(markup).not.toContain("Exactly 10 examples");
     expect(markup).toContain("Copy instruction");
     expect(markup).toContain("does not send this word or instruction anywhere");
     expect(markup).toContain("TARGET WORD: allocate");
+    expect(markup).toContain("PRIMARY EXAMPLE SENTENCES: 3");
   });
 });

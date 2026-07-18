@@ -1,4 +1,5 @@
 import type { ImportIssue, VocabularyEntry } from "@platform/domain";
+import { vocabularyEntryInputSchema } from "@platform/schemas";
 
 import { assessVocabularyQuality } from "./AssessVocabularyQuality";
 import { validateVocabularySchema } from "./ValidateVocabularySchema";
@@ -98,7 +99,8 @@ function createDocument(
   entries: readonly VocabularyEntry[],
   createdAt: string
 ): VocabularyPackDocument {
-  const sortedEntries = [...entries].sort((left, right) =>
+  const normalizedEntries = entries.map((entry) => vocabularyEntryInputSchema.parse(entry));
+  const sortedEntries = normalizedEntries.sort((left, right) =>
     left.normalizedWord.localeCompare(right.normalizedWord, "en", { sensitivity: "base" })
   );
 

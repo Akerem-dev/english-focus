@@ -1,7 +1,22 @@
 import type { VocabularyEntry } from "@platform/domain";
 import { describe, expect, it } from "vitest";
 
-import { vocabularyEntryJsonSchema, vocabularyEntrySchema } from "../src/vocabulary";
+import {
+  vocabularyEntryInputSchema,
+  vocabularyEntryJsonSchema,
+  vocabularyEntrySchema
+} from "../src/vocabulary";
+
+function createExamples(count: number) {
+  return Array.from({ length: count }, (_, index) => ({
+    id: `example-${index + 1}`,
+    sentenceEn: `They maintain the system carefully in example ${index + 1}.`,
+    translationTr: `Sistemi ${index + 1}. örnekte dikkatlice sürdürüyorlar.`,
+    registers: ["neutral"] as const,
+    grammarLabel: "present simple",
+    targetForm: "maintain"
+  }));
+}
 
 function createValidEntry(): VocabularyEntry {
   const timestamp = "2026-07-15T00:00:00.000Z";
@@ -33,28 +48,11 @@ function createValidEntry(): VocabularyEntry {
         { form: "maintaining", normalizedForm: "maintaining", type: "present-participle" }
       ]
     },
-    wordFamily: [],
     grammar: {
       summaryEn: "A transitive verb commonly followed by a noun phrase.",
-      summaryTr: "Genellikle bir isim öbeğiyle kullanılan geçişli bir fiildir.",
-      patterns: [],
-      tenseExamples: [],
-      sentenceForms: [],
-      prepositionPatterns: []
+      summaryTr: "Genellikle bir isim öbeğiyle kullanılan geçişli bir fiildir."
     },
-    collocations: [],
-    phrasalVerbs: [],
-    idioms: [],
-    relatedWords: [],
-    commonMistakes: [],
-    examples: Array.from({ length: 10 }, (_, index) => ({
-      id: `example-${index + 1}`,
-      sentenceEn: `They maintain the system carefully in example ${index + 1}.`,
-      translationTr: `Sistemi ${index + 1}. örnekte dikkatlice sürdürüyorlar.`,
-      registers: ["neutral"] as const,
-      grammarLabel: "present simple",
-      targetForm: "maintain"
-    })),
+    examples: createExamples(3),
     source: { kind: "user", sourceLabel: "External AI paste" },
     generation: {
       method: "external-ai",
@@ -68,21 +66,70 @@ function createValidEntry(): VocabularyEntry {
 }
 
 describe("vocabularyEntrySchema", () => {
-  it("accepts a complete V1 entry with exactly ten primary examples", () => {
+  it("accepts a canonical V1 entry with three primary examples", () => {
     const result = vocabularyEntrySchema.safeParse(createValidEntry());
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.examples).toHaveLength(10);
-      expect(result.data.grammar.patterns).toEqual([]);
+      expect(result.data.examples).toHaveLength(3);
+      expect(result.data.grammar.summaryEn).toContain("transitive");
     }
   });
 
-  it("rejects entries that do not contain exactly ten primary examples", () => {
+  it("rejects canonical entries that do not contain three primary examples", () => {
     const entry = createValidEntry();
-    const result = vocabularyEntrySchema.safeParse({
+
+    expect(
+      vocabularyEntrySchema.safeParse({
+        ...entry,
+        examples: entry.examples.slice(0, 2)
+      }).success
+    ).toBe(false);
+
+    expect(
+      vocabularyEntrySchema.safeParse({
+        ...entry,
+        examples: createExamples(4)
+      }).success
+    ).toBe(false);
+  });
+
+  it("accepts legacy ten-example input and normalizes it to three examples", () => {
+    const entry = createValidEntry();
+    const result = vocabularyEntryInputSchema.safeParse({
       ...entry,
-      examples: entry.examples.slice(0, 9)
+      wordFamily: [{ word: "maintenance" }],
+      collocations: [{ phrase: "maintain standards" }],
+      relatedWords: [{ word: "preserve" }],
+      commonMistakes: [{ incorrect: "maintain to do" }],
+      grammar: {
+        ...entry.grammar,
+        patterns: [{ pattern: "maintain + noun" }],
+        tenseExamples: [],
+        sentenceForms: [],
+        prepositionPatterns: []
+      },
+      examples: createExamples(10)
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.examples).toHaveLength(3);
+      expect(result.data.examples.map((example) => example.id)).toEqual([
+        "example-1",
+        "example-2",
+        "example-3"
+      ]);
+      expect(result.data).not.toHaveProperty("wordFamily");
+      expect(result.data).not.toHaveProperty("collocations");
+      expect(result.data.grammar).toEqual(entry.grammar);
+    }
+  });
+
+  it("rejects unsupported intermediate example counts", () => {
+    const result = vocabularyEntryInputSchema.safeParse({
+      ...createValidEntry(),
+      examples: createExamples(4)
     });
 
     expect(result.success).toBe(false);
@@ -122,12 +169,19 @@ describe("vocabularyEntrySchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("exports a reusable JSON Schema representation", () => {
+  it("exports the canonical three-example JSON Schema representation", () => {
     expect(vocabularyEntryJsonSchema).toMatchObject({
       type: "object",
       additionalProperties: false
     });
-    expect(vocabularyEntryJsonSchema.properties).toHaveProperty("schemaVersion");
-    expect(vocabularyEntryJsonSchema.properties).toHaveProperty("examples");
+
+    const properties = vocabularyEntryJsonSchema.properties;
+    expect(properties).toBeDefined();
+    expect(properties).toHaveProperty("schemaVersion");
+    expect(properties).toHaveProperty("examples");
+
+    const serialized = JSON.stringify(vocabularyEntryJsonSchema);
+    expect(serialized).toContain('"minItems":3');
+    expect(serialized).toContain('"maxItems":3');
   });
 });

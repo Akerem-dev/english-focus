@@ -10,7 +10,7 @@ const issue: ImportIssue = {
   severity: "error",
   code: "invalid_type",
   path: ["grammar", "patterns", 2, "explanationTr"],
-  pathText: "grammar.patterns[2].explanationTr",
+  pathText: "meanings[2].usageNoteTr",
   message: "Invalid input: expected string, received undefined"
 };
 
@@ -33,7 +33,7 @@ describe("ValidationResultDialog", () => {
     );
 
     expect(markup).toContain("Schema validation found issues");
-    expect(markup).toContain("grammar.patterns[2].explanationTr");
+    expect(markup).toContain("meanings[2].usageNoteTr");
     expect(markup).toContain("Invalid input: expected string");
     expect(markup).toContain("Copy correction instruction");
     expect(markup).toContain("Edit JSON");
@@ -51,9 +51,11 @@ describe("ValidationResultDialog", () => {
 
     expect(markup).toContain("Schema validation passed");
     expect(markup).toContain("Vocabulary structure is valid");
+    expect(markup).toContain("three primary examples");
     expect(markup).toContain("Next gate: content checks");
     expect(markup).toContain("Run content checks");
     expect(markup).not.toContain("Copy correction instruction");
+    expect(markup).not.toContain("exactly ten");
   });
 
   it("renders nothing while closed", () => {

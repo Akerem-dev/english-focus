@@ -25,7 +25,7 @@ export function renderCorrectionInstruction({
     "",
     "TASK",
     "Repair or improve the original JSON so that it satisfies every blocking validation issue and addresses reliable quality warnings where appropriate.",
-    "Preserve accurate content that is already valid. Do not invent unsupported grammar, idioms, phrasal verbs, etymology, word senses, or usage claims.",
+    "Preserve accurate content that is already valid. Do not invent unsupported etymology, word senses, pronunciations, or usage claims.",
     "The final word, normalizedWord, morphology, examples, source metadata, and generation metadata must represent the target word exactly.",
     "Warnings are advisory: leave a field empty or absent when no reliable content exists instead of fabricating material.",
     "Return exactly one corrected JSON object and no Markdown fence, commentary, preface, or follow-up text.",

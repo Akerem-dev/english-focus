@@ -5,7 +5,7 @@ import type {
 } from "@platform/domain";
 
 export type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
-export type LibraryLayer = "core" | VocabularyStorageLayer;
+type LibraryLayer = "core" | VocabularyStorageLayer;
 
 export interface LibraryRecord {
   readonly entry: VocabularyEntry;
@@ -29,9 +29,7 @@ function searchableText(
     ]),
     ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr]),
     metadata?.note ?? "",
-    ...(metadata?.tags.map((tag) => tag.name) ?? []),
-    metadata?.learningStatus ?? "",
-    metadata?.reviewStatus ?? ""
+    ...(metadata?.tags.map((tag) => tag.name) ?? [])
   ]
     .join(" ")
     .toLocaleLowerCase("en-US");
@@ -53,9 +51,13 @@ export function compareRecords(
 ): number {
   switch (sort) {
     case "word-asc":
-      return left.entry.word.localeCompare(right.entry.word, "en", { sensitivity: "base" });
+      return left.entry.word.localeCompare(right.entry.word, "en", {
+        sensitivity: "base"
+      });
     case "word-desc":
-      return right.entry.word.localeCompare(left.entry.word, "en", { sensitivity: "base" });
+      return right.entry.word.localeCompare(left.entry.word, "en", {
+        sensitivity: "base"
+      });
     case "updated-desc":
     default:
       return right.entry.updatedAt.localeCompare(left.entry.updatedAt);

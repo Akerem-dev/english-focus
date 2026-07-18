@@ -22,10 +22,7 @@ function qualityIssue(
   });
 }
 
-/**
- * Non-blocking completeness heuristics. Warnings never fabricate content requirements and never
- * reject a structurally and semantically valid entry; they surface areas worth human review.
- */
+/** Non-blocking completeness heuristics for the simplified vocabulary model. */
 export class VocabularyQualityInspector {
   inspect(entry: VocabularyEntry): readonly ImportIssue[] {
     const issues: ImportIssue[] = [];
@@ -50,72 +47,32 @@ export class VocabularyQualityInspector {
       );
     }
 
-    if (entry.wordFamily.length === 0) {
+    if (entry.pronunciations.length === 1 && entry.pronunciations[0]?.variant === "general") {
       issues.push(
         qualityIssue(
-          "missing_word_family",
-          ["wordFamily"],
-          "No word-family items are included. Confirm whether useful derived forms exist."
+          "general_pronunciation_only",
+          ["pronunciations"],
+          "Only a general pronunciation is supplied. Confirm whether a reliable regional variant is useful."
         )
       );
     }
 
-    if (entry.grammar.patterns.length === 0) {
+    if (entry.morphology.inflectedForms.length === 0) {
       issues.push(
         qualityIssue(
-          "missing_grammar_patterns",
-          ["grammar", "patterns"],
-          "No grammar patterns are included. This is acceptable only when the word has no useful pattern to teach."
+          "missing_word_forms",
+          ["morphology", "inflectedForms"],
+          "No inflected word forms are included. Confirm that the headword has no useful forms to list."
         )
       );
     }
 
-    if (entry.grammar.tenseExamples.length === 0 && entry.partsOfSpeech.includes("verb")) {
+    if (entry.grammar.summaryEn.length < 24 || entry.grammar.summaryTr.length < 24) {
       issues.push(
         qualityIssue(
-          "missing_tense_examples",
-          ["grammar", "tenseExamples"],
-          "This verb has no tense examples. Add only forms that are naturally useful."
-        )
-      );
-    }
-
-    if (entry.grammar.sentenceForms.length === 0) {
-      issues.push(
-        qualityIssue(
-          "missing_sentence_forms",
-          ["grammar", "sentenceForms"],
-          "No sentence-form examples are included. Confirm whether affirmative, negative, question, or passive forms would add value."
-        )
-      );
-    }
-
-    if (entry.collocations.length < 3) {
-      issues.push(
-        qualityIssue(
-          "limited_collocations",
-          ["collocations"],
-          `Only ${entry.collocations.length} collocation${entry.collocations.length === 1 ? " is" : "s are"} included. Review whether more common combinations exist.`
-        )
-      );
-    }
-
-    if (entry.relatedWords.length < 3) {
-      issues.push(
-        qualityIssue(
-          "limited_related_words",
-          ["relatedWords"],
-          `Only ${entry.relatedWords.length} related word${entry.relatedWords.length === 1 ? " is" : "s are"} included. Confirm whether useful contrasts are missing.`
-        )
-      );
-    }
-
-    if (entry.commonMistakes.length === 0) {
-      issues.push(
-        qualityIssue(
-          "missing_common_mistakes",
-          ["commonMistakes"],
-          "No common learner mistakes are included. An empty list is valid when no reliable mistake is known."
+          "brief_usage_overview",
+          ["grammar"],
+          "The bilingual usage overview is very brief. Confirm that it still explains the main construction clearly."
         )
       );
     }
@@ -123,12 +80,12 @@ export class VocabularyQualityInspector {
     const missingGrammarLabels = entry.examples.filter(
       (example) => example.grammarLabel === undefined
     ).length;
-    if (missingGrammarLabels >= 5) {
+    if (missingGrammarLabels >= 2) {
       issues.push(
         qualityIssue(
           "examples_lack_grammar_labels",
           ["examples"],
-          `${missingGrammarLabels} of 10 primary examples have no grammar label, which limits guided review.`
+          `${missingGrammarLabels} of ${entry.examples.length} primary examples have no grammar label, which limits guided review.`
         )
       );
     }
@@ -136,12 +93,12 @@ export class VocabularyQualityInspector {
     const missingTargetForms = entry.examples.filter(
       (example) => example.targetForm === undefined
     ).length;
-    if (missingTargetForms >= 5) {
+    if (missingTargetForms >= 2) {
       issues.push(
         qualityIssue(
           "examples_lack_target_forms",
           ["examples"],
-          `${missingTargetForms} of 10 primary examples do not identify the demonstrated target form.`
+          `${missingTargetForms} of ${entry.examples.length} primary examples do not identify the demonstrated target form.`
         )
       );
     }
@@ -149,12 +106,12 @@ export class VocabularyQualityInspector {
     const missingContexts = entry.examples.filter(
       (example) => example.context === undefined
     ).length;
-    if (missingContexts >= 7) {
+    if (missingContexts >= 2) {
       issues.push(
         qualityIssue(
           "examples_lack_context",
           ["examples"],
-          `${missingContexts} of 10 primary examples have no concise context label.`
+          `${missingContexts} of ${entry.examples.length} primary examples have no concise context label.`
         )
       );
     }
@@ -166,38 +123,6 @@ export class VocabularyQualityInspector {
           "limited_example_register_variety",
           ["examples"],
           "Primary examples use one register even though the entry declares multiple registers."
-        )
-      );
-    }
-
-    const collocationsWithoutExamples = entry.collocations.filter(
-      (collocation) => collocation.exampleEn === undefined
-    ).length;
-    if (
-      entry.collocations.length > 0 &&
-      collocationsWithoutExamples >= Math.ceil(entry.collocations.length / 2)
-    ) {
-      issues.push(
-        qualityIssue(
-          "collocations_lack_examples",
-          ["collocations"],
-          `${collocationsWithoutExamples} collocations have no bilingual usage example.`
-        )
-      );
-    }
-
-    const relatedWordsWithoutDistinctions = entry.relatedWords.filter(
-      (relatedWord) => relatedWord.distinctionEn === undefined
-    ).length;
-    if (
-      entry.relatedWords.length > 0 &&
-      relatedWordsWithoutDistinctions >= Math.ceil(entry.relatedWords.length / 2)
-    ) {
-      issues.push(
-        qualityIssue(
-          "related_words_lack_distinctions",
-          ["relatedWords"],
-          `${relatedWordsWithoutDistinctions} related words have no bilingual distinction note.`
         )
       );
     }

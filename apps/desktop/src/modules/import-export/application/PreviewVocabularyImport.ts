@@ -4,14 +4,7 @@ interface VocabularyImportPreviewCounts {
   readonly meanings: number;
   readonly pronunciations: number;
   readonly examples: number;
-  readonly grammarPatterns: number;
-  readonly tenseExamples: number;
-  readonly sentenceForms: number;
-  readonly prepositionPatterns: number;
-  readonly collocations: number;
-  readonly wordFamily: number;
-  readonly relatedWords: number;
-  readonly commonMistakes: number;
+  readonly wordForms: number;
 }
 
 interface VocabularyImportPreviewChecklistItem {
@@ -33,10 +26,7 @@ function freezeList<T>(values: readonly T[]): readonly T[] {
   return Object.freeze([...values]);
 }
 
-/**
- * Builds the final read-only review model after schema and semantic validation have passed.
- * Nothing is persisted and no duplicate decision is made at this stage.
- */
+/** Builds the final read-only review model after schema and semantic validation. */
 export function previewVocabularyImport(
   entry: VocabularyEntry,
   expectedWord: string,
@@ -52,14 +42,7 @@ export function previewVocabularyImport(
     meanings: entry.meanings.length,
     pronunciations: entry.pronunciations.length,
     examples: entry.examples.length,
-    grammarPatterns: entry.grammar.patterns.length,
-    tenseExamples: entry.grammar.tenseExamples.length,
-    sentenceForms: entry.grammar.sentenceForms.length,
-    prepositionPatterns: entry.grammar.prepositionPatterns.length,
-    collocations: entry.collocations.length,
-    wordFamily: entry.wordFamily.length,
-    relatedWords: entry.relatedWords.length,
-    commonMistakes: entry.commonMistakes.length
+    wordForms: entry.morphology.inflectedForms.length
   });
 
   const checklist: readonly VocabularyImportPreviewChecklistItem[] = freezeList([
@@ -81,7 +64,7 @@ export function previewVocabularyImport(
     }),
     Object.freeze({
       id: "examples" as const,
-      label: "Exactly ten primary examples",
+      label: "Three primary examples",
       detail: `${entry.examples.length} English examples include Turkish translations.`
     }),
     Object.freeze({

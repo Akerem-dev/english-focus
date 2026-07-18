@@ -44,7 +44,7 @@ describe("editorially reviewed core vocabulary", () => {
       const entry = coreVocabularyEntries.find((candidate) => candidate.normalizedWord === word);
 
       expect(entry, word).toBeDefined();
-      expect(entry?.examples).toHaveLength(10);
+      expect(entry?.examples).toHaveLength(3);
       expect(entry?.meanings[0]?.definitionEn.length).toBeGreaterThan(20);
       expect(entry?.meanings[0]?.translationsTr[0]?.length).toBeGreaterThan(2);
       expect(entry?.examples.every((example) => example.translationTr.length > 5)).toBe(true);

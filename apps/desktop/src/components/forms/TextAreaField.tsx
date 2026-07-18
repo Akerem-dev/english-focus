@@ -4,10 +4,10 @@ import { joinClassNames, joinDescriptionIds } from "../componentUtils";
 
 export interface TextAreaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   readonly label: string;
-  readonly helperText?: string;
-  readonly error?: string;
-  readonly hideLabel?: boolean;
-  readonly fieldClassName?: string;
+  readonly helperText?: string | undefined;
+  readonly error?: string | undefined;
+  readonly hideLabel?: boolean | undefined;
+  readonly fieldClassName?: string | undefined;
 }
 
 export const TextAreaField = forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(

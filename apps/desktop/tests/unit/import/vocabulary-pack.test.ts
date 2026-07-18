@@ -11,7 +11,7 @@ import {
 } from "../../../src/modules/import-export";
 
 describe("vocabulary pack transfer", () => {
-  it("exports a deterministic readable pack", () => {
+  it("exports a deterministic readable pack with canonical three-example entries", () => {
     const exported = exportVocabularyPack(
       [rawAllocateEntry as VocabularyEntry, maintainVocabularyEntry],
       "2026-07-15T12:00:00.000Z"
@@ -20,7 +20,7 @@ describe("vocabulary pack transfer", () => {
       kind: string;
       packVersion: string;
       entryCount: number;
-      entries: readonly { normalizedWord: string }[];
+      entries: readonly { normalizedWord: string; examples: readonly unknown[] }[];
     };
 
     expect(exported.fileName).toBe("english-focus-vocabulary-pack-2026-07-15.json");
@@ -29,6 +29,7 @@ describe("vocabulary pack transfer", () => {
     expect(parsed.packVersion).toBe(VOCABULARY_PACK_VERSION);
     expect(parsed.entryCount).toBe(2);
     expect(parsed.entries.map((entry) => entry.normalizedWord)).toEqual(["allocate", "maintain"]);
+    expect(parsed.entries.every((entry) => entry.examples.length === 3)).toBe(true);
     expect(exported.json.endsWith("\n")).toBe(true);
   });
 
@@ -52,6 +53,27 @@ describe("vocabulary pack transfer", () => {
       expect(result.analysis.validCount).toBe(2);
       expect(result.analysis.invalidCount).toBe(0);
       expect(result.analysis.entries.every((entry) => entry.status === "valid")).toBe(true);
+      expect(result.analysis.entries.every((entry) => entry.entry?.examples.length === 3)).toBe(
+        true
+      );
+    }
+  });
+
+  it("accepts and normalizes legacy ten-example pack entries", () => {
+    const pack = {
+      kind: VOCABULARY_PACK_KIND,
+      packVersion: VOCABULARY_PACK_VERSION,
+      schemaVersion: "1.0.0",
+      createdAt: "2026-07-15T12:00:00.000Z",
+      entryCount: 1,
+      entries: [rawAllocateEntry]
+    };
+
+    const result = parseVocabularyPackJson(JSON.stringify(pack));
+
+    expect(result.kind).toBe("success");
+    if (result.kind === "success") {
+      expect(result.analysis.entries[0]?.entry?.examples).toHaveLength(3);
     }
   });
 

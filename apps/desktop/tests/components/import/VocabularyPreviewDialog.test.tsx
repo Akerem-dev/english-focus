@@ -11,10 +11,10 @@ import {
 const warning: ImportIssue = {
   source: "quality",
   severity: "warning",
-  code: "limited_collocations",
-  path: ["collocations"],
-  pathText: "collocations",
-  message: "Only a small number of collocations is included."
+  code: "limited_usage_context",
+  path: ["examples"],
+  pathText: "examples",
+  message: "The entry has limited usage context."
 };
 
 const entry = createValidVocabularyEntry({
@@ -43,7 +43,7 @@ const callbacks = {
 } as const;
 
 describe("VocabularyPreviewDialog", () => {
-  it("renders the complete entry review and requires an explicit acknowledgement", () => {
+  it("renders the simplified entry review and requires an explicit acknowledgement", () => {
     const markup = renderToStaticMarkup(
       <VocabularyPreviewDialog {...callbacks} approvalState="pending" open preview={preview} />
     );
@@ -52,12 +52,18 @@ describe("VocabularyPreviewDialog", () => {
     expect(markup).toContain("Expected word: maintain");
     expect(markup).toContain("maintain");
     expect(markup).toContain("sürdürmek, korumak");
-    expect(markup).toContain("10");
+    expect(markup).toContain("Primary examples");
+    expect(markup).toContain(">3</dd>");
     expect(markup).toContain("Import readiness");
+    expect(markup).toContain("all three example sentences");
     expect(markup).toContain("I reviewed this vocabulary entry.");
     expect(markup).toContain("Approve preview");
     expect(markup).toContain("disabled");
     expect(markup).toContain("1 advisory warnings");
+    expect(markup).not.toContain("Grammar patterns");
+    expect(markup).not.toContain("Collocations");
+    expect(markup).not.toContain("Word family");
+    expect(markup).not.toContain("Common mistakes");
   });
 
   it("shows an in-memory approval without pretending the entry was saved", () => {

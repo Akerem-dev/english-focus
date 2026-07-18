@@ -1,6 +1,6 @@
-import { vocabularyEntrySchema } from "@platform/schemas";
+import { vocabularyEntryInputSchema } from "@platform/schemas";
 
 import rawMaintainEntry from "./maintain.entry.json";
 
-/** Canonical reviewed entry used by the first read-only vocabulary vertical slice. */
-export const maintainVocabularyEntry = vocabularyEntrySchema.parse(rawMaintainEntry);
+/** Canonical reviewed entry normalized from the bundled compatibility fixture. */
+export const maintainVocabularyEntry = vocabularyEntryInputSchema.parse(rawMaintainEntry);

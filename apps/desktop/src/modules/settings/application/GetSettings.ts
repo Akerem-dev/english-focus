@@ -11,9 +11,7 @@ export function createDefaultAppSettings(now = new Date().toISOString()): AppSet
       translationLanguage: "tr"
     }),
     content: Object.freeze({
-      showEtymology: true,
-      showCommonMistakes: true,
-      exampleSentenceCount: 10
+      showEtymology: true
     }),
     data: Object.freeze({
       automaticBackups: true,

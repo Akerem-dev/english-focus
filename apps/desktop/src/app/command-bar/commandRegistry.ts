@@ -2,7 +2,12 @@ import type { AppIconName } from "../../design-system";
 import { ROUTE_PATHS } from "../router";
 
 export type AppCommandAction =
-  "edit-study-details" | "export-current" | "focus-search" | "open-import" | "save-current";
+  | "edit-study-details"
+  | "export-current"
+  | "focus-search"
+  | "open-import"
+  | "open-vocabulary-home"
+  | "save-current";
 
 type CommandCategory = "Navigation" | "Actions" | "Help";
 
@@ -41,10 +46,10 @@ export function createCommandRegistry(pathname: string): readonly CommandDefinit
     {
       id: "navigate-vocabulary",
       label: "Open Vocabulary",
-      description: "Search or review a local English vocabulary entry.",
+      description: "Return to the vocabulary home and local word search.",
       category: "Navigation",
       icon: "book-open",
-      keywords: ["vocabulary", "word", "search", "dictionary"],
+      keywords: ["vocabulary", "word", "search", "dictionary", "home"],
       target: { kind: "navigate", path: ROUTE_PATHS.vocabulary }
     },
     {
@@ -121,11 +126,11 @@ export function createCommandRegistry(pathname: string): readonly CommandDefinit
       },
       {
         id: "edit-study-details",
-        label: "Edit study details",
-        description: "Open tags, notes, learning status, and review status.",
+        label: "Edit personal details",
+        description: "Open favorite, tags, and personal note controls.",
         category: "Actions",
         icon: "settings",
-        keywords: ["study", "metadata", "tags", "note", "learning"],
+        keywords: ["personal", "metadata", "tags", "note", "favorite"],
         target: { kind: "action", action: "edit-study-details" }
       }
     );

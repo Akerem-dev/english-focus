@@ -20,7 +20,7 @@ const issues: readonly ImportIssue[] = [
     severity: "error",
     code: "invalid_type",
     path: ["grammar", "patterns", 2, "explanationTr"],
-    pathText: "grammar.patterns[2].explanationTr",
+    pathText: "meanings[2].usageNoteTr",
     message: "Invalid input: expected string, received undefined"
   }
 ];
@@ -51,7 +51,7 @@ describe("BuildCorrectionInstruction", () => {
     expect(first.text).toContain("SOURCE: schema");
     expect(first.text).toContain("SEVERITY: error");
     expect(first.text).toContain("PATH: examples");
-    expect(first.text).toContain("grammar.patterns[2].explanationTr");
+    expect(first.text).toContain("meanings[2].usageNoteTr");
     expect(first.text).toContain("<ORIGINAL_JSON>");
     expect(first.text).toContain("REQUIRED JSON SCHEMA");
     expect(first.text).toContain("Output only the corrected JSON object.");

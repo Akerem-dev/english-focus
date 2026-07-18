@@ -8,8 +8,7 @@ import { compareDuplicateEntries, resolveDuplicateEntry } from "../../../src/mod
 function getComparison() {
   const imported = createValidVocabularyEntry({
     id: "user.maintain.cp13-resolution",
-    wordFamily: [],
-    collocations: [],
+    etymology: undefined,
     source: { kind: "user", sourceId: "cp13-resolution" },
     generation: {
       method: "external-ai",
@@ -48,14 +47,14 @@ describe("resolveDuplicateEntry", () => {
     expect(plan.decision.choice).toBe("replace-with-imported");
   });
 
-  it("fills missing supporting content without changing imported examples", () => {
+  it("preserves optional etymology without changing imported examples", () => {
     const comparison = getComparison();
     const plan = resolveDuplicateEntry(comparison, "merge-compatible-content");
 
     expect(plan.shouldPersist).toBe(true);
     expect(plan.persistenceMode).toBe("merge");
     expect(plan.selectedEntry.examples).toEqual(comparison.imported.entry.examples);
-    expect(plan.selectedEntry.wordFamily.length).toBeGreaterThan(0);
+    expect(plan.selectedEntry.etymology).toEqual(comparison.existing.entry.etymology);
     expect(vocabularyEntrySchema.safeParse(plan.selectedEntry).success).toBe(true);
   });
 });

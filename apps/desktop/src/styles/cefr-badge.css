@@ -1,0 +1,45 @@
+.cefr-badge {
+  --cefr-level-color: var(--color-text-secondary);
+
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-3);
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--cefr-level-color) 32%, var(--color-border));
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--cefr-level-color) 11%, var(--color-surface));
+  color: var(--cefr-level-color);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.045em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.cefr-badge[data-level="A1"] {
+  --cefr-level-color: var(--color-success);
+}
+
+.cefr-badge[data-level="A2"] {
+  --cefr-level-color: var(--color-focus);
+}
+
+.cefr-badge[data-level="B1"] {
+  --cefr-level-color: var(--color-warning);
+}
+
+.cefr-badge[data-level="B2"] {
+  --cefr-level-color: var(--color-accent);
+}
+
+.cefr-badge[data-level="C1"] {
+  --cefr-level-color: var(--color-danger);
+}
+
+.cefr-badge[data-level="C2"] {
+  --cefr-level-color: var(--color-text);
+}

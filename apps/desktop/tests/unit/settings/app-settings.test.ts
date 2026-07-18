@@ -4,13 +4,15 @@ import { createDefaultAppSettings } from "../../../src/modules/settings/applicat
 import { resolveTheme } from "../../../src/modules/settings/state";
 
 describe("application settings", () => {
-  it("creates deterministic V1 defaults", () => {
+  it("creates deterministic simplified V1 defaults", () => {
     const settings = createDefaultAppSettings("2026-07-15T18:00:00.000Z");
 
     expect(settings.schemaVersion).toBe("1.0.0");
-    expect(settings.content.exampleSentenceCount).toBe(10);
+    expect(settings.content).toEqual({ showEtymology: true });
     expect(settings.appearance.theme).toBe("system");
-    expect(settings.instruction.exampleCount).toBe(10);
+    expect(settings.instruction).not.toHaveProperty("exampleCount");
+    expect(settings.instruction).not.toHaveProperty("includeWordFamily");
+    expect(settings.instruction).not.toHaveProperty("includeCommonMistakes");
   });
 
   it("resolves the system theme without overriding explicit choices", () => {

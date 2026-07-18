@@ -39,7 +39,21 @@
   gap: var(--space-4);
   min-height: 8.75rem;
   padding: var(--space-5);
+  border-radius: 0 0 var(--radius-large) 0;
   color: var(--color-accent);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
+}
+
+.app-sidebar__brand:hover {
+  background: color-mix(in srgb, var(--color-surface) 54%, transparent);
+}
+
+.app-sidebar__brand:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-ring-offset) * -1);
 }
 
 .app-sidebar__mark {

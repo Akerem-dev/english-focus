@@ -1,6 +1,6 @@
 # Vocabulary Output Specification
 
-Each final entry may include:
+Each canonical entry may include:
 
 - word and normalized word
 - aliases and inflected forms
@@ -16,7 +16,13 @@ Each final entry may include:
 - phrasal verbs and idioms when real
 - similar-word distinctions
 - common mistakes
-- exactly ten primary examples
+- three primary examples with Turkish translations
 - generation and review metadata
 
 Inapplicable grammar structures are omitted, never fabricated.
+
+## Migration compatibility
+
+Current English Focus versions write and export three primary examples. Legacy V1 entries that
+contain ten examples remain readable during the migration and are normalized to their first three
+examples before application use. Entries with four through nine examples are not accepted.

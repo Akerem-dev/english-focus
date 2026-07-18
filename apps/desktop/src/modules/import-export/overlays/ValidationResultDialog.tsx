@@ -78,8 +78,8 @@ export function ValidationResultDialog({
           <div>
             <h3>Vocabulary structure is valid</h3>
             <p>
-              Required fields, value types, strict object boundaries, and exactly ten primary
-              examples passed the local Zod contract.
+              Required fields, value types, strict object boundaries, and three primary examples
+              passed the local Zod contract.
             </p>
           </div>
         </section>

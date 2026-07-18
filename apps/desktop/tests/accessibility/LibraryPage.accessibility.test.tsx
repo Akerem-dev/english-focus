@@ -6,7 +6,7 @@ import { AppProviders } from "../../src/app/providers";
 import { LibraryPage } from "../../src/modules/library/pages";
 
 describe("LibraryPage accessibility", () => {
-  it("provides named search, filter, export, and row controls", () => {
+  it("provides named search, filter, export, selection, and detail controls", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
         <AppProviders>
@@ -17,8 +17,9 @@ describe("LibraryPage accessibility", () => {
 
     expect(markup).toContain("Search library");
     expect(markup).toContain('aria-label="Library filters"');
-    expect(markup).toContain("Export selected pack");
+    expect(markup).toContain("Export selected");
     expect(markup).toContain('aria-label="Select maintain"');
+    expect(markup).toContain('aria-label="Open maintain details"');
     expect(markup).toContain('role="row"');
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { appSettingsSchema } from "../src";
+import { appSettingsInputSchema, appSettingsSchema } from "../src";
 
 const validSettings = {
   schemaVersion: "1.0.0",
@@ -9,9 +9,7 @@ const validSettings = {
     translationLanguage: "tr"
   },
   content: {
-    showEtymology: true,
-    showCommonMistakes: true,
-    exampleSentenceCount: 10
+    showEtymology: true
   },
   data: {
     automaticBackups: true,
@@ -26,10 +24,7 @@ const validSettings = {
     explanationLanguage: "tr",
     detailLevel: "maximum",
     targetProficiency: "C1",
-    exampleCount: 10,
-    includeWordFamily: true,
     includeGrammarNotes: true,
-    includeCommonMistakes: true,
     includeEtymology: true,
     includeUsageTips: true
   },
@@ -37,15 +32,33 @@ const validSettings = {
 } as const;
 
 describe("appSettingsSchema", () => {
-  it("accepts the persisted V1 settings contract", () => {
+  it("accepts the simplified persisted settings contract", () => {
     expect(appSettingsSchema.parse(validSettings)).toEqual(validSettings);
   });
 
-  it("rejects unsupported appearance and content values", () => {
+  it("normalizes removed legacy settings on read", () => {
+    const result = appSettingsInputSchema.parse({
+      ...validSettings,
+      content: {
+        ...validSettings.content,
+        showCommonMistakes: true,
+        exampleSentenceCount: 10
+      },
+      instruction: {
+        ...validSettings.instruction,
+        exampleCount: 10,
+        includeWordFamily: true,
+        includeCommonMistakes: true
+      }
+    });
+
+    expect(result).toEqual(validSettings);
+  });
+
+  it("rejects unsupported appearance values", () => {
     expect(() =>
       appSettingsSchema.parse({
         ...validSettings,
-        content: { ...validSettings.content, exampleSentenceCount: 15 },
         appearance: { ...validSettings.appearance, theme: "sepia" }
       })
     ).toThrow();

@@ -1,7 +1,5 @@
 import { useEffect, useEffectEvent, useMemo, useState } from "react";
 import type {
-  LearningStatus,
-  ReviewStatus,
   SaveVocabularyUserMetadataInput,
   VocabularyEntry,
   VocabularyUserMetadata
@@ -19,26 +17,6 @@ interface VocabularyMetadataDialogProps {
   readonly onClose: () => void;
   readonly onSave: (input: SaveVocabularyUserMetadataInput) => Promise<void>;
 }
-
-const LEARNING_OPTIONS: readonly {
-  value: LearningStatus;
-  label: string;
-  description: string;
-}[] = [
-  { value: "new", label: "New", description: "Not yet part of active study." },
-  { value: "learning", label: "Learning", description: "Currently reviewing and applying it." },
-  { value: "known", label: "Known", description: "Comfortable using it without prompts." }
-];
-
-const REVIEW_OPTIONS: readonly {
-  value: ReviewStatus;
-  label: string;
-  description: string;
-}[] = [
-  { value: "imported", label: "Imported", description: "Stored but not independently checked." },
-  { value: "validated", label: "Validated", description: "Structure and content checks passed." },
-  { value: "reviewed", label: "Reviewed", description: "Personally reviewed and approved." }
-];
 
 function formatDate(value: string | undefined): string {
   if (value === undefined) {
@@ -70,10 +48,6 @@ export function VocabularyMetadataDialog({
     [entry.normalizedWord, metadata]
   );
   const [favorite, setFavorite] = useState(initialMetadata.favorite);
-  const [learningStatus, setLearningStatus] = useState<LearningStatus>(
-    initialMetadata.learningStatus
-  );
-  const [reviewStatus, setReviewStatus] = useState<ReviewStatus>(initialMetadata.reviewStatus);
   const [tagsInput, setTagsInput] = useState(
     initialMetadata.tags.map((tag) => tag.name).join(", ")
   );
@@ -91,15 +65,15 @@ export function VocabularyMetadataDialog({
         favorite,
         tags,
         note,
-        learningStatus,
-        reviewStatus,
+        learningStatus: initialMetadata.learningStatus,
+        reviewStatus: initialMetadata.reviewStatus,
         lastViewedAt: initialMetadata.lastViewedAt,
         viewCount: initialMetadata.viewCount,
         createdAt: initialMetadata.createdAt,
         updatedAt
       });
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Study details could not be saved.");
+      setError(cause instanceof Error ? cause.message : "Personal details could not be saved.");
     }
   }
 
@@ -130,7 +104,7 @@ export function VocabularyMetadataDialog({
 
   return (
     <Modal
-      description={`Personal study details for “${entry.word}” are stored separately from vocabulary content.`}
+      description={`Personal notes, tags, and favorites for “${entry.word}” are stored separately from vocabulary content.`}
       footer={
         <>
           <Button disabled={saving} onClick={onClose} variant="ghost">
@@ -144,19 +118,19 @@ export function VocabularyMetadataDialog({
             }}
             variant="primary"
           >
-            Save study details
+            Save personal details
           </Button>
         </>
       }
       onClose={onClose}
       open={open}
       size="large"
-      title="Edit personal study details"
+      title="Edit personal details"
     >
       <div className="vocabulary-metadata-dialog">
         <section className="vocabulary-metadata-dialog__summary">
           <div>
-            <p className="route-page__eyebrow">Local user metadata</p>
+            <p className="route-page__eyebrow">Local personal details</p>
             <h3>{entry.word}</h3>
             <p>{entry.meanings[0]?.translationsTr.slice(0, 3).join(", ")}</p>
           </div>
@@ -176,65 +150,10 @@ export function VocabularyMetadataDialog({
 
         {error === undefined ? null : (
           <div className="vocabulary-metadata-dialog__error" role="alert">
-            <strong>Study details need attention</strong>
+            <strong>Personal details need attention</strong>
             <p>{error}</p>
           </div>
         )}
-
-        <section className="vocabulary-metadata-dialog__section">
-          <header>
-            <h3>Learning status</h3>
-            <p>Track your own familiarity without scores or gamification.</p>
-          </header>
-          <div className="vocabulary-metadata-dialog__options">
-            {LEARNING_OPTIONS.map((option) => (
-              <label
-                key={option.value}
-                data-selected={learningStatus === option.value || undefined}
-              >
-                <input
-                  checked={learningStatus === option.value}
-                  name="learning-status"
-                  onChange={() => {
-                    setLearningStatus(option.value);
-                  }}
-                  type="radio"
-                  value={option.value}
-                />
-                <span>
-                  <strong>{option.label}</strong>
-                  <small>{option.description}</small>
-                </span>
-              </label>
-            ))}
-          </div>
-        </section>
-
-        <section className="vocabulary-metadata-dialog__section">
-          <header>
-            <h3>Review status</h3>
-            <p>This is your personal review state and does not rewrite imported content.</p>
-          </header>
-          <div className="vocabulary-metadata-dialog__options">
-            {REVIEW_OPTIONS.map((option) => (
-              <label key={option.value} data-selected={reviewStatus === option.value || undefined}>
-                <input
-                  checked={reviewStatus === option.value}
-                  name="review-status"
-                  onChange={() => {
-                    setReviewStatus(option.value);
-                  }}
-                  type="radio"
-                  value={option.value}
-                />
-                <span>
-                  <strong>{option.label}</strong>
-                  <small>{option.description}</small>
-                </span>
-              </label>
-            ))}
-          </div>
-        </section>
 
         <div className="vocabulary-metadata-dialog__fields">
           <TextField

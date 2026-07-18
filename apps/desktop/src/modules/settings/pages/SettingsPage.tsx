@@ -1,10 +1,5 @@
 import type { ReactNode } from "react";
-import type {
-  BackupFrequency,
-  ExampleSentenceDisplayCount,
-  InterfaceSize,
-  ThemePreference
-} from "@platform/domain";
+import type { BackupFrequency, InterfaceSize, ThemePreference } from "@platform/domain";
 
 import { SelectField, StatusBadge, SwitchField } from "../../../components";
 import { useSettings } from "../../../app/providers";
@@ -58,7 +53,7 @@ export function SettingsPage() {
         <div>
           <p className="route-page__eyebrow">Application preferences</p>
           <h1>Settings</h1>
-          <p>Customize content presentation, local data behavior, and accessibility preferences.</p>
+          <p>Customize essential vocabulary content, local data, and accessibility preferences.</p>
         </div>
         <div className="settings-page-header__actions" aria-live="polite">
           {status === "loading" ? <StatusBadge>Loading settings</StatusBadge> : null}
@@ -82,7 +77,7 @@ export function SettingsPage() {
 
       <div className="settings-grid">
         <SettingsPanel
-          description="Choose how vocabulary explanations and supporting details appear."
+          description="Choose how essential vocabulary information appears."
           icon="book-open"
           title="Content"
         >
@@ -94,38 +89,17 @@ export function SettingsPage() {
             onChange={(event) => {
               const showEtymology = event.currentTarget.checked;
               void updateSettings((current) =>
-                updateContentSettings(current, { ...current.content, showEtymology })
+                updateContentSettings(current, {
+                  ...current.content,
+                  showEtymology
+                })
               );
             }}
           />
-          <SwitchField
-            checked={settings.content.showCommonMistakes}
-            description="Highlight common learner errors and confusing usages."
-            disabled={isBusy}
-            label="Show common mistakes"
-            onChange={(event) => {
-              const showCommonMistakes = event.currentTarget.checked;
-              void updateSettings((current) =>
-                updateContentSettings(current, { ...current.content, showCommonMistakes })
-              );
-            }}
-          />
-          <SelectField
-            disabled={isBusy}
-            label="Example sentences shown"
-            onChange={(event) => {
-              const exampleSentenceCount = Number(
-                event.currentTarget.value
-              ) as ExampleSentenceDisplayCount;
-              void updateSettings((current) =>
-                updateContentSettings(current, { ...current.content, exampleSentenceCount })
-              );
-            }}
-            value={String(settings.content.exampleSentenceCount)}
-          >
-            <option value="5">First 5</option>
-            <option value="10">All 10</option>
-          </SelectField>
+          <div className="settings-value-row">
+            <span>Example sentences shown</span>
+            <strong>First 3</strong>
+          </div>
         </SettingsPanel>
 
         <SettingsPanel
@@ -149,7 +123,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const automaticBackups = event.currentTarget.checked;
               void updateSettings((current) =>
-                updateDataSettings(current, { ...current.data, automaticBackups })
+                updateDataSettings(current, {
+                  ...current.data,
+                  automaticBackups
+                })
               );
             }}
           />
@@ -159,7 +136,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const backupFrequency = event.currentTarget.value as BackupFrequency;
               void updateSettings((current) =>
-                updateDataSettings(current, { ...current.data, backupFrequency })
+                updateDataSettings(current, {
+                  ...current.data,
+                  backupFrequency
+                })
               );
             }}
             value={settings.data.backupFrequency}
@@ -186,7 +166,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const theme = event.currentTarget.value as ThemePreference;
               void updateSettings((current) =>
-                updateAppearanceSettings(current, { ...current.appearance, theme })
+                updateAppearanceSettings(current, {
+                  ...current.appearance,
+                  theme
+                })
               );
             }}
             value={settings.appearance.theme}
@@ -203,7 +186,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const reducedMotion = event.currentTarget.checked;
               void updateSettings((current) =>
-                updateAppearanceSettings(current, { ...current.appearance, reducedMotion })
+                updateAppearanceSettings(current, {
+                  ...current.appearance,
+                  reducedMotion
+                })
               );
             }}
           />
@@ -213,7 +199,10 @@ export function SettingsPage() {
             onChange={(event) => {
               const interfaceSize = event.currentTarget.value as InterfaceSize;
               void updateSettings((current) =>
-                updateAppearanceSettings(current, { ...current.appearance, interfaceSize })
+                updateAppearanceSettings(current, {
+                  ...current.appearance,
+                  interfaceSize
+                })
               );
             }}
             value={settings.appearance.interfaceSize}

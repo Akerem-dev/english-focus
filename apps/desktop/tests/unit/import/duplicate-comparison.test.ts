@@ -30,6 +30,14 @@ describe("compareDuplicateEntries", () => {
       id: "user.allocate.cp13-test",
       word: "allocate",
       normalizedWord: "allocate",
+      morphology: { baseForm: "allocate", inflectedForms: [] },
+      aliases: [],
+      examples: createValidVocabularyEntry().examples.map((example, index) => ({
+        ...example,
+        id: `allocate-example-${index + 1}`,
+        sentenceEn: `They allocate the available budget in example ${index + 1}.`,
+        targetForm: "allocate the budget"
+      })),
       source: { kind: "user" },
       generation: {
         method: "external-ai",
@@ -62,11 +70,10 @@ describe("compareDuplicateEntries", () => {
         "cefr",
         "meanings",
         "examples",
-        "grammarPatterns",
-        "collocations",
-        "wordFamily",
-        "relatedWords",
-        "commonMistakes",
+        "pronunciations",
+        "wordForms",
+        "usage",
+        "etymology",
         "source"
       ]);
       expect(result.comparison.differingFieldCount).toBeGreaterThan(0);

@@ -3,7 +3,6 @@ import type {
   PartOfSpeech,
   PronunciationVariant,
   Register,
-  SentenceForm,
   VocabularyEntry
 } from "@platform/domain";
 
@@ -46,15 +45,6 @@ const LABELS = {
     written: "Written",
     archaic: "Archaic"
   } satisfies Record<Register, string>,
-  sentenceForm: {
-    affirmative: "Affirmative",
-    conditional: "Conditional",
-    imperative: "Imperative",
-    negative: "Negative",
-    other: "Other",
-    passive: "Passive",
-    question: "Question"
-  } satisfies Record<SentenceForm, string>,
   inflection: {
     base: "Base form",
     comparative: "Comparative",
@@ -73,7 +63,6 @@ export interface VocabularyEntryPresentation {
   readonly partOfSpeechLabel: string;
   readonly registerLabels: readonly string[];
   readonly sourceLabel: string;
-  readonly reviewLabel: string;
 }
 
 export function presentVocabularyEntry(entry: VocabularyEntry): VocabularyEntryPresentation {
@@ -85,11 +74,7 @@ export function presentVocabularyEntry(entry: VocabularyEntry): VocabularyEntryP
     primaryTranslation: primaryTranslations.join(", "),
     partOfSpeechLabel: entry.partsOfSpeech.map(formatPartOfSpeech).join(" · "),
     registerLabels: entry.registers.map(formatRegister),
-    sourceLabel: entry.source.sourceLabel ?? "Local vocabulary",
-    reviewLabel:
-      entry.generation.validationStatus === "reviewed"
-        ? "Editorially reviewed"
-        : formatPlainLabel(entry.generation.validationStatus)
+    sourceLabel: entry.source.sourceLabel ?? "Local vocabulary"
   };
 }
 
@@ -103,10 +88,6 @@ export function formatPronunciationVariant(value: PronunciationVariant): string 
 
 export function formatRegister(value: Register): string {
   return LABELS.register[value];
-}
-
-export function formatSentenceForm(value: SentenceForm): string {
-  return LABELS.sentenceForm[value];
 }
 
 export function formatInflectionType(value: InflectionType): string {

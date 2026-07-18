@@ -1,26 +1,26 @@
 import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
-import { Button, StatusBadge, TagChip } from "../../../components";
+import { Button, CefrBadge, StatusBadge, TagChip } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { presentVocabularyEntry } from "../presenters/VocabularyEntryPresenter";
 
 interface VocabularyHeaderProps {
   readonly entry: VocabularyEntry;
   readonly metadata?: VocabularyUserMetadata | undefined;
+  readonly backLabel?: string;
   readonly onBack: () => void;
+  readonly onEditEntry: () => void;
   readonly onEditMetadata: () => void;
   readonly onImportReplacement: () => void;
   readonly onExport: () => void;
 }
 
-function labelStatus(value: string): string {
-  return value.charAt(0).toLocaleUpperCase("en-US") + value.slice(1);
-}
-
 export function VocabularyHeader({
+  backLabel = "Back to vocabulary",
   entry,
   metadata,
   onBack,
+  onEditEntry,
   onEditMetadata,
   onExport,
   onImportReplacement
@@ -30,7 +30,7 @@ export function VocabularyHeader({
   return (
     <header className="vocabulary-detail-header">
       <Button className="vocabulary-detail-header__back" onClick={onBack} variant="ghost">
-        ← Back to vocabulary
+        ← {backLabel}
       </Button>
 
       <div className="vocabulary-detail-header__title-row">
@@ -40,16 +40,23 @@ export function VocabularyHeader({
           <p className="vocabulary-detail-header__translation">{presentation.primaryTranslation}</p>
         </div>
         <div className="vocabulary-detail-header__source">
-          <StatusBadge tone="success">{presentation.reviewLabel}</StatusBadge>
           <span>{presentation.sourceLabel}</span>
           <div className="vocabulary-detail-header__actions">
+            <Button
+              leadingIcon={<AppIcon name="settings" size={16} />}
+              onClick={onEditEntry}
+              size="small"
+              variant="primary"
+            >
+              Edit entry
+            </Button>
             <Button
               leadingIcon={<AppIcon name="star" size={16} />}
               onClick={onEditMetadata}
               size="small"
               variant={metadata?.favorite === true ? "primary" : "secondary"}
             >
-              {metadata?.favorite === true ? "Favorited" : "Study details"}
+              {metadata?.favorite === true ? "Favorited" : "Personal details"}
             </Button>
             <Button
               leadingIcon={<AppIcon name="download" size={16} />}
@@ -59,30 +66,27 @@ export function VocabularyHeader({
             >
               Export JSON
             </Button>
-            <Button onClick={onImportReplacement} size="small" variant="secondary">
-              Import replacement JSON
+            <Button
+              onClick={onImportReplacement}
+              size="small"
+              title="Advanced JSON replacement"
+              variant="ghost"
+            >
+              Import JSON
             </Button>
           </div>
         </div>
       </div>
 
       <div className="vocabulary-detail-header__metadata" aria-label="Vocabulary metadata">
-        <StatusBadge tone="accent">CEFR {entry.cefr}</StatusBadge>
+        <CefrBadge level={entry.cefr} />
         <StatusBadge>{presentation.partOfSpeechLabel}</StatusBadge>
         {presentation.registerLabels.map((register) => (
           <TagChip key={register}>{register}</TagChip>
         ))}
-        {metadata === undefined ? null : (
-          <>
-            <StatusBadge tone={metadata.learningStatus === "known" ? "success" : "neutral"}>
-              {labelStatus(metadata.learningStatus)}
-            </StatusBadge>
-            <StatusBadge>{labelStatus(metadata.reviewStatus)}</StatusBadge>
-            {metadata.tags.slice(0, 4).map((tag) => (
-              <TagChip key={tag.id}>{tag.name}</TagChip>
-            ))}
-          </>
-        )}
+        {metadata?.tags.slice(0, 4).map((tag) => (
+          <TagChip key={tag.id}>{tag.name}</TagChip>
+        ))}
       </div>
     </header>
   );

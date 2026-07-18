@@ -1,5 +1,7 @@
 import type { InstructionPreferences } from "@platform/domain";
 
+const PRIMARY_EXAMPLE_COUNT = 3;
+
 function enabledLabel(value: boolean): string {
   return value ? "required" : "omit when no reliable content exists";
 }
@@ -12,23 +14,18 @@ export function renderVocabularyInstructionRules(
     "You are preparing one production-quality English vocabulary entry for a local learning application.",
     "",
     `TARGET WORD: ${targetWord}`,
-    `EXPLANATION LANGUAGE: Turkish (tr)`,
+    "EXPLANATION LANGUAGE: Turkish (tr)",
     `TARGET LEARNER LEVEL: ${preferences.targetProficiency.toUpperCase()}`,
     `DETAIL LEVEL: ${preferences.detailLevel}`,
-    `PRIMARY EXAMPLE SENTENCES: exactly ${preferences.exampleCount}`,
+    `PRIMARY EXAMPLE SENTENCES: ${PRIMARY_EXAMPLE_COUNT}`,
     "",
     "CONTENT REQUIREMENTS",
-    `- Word family: ${enabledLabel(preferences.includeWordFamily)}.`,
-    `- Applicable grammar notes: ${enabledLabel(preferences.includeGrammarNotes)}.`,
-    `- Common learner mistakes: ${enabledLabel(preferences.includeCommonMistakes)}.`,
+    `- Short grammar or usage summary: ${enabledLabel(preferences.includeGrammarNotes)}.`,
     `- Etymology: ${enabledLabel(preferences.includeEtymology)}; never invent uncertain origins.`,
     `- Practical usage tips: ${enabledLabel(preferences.includeUsageTips)}.`,
     "- Separate genuinely different meanings. Give precise Turkish translations for every meaning.",
-    "- Include only real collocations, phrasal verbs, idioms, related words, and preposition patterns.",
-    "- Empty arrays are correct when a structure does not naturally apply.",
-    "- Never force tense, passive, conditional, idiom, phrasal-verb, or preposition content merely to fill fields.",
-    "- Grammar examples must use the target word naturally and must match the stated grammar label.",
-    "- Each of the exactly 10 primary examples must include an accurate Turkish translation.",
+    "- Use grammar.summaryEn and grammar.summaryTr for one concise, practical explanation.",
+    `- Provide ${PRIMARY_EXAMPLE_COUNT} primary examples, each with an accurate Turkish translation.`,
     "- Avoid duplicate examples, duplicate meanings, circular definitions, and generic filler.",
     "",
     "IDENTITY AND NORMALIZATION RULES",

@@ -33,13 +33,13 @@ const RESOLUTION_OPTIONS: readonly ResolutionOption[] = [
     choice: "replace-with-imported",
     label: "Replace with imported",
     detail:
-      "Use the reviewed imported content. Favorites, tags, notes, and study state remain separate and preserved."
+      "Use the reviewed imported content. Favorites, tags, and personal notes remain separate and preserved."
   },
   {
     choice: "merge-compatible-content",
     label: "Merge compatible content",
     detail:
-      "Keep imported meanings and examples, then fill only missing optional supporting sections from the existing entry."
+      "Keep imported meanings, usage, forms, and examples while preserving compatible identity labels and optional etymology."
   }
 ] as const;
 
@@ -206,12 +206,12 @@ export function DuplicateComparisonDialog({
                   <dd>{comparison.existing.examples}</dd>
                 </div>
                 <div>
-                  <dt>Grammar</dt>
-                  <dd>{comparison.existing.grammarPatterns}</dd>
+                  <dt>Pronunciations</dt>
+                  <dd>{comparison.existing.pronunciations}</dd>
                 </div>
                 <div>
-                  <dt>Collocations</dt>
-                  <dd>{comparison.existing.collocations}</dd>
+                  <dt>Word forms</dt>
+                  <dd>{comparison.existing.wordForms}</dd>
                 </div>
                 <div>
                   <dt>Updated</dt>
@@ -243,12 +243,12 @@ export function DuplicateComparisonDialog({
                   <dd>{comparison.imported.examples}</dd>
                 </div>
                 <div>
-                  <dt>Grammar</dt>
-                  <dd>{comparison.imported.grammarPatterns}</dd>
+                  <dt>Pronunciations</dt>
+                  <dd>{comparison.imported.pronunciations}</dd>
                 </div>
                 <div>
-                  <dt>Collocations</dt>
-                  <dd>{comparison.imported.collocations}</dd>
+                  <dt>Word forms</dt>
+                  <dd>{comparison.imported.wordForms}</dd>
                 </div>
                 <div>
                   <dt>Generated</dt>

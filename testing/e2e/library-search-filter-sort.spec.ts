@@ -14,7 +14,7 @@ test("Library searches, filters, and sorts the effective catalog", async ({ page
     "true"
   );
   await page.getByRole("button", { name: "Filters" }).click();
-  await page.getByLabel("Filter by layer").selectOption("core");
+  await page.getByLabel("Filter by CEFR").selectOption("B2");
   await page.getByLabel("Sort results").selectOption("word-desc");
   await expect(
     page

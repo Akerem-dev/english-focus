@@ -19,6 +19,23 @@ describe("vocabularyPackSchema", () => {
     expect(vocabularyPackSchema.safeParse(createPack()).success).toBe(true);
   });
 
+  it("normalizes legacy ten-example entries inside a pack", () => {
+    const entry = createValidVocabularyEntry();
+    const legacyEntry = {
+      ...entry,
+      examples: Array.from({ length: 10 }, (_, index) => ({
+        ...entry.examples[index % entry.examples.length]!,
+        id: `legacy-example-${index + 1}`
+      }))
+    };
+    const result = vocabularyPackSchema.safeParse(createPack([legacyEntry]));
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.entries[0]?.examples).toHaveLength(3);
+    }
+  });
+
   it("rejects count mismatches and duplicate normalized words", () => {
     const entry = createValidVocabularyEntry();
     const result = vocabularyPackSchema.safeParse({

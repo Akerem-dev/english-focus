@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, EnglishFocusMark } from "../../design-system";
+import { dispatchAppCommand } from "../command-bar";
 import { connectToRuntime, type RuntimeConnection } from "../runtime/runtimeBridge";
-import { APP_ROUTES } from "../router";
+import { APP_ROUTES, ROUTE_PATHS } from "../router";
 
 function runtimeLabel(connection: RuntimeConnection | undefined) {
   if (connection === undefined) {
@@ -39,13 +41,20 @@ export function AppSidebar() {
 
   return (
     <aside className="app-sidebar">
-      <div className="app-sidebar__brand">
+      <Link
+        aria-label="English Focus vocabulary home"
+        className="app-sidebar__brand"
+        onClick={() => {
+          dispatchAppCommand("open-vocabulary-home");
+        }}
+        to={ROUTE_PATHS.vocabulary}
+      >
         <EnglishFocusMark className="app-sidebar__mark" label="English Focus" size={56} />
         <span className="app-sidebar__brand-name" aria-hidden="true">
           <span>English</span>
           <span>Focus</span>
         </span>
-      </div>
+      </Link>
 
       <nav aria-label="Primary navigation" className="app-sidebar__nav">
         {APP_ROUTES.map((route) => (
