@@ -32,26 +32,7 @@ jobs:
         run: npm run check:css-tokens
 
       - name: Check dead code
-        id: dead_code
-        continue-on-error: true
-        shell: bash
-        run: npm run check:dead-code > dead-code-report.txt 2>&1
-
-      - name: Upload dead-code report
-        if: steps.dead_code.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: dead-code-report
-          path: dead-code-report.txt
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Enforce dead-code result
-        if: steps.dead_code.outcome == 'failure'
-        shell: bash
-        run: |
-          cat dead-code-report.txt
-          exit 1
+        run: npm run check:dead-code
 
       - name: Check formatting
         run: npm run format:check
