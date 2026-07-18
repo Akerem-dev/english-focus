@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 import type {
   BackupDescriptor,
   BackupRestoreResult,
-  BackupValidationResult
+  BackupValidationResult,
 } from "@platform/domain";
 
-import { Button, Modal, StatusBadge } from "../../../components";
+import { Button, Modal } from "../../../components";
 import { AppIcon } from "../../../design-system";
 
 interface BackupRestoreDialogProps {
@@ -21,11 +21,6 @@ interface BackupRestoreDialogProps {
   readonly onClearRestoreResult: () => void;
 }
 
-function describeBackup(backup: BackupDescriptor): string {
-  const reason = backup.reason === "pre-restore" ? "Recovery copy" : `${backup.reason} backup`;
-  return `${reason} · ${backup.counts.vocabularyEntries} saved words · ${backup.counts.vocabularyMetadata} personal details`;
-}
-
 function formatDate(value: string): string {
   const parsed = new Date(value);
 
@@ -38,7 +33,7 @@ function formatDate(value: string): string {
     month: "short",
     day: "2-digit",
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
   });
 }
 
@@ -59,7 +54,18 @@ function reasonLabel(reason: BackupDescriptor["reason"]): string {
     return "Recovery copy";
   }
 
-  return reason === "automatic" ? "Automatic" : "Manual";
+  return reason === "automatic" ? "Automatic backup" : "Manual backup";
+}
+
+function backupContentsSummary(backup: BackupDescriptor): string {
+  const personalItems = backup.counts.vocabularyMetadata;
+  const words = backup.counts.vocabularyEntries;
+
+  if (words === 0 && personalItems === 0) {
+    return "App settings only";
+  }
+
+  return `${words} saved ${words === 1 ? "word" : "words"} · ${personalItems} personal ${personalItems === 1 ? "item" : "items"}`;
 }
 
 export function BackupRestoreDialog({
@@ -72,23 +78,31 @@ export function BackupRestoreDialog({
   onDelete,
   onRestore,
   onValidate,
-  open
+  open,
 }: BackupRestoreDialogProps) {
-  const [selectedFileName, setSelectedFileName] = useState<string | undefined>();
-  const [validation, setValidation] = useState<BackupValidationResult | undefined>();
+  const [selectedFileName, setSelectedFileName] = useState<
+    string | undefined
+  >();
+  const [validation, setValidation] = useState<
+    BackupValidationResult | undefined
+  >();
   const [confirmed, setConfirmed] = useState(false);
-  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
+  const [deleteReviewOpen, setDeleteReviewOpen] = useState(false);
 
   const selected = useMemo(
     () => backups.find((backup) => backup.fileName === selectedFileName),
-    [backups, selectedFileName]
+    [backups, selectedFileName],
   );
+
+  function resetSelectionState() {
+    setValidation(undefined);
+    setConfirmed(false);
+    setDeleteReviewOpen(false);
+  }
 
   function closeDialog() {
     setSelectedFileName(undefined);
-    setValidation(undefined);
-    setConfirmed(false);
-    setDeleteConfirmed(false);
+    resetSelectionState();
     onClearRestoreResult();
     onClose();
   }
@@ -112,19 +126,18 @@ export function BackupRestoreDialog({
   }
 
   async function deleteSelected() {
-    if (selected === undefined || !deleteConfirmed) {
+    if (selected === undefined || !deleteReviewOpen) {
       return;
     }
 
     await onDelete(selected.fileName);
     setSelectedFileName(undefined);
-    setValidation(undefined);
-    setDeleteConfirmed(false);
+    resetSelectionState();
   }
 
   return (
     <Modal
-      description="Review backups saved on this device and restore one when you need it."
+      description="Choose a saved backup, check it, and restore it only when you need to."
       footer={
         <>
           <Button disabled={busy} onClick={closeDialog} variant="ghost">
@@ -137,10 +150,15 @@ export function BackupRestoreDialog({
             }}
             variant="secondary"
           >
-            Check backup
+            {validation === undefined ? "Check backup" : "Check again"}
           </Button>
           <Button
-            disabled={selected === undefined || validation?.valid !== true || !confirmed || busy}
+            disabled={
+              selected === undefined ||
+              validation?.valid !== true ||
+              !confirmed ||
+              busy
+            }
             onClick={() => {
               void restoreSelected();
             }}
@@ -157,8 +175,14 @@ export function BackupRestoreDialog({
     >
       {error === undefined ? null : (
         <section className="backup-alert backup-alert--error" role="alert">
-          <strong>This backup action could not be completed.</strong>
-          <p>{error}</p>
+          <strong>The backup action did not finish.</strong>
+          <p>
+            Your existing data is unchanged. Close this window and try again.
+          </p>
+          <details className="backup-technical-details">
+            <summary>Technical details</summary>
+            <p>{error}</p>
+          </details>
         </section>
       )}
 
@@ -171,8 +195,8 @@ export function BackupRestoreDialog({
             <strong>Backup restored</strong>
             <p>
               {lastRestore.restored.vocabularyEntries} saved words and{" "}
-              {lastRestore.restored.vocabularyMetadata} personal details were restored. A recovery
-              copy was created first.
+              {lastRestore.restored.vocabularyMetadata} personal details were
+              restored. A recovery copy was created first.
             </p>
           </div>
         </section>
@@ -185,7 +209,7 @@ export function BackupRestoreDialog({
           <p>Create one from Data & backups whenever you want.</p>
         </section>
       ) : (
-        <div className="backup-manager-layout">
+        <div className="backup-manager-layout backup-manager-layout--focused">
           <section className="backup-list" aria-label="Saved backups">
             {backups.map((backup) => {
               const selectedState = backup.fileName === selectedFileName;
@@ -202,21 +226,19 @@ export function BackupRestoreDialog({
                     name="backup-selection"
                     onChange={() => {
                       setSelectedFileName(backup.fileName);
-                      setValidation(undefined);
-                      setConfirmed(false);
-                      setDeleteConfirmed(false);
+                      resetSelectionState();
                     }}
                     type="radio"
                   />
                   <span className="backup-list-item__content">
                     <span className="backup-list-item__header">
-                      <strong>{reasonLabel(backup.reason)}</strong>
-                      <StatusBadge tone={backup.reason === "manual" ? "accent" : "success"}>
+                      <strong>{formatDate(backup.createdAt)}</strong>
+                      <span className="backup-list-item__size">
                         {formatSize(backup.sizeBytes)}
-                      </StatusBadge>
+                      </span>
                     </span>
-                    <span>{formatDate(backup.createdAt)}</span>
-                    <small>{describeBackup(backup)}</small>
+                    <span>{reasonLabel(backup.reason)}</span>
+                    <small>{backupContentsSummary(backup)}</small>
                   </span>
                 </label>
               );
@@ -226,21 +248,22 @@ export function BackupRestoreDialog({
           <aside className="backup-inspector">
             {selected === undefined ? (
               <div className="backup-inspector__placeholder">
-                <AppIcon name="search" size={30} />
+                <AppIcon name="search" size={28} />
                 <h3>Select a backup</h3>
-                <p>Choose a backup to see what it contains and check that it can be restored.</p>
+                <p>Choose one from the list to review its contents.</p>
               </div>
             ) : (
               <>
-                <header>
+                <header className="backup-inspector__header">
                   <p className="route-page__eyebrow">Selected backup</p>
-                  <h3>{reasonLabel(selected.reason)}</h3>
+                  <h3>{formatDate(selected.createdAt)}</h3>
                   <p>
-                    {formatDate(selected.createdAt)} · {formatSize(selected.sizeBytes)}
+                    {reasonLabel(selected.reason)} ·{" "}
+                    {formatSize(selected.sizeBytes)}
                   </p>
                 </header>
 
-                <dl className="backup-inspector__facts">
+                <dl className="backup-inspector__summary">
                   <div>
                     <dt>Saved words</dt>
                     <dd>{selected.counts.vocabularyEntries}</dd>
@@ -251,80 +274,134 @@ export function BackupRestoreDialog({
                   </div>
                   <div>
                     <dt>App settings</dt>
-                    <dd>{selected.counts.settingsRecords}</dd>
-                  </div>
-                  <div>
-                    <dt>Backup format</dt>
-                    <dd>{selected.databaseSchemaVersion}</dd>
+                    <dd>
+                      {selected.counts.settingsRecords > 0
+                        ? "Included"
+                        : "Not included"}
+                    </dd>
                   </div>
                 </dl>
 
+                <details className="backup-technical-details">
+                  <summary>Technical details</summary>
+                  <dl>
+                    <div>
+                      <dt>File</dt>
+                      <dd>{selected.fileName}</dd>
+                    </div>
+                    <div>
+                      <dt>Backup version</dt>
+                      <dd>{selected.backupVersion}</dd>
+                    </div>
+                    <div>
+                      <dt>Storage format</dt>
+                      <dd>{selected.databaseSchemaVersion}</dd>
+                    </div>
+                  </dl>
+                </details>
+
                 {validation === undefined ? (
                   <p className="backup-inspector__note">
-                    Check this backup before restoring it. The check happens only on this device.
+                    Check this backup before restoring it. The check stays on
+                    this device.
                   </p>
                 ) : validation.valid ? (
                   <section className="backup-validation backup-validation--valid">
-                    <AppIcon name="check" size={20} />
+                    <AppIcon name="check" size={19} />
                     <div>
-                      <strong>Backup is ready</strong>
-                      <p>You can restore it after confirming below.</p>
+                      <strong>Ready to restore</strong>
+                      <p>Confirm below to enable the restore button.</p>
                     </div>
                   </section>
                 ) : (
-                  <section className="backup-validation backup-validation--invalid" role="alert">
-                    <AppIcon name="warning" size={20} />
+                  <section
+                    className="backup-validation backup-validation--invalid"
+                    role="alert"
+                  >
+                    <AppIcon name="warning" size={19} />
                     <div>
                       <strong>This backup cannot be restored</strong>
-                      <ul>
-                        {validation.issues.map((issue) => (
-                          <li key={issue}>{issue}</li>
-                        ))}
-                      </ul>
+                      <p>It did not pass the local safety check.</p>
+                      <details className="backup-technical-details">
+                        <summary>Why it failed</summary>
+                        <ul>
+                          {validation.issues.map((issue) => (
+                            <li key={issue}>{issue}</li>
+                          ))}
+                        </ul>
+                      </details>
                     </div>
                   </section>
                 )}
 
-                <label className="backup-confirmation">
-                  <input
-                    checked={confirmed}
-                    disabled={validation?.valid !== true || busy}
-                    onChange={(event) => {
-                      setConfirmed(event.currentTarget.checked);
-                    }}
-                    type="checkbox"
-                  />
-                  <span>
-                    <strong>
-                      I understand this will replace my saved words, personal learning details, and
-                      app settings.
-                    </strong>
-                    <small>English Focus will create a recovery copy first.</small>
-                  </span>
-                </label>
-
-                <div className="backup-delete-zone">
-                  <label>
+                {validation?.valid === true ? (
+                  <label className="backup-confirmation">
                     <input
-                      checked={deleteConfirmed}
+                      checked={confirmed}
                       disabled={busy}
                       onChange={(event) => {
-                        setDeleteConfirmed(event.currentTarget.checked);
+                        setConfirmed(event.currentTarget.checked);
                       }}
                       type="checkbox"
                     />
-                    I want to delete this backup
+                    <span>
+                      <strong>
+                        Replace my current saved data with this backup.
+                      </strong>
+                      <small>
+                        A recovery copy of the current data will be created
+                        first.
+                      </small>
+                    </span>
                   </label>
-                  <Button
-                    disabled={!deleteConfirmed || busy}
-                    onClick={() => {
-                      void deleteSelected();
-                    }}
-                    size="small"
-                    variant="danger"
-                  >
-                    Delete backup
-                  </Button>
+                ) : null}
+
+                <div className="backup-delete-disclosure">
+                  {deleteReviewOpen ? (
+                    <div
+                      className="backup-delete-review"
+                      role="group"
+                      aria-label="Delete backup"
+                    >
+                      <div>
+                        <strong>Delete this backup?</strong>
+                        <p>This removes only this saved backup file.</p>
+                      </div>
+                      <div className="backup-delete-review__actions">
+                        <Button
+                          disabled={busy}
+                          onClick={() => {
+                            setDeleteReviewOpen(false);
+                          }}
+                          size="small"
+                          variant="ghost"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          disabled={busy}
+                          onClick={() => {
+                            void deleteSelected();
+                          }}
+                          size="small"
+                          variant="danger"
+                        >
+                          Delete backup
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <Button
+                      disabled={busy}
+                      onClick={() => {
+                        setDeleteReviewOpen(true);
+                      }}
+                      size="small"
+                      variant="ghost"
+                    >
+                      Delete this backup
+                    </Button>
+                  )}
                 </div>
               </>
             )}

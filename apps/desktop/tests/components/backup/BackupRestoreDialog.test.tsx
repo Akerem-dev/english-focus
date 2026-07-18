@@ -15,12 +15,12 @@ const descriptor: BackupDescriptor = {
   counts: {
     vocabularyEntries: 2,
     vocabularyMetadata: 2,
-    settingsRecords: 1
-  }
+    settingsRecords: 1,
+  },
 };
 
 describe("BackupRestoreDialog", () => {
-  it("renders saved backups and requires a check before restore", () => {
+  it("renders a focused backup list and keeps restore unavailable before a safety check", () => {
     const markup = renderToStaticMarkup(
       <BackupRestoreDialog
         backups={[descriptor]}
@@ -32,17 +32,21 @@ describe("BackupRestoreDialog", () => {
           restoredAt: "2026-07-15T13:00:00.000Z",
           restored: descriptor.counts,
           sourceBackup: descriptor,
-          safetyBackup: { ...descriptor, reason: "pre-restore" }
+          safetyBackup: { ...descriptor, reason: "pre-restore" },
         })}
         onValidate={async () => ({ valid: true, issues: [], descriptor })}
         open
-      />
+      />,
     );
 
     expect(markup).toContain("Your backups");
-    expect(markup).toContain("Manual");
+    expect(markup).toContain("Manual backup");
+    expect(markup).toContain("2 saved words · 2 personal items");
     expect(markup).toContain("Check backup");
     expect(markup).toContain("Restore backup");
+    expect(markup).toContain('class="backup-list-item__size"');
+    expect(markup).not.toContain("Backup format");
+    expect(markup).not.toContain("metadata records");
     expect(markup).toContain("disabled");
   });
 });
