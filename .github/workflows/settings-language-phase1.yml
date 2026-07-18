@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   apply-language:
@@ -19,7 +19,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: feat/user-friendly-settings-language
-          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -50,11 +49,23 @@ jobs:
           testing/e2e/backup-restore.spec.ts
           testing/e2e/settings-navigation.spec.ts
 
-      - name: Commit language changes
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/desktop testing/e2e
-          git commit -m "feat: simplify settings language" || exit 0
-          git push origin HEAD:feat/user-friendly-settings-language
+      - name: Upload formatted language files
+        uses: actions/upload-artifact@v4
+        with:
+          name: settings-language-phase1-files
+          path: |
+            apps/desktop/src/modules/settings/components/BackupSettingsSection.tsx
+            apps/desktop/src/modules/backup/overlays/BackupRestoreDialog.tsx
+            apps/desktop/src/modules/settings/components/ActivitySection.tsx
+            apps/desktop/src/modules/settings/components/SettingsMaintenanceOverview.tsx
+            apps/desktop/src/modules/settings/components/SettingsManagementDetail.tsx
+            apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx
+            apps/desktop/src/modules/settings/components/DiagnosticsSection.tsx
+            apps/desktop/src/modules/settings/pages/SettingsPage.tsx
+            apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx
+            apps/desktop/tests/components/settings/LocalDataControlsSection.test.tsx
+            apps/desktop/tests/components/settings/SettingsMaintenanceOverview.test.tsx
+            testing/e2e/backup-restore.spec.ts
+            testing/e2e/settings-navigation.spec.ts
+          if-no-files-found: error
+          retention-days: 1
