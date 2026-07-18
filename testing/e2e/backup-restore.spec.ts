@@ -6,9 +6,7 @@ test("backup manager exposes an honest empty desktop state", async ({
   await page.goto("/#/settings");
   await page.getByRole("tab", { name: /Data & backups/ }).click();
   await page.getByRole("button", { name: "View backups" }).click();
-  await expect(
-    page.getByRole("dialog", { name: "Your backups" }),
-  ).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Backups" })).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "No backups yet" }),
   ).toBeVisible();
