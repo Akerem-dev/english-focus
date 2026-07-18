@@ -8,15 +8,18 @@ Make backup management and recent activity shorter, calmer, and focused on one u
 
 - Backup date is the primary list label.
 - Type, size, and a short contents summary remain visible.
-- File name, backup version, and storage format move behind Technical details.
+- The initial footer presents one clear task: Check backup.
+- Restore appears only after the selected backup passes its local check.
+- File name, backup version, storage format, and deletion move under More options.
 - Statistic cards are replaced by three plain summary rows.
 - Validation appears as a short readiness message.
 - Restore confirmation appears only after a backup passes its check.
-- Deletion uses a small inline review instead of a permanently visible danger zone.
+- Backup list entries and the selected-backup area use dividers rather than nested cards.
 - Restore, validation, recovery-copy, and deletion behavior are unchanged.
 
 ## Recent activity
 
+- The repeated Recent activity heading is removed inside the focused management screen.
 - The count is plain text instead of a status badge.
 - Activity rows use dividers rather than individual cards.
 - Scope is shown as quiet metadata instead of a chip.
@@ -26,7 +29,7 @@ Make backup management and recent activity shorter, calmer, and focused on one u
 
 ## Visual boundary
 
-The surfaces avoid nested cards, decorative metrics, glowing markers, repeated warning panels, gradients, glass effects, and synthetic dashboard styling. Hierarchy comes from typography, spacing, and dividers.
+The surfaces avoid nested cards, decorative metrics, glowing markers, repeated warning panels, gradients, glass effects, and synthetic dashboard styling. Hierarchy comes from typography, spacing, dividers, and progressive disclosure.
 
 ## Safety boundary
 
