@@ -41,8 +41,122 @@ jobs:
 
           workflow = Path('.github/workflows/apply-critical-data-integrity.yml').read_text(encoding='utf-8')
           marker = "          python <<'PY'\n"
-          script = workflow.split(marker, 1)[1].split("\n          PY", 1)[0]
-          exec(compile(textwrap.dedent(script), 'critical-data-integrity-phase.py', 'exec'))
+          script = textwrap.dedent(workflow.split(marker, 1)[1].split("\n          PY", 1)[0])
+
+          component_start = script.index('component_path = Path("apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx")')
+          backup_start = script.index('backup_path = Path("apps/desktop/src-tauri/src/commands/backup.rs")', component_start)
+          component_patch = '''component_path = Path("apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx")
+          component = component_path.read_text(encoding="utf-8")
+          component = component.replace(
+              'type LocalDataErrorState = "summary" | "action" | undefined;',
+              'type LocalDataErrorState = "summary" | "action" | "refresh" | undefined;'
+          )
+          component = component.replace(
+              "  canCreateSafetyBackup,\\n  isFullResetConfirmation,\\n  selectedLocalDataCount\\n",
+              "  canCreateSafetyBackup,\\n  isFullResetConfirmation,\\n  presentLocalDataResetResult,\\n  selectedLocalDataCount\\n"
+          )
+          summary_start = component.index("function deletedSummary")
+          component_start = component.index("\\n\\nexport function LocalDataControlsSection", summary_start)
+          component = component[:summary_start] + component[component_start + 2:]
+          component = component.replace(
+              "  const [lastResult, setLastResult] = useState<ResetLocalDataResult | undefined>();",
+              "  const [lastResult, setLastResult] = useState<ResetLocalDataResult | undefined>();\\n  const [lastResultMessage, setLastResultMessage] = useState<string | undefined>();"
+          )
+          component = component.replace(
+              "    setLastResult(undefined);\\n  }, []);",
+              "    setLastResult(undefined);\\n    setLastResultMessage(undefined);\\n  }, []);"
+          )
+          reset_start = component.index("  async function performReset")
+          return_start = component.index("\\n\\n  return (", reset_start)
+          new_reset = '''  async function performReset(categories: readonly LocalDataCategory[], fullReset: boolean) {
+            setStatus("resetting");
+            setErrorState(undefined);
+            setLastResult(undefined);
+            setLastResultMessage(undefined);
+
+            let result: ResetLocalDataResult;
+
+            try {
+              const safetyAvailable = canCreateSafetyBackup(categories);
+              result = await repository.resetLocalData({
+                categories,
+                createSafetyBackup: safetyAvailable && createSafetyBackup,
+                requestedAt: new Date().toISOString()
+              });
+            } catch {
+              setErrorState("action");
+              setStatus("error");
+              showToast({
+                title: fullReset ? "English Focus was not reset" : "Selected data was not removed",
+                message: "Nothing was removed. Refresh the summary and try again.",
+                tone: "error",
+                dedupeKey: fullReset ? "full-local-reset-error" : "selected-local-data-reset-error"
+              });
+              return;
+            }
+
+            setLastResult(result);
+
+            if (!categories.includes("activity")) {
+              await recordActivity({
+                kind: "local-data-reset",
+                scope: "settings",
+                label: fullReset ? "English Focus reset" : "Selected data removed"
+              }).catch(() => undefined);
+            }
+
+            const refreshResults = await Promise.allSettled([
+              refreshVocabulary(),
+              refreshMetadata(),
+              refreshSettings(),
+              refreshActivity(),
+              refreshBackups()
+            ]);
+            let refreshIncomplete = refreshResults.some(
+              (refreshResult) => refreshResult.status === "rejected"
+            );
+
+            try {
+              const nextSnapshot = await repository.getSnapshot();
+              setSnapshot(nextSnapshot);
+            } catch {
+              refreshIncomplete = true;
+            }
+
+            const presentation = presentLocalDataResetResult(result, refreshIncomplete);
+            setLastResultMessage(presentation.resultMessage);
+            setErrorState(presentation.refreshIncomplete ? "refresh" : undefined);
+            setStatus(presentation.refreshIncomplete ? "error" : "ready");
+            showToast({
+              title:
+                presentation.toastTone === "warning"
+                  ? fullReset
+                    ? "English Focus was reset with a warning"
+                    : "Selected data was removed with a warning"
+                  : fullReset
+                    ? "English Focus was reset"
+                    : "Selected data was removed",
+              message: presentation.toastMessage,
+              tone: presentation.toastTone,
+              dedupeKey: fullReset ? "full-local-reset-success" : "selected-local-data-reset-success"
+            });
+          }
+          '''
+          component = component[:reset_start] + new_reset + component[return_start:]
+          component = component.replace(
+              '? "We could not refresh this page."\\n                : "That change was not completed."',
+              '? "We could not refresh this page."\\n                : errorState === "refresh"\\n                  ? "The removal finished, but this page needs a refresh."\\n                  : "That change was not completed."'
+          )
+          component = component.replace(
+              '? "Your words, personal details, settings, and backups are still available."\\n                : "Nothing was removed. Your saved information is unchanged."',
+              '? "Your words, personal details, settings, and backups are still available."\\n                : errorState === "refresh"\\n                  ? "The completed removal was not undone. Some totals may still be out of date."\\n                  : "Nothing was removed. Your saved information is unchanged."'
+          )
+          component = component.replace("resultMessage={resultMessage}", "resultMessage={lastResultMessage}")
+          component_path.write_text(component, encoding="utf-8")
+
+          '''
+          script = script[:component_start] + textwrap.dedent(component_patch) + script[backup_start:]
+          exec(compile(script, 'critical-data-integrity-phase.py', 'exec'))
           EXTRACT
           echo $? > critical-phase-apply-exit-code.txt
           exit 0
