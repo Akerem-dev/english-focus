@@ -39,9 +39,7 @@ function parseStoredVocabularyEntry(payload: unknown): StoredVocabularyEntry {
   });
 }
 
-export function parseStoredVocabularyEntryList(
-  payload: unknown
-): readonly StoredVocabularyEntry[] {
+export function parseStoredVocabularyEntryList(payload: unknown): readonly StoredVocabularyEntry[] {
   if (!Array.isArray(payload)) {
     throw new Error("Stored vocabulary list response is invalid.");
   }
