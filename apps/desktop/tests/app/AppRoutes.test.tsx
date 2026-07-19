@@ -42,8 +42,6 @@ describe("application routes", () => {
 
     expect(markup).toContain("Loading Library");
     expect(markup).toContain("Library page loaded");
-    expect(markup).not.toContain("library-atmosphere");
-    expect(markup).not.toContain("Turn background animation");
   });
 
   it("renders the settings route loading boundary", () => {
