@@ -1,0 +1,60 @@
+name: Patch critical phase runner
+
+on:
+  pull_request:
+    branches: [feat/interface-polish-and-friendly-errors]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.head_ref == 'fix/critical-data-integrity'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/critical-data-integrity
+          fetch-depth: 0
+
+      - name: Add quality diagnostics
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/run-critical-data-integrity-pr.yml')
+          text = path.read_text(encoding='utf-8')
+          old = '''      - name: Run repository quality checks
+                  run: npm run quality
+          '''
+          new = '''      - name: Run repository quality checks
+                  id: quality
+                  continue-on-error: true
+                  shell: bash
+                  run: npm run quality > critical-phase-quality.log 2>&1
+
+                - name: Upload quality diagnostics
+                  if: always()
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: critical-data-integrity-quality-diagnostics
+                    path: critical-phase-quality.log
+                    if-no-files-found: error
+                    retention-days: 1
+
+                - name: Require successful quality checks
+                  shell: bash
+                  run: test "${{ steps.quality.outcome }}" = "success"
+          '''
+          if old not in text:
+              raise SystemExit('quality block changed unexpectedly')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          rm .github/workflows/patch-critical-runner.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: capture critical phase quality diagnostics"
+          git push origin HEAD:fix/critical-data-integrity
