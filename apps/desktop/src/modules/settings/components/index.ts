@@ -7,6 +7,6 @@ export { SettingsCategoryNavigation } from "./SettingsCategoryNavigation";
 export { UnavailableBackupFiles } from "./UnavailableBackupFiles";
 export {
   SettingsMaintenanceOverview,
-  type SettingsManagementView,
+  type SettingsManagementView
 } from "./SettingsMaintenanceOverview";
 export { SettingsManagementDetail } from "./SettingsManagementDetail";
