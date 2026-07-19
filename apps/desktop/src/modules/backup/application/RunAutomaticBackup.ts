@@ -1,7 +1,6 @@
 import type { BackupDescriptor, BackupFrequency, BackupReason } from "@platform/domain";
 
 const DAY_MS = 24 * 60 * 60 * 1_000;
-const AUTOMATIC_BACKUP_RETRY_DELAYS_MS = [60_000, 5 * 60_000, 15 * 60_000, 60 * 60_000] as const;
 
 function intervalForFrequency(frequency: BackupFrequency): number | undefined {
   if (frequency === "daily") {
@@ -51,11 +50,19 @@ export function isAutomaticBackupDue(
 }
 
 export function automaticBackupRetryDelayMs(failureCount: number): number {
-  const index = Math.max(
-    0,
-    Math.min(failureCount - 1, AUTOMATIC_BACKUP_RETRY_DELAYS_MS.length - 1)
-  );
-  return AUTOMATIC_BACKUP_RETRY_DELAYS_MS[index];
+  if (failureCount <= 1) {
+    return 60_000;
+  }
+
+  if (failureCount === 2) {
+    return 5 * 60_000;
+  }
+
+  if (failureCount === 3) {
+    return 15 * 60_000;
+  }
+
+  return 60 * 60_000;
 }
 
 export function findCreatedBackup(
