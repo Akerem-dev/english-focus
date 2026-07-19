@@ -23,6 +23,14 @@ export const backupDescriptorSchema = z
   })
   .strict();
 
+export const unavailableBackupSchema = z
+  .object({
+    fileName: z.string().min(1),
+    sizeBytes: z.number().int().nonnegative(),
+    issue: z.string().min(1)
+  })
+  .strict();
+
 export const backupValidationResultSchema = z
   .object({
     valid: z.boolean(),

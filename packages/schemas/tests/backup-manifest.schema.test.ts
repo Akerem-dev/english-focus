@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   backupDescriptorSchema,
   backupRestoreResultSchema,
-  backupValidationResultSchema
+  backupValidationResultSchema,
+  unavailableBackupSchema
 } from "../src/backup";
 
 const descriptor = {
@@ -25,7 +26,10 @@ describe("backup schemas", () => {
   it("accepts current and legacy database schema descriptors", () => {
     expect(backupDescriptorSchema.parse(descriptor)).toEqual(descriptor);
     expect(
-      backupDescriptorSchema.parse({ ...descriptor, databaseSchemaVersion: "2" })
+      backupDescriptorSchema.parse({
+        ...descriptor,
+        databaseSchemaVersion: "2"
+      })
     ).toMatchObject({
       databaseSchemaVersion: "2"
     });
@@ -34,7 +38,11 @@ describe("backup schemas", () => {
   it("accepts versioned descriptors, validation results, and restore results", () => {
     expect(backupDescriptorSchema.parse(descriptor)).toEqual(descriptor);
     expect(
-      backupValidationResultSchema.parse({ valid: true, issues: [], descriptor })
+      backupValidationResultSchema.parse({
+        valid: true,
+        issues: [],
+        descriptor
+      })
     ).toMatchObject({ valid: true });
     expect(
       backupRestoreResultSchema.parse({
@@ -46,12 +54,25 @@ describe("backup schemas", () => {
     ).toMatchObject({ restoredAt: "2026-07-15T13:00:00.000Z" });
   });
 
+  it("accepts a safe unavailable-backup summary without exposing parser details", () => {
+    const unavailable = {
+      fileName: "damaged.json",
+      sizeBytes: 128,
+      issue: "This backup file is incomplete or damaged."
+    };
+
+    expect(unavailableBackupSchema.parse(unavailable)).toEqual(unavailable);
+  });
+
   it("rejects malformed checksums and unsupported schema versions", () => {
     expect(backupDescriptorSchema.safeParse({ ...descriptor, checksum: "broken" }).success).toBe(
       false
     );
     expect(
-      backupDescriptorSchema.safeParse({ ...descriptor, databaseSchemaVersion: "99" }).success
+      backupDescriptorSchema.safeParse({
+        ...descriptor,
+        databaseSchemaVersion: "99"
+      }).success
     ).toBe(false);
   });
 });

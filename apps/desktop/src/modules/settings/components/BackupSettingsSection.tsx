@@ -4,6 +4,7 @@ import { useBackup } from "../../../app/providers";
 import { Button } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { BackupProgressDialog, BackupRestoreDialog } from "../../backup";
+import { UnavailableBackupFiles } from "./UnavailableBackupFiles";
 
 function formatDate(value: string | undefined): string {
   if (value === undefined) {
@@ -30,26 +31,31 @@ export function BackupSettingsSection() {
     clearLastRestore,
     createManualBackup,
     deleteBackup,
+    deleteUnavailableBackup,
     error,
     lastRestore,
     restoreBackup,
     status,
-    validateBackup
+    unavailableBackups,
+    validateBackup,
+    warning
   } = useBackup();
   const [managerOpen, setManagerOpen] = useState(false);
   const busy =
+    status === "loading" ||
     status === "creating" ||
     status === "validating" ||
     status === "restoring" ||
     status === "deleting";
   const latest = backups[0];
+  const savedFileCount = backups.length + unavailableBackups.length;
 
   return (
     <section aria-label="Backup status and actions" className="backup-settings-inline">
       <div className="backup-settings-inline__facts">
         <div className="backup-settings-inline__fact">
           <span>Saved backups</span>
-          <strong>{backups.length}</strong>
+          <strong>{savedFileCount}</strong>
         </div>
         <div className="backup-settings-inline__fact">
           <span>Most recent backup</span>
@@ -63,7 +69,7 @@ export function BackupSettingsSection() {
           isLoading={status === "creating"}
           leadingIcon={<AppIcon name="download" size={17} />}
           onClick={() => {
-            void createManualBackup();
+            void createManualBackup().catch(() => undefined);
           }}
           variant="primary"
         >
@@ -87,10 +93,22 @@ export function BackupSettingsSection() {
         </p>
       ) : null}
 
+      {warning === undefined ? null : (
+        <p className="backup-settings-status backup-settings-status--warning" role="status">
+          {warning}
+        </p>
+      )}
+
       <p className="backup-settings-note">
         Backups stay on this device. English Focus keeps recent automatic backups and recovery
         copies so older files do not pile up.
       </p>
+
+      <UnavailableBackupFiles
+        busy={busy}
+        files={unavailableBackups}
+        onRemove={deleteUnavailableBackup}
+      />
 
       <BackupRestoreDialog
         backups={backups}
