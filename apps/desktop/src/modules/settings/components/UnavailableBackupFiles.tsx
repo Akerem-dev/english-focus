@@ -21,24 +21,15 @@ function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export function UnavailableBackupFiles({
-  busy,
-  files,
-  onRemove,
-}: UnavailableBackupFilesProps) {
-  const [reviewingFileName, setReviewingFileName] = useState<
-    string | undefined
-  >();
+export function UnavailableBackupFiles({ busy, files, onRemove }: UnavailableBackupFilesProps) {
+  const [reviewingFileName, setReviewingFileName] = useState<string | undefined>();
 
   if (files.length === 0) {
     return null;
   }
 
   return (
-    <section
-      aria-labelledby="unavailable-backups-heading"
-      className="backup-unavailable"
-    >
+    <section aria-labelledby="unavailable-backups-heading" className="backup-unavailable">
       <header className="backup-unavailable__header">
         <div>
           <h3 id="unavailable-backups-heading">Files that need attention</h3>
