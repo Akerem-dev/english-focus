@@ -5,19 +5,19 @@ import type { UnavailableBackup } from "@platform/domain";
 import { AppProviders } from "../../../src/app/providers";
 import {
   BackupSettingsSection,
-  UnavailableBackupFiles,
+  UnavailableBackupFiles
 } from "../../../src/modules/settings/components";
 
 const markup = renderToStaticMarkup(
   <AppProviders>
     <BackupSettingsSection />
-  </AppProviders>,
+  </AppProviders>
 );
 
 const unavailable: UnavailableBackup = {
   fileName: "english-focus-backup-manual-damaged.json",
   sizeBytes: 128,
-  issue: "This backup file is incomplete or damaged.",
+  issue: "This backup file is incomplete or damaged."
 };
 
 describe("BackupSettingsSection", () => {
@@ -36,11 +36,7 @@ describe("BackupSettingsSection", () => {
 
   it("shows damaged backup files separately with only a removal action", () => {
     const unavailableMarkup = renderToStaticMarkup(
-      <UnavailableBackupFiles
-        busy={false}
-        files={[unavailable]}
-        onRemove={async () => undefined}
-      />,
+      <UnavailableBackupFiles busy={false} files={[unavailable]} onRemove={async () => undefined} />
     );
 
     expect(unavailableMarkup).toContain("Files that need attention");
