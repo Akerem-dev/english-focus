@@ -76,7 +76,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
   const [lastRestore, setLastRestore] = useState<BackupRestoreResult | undefined>();
   const [automaticRetryAt, setAutomaticRetryAt] = useState<number | undefined>();
   const automaticFailureCount = useRef(0);
-  const automaticRetryPreference = useRef<string | undefined>();
+  const automaticRetryPreference = useRef<string | undefined>(undefined);
   const automaticRunInFlight = useRef(false);
 
   const loadInventory = useCallback(async (): Promise<BackupInventoryLoad> => {
