@@ -44,7 +44,10 @@ fn has_string(object: &Map<String, Value>, key: &str) -> bool {
 }
 
 fn has_nonnegative_integer(object: &Map<String, Value>, key: &str) -> bool {
-    object.get(key).and_then(Value::as_u64).is_some()
+    object
+        .get(key)
+        .and_then(Value::as_u64)
+        .is_some()
 }
 
 fn is_supported_checksum(value: &str) -> bool {
@@ -252,9 +255,7 @@ mod tests {
         });
 
         assert!(is_readable_manifest_shape(&manifest));
-        assert!(!is_readable_manifest_shape(&json!({
-            "kind": "english-focus-backup"
-        })));
+        assert!(!is_readable_manifest_shape(&json!({ "kind": "english-focus-backup" })));
         assert!(!is_readable_manifest_shape(&json!({
             "kind": "english-focus-backup",
             "backupVersion": "99",
