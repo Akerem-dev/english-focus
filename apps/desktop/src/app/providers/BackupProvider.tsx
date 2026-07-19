@@ -76,6 +76,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
   const [lastRestore, setLastRestore] = useState<BackupRestoreResult | undefined>();
   const [automaticRetryAt, setAutomaticRetryAt] = useState<number | undefined>();
   const automaticFailureCount = useRef(0);
+  const automaticRetryPreference = useRef<string | undefined>();
   const automaticRunInFlight = useRef(false);
 
   const loadInventory = useCallback(async (): Promise<BackupInventoryLoad> => {
@@ -189,6 +190,8 @@ export function BackupProvider({ children }: PropsWithChildren) {
     [applyInventory, loadInventory]
   );
 
+  const automaticPreferenceKey = `${settings.data.automaticBackups}:${settings.data.backupFrequency}`;
+
   const runAutomaticBackup = useCallback(async () => {
     if (automaticRunInFlight.current || !isDesktopRuntime()) {
       return;
@@ -203,6 +206,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
       const created = await createBackupWithRecovery("automatic", createdAt);
       const refreshWarning = await refreshAfterCreation(created.backup);
       automaticFailureCount.current = 0;
+      automaticRetryPreference.current = automaticPreferenceKey;
       setAutomaticRetryAt(undefined);
       setWarning(combineWarnings(created.warning, refreshWarning));
       setStatus("ready");
@@ -212,6 +216,10 @@ export function BackupProvider({ children }: PropsWithChildren) {
         label: "Automatic backup created"
       });
     } catch {
+      if (automaticRetryPreference.current !== automaticPreferenceKey) {
+        automaticFailureCount.current = 0;
+      }
+      automaticRetryPreference.current = automaticPreferenceKey;
       automaticFailureCount.current += 1;
       const retryDelay = automaticBackupRetryDelayMs(automaticFailureCount.current);
       setAutomaticRetryAt(Date.now() + retryDelay);
@@ -222,12 +230,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
     } finally {
       automaticRunInFlight.current = false;
     }
-  }, [createBackupWithRecovery, refreshAfterCreation]);
-
-  useEffect(() => {
-    automaticFailureCount.current = 0;
-    setAutomaticRetryAt(undefined);
-  }, [settings.data.automaticBackups, settings.data.backupFrequency]);
+  }, [automaticPreferenceKey, createBackupWithRecovery, refreshAfterCreation]);
 
   useEffect(() => {
     const automaticEnabled =
@@ -241,10 +244,12 @@ export function BackupProvider({ children }: PropsWithChildren) {
     }
 
     const now = Date.now();
+    const retryAt =
+      automaticRetryPreference.current === automaticPreferenceKey ? automaticRetryAt : undefined;
     const delay =
-      automaticRetryAt === undefined
+      retryAt === undefined
         ? automaticBackupDelayMs(backups, settings.data.backupFrequency, new Date(now))
-        : Math.max(0, automaticRetryAt - now);
+        : Math.max(0, retryAt - now);
 
     if (delay === undefined) {
       return;
@@ -258,6 +263,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
       window.clearTimeout(timer);
     };
   }, [
+    automaticPreferenceKey,
     automaticRetryAt,
     backups,
     inventoryLoaded,
