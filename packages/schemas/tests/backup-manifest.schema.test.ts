@@ -4,7 +4,7 @@ import {
   backupDescriptorSchema,
   backupRestoreResultSchema,
   backupValidationResultSchema,
-  unavailableBackupSchema,
+  unavailableBackupSchema
 } from "../src/backup";
 
 const descriptor = {
@@ -18,8 +18,8 @@ const descriptor = {
   counts: {
     vocabularyEntries: 2,
     vocabularyMetadata: 2,
-    settingsRecords: 1,
-  },
+    settingsRecords: 1
+  }
 };
 
 describe("backup schemas", () => {
@@ -28,10 +28,10 @@ describe("backup schemas", () => {
     expect(
       backupDescriptorSchema.parse({
         ...descriptor,
-        databaseSchemaVersion: "2",
-      }),
+        databaseSchemaVersion: "2"
+      })
     ).toMatchObject({
-      databaseSchemaVersion: "2",
+      databaseSchemaVersion: "2"
     });
   });
 
@@ -41,16 +41,16 @@ describe("backup schemas", () => {
       backupValidationResultSchema.parse({
         valid: true,
         issues: [],
-        descriptor,
-      }),
+        descriptor
+      })
     ).toMatchObject({ valid: true });
     expect(
       backupRestoreResultSchema.parse({
         restoredAt: "2026-07-15T13:00:00.000Z",
         restored: descriptor.counts,
         sourceBackup: descriptor,
-        safetyBackup: { ...descriptor, reason: "pre-restore" },
-      }),
+        safetyBackup: { ...descriptor, reason: "pre-restore" }
+      })
     ).toMatchObject({ restoredAt: "2026-07-15T13:00:00.000Z" });
   });
 
@@ -58,22 +58,21 @@ describe("backup schemas", () => {
     const unavailable = {
       fileName: "damaged.json",
       sizeBytes: 128,
-      issue: "This backup file is incomplete or damaged.",
+      issue: "This backup file is incomplete or damaged."
     };
 
     expect(unavailableBackupSchema.parse(unavailable)).toEqual(unavailable);
   });
 
   it("rejects malformed checksums and unsupported schema versions", () => {
-    expect(
-      backupDescriptorSchema.safeParse({ ...descriptor, checksum: "broken" })
-        .success,
-    ).toBe(false);
+    expect(backupDescriptorSchema.safeParse({ ...descriptor, checksum: "broken" }).success).toBe(
+      false
+    );
     expect(
       backupDescriptorSchema.safeParse({
         ...descriptor,
-        databaseSchemaVersion: "99",
-      }).success,
+        databaseSchemaVersion: "99"
+      }).success
     ).toBe(false);
   });
 });
