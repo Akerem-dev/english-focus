@@ -6,7 +6,7 @@ import type {
 } from "@platform/domain";
 import { diagnosticReportSchema, safeMaintenanceResultSchema } from "@platform/schemas";
 
-export interface DiagnosticScanCoverage {
+interface DiagnosticScanCoverage {
   readonly complete: boolean;
   readonly issues: readonly string[];
 }
