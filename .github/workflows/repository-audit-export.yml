@@ -1,0 +1,68 @@
+name: Repository Audit Export
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run repository quality checks
+        shell: bash
+        run: |
+          set +e
+          npm run quality > audit-quality.txt 2>&1
+          echo $? > audit-quality-exit-code.txt
+          set -e
+
+      - name: Run Rust checks
+        shell: bash
+        run: |
+          set +e
+          cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml -- --check > audit-rust-fmt.txt 2>&1
+          echo $? > audit-rust-fmt-exit-code.txt
+          cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml > audit-rust-test.txt 2>&1
+          echo $? > audit-rust-test-exit-code.txt
+          cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features -- -D warnings > audit-rust-clippy.txt 2>&1
+          echo $? > audit-rust-clippy-exit-code.txt
+          set -e
+
+      - name: Capture suspicious markers and inventory
+        shell: bash
+        run: |
+          git ls-files > audit-tracked-files.txt
+          grep -RInE --exclude-dir=node_modules --exclude-dir=.git --exclude='package-lock.json' '(TODO|FIXME|HACK|XXX|not implemented|Not implemented|placeholder|temporary|stub|mock only|coming soon)' apps packages scripts testing docs .github 2>/dev/null > audit-markers.txt || true
+          grep -RInE --exclude-dir=node_modules --exclude-dir=.git --exclude='package-lock.json' '(console\.(log|debug|warn|error)|debugger;|panic!\(|unwrap\(|expect\()' apps packages scripts testing 2>/dev/null > audit-risky-patterns.txt || true
+          grep -RInE --exclude-dir=node_modules --exclude-dir=.git --exclude='package-lock.json' '(as any|@ts-ignore|@ts-expect-error|eslint-disable|prettier-ignore)' apps packages scripts testing 2>/dev/null > audit-suppressions.txt || true
+
+      - name: Package tracked repository source
+        shell: bash
+        run: |
+          git ls-files -z | tar --null -T - -czf repository-source.tgz
+
+      - name: Upload audit bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-audit-bundle
+          path: |
+            repository-source.tgz
+            audit-*.txt
+          if-no-files-found: error
+          retention-days: 1
