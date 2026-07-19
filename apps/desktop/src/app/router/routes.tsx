@@ -2,7 +2,6 @@ import { lazy, Suspense, type ReactElement } from "react";
 
 import type { AppIconName } from "../../design-system";
 import { RouteErrorBoundary, RouteLoadingFallback } from "../performance";
-import { LibraryRouteFrame } from "./LibraryRouteFrame";
 import { ROUTE_PATHS, type AppRouteId, type AppRoutePath } from "./routeIds";
 
 const VocabularyPage = lazy(async () => {
@@ -52,7 +51,7 @@ export const APP_ROUTES = [
     label: "Library",
     title: "Library",
     icon: "books",
-    element: <LibraryRouteFrame>{createRouteElement("Library", <LibraryPage />)}</LibraryRouteFrame>
+    element: createRouteElement("Library", <LibraryPage />)
   },
   {
     id: "settings",
