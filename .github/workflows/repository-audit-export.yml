@@ -64,14 +64,21 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Run Rust formatting check
+      - name: Capture native checks
         shell: powershell
-        run: cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all -- --check
+        run: |
+          cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all -- --check *> audit-rust-fmt.txt
+          $LASTEXITCODE | Out-File -Encoding ascii audit-rust-fmt-exit-code.txt
+          cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features *> audit-rust-test.txt
+          $LASTEXITCODE | Out-File -Encoding ascii audit-rust-test-exit-code.txt
+          cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features -- -D warnings *> audit-rust-clippy.txt
+          $LASTEXITCODE | Out-File -Encoding ascii audit-rust-clippy-exit-code.txt
+          exit 0
 
-      - name: Run Rust tests
-        shell: powershell
-        run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features
-
-      - name: Run Clippy
-        shell: powershell
-        run: cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
+      - name: Upload native audit bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-native-audit
+          path: audit-rust-*.txt
+          if-no-files-found: error
+          retention-days: 1
