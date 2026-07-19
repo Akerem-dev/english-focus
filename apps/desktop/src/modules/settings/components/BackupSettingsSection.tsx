@@ -21,7 +21,7 @@ function formatDate(value: string | undefined): string {
     month: "short",
     day: "2-digit",
     hour: "2-digit",
-    minute: "2-digit",
+    minute: "2-digit"
   });
 }
 
@@ -38,7 +38,7 @@ export function BackupSettingsSection() {
     status,
     unavailableBackups,
     validateBackup,
-    warning,
+    warning
   } = useBackup();
   const [managerOpen, setManagerOpen] = useState(false);
   const busy =
@@ -51,10 +51,7 @@ export function BackupSettingsSection() {
   const savedFileCount = backups.length + unavailableBackups.length;
 
   return (
-    <section
-      aria-label="Backup status and actions"
-      className="backup-settings-inline"
-    >
+    <section aria-label="Backup status and actions" className="backup-settings-inline">
       <div className="backup-settings-inline__facts">
         <div className="backup-settings-inline__fact">
           <span>Saved backups</span>
@@ -97,17 +94,14 @@ export function BackupSettingsSection() {
       ) : null}
 
       {warning === undefined ? null : (
-        <p
-          className="backup-settings-status backup-settings-status--warning"
-          role="status"
-        >
+        <p className="backup-settings-status backup-settings-status--warning" role="status">
           {warning}
         </p>
       )}
 
       <p className="backup-settings-note">
-        Backups stay on this device. English Focus keeps recent automatic
-        backups and recovery copies so older files do not pile up.
+        Backups stay on this device. English Focus keeps recent automatic backups and recovery
+        copies so older files do not pile up.
       </p>
 
       <UnavailableBackupFiles
