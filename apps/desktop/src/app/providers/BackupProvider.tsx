@@ -1,17 +1,10 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import type {
   BackupDescriptor,
   BackupReason,
   BackupRestoreResult,
   BackupValidationResult,
-  UnavailableBackup,
+  UnavailableBackup
 } from "@platform/domain";
 
 import { TauriBackupRepository } from "../../infrastructure/persistence";
@@ -19,14 +12,10 @@ import {
   automaticBackupDelayMs,
   automaticBackupRetryDelayMs,
   findCreatedBackup,
-  sortBackupsNewestFirst,
+  sortBackupsNewestFirst
 } from "../../modules/backup";
 import { publishActivity } from "../../modules/history";
-import {
-  BackupContext,
-  type BackupContextValue,
-  type BackupStatus,
-} from "./BackupContext";
+import { BackupContext, type BackupContextValue, type BackupStatus } from "./BackupContext";
 import { useSettings } from "./useSettings";
 import { useVocabularyMetadata } from "./useVocabularyMetadata";
 import { useVocabularyRepository } from "./useVocabularyRepository";
@@ -66,13 +55,9 @@ function unavailableBackupWarning(count: number): string | undefined {
   } from View backups.`;
 }
 
-function combineWarnings(
-  ...warnings: readonly (string | undefined)[]
-): string | undefined {
+function combineWarnings(...warnings: readonly (string | undefined)[]): string | undefined {
   const unique = [
-    ...new Set(
-      warnings.filter((warning): warning is string => warning !== undefined),
-    ),
+    ...new Set(warnings.filter((warning): warning is string => warning !== undefined))
   ];
   return unique.length === 0 ? undefined : unique.join(" ");
 }
@@ -83,26 +68,20 @@ export function BackupProvider({ children }: PropsWithChildren) {
   const { refresh: refreshVocabulary } = useVocabularyRepository();
   const { refresh: refreshMetadata } = useVocabularyMetadata();
   const [backups, setBackups] = useState<readonly BackupDescriptor[]>([]);
-  const [unavailableBackups, setUnavailableBackups] = useState<
-    readonly UnavailableBackup[]
-  >([]);
+  const [unavailableBackups, setUnavailableBackups] = useState<readonly UnavailableBackup[]>([]);
   const [status, setStatus] = useState<BackupStatus>("loading");
   const [inventoryLoaded, setInventoryLoaded] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const [warning, setWarning] = useState<string | undefined>();
-  const [lastRestore, setLastRestore] = useState<
-    BackupRestoreResult | undefined
-  >();
-  const [automaticRetryAt, setAutomaticRetryAt] = useState<
-    number | undefined
-  >();
+  const [lastRestore, setLastRestore] = useState<BackupRestoreResult | undefined>();
+  const [automaticRetryAt, setAutomaticRetryAt] = useState<number | undefined>();
   const automaticFailureCount = useRef(0);
   const automaticRunInFlight = useRef(false);
 
   const loadInventory = useCallback(async (): Promise<BackupInventoryLoad> => {
     const [availableResult, unavailableResult] = await Promise.allSettled([
       repository.listBackups(),
-      repository.listUnavailableBackups(),
+      repository.listUnavailableBackups()
     ]);
 
     if (availableResult.status === "rejected") {
@@ -114,20 +93,19 @@ export function BackupProvider({ children }: PropsWithChildren) {
       return Object.freeze({
         backups: listed,
         unavailableBackups: Object.freeze([]),
-        warning:
-          "Saved backups are available, but some backup files could not be reviewed.",
+        warning: "Saved backups are available, but some backup files could not be reviewed."
       });
     }
 
     const unavailable = Object.freeze(
       [...unavailableResult.value].sort((left, right) =>
-        left.fileName.localeCompare(right.fileName),
-      ),
+        left.fileName.localeCompare(right.fileName)
+      )
     );
     return Object.freeze({
       backups: listed,
       unavailableBackups: unavailable,
-      warning: unavailableBackupWarning(unavailable.length),
+      warning: unavailableBackupWarning(unavailable.length)
     });
   }, [repository]);
 
@@ -148,8 +126,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
       setStatus("ready");
       return inventory.backups;
     } catch (cause) {
-      const message =
-        cause instanceof Error ? cause.message : "Backups could not be loaded.";
+      const message = cause instanceof Error ? cause.message : "Backups could not be loaded.";
       setError(message);
       setStatus("error");
       throw cause;
@@ -166,13 +143,10 @@ export function BackupProvider({ children }: PropsWithChildren) {
   }, [refreshBackups]);
 
   const createBackupWithRecovery = useCallback(
-    async (
-      reason: BackupReason,
-      createdAt: string,
-    ): Promise<CreatedBackupOutcome> => {
+    async (reason: BackupReason, createdAt: string): Promise<CreatedBackupOutcome> => {
       try {
         return Object.freeze({
-          backup: await repository.createBackup(reason, createdAt),
+          backup: await repository.createBackup(reason, createdAt)
         });
       } catch (cause) {
         try {
@@ -182,8 +156,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
             setBackups(listed);
             return Object.freeze({
               backup: recovered,
-              warning:
-                "The backup was created, but older backup files could not be cleaned up.",
+              warning: "The backup was created, but older backup files could not be cleaned up."
             });
           }
         } catch {
@@ -193,7 +166,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
         throw cause;
       }
     },
-    [repository],
+    [repository]
   );
 
   const refreshAfterCreation = useCallback(
@@ -201,8 +174,8 @@ export function BackupProvider({ children }: PropsWithChildren) {
       setBackups((current) =>
         sortBackupsNewestFirst([
           created,
-          ...current.filter((backup) => backup.fileName !== created.fileName),
-        ]),
+          ...current.filter((backup) => backup.fileName !== created.fileName)
+        ])
       );
 
       try {
@@ -213,7 +186,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
         return "The backup was created, but the backup list could not be refreshed.";
       }
     },
-    [applyInventory, loadInventory],
+    [applyInventory, loadInventory]
   );
 
   const runAutomaticBackup = useCallback(async () => {
@@ -236,16 +209,14 @@ export function BackupProvider({ children }: PropsWithChildren) {
       publishActivity({
         kind: "backup-created",
         scope: "backup",
-        label: "Automatic backup created",
+        label: "Automatic backup created"
       });
     } catch {
       automaticFailureCount.current += 1;
-      const retryDelay = automaticBackupRetryDelayMs(
-        automaticFailureCount.current,
-      );
+      const retryDelay = automaticBackupRetryDelayMs(automaticFailureCount.current);
       setAutomaticRetryAt(Date.now() + retryDelay);
       setError(
-        "Automatic backup could not be created. English Focus will try again automatically.",
+        "Automatic backup could not be created. English Focus will try again automatically."
       );
       setStatus("error");
     } finally {
@@ -265,22 +236,14 @@ export function BackupProvider({ children }: PropsWithChildren) {
       settings.data.automaticBackups &&
       settings.data.backupFrequency !== "manual";
 
-    if (
-      !automaticEnabled ||
-      !inventoryLoaded ||
-      isBackupOperationBusy(status)
-    ) {
+    if (!automaticEnabled || !inventoryLoaded || isBackupOperationBusy(status)) {
       return;
     }
 
     const now = Date.now();
     const delay =
       automaticRetryAt === undefined
-        ? automaticBackupDelayMs(
-            backups,
-            settings.data.backupFrequency,
-            new Date(now),
-          )
+        ? automaticBackupDelayMs(backups, settings.data.backupFrequency, new Date(now))
         : Math.max(0, automaticRetryAt - now);
 
     if (delay === undefined) {
@@ -302,7 +265,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
     settings.data.automaticBackups,
     settings.data.backupFrequency,
     settingsStatus,
-    status,
+    status
   ]);
 
   const createManualBackup = useCallback(async () => {
@@ -319,12 +282,11 @@ export function BackupProvider({ children }: PropsWithChildren) {
       publishActivity({
         kind: "backup-created",
         scope: "backup",
-        label: "Manual backup created",
+        label: "Manual backup created"
       });
       return created.backup;
     } catch (cause) {
-      const message =
-        cause instanceof Error ? cause.message : "Backup could not be created.";
+      const message = cause instanceof Error ? cause.message : "Backup could not be created.";
       setError(message);
       setStatus("error");
       throw cause;
@@ -341,16 +303,13 @@ export function BackupProvider({ children }: PropsWithChildren) {
         setStatus("ready");
         return result;
       } catch (cause) {
-        const message =
-          cause instanceof Error
-            ? cause.message
-            : "Backup could not be validated.";
+        const message = cause instanceof Error ? cause.message : "Backup could not be validated.";
         setError(message);
         setStatus("error");
         throw cause;
       }
     },
-    [repository],
+    [repository]
   );
 
   const restoreBackup = useCallback(
@@ -361,20 +320,13 @@ export function BackupProvider({ children }: PropsWithChildren) {
       setLastRestore(undefined);
 
       try {
-        const restored = await repository.restoreBackup(
-          fileName,
-          new Date().toISOString(),
-        );
+        const restored = await repository.restoreBackup(fileName, new Date().toISOString());
         publishActivity({
           kind: "backup-restored",
           scope: "backup",
-          label: "Local backup restored",
+          label: "Local backup restored"
         });
-        await Promise.all([
-          refreshVocabulary(),
-          refreshMetadata(),
-          refreshSettings(),
-        ]);
+        await Promise.all([refreshVocabulary(), refreshMetadata(), refreshSettings()]);
         const inventory = await loadInventory();
         applyInventory(inventory);
         setWarning(inventory.warning);
@@ -382,23 +334,13 @@ export function BackupProvider({ children }: PropsWithChildren) {
         setStatus("ready");
         return restored;
       } catch (cause) {
-        const message =
-          cause instanceof Error
-            ? cause.message
-            : "Backup could not be restored.";
+        const message = cause instanceof Error ? cause.message : "Backup could not be restored.";
         setError(message);
         setStatus("error");
         throw cause;
       }
     },
-    [
-      applyInventory,
-      loadInventory,
-      refreshMetadata,
-      refreshSettings,
-      refreshVocabulary,
-      repository,
-    ],
+    [applyInventory, loadInventory, refreshMetadata, refreshSettings, refreshVocabulary, repository]
   );
 
   const deleteBackup = useCallback(
@@ -411,23 +353,20 @@ export function BackupProvider({ children }: PropsWithChildren) {
         publishActivity({
           kind: "backup-deleted",
           scope: "backup",
-          label: "Retained backup deleted",
+          label: "Retained backup deleted"
         });
         const inventory = await loadInventory();
         applyInventory(inventory);
         setWarning(inventory.warning);
         setStatus("ready");
       } catch (cause) {
-        const message =
-          cause instanceof Error
-            ? cause.message
-            : "Backup could not be deleted.";
+        const message = cause instanceof Error ? cause.message : "Backup could not be deleted.";
         setError(message);
         setStatus("error");
         throw cause;
       }
     },
-    [applyInventory, loadInventory, repository],
+    [applyInventory, loadInventory, repository]
   );
 
   const deleteUnavailableBackup = useCallback(
@@ -451,7 +390,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
         throw cause;
       }
     },
-    [applyInventory, loadInventory, repository],
+    [applyInventory, loadInventory, repository]
   );
 
   const clearLastRestore = useCallback(() => {
@@ -472,7 +411,7 @@ export function BackupProvider({ children }: PropsWithChildren) {
       restoreBackup,
       deleteBackup,
       deleteUnavailableBackup,
-      clearLastRestore,
+      clearLastRestore
     }),
     [
       backups,
@@ -487,11 +426,9 @@ export function BackupProvider({ children }: PropsWithChildren) {
       status,
       unavailableBackups,
       validateBackup,
-      warning,
-    ],
+      warning
+    ]
   );
 
-  return (
-    <BackupContext.Provider value={value}>{children}</BackupContext.Provider>
-  );
+  return <BackupContext.Provider value={value}>{children}</BackupContext.Provider>;
 }
