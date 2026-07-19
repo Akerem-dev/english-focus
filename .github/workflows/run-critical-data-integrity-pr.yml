@@ -192,7 +192,23 @@ jobs:
           cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all
 
       - name: Run repository quality checks
-        run: npm run quality
+        id: quality
+        continue-on-error: true
+        shell: bash
+        run: npm run quality > critical-phase-quality.log 2>&1
+
+      - name: Upload quality diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: critical-data-integrity-quality-diagnostics
+          path: critical-phase-quality.log
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Require successful quality checks
+        shell: bash
+        run: test "${{ steps.quality.outcome }}" = "success"
 
       - name: Run native phase checks
         run: |
@@ -205,7 +221,7 @@ jobs:
           rm .github/workflows/apply-critical-data-integrity.yml
           rm .github/workflows/run-critical-data-integrity-pr.yml
           rm -f .github/workflows/patch-critical-runner.yml
-          rm -f critical-phase-apply.log critical-phase-apply-exit-code.txt
+          rm -f critical-phase-apply.log critical-phase-apply-exit-code.txt critical-phase-quality.log
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
