@@ -19,10 +19,12 @@ pub fn run() {
             commands::activity::list_activity,
             commands::activity::record_activity,
             commands::activity::clear_activity,
+            commands::resilient_records::list_resilient_activity,
             commands::database::list_vocabulary_entries,
             commands::database::get_vocabulary_entry_by_normalized_word,
             commands::database::save_vocabulary_entry,
             commands::database::save_vocabulary_entries,
+            commands::resilient_records::list_resilient_vocabulary_entries,
             commands::database::list_vocabulary_user_metadata,
             commands::database::get_vocabulary_user_metadata,
             commands::database::save_vocabulary_user_metadata,
@@ -39,7 +41,8 @@ pub fn run() {
             commands::backup_inventory::list_unavailable_backups,
             commands::backup_inventory::delete_unavailable_backup,
             commands::diagnostics::run_diagnostics,
-            commands::diagnostics::run_safe_maintenance
+            commands::diagnostics::run_safe_maintenance,
+            commands::diagnostic_coverage::check_diagnostic_scan_coverage
         ])
         .run(tauri::generate_context!())
         .expect("error while running the English Focus Tauri application");
