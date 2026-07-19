@@ -48,3 +48,16 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  native-tests:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run native tests
+        run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
