@@ -45,7 +45,7 @@ jobs:
 
           component_start = script.index('component_path = Path("apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx")')
           backup_start = script.index('backup_path = Path("apps/desktop/src-tauri/src/commands/backup.rs")', component_start)
-          component_patch = '''component_path = Path("apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx")
+          component_patch = """component_path = Path("apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx")
           component = component_path.read_text(encoding="utf-8")
           component = component.replace(
               'type LocalDataErrorState = "summary" | "action" | undefined;',
@@ -154,7 +154,7 @@ jobs:
           component = component.replace("resultMessage={resultMessage}", "resultMessage={lastResultMessage}")
           component_path.write_text(component, encoding="utf-8")
 
-          '''
+          """
           script = script[:component_start] + textwrap.dedent(component_patch) + script[backup_start:]
           exec(compile(script, 'critical-data-integrity-phase.py', 'exec'))
           EXTRACT
