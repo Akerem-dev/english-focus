@@ -28,7 +28,7 @@ function parseStorageLayer(layer: unknown): VocabularyStorageLayer {
   throw new Error("Stored vocabulary layer is not supported by this application build.");
 }
 
-export function parseStoredVocabularyEntry(payload: unknown): StoredVocabularyEntry {
+function parseStoredVocabularyEntry(payload: unknown): StoredVocabularyEntry {
   if (!isStoredVocabularyEntryPayload(payload)) {
     throw new Error("Stored vocabulary record is incomplete.");
   }
