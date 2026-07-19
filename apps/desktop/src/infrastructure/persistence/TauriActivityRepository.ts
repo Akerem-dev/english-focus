@@ -1,9 +1,22 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { ActivityRecord, ActivityRepository, RecordActivityInput } from "@platform/domain";
-import { activityRecordListSchema, activityRecordSchema } from "@platform/schemas";
+import { activityRecordSchema } from "@platform/schemas";
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+}
+
+export function parseActivityRecordList(payload: unknown): readonly ActivityRecord[] {
+  if (!Array.isArray(payload)) {
+    throw new Error("Recent activity list response is invalid.");
+  }
+
+  return Object.freeze(
+    payload.flatMap((record) => {
+      const parsed = activityRecordSchema.safeParse(record);
+      return parsed.success ? [Object.freeze(parsed.data)] : [];
+    })
+  );
 }
 
 export class TauriActivityRepository implements ActivityRepository {
@@ -12,8 +25,8 @@ export class TauriActivityRepository implements ActivityRepository {
       return [];
     }
 
-    const payload = await invoke<unknown>("list_activity", { limit });
-    return Object.freeze(activityRecordListSchema.parse(payload));
+    const payload = await invoke<unknown>("list_resilient_activity", { limit });
+    return parseActivityRecordList(payload);
   }
 
   async recordActivity(input: RecordActivityInput): Promise<ActivityRecord> {
