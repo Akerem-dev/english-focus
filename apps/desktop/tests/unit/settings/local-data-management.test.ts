@@ -5,6 +5,7 @@ import {
   RESET_APPLICATION_CONFIRMATION,
   canCreateSafetyBackup,
   isFullResetConfirmation,
+  presentLocalDataResetResult,
   selectedLocalDataCount
 } from "../../../src/modules/settings/application";
 
@@ -15,6 +16,23 @@ const snapshot = {
   settingsRecords: 1,
   activityRecords: 9,
   backupFiles: 5
+};
+
+const resetResult = {
+  deleted: {
+    studyMetadataRecords: 0,
+    userVocabularyEntries: 2,
+    overrideVocabularyEntries: 0,
+    settingsRecords: 1,
+    activityRecords: 0,
+    backupFiles: 2
+  },
+  safetyBackup: undefined,
+  backupDeletion: {
+    requested: true,
+    deletedFiles: 2,
+    failedFiles: 0
+  }
 };
 
 describe("local data management safeguards", () => {
@@ -44,5 +62,28 @@ describe("local data management safeguards", () => {
 
   it("totals the selected data groups", () => {
     expect(selectedLocalDataCount(snapshot, ["user-vocabulary", "activity"])).toBe(12);
+  });
+
+  it("reports committed deletion separately from failed backup cleanup", () => {
+    const presentation = presentLocalDataResetResult(
+      {
+        ...resetResult,
+        backupDeletion: { requested: true, deletedFiles: 2, failedFiles: 1 }
+      },
+      false
+    );
+
+    expect(presentation.toastTone).toBe("warning");
+    expect(presentation.resultMessage).toContain("5 items removed");
+    expect(presentation.resultMessage).toContain("1 saved backup could not be removed");
+    expect(presentation.resultMessage).not.toContain("Nothing was removed");
+  });
+
+  it("reports refresh failures without changing a successful removal into an error", () => {
+    const presentation = presentLocalDataResetResult(resetResult, true);
+
+    expect(presentation.toastTone).toBe("warning");
+    expect(presentation.refreshIncomplete).toBe(true);
+    expect(presentation.resultMessage).toContain("The removal finished");
   });
 });
