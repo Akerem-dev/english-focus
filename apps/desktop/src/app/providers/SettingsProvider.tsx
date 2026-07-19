@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
+import { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from "react";
 import type { AppSettings } from "@platform/domain";
 
 import { TauriSettingsRepository } from "../../infrastructure/persistence";
 import { publishActivity } from "../../modules/history";
 import { createDefaultAppSettings, validateAppSettings } from "../../modules/settings/application";
-import { resolveTheme } from "../../modules/settings/state";
+import { resolveTheme, SettingsSaveCoordinator } from "../../modules/settings/state";
 import { SettingsContext, type SettingsContextValue, type SettingsStatus } from "./SettingsContext";
 
 function applyDocumentPreferences(settings: AppSettings, systemPrefersDark: boolean): void {
@@ -19,29 +19,24 @@ function applyDocumentPreferences(settings: AppSettings, systemPrefersDark: bool
 
 export function SettingsProvider({ children }: PropsWithChildren) {
   const repository = useMemo(() => new TauriSettingsRepository(), []);
-  const [settings, setSettings] = useState<AppSettings>(() => createDefaultAppSettings());
+  const [saveCoordinator] = useState(() => new SettingsSaveCoordinator(createDefaultAppSettings()));
+  const [settings, setSettings] = useState<AppSettings>(() => saveCoordinator.current);
   const [status, setStatus] = useState<SettingsStatus>("loading");
   const [error, setError] = useState<string | undefined>();
-  const settingsRef = useRef(settings);
-  const saveQueue = useRef<Promise<void>>(Promise.resolve());
-  const saveSequence = useRef(0);
 
   const refreshSettings = useCallback(async () => {
     setStatus("loading");
     setError(undefined);
 
     try {
+      await saveCoordinator.whenIdle();
       const stored = await repository.getSettings();
       const resolved = stored ?? createDefaultAppSettings();
-      settingsRef.current = resolved;
-      setSettings(resolved);
-
-      if (stored === undefined) {
-        await repository.saveSettings(resolved);
-      }
-
+      const confirmed = stored === undefined ? await repository.saveSettings(resolved) : resolved;
+      saveCoordinator.replace(confirmed);
+      setSettings(confirmed);
       setStatus("ready");
-      return resolved;
+      return confirmed;
     } catch (cause) {
       const message =
         cause instanceof Error ? cause.message : "Application settings could not be loaded.";
@@ -49,7 +44,7 @@ export function SettingsProvider({ children }: PropsWithChildren) {
       setStatus("error");
       throw cause;
     }
-  }, [repository]);
+  }, [repository, saveCoordinator]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -73,60 +68,68 @@ export function SettingsProvider({ children }: PropsWithChildren) {
     };
   }, [settings]);
 
-  const updateSettings = useCallback(
-    async (update: (current: AppSettings) => AppSettings) => {
-      const previous = settingsRef.current;
-      const next = validateAppSettings(update(previous));
-      const sequence = saveSequence.current + 1;
-      saveSequence.current = sequence;
-      settingsRef.current = next;
-      setSettings(next);
-      setStatus("saving");
-      setError(undefined);
-
-      const saveOperation = saveQueue.current.then(() => repository.saveSettings(next));
-      saveQueue.current = saveOperation.then(
-        () => undefined,
-        () => undefined
-      );
-
+  const updateSettings = useCallback<SettingsContextValue["updateSettings"]>(
+    (update) => {
       try {
-        const saved = await saveOperation;
+        const attempt = saveCoordinator.schedule(
+          (current) => validateAppSettings(update(current)),
+          (next) => repository.saveSettings(next)
+        );
+        setSettings(attempt.optimistic);
+        setStatus("saving");
+        setError(undefined);
 
-        if (saveSequence.current === sequence) {
-          settingsRef.current = saved;
-          setSettings(saved);
-          setStatus("saved");
-          publishActivity({
-            kind: "settings-updated",
-            scope: "settings",
-            label: "Application settings updated"
-          });
-          window.setTimeout(() => {
-            setStatus((current) => (current === "saved" ? "ready" : current));
-          }, 1_200);
-        }
+        const operation = attempt.completion.then((outcome) => {
+          if (outcome.status === "saved") {
+            if (outcome.latest) {
+              setSettings(outcome.saved);
+              setStatus("saved");
+              publishActivity({
+                kind: "settings-updated",
+                scope: "settings",
+                label: "Application settings updated"
+              });
+              window.setTimeout(() => {
+                setStatus((current) => (current === "saved" ? "ready" : current));
+              }, 1_200);
+            }
 
-        return saved;
+            return outcome.saved;
+          }
+
+          const message =
+            outcome.cause instanceof Error
+              ? outcome.cause.message
+              : "Application settings could not be saved.";
+
+          if (outcome.latest) {
+            setSettings(outcome.rollback);
+            setError(message);
+            setStatus("error");
+          }
+
+          throw outcome.cause;
+        });
+
+        void operation.catch(() => undefined);
+        return operation;
       } catch (cause) {
         const message =
           cause instanceof Error ? cause.message : "Application settings could not be saved.";
-        if (saveSequence.current === sequence) {
-          settingsRef.current = previous;
-          setSettings(previous);
-          setError(message);
-          setStatus("error");
-        }
-        throw cause;
+        setError(message);
+        setStatus("error");
+        const operation = Promise.reject<AppSettings>(cause);
+        void operation.catch(() => undefined);
+        return operation;
       }
     },
-    [repository]
+    [repository, saveCoordinator]
   );
 
-  const resetSettings = useCallback(async () => {
-    const defaults = createDefaultAppSettings();
-    return updateSettings(() => defaults);
-  }, [updateSettings]);
+  const resetSettings = useCallback(
+    () => updateSettings(() => createDefaultAppSettings()),
+    [updateSettings]
+  );
 
   const value = useMemo<SettingsContextValue>(
     () => ({

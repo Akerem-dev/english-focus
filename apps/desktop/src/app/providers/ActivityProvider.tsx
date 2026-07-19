@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
-import type { ActivityRecord, RecordActivityInput } from "@platform/domain";
+import type { ActivityRecord } from "@platform/domain";
 
 import { TauriActivityRepository } from "../../infrastructure/persistence";
-import { ACTIVITY_EVENT_NAME, type ActivityEventDetail } from "../../modules/history";
+import {
+  ACTIVITY_EVENT_NAME,
+  ActivityWriteCoordinator,
+  type ActivityEventDetail
+} from "../../modules/history";
 import { ActivityContext, type ActivityContextValue, type ActivityStatus } from "./ActivityContext";
 
 const MAX_VISIBLE_ACTIVITY = 100;
@@ -17,14 +21,19 @@ function createActivityId(): string {
   return `activity-${Date.now()}-${fallbackActivitySequence}`;
 }
 
+function orderActivity(records: readonly ActivityRecord[]): readonly ActivityRecord[] {
+  return Object.freeze(
+    [...records].sort((left, right) => right.occurredAt.localeCompare(left.occurredAt))
+  );
+}
+
 export function ActivityProvider({ children }: PropsWithChildren) {
   const repository = useMemo(() => new TauriActivityRepository(), []);
+  const writeCoordinator = useMemo(() => new ActivityWriteCoordinator(createActivityId), []);
   const [activity, setActivity] = useState<readonly ActivityRecord[]>([]);
   const [status, setStatus] = useState<ActivityStatus>("loading");
   const [error, setError] = useState<string | undefined>();
-  const latestRecordSignature = useRef<string | undefined>(undefined);
-  const latestRecordTime = useRef(0);
-  const latestRecord = useRef<ActivityRecord | undefined>(undefined);
+  const recordSequence = useRef(0);
 
   const refreshActivity = useCallback(async () => {
     setStatus("loading");
@@ -32,7 +41,7 @@ export function ActivityProvider({ children }: PropsWithChildren) {
 
     try {
       const listed = await repository.listActivity(MAX_VISIBLE_ACTIVITY);
-      setActivity(listed);
+      setActivity(orderActivity(listed));
       setStatus("ready");
       return listed;
     } catch (cause) {
@@ -54,51 +63,47 @@ export function ActivityProvider({ children }: PropsWithChildren) {
   }, [refreshActivity]);
 
   const recordActivity = useCallback<ActivityContextValue["recordActivity"]>(
-    async (input) => {
-      const now = Date.now();
-      const signature = `${input.kind}:${input.scope}:${input.label}:${input.target ?? ""}`;
-
-      if (
-        latestRecordSignature.current === signature &&
-        now - latestRecordTime.current < 800 &&
-        latestRecord.current !== undefined
-      ) {
-        return latestRecord.current;
-      }
-
-      latestRecordSignature.current = signature;
-      latestRecordTime.current = now;
+    (input) => {
+      const sequence = recordSequence.current + 1;
+      recordSequence.current = sequence;
       setStatus("recording");
       setError(undefined);
 
-      const record: RecordActivityInput = {
-        ...input,
-        id: createActivityId(),
-        occurredAt: new Date(now).toISOString()
-      };
+      const operation = writeCoordinator
+        .record(input, (record) => repository.recordActivity(record))
+        .then(
+          (saved) => {
+            setActivity((current) =>
+              orderActivity(
+                [saved, ...current.filter((item) => item.id !== saved.id)].slice(
+                  0,
+                  MAX_VISIBLE_ACTIVITY
+                )
+              )
+            );
 
-      try {
-        const saved = await repository.recordActivity(record);
-        latestRecord.current = saved;
-        setActivity((current) =>
-          Object.freeze(
-            [saved, ...current.filter((item) => item.id !== saved.id)].slice(
-              0,
-              MAX_VISIBLE_ACTIVITY
-            )
-          )
+            if (recordSequence.current === sequence) {
+              setStatus("ready");
+            }
+
+            return saved;
+          },
+          (cause: unknown) => {
+            if (recordSequence.current === sequence) {
+              const message =
+                cause instanceof Error ? cause.message : "Recent activity could not be recorded.";
+              setError(message);
+              setStatus("error");
+            }
+
+            throw cause;
+          }
         );
-        setStatus("ready");
-        return saved;
-      } catch (cause) {
-        const message =
-          cause instanceof Error ? cause.message : "Recent activity could not be recorded.";
-        setError(message);
-        setStatus("error");
-        throw cause;
-      }
+
+      void operation.catch(() => undefined);
+      return operation;
     },
-    [repository]
+    [repository, writeCoordinator]
   );
 
   useEffect(() => {
@@ -120,14 +125,14 @@ export function ActivityProvider({ children }: PropsWithChildren) {
   }, [recordActivity]);
 
   const clearActivity = useCallback(async () => {
+    recordSequence.current += 1;
     setStatus("clearing");
     setError(undefined);
 
     try {
+      await writeCoordinator.whenIdle();
       const cleared = await repository.clearActivity();
-      latestRecord.current = undefined;
-      latestRecordSignature.current = undefined;
-      latestRecordTime.current = 0;
+      writeCoordinator.clear();
       setActivity([]);
       setStatus("ready");
       return cleared;
@@ -138,7 +143,7 @@ export function ActivityProvider({ children }: PropsWithChildren) {
       setStatus("error");
       throw cause;
     }
-  }, [repository]);
+  }, [repository, writeCoordinator]);
 
   const value = useMemo<ActivityContextValue>(
     () => ({ activity, status, error, refreshActivity, recordActivity, clearActivity }),
