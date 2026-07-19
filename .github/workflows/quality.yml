@@ -60,4 +60,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run native tests
-        run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml
+        shell: powershell
+        run: |
+          cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml *> native-test.log
+          $exitCode = $LASTEXITCODE
+          Get-Content native-test.log -Tail 160
+          exit $exitCode
