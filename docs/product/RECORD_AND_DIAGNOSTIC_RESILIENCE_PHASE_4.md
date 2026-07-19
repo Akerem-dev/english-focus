@@ -37,4 +37,4 @@ No failed scan is converted into a zero count.
 
 ## Verification boundary
 
-The standard Quality workflow now includes a Windows native-test job in addition to the existing JavaScript quality job. The native job compiles the Tauri crate and runs Rust tests on every pull request. Its console output is limited to the final diagnostic lines so compiler and test failures remain visible.
+The standard Quality workflow now includes a Windows native-test job in addition to the existing JavaScript quality job. The native job compiles the Tauri crate and runs Rust tests on every pull request. When it fails, the focused Cargo output is retained briefly as a downloadable workflow artifact.
