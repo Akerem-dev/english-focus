@@ -60,9 +60,23 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run native tests
+        id: native
+        continue-on-error: true
         shell: powershell
         run: |
           cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml *> native-test.log
-          $exitCode = $LASTEXITCODE
-          Get-Content native-test.log -Tail 160
-          exit $exitCode
+          "exitCode=$LASTEXITCODE" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload native failure log
+        if: steps.native.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-test-failure-log
+          path: native-test.log
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm native tests
+        if: steps.native.outputs.exitCode != '0'
+        shell: powershell
+        run: exit 1
