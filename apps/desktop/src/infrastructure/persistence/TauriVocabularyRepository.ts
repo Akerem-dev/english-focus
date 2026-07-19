@@ -9,18 +9,52 @@ import { vocabularyEntryInputSchema } from "@platform/schemas";
 
 interface StoredVocabularyEntryPayload {
   readonly entry: unknown;
-  readonly layer: VocabularyStorageLayer;
+  readonly layer: unknown;
 }
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
-function parseStoredEntry(payload: StoredVocabularyEntryPayload): StoredVocabularyEntry {
+function isStoredVocabularyEntryPayload(value: unknown): value is StoredVocabularyEntryPayload {
+  return typeof value === "object" && value !== null && "entry" in value && "layer" in value;
+}
+
+function parseStorageLayer(layer: unknown): VocabularyStorageLayer {
+  if (layer === "user" || layer === "override") {
+    return layer;
+  }
+
+  throw new Error("Stored vocabulary layer is not supported by this application build.");
+}
+
+export function parseStoredVocabularyEntry(payload: unknown): StoredVocabularyEntry {
+  if (!isStoredVocabularyEntryPayload(payload)) {
+    throw new Error("Stored vocabulary record is incomplete.");
+  }
+
   return Object.freeze({
     entry: vocabularyEntryInputSchema.parse(payload.entry),
-    layer: payload.layer
+    layer: parseStorageLayer(payload.layer)
   });
+}
+
+export function parseStoredVocabularyEntryList(
+  payload: unknown
+): readonly StoredVocabularyEntry[] {
+  if (!Array.isArray(payload)) {
+    throw new Error("Stored vocabulary list response is invalid.");
+  }
+
+  return Object.freeze(
+    payload.flatMap((record) => {
+      try {
+        return [parseStoredVocabularyEntry(record)];
+      } catch {
+        return [];
+      }
+    })
+  );
 }
 
 export class TauriVocabularyRepository implements VocabularyRepository {
@@ -29,9 +63,8 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       return [];
     }
 
-    const payloads =
-      await invoke<readonly StoredVocabularyEntryPayload[]>("list_vocabulary_entries");
-    return Object.freeze(payloads.map(parseStoredEntry));
+    const payload = await invoke<unknown>("list_resilient_vocabulary_entries");
+    return parseStoredVocabularyEntryList(payload);
   }
 
   async getEntryByNormalizedWord(
@@ -41,12 +74,11 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       return undefined;
     }
 
-    const payload = await invoke<StoredVocabularyEntryPayload | null>(
-      "get_vocabulary_entry_by_normalized_word",
-      { normalizedWord }
-    );
+    const payload = await invoke<unknown>("get_vocabulary_entry_by_normalized_word", {
+      normalizedWord
+    });
 
-    return payload === null ? undefined : parseStoredEntry(payload);
+    return payload === null ? undefined : parseStoredVocabularyEntry(payload);
   }
 
   async saveEntry(input: SaveVocabularyEntryInput): Promise<StoredVocabularyEntry> {
@@ -54,10 +86,10 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       throw new Error("Local SQLite saving is available only in the English Focus desktop app.");
     }
 
-    const payload = await invoke<StoredVocabularyEntryPayload>("save_vocabulary_entry", {
+    const payload = await invoke<unknown>("save_vocabulary_entry", {
       request: input
     });
-    return parseStoredEntry(payload);
+    return parseStoredVocabularyEntry(payload);
   }
 
   async saveEntries(
@@ -67,10 +99,9 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       throw new Error("Local SQLite saving is available only in the English Focus desktop app.");
     }
 
-    const payloads = await invoke<readonly StoredVocabularyEntryPayload[]>(
-      "save_vocabulary_entries",
-      { requests: inputs }
-    );
-    return Object.freeze(payloads.map(parseStoredEntry));
+    const payloads = await invoke<readonly unknown[]>("save_vocabulary_entries", {
+      requests: inputs
+    });
+    return Object.freeze(payloads.map(parseStoredVocabularyEntry));
   }
 }
