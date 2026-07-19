@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { ActivityRecord, ActivityRepository, RecordActivityInput } from "@platform/domain";
-import { activityRecordSchema } from "@platform/schemas";
+import { activityRecordListSchema, activityRecordSchema } from "@platform/schemas";
+
+const activityListItemSchema = activityRecordListSchema.element;
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -13,7 +15,7 @@ export function parseActivityRecordList(payload: unknown): readonly ActivityReco
 
   return Object.freeze(
     payload.flatMap((record) => {
-      const parsed = activityRecordSchema.safeParse(record);
+      const parsed = activityListItemSchema.safeParse(record);
       return parsed.success ? [Object.freeze(parsed.data)] : [];
     })
   );
