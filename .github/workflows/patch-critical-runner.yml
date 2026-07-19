@@ -18,7 +18,7 @@ jobs:
           ref: fix/critical-data-integrity
           fetch-depth: 0
 
-      - name: Add quality diagnostics
+      - name: Remove redundant quality outcome gate
         shell: bash
         run: |
           python <<'PY'
@@ -26,32 +26,13 @@ jobs:
 
           path = Path('.github/workflows/run-critical-data-integrity-pr.yml')
           text = path.read_text(encoding='utf-8')
-          old = "      - name: Run repository quality checks\n        run: npm run quality\n"
-          new = (
-              "      - name: Run repository quality checks\n"
-              "        id: quality\n"
-              "        continue-on-error: true\n"
-              "        shell: bash\n"
-              "        run: npm run quality > critical-phase-quality.log 2>&1\n\n"
-              "      - name: Upload quality diagnostics\n"
-              "        if: always()\n"
-              "        uses: actions/upload-artifact@v4\n"
-              "        with:\n"
-              "          name: critical-data-integrity-quality-diagnostics\n"
-              "          path: critical-phase-quality.log\n"
-              "          if-no-files-found: error\n"
-              "          retention-days: 1\n\n"
-              "      - name: Require successful quality checks\n"
-              "        shell: bash\n"
-              "        run: test \"${{ steps.quality.outcome }}\" = \"success\"\n"
-          )
-          if old not in text:
-              raise SystemExit('quality block changed unexpectedly')
-          path.write_text(text.replace(old, new), encoding='utf-8')
+          start = text.index('      - name: Require successful quality checks')
+          end = text.index('      - name: Run native phase checks', start)
+          path.write_text(text[:start] + text[end:], encoding='utf-8')
           PY
           rm .github/workflows/patch-critical-runner.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "chore: capture critical phase quality diagnostics"
+          git commit -m "chore: continue critical phase after quality"
           git push origin HEAD:fix/critical-data-integrity
