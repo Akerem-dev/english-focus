@@ -27,9 +27,24 @@ const optionalSafetyBackupSchema = z
   .optional()
   .transform((value) => value ?? undefined);
 
+const backupDeletionResultSchema = z
+  .object({
+    requested: z.boolean(),
+    deletedFiles: z.number().int().nonnegative(),
+    failedFiles: z.number().int().nonnegative()
+  })
+  .strict();
+
+const noBackupDeletion = Object.freeze({
+  requested: false,
+  deletedFiles: 0,
+  failedFiles: 0
+});
+
 export const resetLocalDataResultSchema = z
   .object({
     deleted: localDataSnapshotSchema,
-    safetyBackup: optionalSafetyBackupSchema
+    safetyBackup: optionalSafetyBackupSchema,
+    backupDeletion: backupDeletionResultSchema.optional().default(noBackupDeletion)
   })
   .strict();
