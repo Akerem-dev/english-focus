@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { DiagnosticReport } from "@platform/domain";
 
+import { applyDiagnosticScanCoverage } from "../../../src/infrastructure/persistence/TauriDiagnosticsRepository";
 import { createDiagnosticSummary } from "../../../src/modules/settings/application";
 
 const report: DiagnosticReport = Object.freeze({
@@ -49,5 +50,43 @@ describe("createDiagnosticSummary", () => {
     expect(summary).toContain("[PASSED] SQLite integrity");
     expect(summary).toContain("[WARNING] Recovery readiness");
     expect(summary).toContain("Create a manual backup.");
+  });
+});
+
+describe("applyDiagnosticScanCoverage", () => {
+  it("marks an otherwise healthy report critical when a scan did not finish", () => {
+    const healthyReport: DiagnosticReport = Object.freeze({
+      ...report,
+      overallStatus: "healthy",
+      checks: Object.freeze([report.checks[0]!]),
+      recommendations: Object.freeze(["No action is required. Local storage is healthy."])
+    });
+
+    const protectedReport = applyDiagnosticScanCoverage(healthyReport, {
+      complete: false,
+      issues: Object.freeze(["Recent activity could not be scanned completely."])
+    });
+
+    expect(protectedReport.overallStatus).toBe("critical");
+    expect(protectedReport.checks).toContainEqual(
+      expect.objectContaining({
+        id: "diagnostic-coverage",
+        status: "failed",
+        repairable: false
+      })
+    );
+    expect(protectedReport.recommendations).not.toContain(
+      "No action is required. Local storage is healthy."
+    );
+    expect(protectedReport.recommendations.at(-1)).toContain("check app health again");
+  });
+
+  it("leaves a fully covered diagnostic report unchanged", () => {
+    expect(
+      applyDiagnosticScanCoverage(report, {
+        complete: true,
+        issues: Object.freeze([])
+      })
+    ).toBe(report);
   });
 });
