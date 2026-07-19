@@ -1,7 +1,11 @@
-use std::collections::HashSet;
+use std::{
+    collections::HashSet,
+    fs,
+    path::{Path, PathBuf},
+};
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, State};
+use tauri::{AppHandle, Manager, State};
 
 use crate::{commands::backup, state::AppState};
 
@@ -33,11 +37,20 @@ pub struct ResetLocalDataRequest {
     requested_at: String,
 }
 
+#[derive(Debug, Clone, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BackupDeletionResult {
+    requested: bool,
+    deleted_files: usize,
+    failed_files: usize,
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResetLocalDataResult {
     deleted: LocalDataSnapshot,
     safety_backup: Option<backup::BackupDescriptor>,
+    backup_deletion: BackupDeletionResult,
 }
 
 fn count_query(connection: &rusqlite::Connection, sql: &str) -> Result<usize, String> {
@@ -99,6 +112,56 @@ fn snapshot_from_connection(
     })
 }
 
+fn is_managed_backup_file(path: &Path) -> bool {
+    path.file_name()
+        .and_then(|value| value.to_str())
+        .is_some_and(|file_name| {
+            file_name.starts_with("english-focus-backup-") && file_name.ends_with(".json")
+        })
+}
+
+fn prepare_backup_deletion(app: &AppHandle) -> Result<Vec<PathBuf>, String> {
+    let directory = app
+        .path()
+        .app_data_dir()
+        .map_err(|error| format!("The application data directory is unavailable: {error}"))?
+        .join("backups");
+    fs::create_dir_all(&directory)
+        .map_err(|error| format!("The backup directory could not be created: {error}"))?;
+
+    let mut paths = Vec::new();
+    for entry in fs::read_dir(directory)
+        .map_err(|error| format!("The backup directory could not be read: {error}"))?
+    {
+        let entry = entry.map_err(|error| format!("A backup directory item is invalid: {error}"))?;
+        let file_type = entry
+            .file_type()
+            .map_err(|error| format!("A backup file type could not be read: {error}"))?;
+        let path = entry.path();
+        if file_type.is_file() && is_managed_backup_file(&path) {
+            paths.push(path);
+        }
+    }
+
+    Ok(paths)
+}
+
+fn delete_prepared_backups(paths: Vec<PathBuf>) -> BackupDeletionResult {
+    let mut result = BackupDeletionResult {
+        requested: true,
+        ..BackupDeletionResult::default()
+    };
+
+    for path in paths {
+        match fs::remove_file(path) {
+            Ok(()) => result.deleted_files += 1,
+            Err(_) => result.failed_files += 1,
+        }
+    }
+
+    result
+}
+
 #[tauri::command]
 pub fn get_local_data_snapshot(
     app: AppHandle,
@@ -119,6 +182,11 @@ pub fn reset_local_data(
     state: State<'_, AppState>,
 ) -> Result<ResetLocalDataResult, String> {
     let categories = validate_request(&request)?;
+    let prepared_backups = if categories.contains("backups") {
+        Some(prepare_backup_deletion(&app)?)
+    } else {
+        None
+    };
     let mut deleted = LocalDataSnapshot::default();
     let mut connection = state
         .database
@@ -198,12 +266,32 @@ pub fn reset_local_data(
         .map_err(|error| format!("The local data transaction could not commit: {error}"))?;
     drop(connection);
 
-    if categories.contains("backups") {
-        deleted.backup_files = backup::delete_all_backups(&app)?;
-    }
+    let backup_deletion = prepared_backups
+        .map(delete_prepared_backups)
+        .unwrap_or_default();
+    deleted.backup_files = backup_deletion.deleted_files;
 
     Ok(ResetLocalDataResult {
         deleted,
         safety_backup,
+        backup_deletion,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::Path;
+
+    use super::is_managed_backup_file;
+
+    #[test]
+    fn recognizes_only_managed_backup_json_files() {
+        assert!(is_managed_backup_file(Path::new(
+            "english-focus-backup-manual-20260719120000000.json"
+        )));
+        assert!(!is_managed_backup_file(Path::new("notes.json")));
+        assert!(!is_managed_backup_file(Path::new(
+            "english-focus-backup-manual-20260719120000000.json.tmp"
+        )));
+    }
 }

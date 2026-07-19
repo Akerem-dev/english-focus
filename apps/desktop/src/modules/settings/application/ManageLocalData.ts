@@ -1,8 +1,4 @@
-import type {
-  LocalDataCategory,
-  LocalDataSnapshot,
-  ResetLocalDataResult
-} from "@platform/domain";
+import type { LocalDataCategory, LocalDataSnapshot, ResetLocalDataResult } from "@platform/domain";
 
 export const FULL_LOCAL_RESET_CATEGORIES: readonly LocalDataCategory[] = Object.freeze([
   "study-metadata",
@@ -79,10 +75,11 @@ export function presentLocalDataResetResult(
       ? "No recovery copy was created."
       : "A recovery copy was created first.";
   const backupFailureCount = result.backupDeletion.failedFiles;
+  const backupNoun = backupFailureCount === 1 ? "backup" : "backups";
   const backupWarning =
     backupFailureCount === 0
       ? undefined
-      : `${backupFailureCount} saved ${backupFailureCount === 1 ? "backup" : "backups"} could not be removed.`;
+      : `${backupFailureCount} saved ${backupNoun} could not be removed.`;
   const refreshWarning = refreshIncomplete
     ? "The removal finished, but some on-screen totals could not refresh yet."
     : undefined;
