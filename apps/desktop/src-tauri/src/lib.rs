@@ -36,6 +36,8 @@ pub fn run() {
             commands::backup::validate_backup,
             commands::backup::restore_backup,
             commands::backup::delete_backup,
+            commands::backup_inventory::list_unavailable_backups,
+            commands::backup_inventory::delete_unavailable_backup,
             commands::diagnostics::run_diagnostics,
             commands::diagnostics::run_safe_maintenance
         ])

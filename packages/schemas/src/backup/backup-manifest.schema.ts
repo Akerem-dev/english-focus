@@ -6,7 +6,7 @@ export const backupCountsSchema = z
   .object({
     vocabularyEntries: z.number().int().nonnegative(),
     vocabularyMetadata: z.number().int().nonnegative(),
-    settingsRecords: z.number().int().nonnegative()
+    settingsRecords: z.number().int().nonnegative(),
   })
   .strict();
 
@@ -19,7 +19,15 @@ export const backupDescriptorSchema = z
     backupVersion: z.literal("1.0.0"),
     databaseSchemaVersion: z.enum(["2", "3"]),
     checksum: z.string().regex(/^(?:[0-9a-f]{16}|[0-9a-f]{64})$/),
-    counts: backupCountsSchema
+    counts: backupCountsSchema,
+  })
+  .strict();
+
+export const unavailableBackupSchema = z
+  .object({
+    fileName: z.string().min(1),
+    sizeBytes: z.number().int().nonnegative(),
+    issue: z.string().min(1),
   })
   .strict();
 
@@ -27,7 +35,7 @@ export const backupValidationResultSchema = z
   .object({
     valid: z.boolean(),
     issues: z.array(z.string()),
-    descriptor: backupDescriptorSchema.optional()
+    descriptor: backupDescriptorSchema.optional(),
   })
   .strict();
 
@@ -36,6 +44,6 @@ export const backupRestoreResultSchema = z
     restoredAt: z.string().datetime({ offset: true }),
     restored: backupCountsSchema,
     sourceBackup: backupDescriptorSchema,
-    safetyBackup: backupDescriptorSchema
+    safetyBackup: backupDescriptorSchema,
   })
   .strict();

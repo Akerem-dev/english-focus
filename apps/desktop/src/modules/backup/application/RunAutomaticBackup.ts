@@ -1,6 +1,16 @@
-import type { BackupDescriptor, BackupFrequency } from "@platform/domain";
+import type {
+  BackupDescriptor,
+  BackupFrequency,
+  BackupReason,
+} from "@platform/domain";
 
 const DAY_MS = 24 * 60 * 60 * 1_000;
+const AUTOMATIC_BACKUP_RETRY_DELAYS_MS = [
+  60_000,
+  5 * 60_000,
+  15 * 60_000,
+  60 * 60_000,
+] as const;
 
 function intervalForFrequency(frequency: BackupFrequency): number | undefined {
   if (frequency === "daily") {
@@ -14,15 +24,15 @@ function intervalForFrequency(frequency: BackupFrequency): number | undefined {
   return undefined;
 }
 
-export function isAutomaticBackupDue(
+export function automaticBackupDelayMs(
   backups: readonly BackupDescriptor[],
   frequency: BackupFrequency,
-  now: Date
-): boolean {
+  now: Date,
+): number | undefined {
   const interval = intervalForFrequency(frequency);
 
   if (interval === undefined) {
-    return false;
+    return undefined;
   }
 
   const latestAutomatic = backups
@@ -30,9 +40,42 @@ export function isAutomaticBackupDue(
     .sort((left, right) => right.createdAt.localeCompare(left.createdAt))[0];
 
   if (latestAutomatic === undefined) {
-    return true;
+    return 0;
   }
 
   const latestTime = Date.parse(latestAutomatic.createdAt);
-  return Number.isNaN(latestTime) || now.getTime() - latestTime >= interval;
+  if (Number.isNaN(latestTime)) {
+    return 0;
+  }
+
+  return Math.max(0, latestTime + interval - now.getTime());
+}
+
+export function isAutomaticBackupDue(
+  backups: readonly BackupDescriptor[],
+  frequency: BackupFrequency,
+  now: Date,
+): boolean {
+  return automaticBackupDelayMs(backups, frequency, now) === 0;
+}
+
+export function automaticBackupRetryDelayMs(failureCount: number): number {
+  const index = Math.max(
+    0,
+    Math.min(
+      failureCount - 1,
+      AUTOMATIC_BACKUP_RETRY_DELAYS_MS.length - 1,
+    ),
+  );
+  return AUTOMATIC_BACKUP_RETRY_DELAYS_MS[index];
+}
+
+export function findCreatedBackup(
+  backups: readonly BackupDescriptor[],
+  reason: BackupReason,
+  createdAt: string,
+): BackupDescriptor | undefined {
+  return backups.find(
+    (backup) => backup.reason === reason && backup.createdAt === createdAt,
+  );
 }

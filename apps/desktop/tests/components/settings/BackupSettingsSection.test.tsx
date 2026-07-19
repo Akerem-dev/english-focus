@@ -1,14 +1,24 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import type { UnavailableBackup } from "@platform/domain";
 
 import { AppProviders } from "../../../src/app/providers";
-import { BackupSettingsSection } from "../../../src/modules/settings/components";
+import {
+  BackupSettingsSection,
+  UnavailableBackupFiles,
+} from "../../../src/modules/settings/components";
 
 const markup = renderToStaticMarkup(
   <AppProviders>
     <BackupSettingsSection />
-  </AppProviders>
+  </AppProviders>,
 );
+
+const unavailable: UnavailableBackup = {
+  fileName: "english-focus-backup-manual-damaged.json",
+  sizeBytes: 128,
+  issue: "This backup file is incomplete or damaged.",
+};
 
 describe("BackupSettingsSection", () => {
   it("uses a flat summary instead of nested statistic cards", () => {
@@ -22,5 +32,22 @@ describe("BackupSettingsSection", () => {
   it("keeps the primary backup actions available", () => {
     expect(markup).toContain("Back up now");
     expect(markup).toContain("View backups");
+  });
+
+  it("shows damaged backup files separately with only a removal action", () => {
+    const unavailableMarkup = renderToStaticMarkup(
+      <UnavailableBackupFiles
+        busy={false}
+        files={[unavailable]}
+        onRemove={async () => undefined}
+      />,
+    );
+
+    expect(unavailableMarkup).toContain("Files that need attention");
+    expect(unavailableMarkup).toContain(unavailable.fileName);
+    expect(unavailableMarkup).toContain(unavailable.issue);
+    expect(unavailableMarkup).toContain(">Remove<");
+    expect(unavailableMarkup).not.toContain("Restore backup");
+    expect(unavailableMarkup).not.toContain("Check backup");
   });
 });
