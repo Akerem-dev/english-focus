@@ -1,6 +1,6 @@
 import type { AppSettings } from "@platform/domain";
 
-export type SettingsSaveOutcome =
+type SettingsSaveOutcome =
   | {
       readonly status: "saved";
       readonly saved: AppSettings;
@@ -13,7 +13,7 @@ export type SettingsSaveOutcome =
       readonly latest: boolean;
     };
 
-export interface SettingsSaveAttempt {
+interface SettingsSaveAttempt {
   readonly optimistic: AppSettings;
   readonly completion: Promise<SettingsSaveOutcome>;
 }
