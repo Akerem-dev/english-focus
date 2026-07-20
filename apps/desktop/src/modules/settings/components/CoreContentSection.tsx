@@ -13,17 +13,20 @@ export function CoreContentSection() {
         <strong>About this app</strong>
       </header>
 
-      <div className="settings-about__summary">
+      <dl className="settings-about__summary" aria-label="App information">
         <div className="settings-about__item">
-          <AppIcon name="book-open" size={16} />
-          <span>English Focus</span>
-          <strong>{desktopPackage.version}</strong>
+          <dt>Application</dt>
+          <dd>English Focus</dd>
         </div>
         <div className="settings-about__item">
-          <AppIcon name="books" size={16} />
-          <span>Local SQLite storage</span>
+          <dt>Version</dt>
+          <dd>{desktopPackage.version}</dd>
         </div>
-      </div>
+        <div className="settings-about__item">
+          <dt>Storage</dt>
+          <dd>Local SQLite</dd>
+        </div>
+      </dl>
 
       <details className="settings-about__details">
         <summary>
