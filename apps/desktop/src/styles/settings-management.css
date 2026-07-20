@@ -97,26 +97,7 @@
   padding: var(--space-5);
 }
 
-@media (max-width: 60rem) {
-  .settings-management-card {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .settings-management-card .button {
-    grid-column: 2;
-    justify-self: start;
-  }
-}
-
 @media (max-width: 42rem) {
-  .settings-management-card {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .settings-management-card .button {
-    grid-column: auto;
-  }
-
   .settings-management-view__header,
   .settings-management-view__body {
     padding: var(--space-4);
