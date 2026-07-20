@@ -53,7 +53,10 @@ export function DiagnosticTechnicalDetails({
   return (
     <details className="diagnostics-technical-details">
       <summary>
-        <span>Check details</span>
+        <span className="diagnostics-technical-details__trigger">
+          <span>View check details</span>
+          <AppIcon name="chevron-down" size={16} />
+        </span>
         <small>Checked {formatGeneratedAt(report.generatedAt)}</small>
       </summary>
       <div className="diagnostics-technical-details__body">
