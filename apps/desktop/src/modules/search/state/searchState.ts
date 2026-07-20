@@ -1,6 +1,6 @@
 import type { VocabularyEntry } from "@platform/domain";
 
-import type { VocabularySearchMatchKind } from "../application";
+import type { VocabularySearchMatch, VocabularySearchMatchKind } from "../application";
 import type { SearchQueryValidationCode } from "../services";
 
 export type VocabularySearchState =
@@ -11,14 +11,21 @@ export type VocabularySearchState =
       readonly kind: "found";
       readonly query: string;
       readonly entry: VocabularyEntry;
-      readonly matchKind: VocabularySearchMatchKind;
+      readonly matchKind: Extract<VocabularySearchMatchKind, "exact" | "alias">;
       readonly matchedForm: string;
+    }
+  | {
+      readonly kind: "matches";
+      readonly query: string;
+      readonly normalizedQuery: string;
+      readonly matches: readonly VocabularySearchMatch[];
     }
   | {
       readonly kind: "not-found";
       readonly query: string;
       readonly normalizedQuery: string;
       readonly suggestions: readonly string[];
+      readonly canCreateEntry: boolean;
     }
   | {
       readonly kind: "invalid";

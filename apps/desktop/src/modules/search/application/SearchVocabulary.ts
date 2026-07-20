@@ -1,13 +1,28 @@
-import type { VocabularyContentSource, VocabularyEntry } from "@platform/domain";
+import type {
+  VocabularyContentSource,
+  VocabularyEntry,
+  VocabularyUserMetadata
+} from "@platform/domain";
 
 import {
   createFuzzySuggestions,
+  createVocabularySearchIndex,
+  isDirectVocabularyWordQuery,
   normalizeSearchQuery,
   resolveInflectedForm,
-  type SearchQueryValidationCode
+  type SearchQueryValidationCode,
+  type VocabularySearchField,
+  type VocabularySearchIndex
 } from "../services";
 
-export type VocabularySearchMatchKind = "exact" | "alias";
+export type VocabularySearchMatchKind = "exact" | "alias" | "prefix" | "full-text";
+
+export interface VocabularySearchMatch {
+  readonly entry: VocabularyEntry;
+  readonly matchKind: "prefix" | "full-text";
+  readonly matchedField: VocabularySearchField;
+  readonly matchedText: string;
+}
 
 export type SearchVocabularyResult =
   | {
@@ -15,14 +30,21 @@ export type SearchVocabularyResult =
       readonly query: string;
       readonly normalizedQuery: string;
       readonly entry: VocabularyEntry;
-      readonly matchKind: VocabularySearchMatchKind;
+      readonly matchKind: "exact" | "alias";
       readonly matchedForm: string;
+    }
+  | {
+      readonly kind: "matches";
+      readonly query: string;
+      readonly normalizedQuery: string;
+      readonly matches: readonly VocabularySearchMatch[];
     }
   | {
       readonly kind: "not-found";
       readonly query: string;
       readonly normalizedQuery: string;
       readonly suggestions: readonly string[];
+      readonly canCreateEntry: boolean;
     }
   | {
       readonly kind: "invalid";
@@ -33,10 +55,18 @@ export type SearchVocabularyResult =
     };
 
 export class SearchVocabulary {
-  constructor(private readonly contentSource: VocabularyContentSource) {}
+  private readonly searchIndex: VocabularySearchIndex;
+
+  constructor(
+    private readonly contentSource: VocabularyContentSource,
+    metadata: readonly VocabularyUserMetadata[] = []
+  ) {
+    this.searchIndex = createVocabularySearchIndex(contentSource.listEntries(), metadata);
+  }
 
   execute(query: string): SearchVocabularyResult {
     const normalizedQuery = normalizeSearchQuery(query);
+    const directWordQuery = isDirectVocabularyWordQuery(query);
 
     if (!normalizedQuery.isValid) {
       return {
@@ -44,36 +74,48 @@ export class SearchVocabulary {
         query,
         normalizedQuery: normalizedQuery.normalized,
         validationCode: normalizedQuery.validationCode ?? "unsupported-characters",
-        message: normalizedQuery.message ?? "Enter a valid English word."
+        message: normalizedQuery.message ?? "Enter a valid local vocabulary search."
       };
     }
 
-    const exactEntry = this.contentSource.getEntryByNormalizedWord(normalizedQuery.normalized);
+    if (directWordQuery) {
+      const exactEntry = this.contentSource.getEntryByNormalizedWord(normalizedQuery.normalized);
 
-    if (exactEntry !== undefined) {
-      return {
-        kind: "found",
-        query,
-        normalizedQuery: normalizedQuery.normalized,
-        entry: exactEntry,
-        matchKind: "exact",
-        matchedForm: exactEntry.word
-      };
+      if (exactEntry !== undefined) {
+        return {
+          kind: "found",
+          query,
+          normalizedQuery: normalizedQuery.normalized,
+          entry: exactEntry,
+          matchKind: "exact",
+          matchedForm: exactEntry.word
+        };
+      }
+
+      const resolvedForm = resolveInflectedForm(
+        this.contentSource.listEntries(),
+        normalizedQuery.normalized
+      );
+
+      if (resolvedForm !== undefined) {
+        return {
+          kind: "found",
+          query,
+          normalizedQuery: normalizedQuery.normalized,
+          entry: resolvedForm.entry,
+          matchKind: "alias",
+          matchedForm: resolvedForm.matchedForm
+        };
+      }
     }
 
-    const resolvedForm = resolveInflectedForm(
-      this.contentSource.listEntries(),
-      normalizedQuery.normalized
-    );
-
-    if (resolvedForm !== undefined) {
+    const matches = this.searchIndex.search(normalizedQuery.normalized);
+    if (matches.length > 0) {
       return {
-        kind: "found",
+        kind: "matches",
         query,
         normalizedQuery: normalizedQuery.normalized,
-        entry: resolvedForm.entry,
-        matchKind: "alias",
-        matchedForm: resolvedForm.matchedForm
+        matches
       };
     }
 
@@ -81,10 +123,13 @@ export class SearchVocabulary {
       kind: "not-found",
       query,
       normalizedQuery: normalizedQuery.normalized,
-      suggestions: createFuzzySuggestions(
-        normalizedQuery.normalized,
-        this.contentSource.listEntries()
-      )
+      canCreateEntry: directWordQuery,
+      suggestions: directWordQuery
+        ? createFuzzySuggestions(
+            normalizedQuery.normalized,
+            this.contentSource.listEntries()
+          )
+        : Object.freeze([])
     };
   }
 }

@@ -8,6 +8,7 @@ import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
   VocabularyNotFoundState,
+  VocabularySearchResultsState,
   VocabularySearchingState
 } from "../components";
 
@@ -89,10 +90,10 @@ export function VocabularyLookupView({
     <div className="route-page route-page--vocabulary">
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
         <p className="route-page__eyebrow">Local English vocabulary</p>
-        <h1 id="vocabulary-heading">Look up an English word</h1>
+        <h1 id="vocabulary-heading">Search your local vocabulary</h1>
         <p className="vocabulary-hero__description">
-          Meanings, Turkish translations, pronunciation, word forms, concise usage, and practical
-          examples—all stored on this device.
+          Open an exact English word or search Turkish translations, English definitions, word
+          forms, personal tags, and notes—all stored on this device.
         </p>
         <form
           aria-label="Vocabulary search"
@@ -106,11 +107,11 @@ export function VocabularyLookupView({
             label="Search vocabulary"
             onChange={(event) => onQueryChange(event.currentTarget.value)}
             onClear={onClear}
-            placeholder="Type an English word"
+            placeholder="Word, translation, definition, tag, or note"
             value={query}
           />
           <Button
-            aria-label="Search word"
+            aria-label="Search vocabulary"
             className="vocabulary-search__button"
             isLoading={state.kind === "searching"}
             leadingIcon={<AppIcon name="search" size={18} />}
@@ -122,16 +123,24 @@ export function VocabularyLookupView({
           </Button>
         </form>
         <p className="vocabulary-hero__hint">
-          Exact, case-insensitive, alias, and inflected-form lookup runs entirely on this device.
+          Exact words open immediately. Prefix and full-text matching runs entirely on this device.
         </p>
       </section>
 
       {state.kind === "searching" ? <VocabularySearchingState query={state.query} /> : null}
+      {state.kind === "matches" ? (
+        <VocabularySearchResultsState
+          matches={state.matches}
+          onSelectMatch={onSearch}
+          query={state.query}
+        />
+      ) : null}
       {state.kind === "invalid" ? (
         <VocabularyInvalidSearchState message={state.message} onEditSearch={onEditSearch} />
       ) : null}
       {state.kind === "not-found" ? (
         <VocabularyNotFoundState
+          canCreateEntry={state.canCreateEntry}
           normalizedQuery={state.normalizedQuery}
           onEditSearch={onEditSearch}
           onOpenInstruction={() => onOpenInstruction(state.normalizedQuery)}

@@ -4,6 +4,7 @@ import { SearchSuggestions } from "../../search";
 
 export interface VocabularyNotFoundStateProps {
   readonly normalizedQuery: string;
+  readonly canCreateEntry: boolean;
   readonly onEditSearch: () => void;
   readonly onOpenInstruction: () => void;
   readonly onOpenPasteGeneratedJson: () => void;
@@ -12,6 +13,7 @@ export interface VocabularyNotFoundStateProps {
 }
 
 export function VocabularyNotFoundState({
+  canCreateEntry,
   normalizedQuery,
   onEditSearch,
   onOpenInstruction,
@@ -25,11 +27,11 @@ export function VocabularyNotFoundState({
         <AppIcon name="search" size={24} />
       </span>
       <div>
-        <p className="route-page__eyebrow">Not in your local library</p>
+        <p className="route-page__eyebrow">No local match</p>
         <h2 id="not-found-title">“{normalizedQuery}” was not found</h2>
         <p>
-          The search was valid, but no exact entry, alias, or inflected form exists in the current
-          local content source.
+          No exact word, form, prefix, translation, definition, personal tag, or note matched this
+          search.
         </p>
 
         <SearchSuggestions suggestions={suggestions} onSelect={onSelectSuggestion} />
@@ -38,21 +40,27 @@ export function VocabularyNotFoundState({
           <Button onClick={onEditSearch} variant="secondary">
             Edit search
           </Button>
-          <Button
-            leadingIcon={<AppIcon name="copy" size={17} />}
-            onClick={onOpenInstruction}
-            variant="primary"
-          >
-            Copy AI instruction
-          </Button>
-          <Button onClick={onOpenPasteGeneratedJson} variant="secondary">
-            Paste generated JSON
-          </Button>
+          {canCreateEntry ? (
+            <>
+              <Button
+                leadingIcon={<AppIcon name="copy" size={17} />}
+                onClick={onOpenInstruction}
+                variant="primary"
+              >
+                Copy AI instruction
+              </Button>
+              <Button onClick={onOpenPasteGeneratedJson} variant="secondary">
+                Paste generated JSON
+              </Button>
+            </>
+          ) : null}
         </div>
-        <small>
-          The instruction and pasted JSON remain local. Syntax, schema, semantic, quality, and
-          explicit preview gates run before any later save.
-        </small>
+        {canCreateEntry ? (
+          <small>
+            The instruction and pasted JSON remain local. Syntax, schema, semantic, quality, and
+            explicit preview gates run before any later save.
+          </small>
+        ) : null}
       </div>
     </section>
   );

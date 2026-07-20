@@ -8,7 +8,10 @@ describe("normalizeSearchQuery", () => {
     [" Maintain ", "maintain"],
     ["MAINTAIN", "maintain"],
     ["learner’s", "learner's"],
-    ["well–being", "well-being"]
+    ["well–being", "well-being"],
+    ["same   condition", "same condition"],
+    ["SÜRDÜRMEK", "surdurmek"],
+    ["IELTS essay", "ielts essay"]
   ])("normalizes %s to %s", (input, expected) => {
     expect(normalizeSearchQuery(input)).toMatchObject({
       isValid: true,
@@ -18,9 +21,8 @@ describe("normalizeSearchQuery", () => {
 
   it.each([
     ["", "empty"],
-    ["two words", "multiple-words"],
     ["maintain?", "unsupported-characters"],
-    ["123", "unsupported-characters"]
+    ["***", "unsupported-characters"]
   ])("rejects %s with %s", (input, validationCode) => {
     expect(normalizeSearchQuery(input)).toMatchObject({
       isValid: false,

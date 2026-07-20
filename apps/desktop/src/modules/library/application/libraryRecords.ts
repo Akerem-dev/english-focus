@@ -4,6 +4,8 @@ import type {
   VocabularyUserMetadata
 } from "@platform/domain";
 
+import { normalizeSearchText, tokenizeSearchText } from "../../search/services";
+
 export type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
 type LibraryLayer = "core" | VocabularyStorageLayer;
 
@@ -16,23 +18,27 @@ function searchableText(
   record: LibraryRecord,
   metadata: VocabularyUserMetadata | undefined
 ): string {
-  return [
-    record.entry.word,
-    record.entry.normalizedWord,
-    record.entry.cefr,
-    ...record.entry.aliases,
-    ...record.entry.partsOfSpeech,
-    ...record.entry.registers,
-    ...record.entry.meanings.flatMap((meaning) => [
-      meaning.definitionEn,
-      ...meaning.translationsTr
-    ]),
-    ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr]),
-    metadata?.note ?? "",
-    ...(metadata?.tags.map((tag) => tag.name) ?? [])
-  ]
-    .join(" ")
-    .toLocaleLowerCase("en-US");
+  return normalizeSearchText(
+    [
+      record.entry.word,
+      record.entry.normalizedWord,
+      record.entry.cefr,
+      ...record.entry.aliases,
+      ...record.entry.morphology.inflectedForms.flatMap((form) => [
+        form.form,
+        form.normalizedForm
+      ]),
+      ...record.entry.partsOfSpeech,
+      ...record.entry.registers,
+      ...record.entry.meanings.flatMap((meaning) => [
+        meaning.definitionEn,
+        ...meaning.translationsTr
+      ]),
+      ...record.entry.examples.flatMap((example) => [example.sentenceEn, example.translationTr]),
+      metadata?.note ?? "",
+      ...(metadata?.tags.flatMap((tag) => [tag.name, tag.normalizedName]) ?? [])
+    ].join(" ")
+  );
 }
 
 export function matchesSearch(
@@ -40,8 +46,10 @@ export function matchesSearch(
   metadata: VocabularyUserMetadata | undefined,
   query: string
 ): boolean {
-  if (query.trim().length === 0) return true;
-  return searchableText(record, metadata).includes(query.trim().toLocaleLowerCase("en-US"));
+  const terms = tokenizeSearchText(query);
+  if (terms.length === 0) return true;
+  const text = searchableText(record, metadata);
+  return terms.every((term) => text.includes(term));
 }
 
 export function compareRecords(

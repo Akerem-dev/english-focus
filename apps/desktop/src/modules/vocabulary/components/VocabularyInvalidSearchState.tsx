@@ -17,11 +17,11 @@ export function VocabularyInvalidSearchState({
       </span>
       <div>
         <p className="route-page__eyebrow">Search needs attention</p>
-        <h2 id="invalid-search-title">Enter a single English word</h2>
+        <h2 id="invalid-search-title">Refine your search</h2>
         <InlineError>{message}</InlineError>
         <p className="vocabulary-result-state__guidance">
-          Examples: maintain, well-being, or learner&apos;s. Avoid punctuation at the end and full
-          phrases.
+          Search a word or a short phrase. Letters, numbers, spaces, apostrophes, and hyphens are
+          supported.
         </p>
         <Button onClick={onEditSearch} variant="secondary">
           Edit search

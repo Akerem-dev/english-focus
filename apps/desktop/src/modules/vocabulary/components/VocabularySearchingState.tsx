@@ -13,7 +13,7 @@ export function VocabularySearchingState({ query }: VocabularySearchingStateProp
       <div>
         <p className="route-page__eyebrow">Searching local vocabulary</p>
         <h2>Looking for “{query.trim()}”</h2>
-        <p>Checking exact entries, normalized forms, aliases, and inflections.</p>
+        <p>Checking exact words, forms, prefixes, translations, definitions, tags, and notes.</p>
       </div>
       <LoadingSkeleton
         className="vocabulary-search-skeleton"

@@ -33,10 +33,17 @@ describe("Library filtering and sorting", () => {
       })
       .build();
 
-    expect(matchesSearch(item, metadata, "ielts")).toBe(true);
+    expect(matchesSearch(item, metadata, "ielts essay")).toBe(true);
     expect(matchesSearch(item, metadata, "known")).toBe(false);
     expect(matchesSearch(item, metadata, "reviewed")).toBe(false);
     expect(matchesSearch(item, metadata, "missing phrase")).toBe(false);
+  });
+
+  it("uses the same accent-insensitive Turkish matching as vocabulary search", () => {
+    const item = record("maintain", "2026-07-16T10:00:00.000Z");
+
+    expect(matchesSearch(item, undefined, "surdurmek")).toBe(true);
+    expect(matchesSearch(item, undefined, "SÜRDÜRMEK")).toBe(true);
   });
 
   it("supports alphabetical and last-updated ordering", () => {
