@@ -41,8 +41,8 @@
   border-bottom: var(--border-width-hairline) solid var(--color-border);
   text-align: left;
   transition:
-    background-color var(--duration-fast) var(--ease-standard),
-    color var(--duration-fast) var(--ease-standard);
+    background-color var(--duration-fast) var(--easing-standard),
+    color var(--duration-fast) var(--easing-standard);
 }
 
 .vocabulary-search-result:last-child {
