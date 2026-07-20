@@ -29,9 +29,12 @@ describe("BackupSettingsSection", () => {
     expect(markup).not.toContain('class="backup-settings-summary"');
   });
 
-  it("keeps the primary backup actions available", () => {
-    expect(markup).toContain("Back up now");
-    expect(markup).toContain("View backups");
+  it("guides a new user toward one clear first backup action", () => {
+    expect(markup).toContain("Create your first backup");
+    expect(markup).toContain("Create first backup");
+    expect(markup).toContain("A backup is optional");
+    expect(markup).not.toContain("Manage backups");
+    expect(markup).not.toContain("View backups");
   });
 
   it("shows damaged backup files separately with only a removal action", () => {

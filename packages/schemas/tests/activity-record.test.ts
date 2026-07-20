@@ -1,17 +1,21 @@
 import { describe, expect, it } from "vitest";
 
-import { activityRecordSchema } from "../src/activity";
+import { activityRecordSchema, parseActivityRecordList } from "../src/activity";
+
+const baseRecord = {
+  id: "activity-1",
+  kind: "vocabulary-viewed",
+  scope: "vocabulary",
+  label: "Viewed vocabulary entry",
+  occurredAt: "2026-07-16T00:00:00.000Z"
+} as const;
 
 describe("activityRecordSchema", () => {
   it("accepts a privacy-safe local activity record", () => {
     expect(
       activityRecordSchema.parse({
-        id: "activity-1",
-        kind: "vocabulary-viewed",
-        scope: "vocabulary",
-        label: "Viewed vocabulary entry",
-        target: "maintain",
-        occurredAt: "2026-07-16T00:00:00.000Z"
+        ...baseRecord,
+        target: "maintain"
       })
     ).toEqual(
       expect.objectContaining({
@@ -21,23 +25,31 @@ describe("activityRecordSchema", () => {
     );
   });
 
-  it("accepts older desktop records whose optional target was stored as null", () => {
+  it("normalizes a native null target to an omitted optional value", () => {
     expect(
       activityRecordSchema.parse({
-        id: "activity-legacy",
-        kind: "settings-updated",
-        scope: "settings",
-        label: "Settings updated",
-        target: null,
-        occurredAt: "2026-07-16T00:00:00.000Z"
+        ...baseRecord,
+        target: null
       })
     ).toEqual({
-      id: "activity-legacy",
-      kind: "settings-updated",
-      scope: "settings",
-      label: "Settings updated",
-      target: undefined,
-      occurredAt: "2026-07-16T00:00:00.000Z"
+      ...baseRecord,
+      target: undefined
+    });
+  });
+
+  it("keeps valid records when one legacy row is malformed", () => {
+    expect(
+      parseActivityRecordList([
+        { ...baseRecord, target: null },
+        { ...baseRecord, id: "activity-2", label: null },
+        { ...baseRecord, id: "activity-3", target: "protect" }
+      ])
+    ).toEqual({
+      records: [
+        { ...baseRecord, target: undefined },
+        { ...baseRecord, id: "activity-3", target: "protect" }
+      ],
+      skippedCount: 1
     });
   });
 

@@ -1,34 +1,42 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { ActivityRecord, ActivityRepository, RecordActivityInput } from "@platform/domain";
-import { activityRecordListSchema, activityRecordSchema } from "@platform/schemas";
-
-const activityListItemSchema = activityRecordListSchema.element;
+import type {
+  ActivityListResult,
+  ActivityRecord,
+  ActivityRepository,
+  RecordActivityInput
+} from "@platform/domain";
+import {
+  activityRecordSchema,
+  parseActivityRecordList as parseActivityRecordListResult
+} from "@platform/schemas";
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
-export function parseActivityRecordList(payload: unknown): readonly ActivityRecord[] {
+function parseActivityListResult(payload: unknown): ActivityListResult {
   if (!Array.isArray(payload)) {
     throw new Error("Recent activity list response is invalid.");
   }
 
-  return Object.freeze(
-    payload.flatMap((record) => {
-      const parsed = activityListItemSchema.safeParse(record);
-      return parsed.success ? [Object.freeze(parsed.data)] : [];
-    })
-  );
+  return parseActivityRecordListResult(payload);
+}
+
+export function parseActivityRecordList(payload: unknown): readonly ActivityRecord[] {
+  return parseActivityListResult(payload).records;
 }
 
 export class TauriActivityRepository implements ActivityRepository {
-  async listActivity(limit = 100): Promise<readonly ActivityRecord[]> {
+  async listActivity(limit = 100): Promise<ActivityListResult> {
     if (!isTauriRuntime()) {
-      return [];
+      return Object.freeze({
+        records: Object.freeze([]),
+        skippedCount: 0
+      });
     }
 
     const payload = await invoke<unknown>("list_resilient_activity", { limit });
-    return parseActivityRecordList(payload);
+    return parseActivityListResult(payload);
   }
 
   async recordActivity(input: RecordActivityInput): Promise<ActivityRecord> {
