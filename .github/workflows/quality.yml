@@ -40,6 +40,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Check native contracts
+        run: npm run check:native-schemas
+
       - name: Typecheck
         run: npm run typecheck
 

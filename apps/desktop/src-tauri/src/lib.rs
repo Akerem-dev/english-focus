@@ -1,4 +1,5 @@
 mod commands;
+mod contracts;
 mod database;
 mod filesystem;
 mod state;
@@ -16,10 +17,10 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::runtime::runtime_info,
-            commands::activity::list_activity,
-            commands::activity::record_activity,
+            commands::contract_commands::list_activity,
+            commands::contract_commands::record_activity,
             commands::activity::clear_activity,
-            commands::resilient_records::list_resilient_activity,
+            commands::contract_commands::list_resilient_activity,
             commands::database::list_vocabulary_entries,
             commands::database::get_vocabulary_entry_by_normalized_word,
             commands::database::save_vocabulary_entry,
@@ -29,20 +30,20 @@ pub fn run() {
             commands::database::get_vocabulary_user_metadata,
             commands::database::save_vocabulary_user_metadata,
             commands::database::record_vocabulary_view,
-            commands::data_reset::get_local_data_snapshot,
-            commands::data_reset::reset_local_data,
+            commands::contract_commands::get_local_data_snapshot,
+            commands::contract_commands::reset_local_data,
             commands::settings::get_app_settings,
             commands::settings::save_app_settings,
-            commands::backup::list_backups,
-            commands::backup::create_backup,
-            commands::backup::validate_backup,
-            commands::backup::restore_backup,
+            commands::contract_commands::list_backups,
+            commands::contract_commands::create_backup,
+            commands::contract_commands::validate_backup,
+            commands::contract_commands::restore_backup,
             commands::backup::delete_backup,
-            commands::backup_inventory::list_unavailable_backups,
+            commands::contract_commands::list_unavailable_backups,
             commands::backup_inventory::delete_unavailable_backup,
-            commands::diagnostics::run_diagnostics,
-            commands::diagnostics::run_safe_maintenance,
-            commands::diagnostic_coverage::check_diagnostic_scan_coverage
+            commands::contract_commands::run_diagnostics,
+            commands::contract_commands::run_safe_maintenance,
+            commands::contract_commands::check_diagnostic_scan_coverage
         ])
         .run(tauri::generate_context!())
         .expect("error while running the English Focus Tauri application");

@@ -31,13 +31,21 @@ export const unavailableBackupSchema = z
   })
   .strict();
 
-export const backupValidationResultSchema = z
+const nullableBackupDescriptorSchema = z.union([backupDescriptorSchema, z.null()]).optional();
+
+export const backupValidationResultNativeCompatibilitySchema = z
   .object({
     valid: z.boolean(),
     issues: z.array(z.string()),
-    descriptor: backupDescriptorSchema.optional()
+    descriptor: nullableBackupDescriptorSchema
   })
   .strict();
+
+export const backupValidationResultSchema =
+  backupValidationResultNativeCompatibilitySchema.transform((result) => ({
+    ...result,
+    descriptor: result.descriptor ?? undefined
+  }));
 
 export const backupRestoreResultSchema = z
   .object({

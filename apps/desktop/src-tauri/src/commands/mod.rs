@@ -1,6 +1,7 @@
 pub mod activity;
 pub mod backup;
 pub mod backup_inventory;
+pub mod contract_commands;
 pub mod data_reset;
 pub mod database;
 pub mod diagnostic_coverage;

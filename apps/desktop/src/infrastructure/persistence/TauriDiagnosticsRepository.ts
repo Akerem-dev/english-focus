@@ -4,7 +4,11 @@ import type {
   DiagnosticsRepository,
   SafeMaintenanceResult
 } from "@platform/domain";
-import { diagnosticReportSchema, safeMaintenanceResultSchema } from "@platform/schemas";
+import {
+  diagnosticReportSchema,
+  diagnosticScanCoverageSchema,
+  safeMaintenanceResultSchema
+} from "@platform/schemas";
 
 interface DiagnosticScanCoverage {
   readonly complete: boolean;
@@ -18,30 +22,10 @@ function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
-function parseDiagnosticScanCoverage(payload: unknown): DiagnosticScanCoverage {
-  if (typeof payload !== "object" || payload === null) {
-    throw new Error("Diagnostic coverage response is invalid.");
-  }
-
-  const candidate = payload as { complete?: unknown; issues?: unknown };
-  if (
-    typeof candidate.complete !== "boolean" ||
-    !Array.isArray(candidate.issues) ||
-    !candidate.issues.every((issue) => typeof issue === "string" && issue.trim().length > 0)
-  ) {
-    throw new Error("Diagnostic coverage response is invalid.");
-  }
-
-  return Object.freeze({
-    complete: candidate.complete,
-    issues: Object.freeze([...candidate.issues])
-  });
-}
-
 async function loadDiagnosticScanCoverage(): Promise<DiagnosticScanCoverage> {
   try {
     const payload = await invoke<unknown>("check_diagnostic_scan_coverage");
-    return parseDiagnosticScanCoverage(payload);
+    return Object.freeze(diagnosticScanCoverageSchema.parse(payload));
   } catch {
     return Object.freeze({
       complete: false,

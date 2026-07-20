@@ -22,12 +22,9 @@ export const localDataSnapshotSchema = z
   })
   .strict();
 
-const optionalSafetyBackupSchema = z
-  .union([backupDescriptorSchema, z.null()])
-  .optional()
-  .transform((value) => value ?? undefined);
+const nullableSafetyBackupSchema = z.union([backupDescriptorSchema, z.null()]).optional();
 
-const backupDeletionResultSchema = z
+export const backupDeletionResultSchema = z
   .object({
     requested: z.boolean(),
     deletedFiles: z.number().int().nonnegative(),
@@ -41,10 +38,18 @@ const noBackupDeletion = Object.freeze({
   failedFiles: 0
 });
 
-export const resetLocalDataResultSchema = z
+export const resetLocalDataResultNativeCompatibilitySchema = z
   .object({
     deleted: localDataSnapshotSchema,
-    safetyBackup: optionalSafetyBackupSchema,
-    backupDeletion: backupDeletionResultSchema.optional().default(noBackupDeletion)
+    safetyBackup: nullableSafetyBackupSchema,
+    backupDeletion: backupDeletionResultSchema.optional()
   })
   .strict();
+
+export const resetLocalDataResultSchema = resetLocalDataResultNativeCompatibilitySchema.transform(
+  (result) => ({
+    ...result,
+    safetyBackup: result.safetyBackup ?? undefined,
+    backupDeletion: result.backupDeletion ?? noBackupDeletion
+  })
+);

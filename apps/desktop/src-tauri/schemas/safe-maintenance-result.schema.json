@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "completedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    },
+    "actions": { "type": "array", "items": { "type": "string" } },
+    "report": {
+      "type": "object",
+      "properties": {
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+        },
+        "appVersion": { "type": "string", "minLength": 1 },
+        "databaseSchemaVersion": { "type": "string", "minLength": 1 },
+        "overallStatus": { "type": "string", "enum": ["healthy", "attention", "critical"] },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "title": { "type": "string", "minLength": 1 },
+              "status": { "type": "string", "enum": ["passed", "warning", "failed"] },
+              "summary": { "type": "string", "minLength": 1 },
+              "details": { "type": "array", "items": { "type": "string" } },
+              "repairable": { "type": "boolean" }
+            },
+            "required": ["id", "title", "status", "summary", "details", "repairable"],
+            "additionalProperties": false
+          }
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "vocabularyEntries": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            "vocabularyMetadata": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            "settingsRecords": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            "retainedBackups": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            "invalidVocabularyJson": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "invalidMetadataJson": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            "invalidSettingsJson": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+            "normalizedWordMismatches": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "vocabularyEntries",
+            "vocabularyMetadata",
+            "settingsRecords",
+            "retainedBackups",
+            "invalidVocabularyJson",
+            "invalidMetadataJson",
+            "invalidSettingsJson",
+            "normalizedWordMismatches"
+          ],
+          "additionalProperties": false
+        },
+        "recommendations": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": [
+        "generatedAt",
+        "appVersion",
+        "databaseSchemaVersion",
+        "overallStatus",
+        "checks",
+        "counts",
+        "recommendations"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": ["completedAt", "actions", "report"],
+  "additionalProperties": false
+}
