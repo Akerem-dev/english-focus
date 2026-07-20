@@ -5,6 +5,7 @@ export type AppIconName =
   | "books"
   | "check"
   | "chevron-down"
+  | "chevron-right"
   | "close"
   | "command"
   | "copy"
@@ -43,6 +44,8 @@ function renderGlyph(name: AppIconName): ReactNode {
       return <path d="m5 12.5 4.2 4.2L19 7" />;
     case "chevron-down":
       return <path d="m6.5 9 5.5 5.5L17.5 9" />;
+    case "chevron-right":
+      return <path d="m9 6.5 5.5 5.5L9 17.5" />;
     case "close":
       return (
         <>
