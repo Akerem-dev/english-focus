@@ -37,5 +37,3 @@ export interface ActivityListResult {
 }
 
 export type RecordActivityInput = ActivityRecord;
-
-export type ActivityFilter = "all" | ActivityScope;
