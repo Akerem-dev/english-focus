@@ -1,19 +1,24 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { ActivityRecord, ActivityRepository, RecordActivityInput } from "@platform/domain";
-import { activityRecordListSchema, activityRecordSchema } from "@platform/schemas";
+import type {
+  ActivityListResult,
+  ActivityRecord,
+  ActivityRepository,
+  RecordActivityInput
+} from "@platform/domain";
+import { activityRecordSchema, parseActivityRecordList } from "@platform/schemas";
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
 export class TauriActivityRepository implements ActivityRepository {
-  async listActivity(limit = 100): Promise<readonly ActivityRecord[]> {
+  async listActivity(limit = 100): Promise<ActivityListResult> {
     if (!isTauriRuntime()) {
-      return [];
+      return Object.freeze({ records: Object.freeze([]), skippedCount: 0 });
     }
 
     const payload = await invoke<unknown>("list_activity", { limit });
-    return Object.freeze(activityRecordListSchema.parse(payload));
+    return parseActivityRecordList(payload);
   }
 
   async recordActivity(input: RecordActivityInput): Promise<ActivityRecord> {
