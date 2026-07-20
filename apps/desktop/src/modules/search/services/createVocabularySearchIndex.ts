@@ -11,9 +11,9 @@ export type VocabularySearchField =
   | "tag"
   | "note";
 
-export type IndexedVocabularySearchMatchKind = "prefix" | "full-text";
+type IndexedVocabularySearchMatchKind = "prefix" | "full-text";
 
-export interface IndexedVocabularySearchMatch {
+interface IndexedVocabularySearchMatch {
   readonly entry: VocabularyEntry;
   readonly matchKind: IndexedVocabularySearchMatchKind;
   readonly matchedField: VocabularySearchField;
