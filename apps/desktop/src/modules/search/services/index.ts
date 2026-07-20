@@ -1,8 +1,6 @@
 export { createFuzzySuggestions } from "./createFuzzySuggestions";
 export { createVocabularySearchIndex } from "./createVocabularySearchIndex";
 export type {
-  IndexedVocabularySearchMatch,
-  IndexedVocabularySearchMatchKind,
   VocabularySearchField,
   VocabularySearchIndex
 } from "./createVocabularySearchIndex";
