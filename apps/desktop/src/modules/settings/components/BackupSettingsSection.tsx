@@ -43,9 +43,14 @@ export function BackupSettingsSection() {
     status === "restoring" ||
     status === "deleting";
   const latest = backups[0];
+  const hasBackups = backups.length > 0;
 
   return (
-    <section aria-label="Backup status and actions" className="backup-settings-inline">
+    <section
+      aria-label="Backup status and actions"
+      className="backup-settings-inline"
+      data-empty={!hasBackups || undefined}
+    >
       <div className="backup-settings-inline__facts">
         <div className="backup-settings-inline__fact">
           <span>Saved backups</span>
@@ -57,6 +62,19 @@ export function BackupSettingsSection() {
         </div>
       </div>
 
+      {hasBackups ? null : (
+        <div className="backup-settings-inline__first-backup">
+          <AppIcon name="download" size={20} />
+          <div>
+            <strong>Create your first backup</strong>
+            <p>
+              A backup is optional, but it gives you a recovery point before large imports or major
+              edits. It stays only on this device.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="backup-settings-actions">
         <Button
           disabled={busy}
@@ -67,29 +85,32 @@ export function BackupSettingsSection() {
           }}
           variant="primary"
         >
-          Back up now
+          {hasBackups ? "Back up now" : "Create first backup"}
         </Button>
-        <Button
-          disabled={status === "loading"}
-          leadingIcon={<AppIcon name="settings" size={17} />}
-          onClick={() => {
-            setManagerOpen(true);
-          }}
-          variant="secondary"
-        >
-          View backups
-        </Button>
+        {hasBackups ? (
+          <Button
+            disabled={status === "loading"}
+            leadingIcon={<AppIcon name="settings" size={17} />}
+            onClick={() => {
+              setManagerOpen(true);
+            }}
+            variant="secondary"
+          >
+            Manage backups
+          </Button>
+        ) : null}
       </div>
 
       {status === "error" ? (
         <p className="backup-settings-status" role="alert">
-          A backup action could not be completed. Open your backups for details.
+          The backup action did not finish. Your existing data is unchanged, so you can try again.
         </p>
       ) : null}
 
       <p className="backup-settings-note">
-        Backups stay on this device. English Focus keeps recent automatic backups and recovery
-        copies so older files do not pile up.
+        {hasBackups
+          ? "Backups stay on this device. English Focus keeps recent automatic backups and recovery copies so older files do not pile up."
+          : "Create a backup before a large import, reset, or major content change."}
       </p>
 
       <BackupRestoreDialog
