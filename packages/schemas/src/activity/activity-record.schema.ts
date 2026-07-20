@@ -23,8 +23,6 @@ export const activityRecordSchema = z
   })
   .strict();
 
-export const activityRecordListSchema = z.array(activityRecordSchema).max(250);
-
 export function parseActivityRecordList(payload: unknown): ActivityListResult {
   const items = z.array(z.unknown()).max(250).parse(payload);
   const records: ActivityRecord[] = [];
