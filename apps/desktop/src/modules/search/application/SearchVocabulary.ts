@@ -125,10 +125,7 @@ export class SearchVocabulary {
       normalizedQuery: normalizedQuery.normalized,
       canCreateEntry: directWordQuery,
       suggestions: directWordQuery
-        ? createFuzzySuggestions(
-            normalizedQuery.normalized,
-            this.contentSource.listEntries()
-          )
+        ? createFuzzySuggestions(normalizedQuery.normalized, this.contentSource.listEntries())
         : Object.freeze([])
     };
   }

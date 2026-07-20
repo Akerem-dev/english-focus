@@ -28,7 +28,10 @@ export function VocabularySearchResultsState({
   query
 }: VocabularySearchResultsStateProps) {
   return (
-    <section className="vocabulary-search-results" aria-labelledby="vocabulary-search-results-title">
+    <section
+      className="vocabulary-search-results"
+      aria-labelledby="vocabulary-search-results-title"
+    >
       <header className="vocabulary-search-results__header">
         <div>
           <p className="route-page__eyebrow">Local matches</p>
@@ -55,7 +58,8 @@ export function VocabularySearchResultsState({
             </span>
             <span className="vocabulary-search-result__reason">
               <span>
-                {FIELD_LABELS[match.matchedField]} · {match.matchKind === "prefix" ? "prefix" : "full text"}
+                {FIELD_LABELS[match.matchedField]} ·{" "}
+                {match.matchKind === "prefix" ? "prefix" : "full text"}
               </span>
               <small>{match.matchedText}</small>
             </span>

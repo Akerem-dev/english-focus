@@ -24,10 +24,7 @@ function searchableText(
       record.entry.normalizedWord,
       record.entry.cefr,
       ...record.entry.aliases,
-      ...record.entry.morphology.inflectedForms.flatMap((form) => [
-        form.form,
-        form.normalizedForm
-      ]),
+      ...record.entry.morphology.inflectedForms.flatMap((form) => [form.form, form.normalizedForm]),
       ...record.entry.partsOfSpeech,
       ...record.entry.registers,
       ...record.entry.meanings.flatMap((meaning) => [

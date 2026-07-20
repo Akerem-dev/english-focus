@@ -3,13 +3,7 @@ import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 import { normalizeSearchText, tokenizeSearchText } from "./normalizeSearchText";
 
 export type VocabularySearchField =
-  | "word"
-  | "alias"
-  | "inflection"
-  | "translation"
-  | "definition"
-  | "tag"
-  | "note";
+  "word" | "alias" | "inflection" | "translation" | "definition" | "tag" | "note";
 
 type IndexedVocabularySearchMatchKind = "prefix" | "full-text";
 
@@ -49,9 +43,9 @@ const FIELD_WEIGHT: Readonly<Record<VocabularySearchField, number>> = Object.fre
 });
 
 function uniqueNonEmpty(values: readonly string[]): readonly string[] {
-  return Object.freeze(
-    [...new Set(values.map((value) => value.trim()).filter((value) => value.length > 0))]
-  );
+  return Object.freeze([
+    ...new Set(values.map((value) => value.trim()).filter((value) => value.length > 0))
+  ]);
 }
 
 function fieldValues(
@@ -64,9 +58,7 @@ function fieldValues(
     inflection: uniqueNonEmpty(
       entry.morphology.inflectedForms.flatMap((form) => [form.form, form.normalizedForm])
     ),
-    translation: uniqueNonEmpty(
-      entry.meanings.flatMap((meaning) => meaning.translationsTr)
-    ),
+    translation: uniqueNonEmpty(entry.meanings.flatMap((meaning) => meaning.translationsTr)),
     definition: uniqueNonEmpty(entry.meanings.map((meaning) => meaning.definitionEn)),
     tag: uniqueNonEmpty(metadata?.tags.flatMap((tag) => [tag.name, tag.normalizedName]) ?? []),
     note: uniqueNonEmpty(metadata?.note === undefined ? [] : [metadata.note])
@@ -119,8 +111,7 @@ function summarizeMatchedText(value: string): string {
 
 function compareRankedMatches(left: RankedSearchMatch, right: RankedSearchMatch): number {
   return (
-    right.score -
-      left.score ||
+    right.score - left.score ||
     left.entry.word.localeCompare(right.entry.word, "en", { sensitivity: "base" })
   );
 }
