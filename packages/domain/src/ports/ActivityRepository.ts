@@ -1,8 +1,4 @@
-import type {
-  ActivityListResult,
-  ActivityRecord,
-  RecordActivityInput
-} from "../activity";
+import type { ActivityListResult, ActivityRecord, RecordActivityInput } from "../activity";
 
 export interface ActivityRepository {
   listActivity(limit?: number): Promise<ActivityListResult>;

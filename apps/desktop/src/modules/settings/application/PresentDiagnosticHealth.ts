@@ -203,8 +203,7 @@ export function presentDiagnosticHealth(report: DiagnosticReport): DiagnosticHea
         id: "data",
         label: "Your data",
         value: dataStatusValue(dataStatus),
-        tone:
-          dataStatus === "passed" ? "good" : dataStatus === "warning" ? "check" : "problem"
+        tone: dataStatus === "passed" ? "good" : dataStatus === "warning" ? "check" : "problem"
       },
       backupFact(backupState),
       nextStep
