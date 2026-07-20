@@ -5,7 +5,8 @@ import type {
   DiagnosticReport
 } from "@platform/domain";
 
-type DiagnosticHealthTone = "good" | "check" | "problem";
+type DiagnosticHealthTone = "good" | "neutral" | "check" | "problem";
+export type DiagnosticBackupState = "available" | "missing" | "unavailable";
 
 interface DiagnosticHealthFact {
   readonly id: "data" | "backups" | "next-step";
@@ -15,6 +16,8 @@ interface DiagnosticHealthFact {
 }
 
 export interface DiagnosticHealthPresentation {
+  readonly status: DiagnosticOverallStatus;
+  readonly backupState: DiagnosticBackupState;
   readonly title: string;
   readonly description: string;
   readonly facts: readonly DiagnosticHealthFact[];
@@ -36,25 +39,63 @@ function worstStatus(checks: readonly DiagnosticCheck[]): DiagnosticCheckStatus 
   );
 }
 
-function toneForStatus(status: DiagnosticCheckStatus): DiagnosticHealthTone {
-  return status === "passed" ? "good" : status === "warning" ? "check" : "problem";
+function healthStatusFor(
+  dataStatus: DiagnosticCheckStatus,
+  backupState: DiagnosticBackupState
+): DiagnosticOverallStatus {
+  if (dataStatus === "failed") {
+    return "critical";
+  }
+
+  if (dataStatus === "warning" || backupState === "unavailable") {
+    return "attention";
+  }
+
+  return "healthy";
+}
+
+function backupStateFor(
+  backupCheck: DiagnosticCheck | undefined,
+  retainedBackups: number
+): DiagnosticBackupState {
+  if (retainedBackups > 0 || backupCheck?.status === "passed") {
+    return "available";
+  }
+
+  if (
+    backupCheck?.status === "failed" ||
+    (backupCheck?.status === "warning" && backupCheck.details.length > 0)
+  ) {
+    return "unavailable";
+  }
+
+  return "missing";
 }
 
 function reportCopy(
-  status: DiagnosticOverallStatus
+  status: DiagnosticOverallStatus,
+  backupState: DiagnosticBackupState
 ): Pick<DiagnosticHealthPresentation, "title" | "description"> {
-  if (status === "healthy") {
+  if (status === "healthy" && backupState === "available") {
     return {
       title: "Everything looks good",
-      description: "Your words, settings, and backups are available. Nothing needs your attention."
+      description: "Your words, settings, and local backups are working normally."
+    };
+  }
+
+  if (status === "healthy") {
+    return {
+      title: "Your app data looks good",
+      description:
+        "Your words and settings are working normally. A backup is optional, but recommended."
     };
   }
 
   if (status === "attention") {
     return {
-      title: "A small issue was found",
+      title: "A quick check is recommended",
       description:
-        "English Focus found something that should be checked before it becomes a problem."
+        "English Focus found something that needs attention. Your existing data has not been changed."
     };
   }
 
@@ -67,37 +108,55 @@ function reportCopy(
 
 function dataStatusValue(status: DiagnosticCheckStatus): string {
   return status === "passed"
-    ? "Available"
+    ? "Working normally"
     : status === "warning"
       ? "Needs a check"
       : "Problem found";
 }
 
-function backupStatusValue(status: DiagnosticCheckStatus): string {
-  return status === "passed"
-    ? "Available"
-    : status === "warning"
-      ? "Not available yet"
-      : "Could not be checked";
+function backupFact(state: DiagnosticBackupState): DiagnosticHealthFact {
+  if (state === "available") {
+    return { id: "backups", label: "Backups", value: "Ready", tone: "good" };
+  }
+
+  if (state === "missing") {
+    return {
+      id: "backups",
+      label: "Backups",
+      value: "Not created yet",
+      tone: "neutral"
+    };
+  }
+
+  return {
+    id: "backups",
+    label: "Backups",
+    value: "Could not be checked",
+    tone: "check"
+  };
 }
 
 export function presentDiagnosticHealth(report: DiagnosticReport): DiagnosticHealthPresentation {
-  const repairableIssueCount = report.checks.filter(
-    (check) => check.repairable && check.status !== "passed"
-  ).length;
-  const nonRepairableFailureCount = report.checks.filter(
-    (check) => check.status === "failed" && !check.repairable
-  ).length;
   const backupCheck = report.checks.find((check) => check.id === "backup-availability");
   const dataChecks = report.checks.filter((check) => check.id !== "backup-availability");
   const dataStatus = worstStatus(dataChecks);
-  const backupStatus = backupCheck?.status ?? "warning";
+  const backupState = backupStateFor(backupCheck, report.counts.retainedBackups);
+  const status = healthStatusFor(dataStatus, backupState);
+  const repairableIssueCount = dataChecks.filter(
+    (check) => check.repairable && check.status !== "passed"
+  ).length;
+  const nonRepairableFailureCount = dataChecks.filter(
+    (check) => check.status === "failed" && !check.repairable
+  ).length;
   const nextStep: DiagnosticHealthFact =
     nonRepairableFailureCount > 0
       ? {
           id: "next-step",
           label: "Next step",
-          value: "Restore a checked backup",
+          value:
+            backupState === "available"
+              ? "Restore a checked backup"
+              : "Review details before changes",
           tone: "problem"
         }
       : repairableIssueCount > 0
@@ -107,35 +166,47 @@ export function presentDiagnosticHealth(report: DiagnosticReport): DiagnosticHea
             value: "Safe fix available",
             tone: "check"
           }
-        : report.overallStatus === "healthy"
+        : status === "healthy" && backupState === "missing"
           ? {
               id: "next-step",
               label: "Next step",
-              value: "Nothing to do",
-              tone: "good"
+              value: "Create your first backup",
+              tone: "neutral"
             }
-          : {
-              id: "next-step",
-              label: "Next step",
-              value: "Review the details",
-              tone: "check"
-            };
+          : status === "healthy"
+            ? {
+                id: "next-step",
+                label: "Next step",
+                value: "Nothing to do",
+                tone: "good"
+              }
+            : backupState === "unavailable"
+              ? {
+                  id: "next-step",
+                  label: "Next step",
+                  value: "Review backup access",
+                  tone: "check"
+                }
+              : {
+                  id: "next-step",
+                  label: "Next step",
+                  value: "Review the details",
+                  tone: "check"
+                };
 
   return {
-    ...reportCopy(report.overallStatus),
+    status,
+    backupState,
+    ...reportCopy(status, backupState),
     facts: Object.freeze([
       {
         id: "data",
         label: "Your data",
         value: dataStatusValue(dataStatus),
-        tone: toneForStatus(dataStatus)
+        tone:
+          dataStatus === "passed" ? "good" : dataStatus === "warning" ? "check" : "problem"
       },
-      {
-        id: "backups",
-        label: "Backups",
-        value: backupStatusValue(backupStatus),
-        tone: toneForStatus(backupStatus)
-      },
+      backupFact(backupState),
       nextStep
     ]),
     repairableIssueCount,
