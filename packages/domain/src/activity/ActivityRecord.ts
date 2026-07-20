@@ -31,6 +31,11 @@ export interface ActivityRecord {
   readonly occurredAt: string;
 }
 
+export interface ActivityListResult {
+  readonly records: readonly ActivityRecord[];
+  readonly skippedCount: number;
+}
+
 export type RecordActivityInput = ActivityRecord;
 
 export type ActivityFilter = "all" | ActivityScope;
