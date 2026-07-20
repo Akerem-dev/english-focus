@@ -12,7 +12,8 @@ const MANAGEMENT_VIEW_DETAILS: Record<
 > = {
   activity: {
     title: "Recent activity",
-    description: "See the words and app actions you used recently. This history stays on this device."
+    description:
+      "See the words and app actions you used recently. This history stays on this device."
   },
   diagnostics: {
     title: "App health",
@@ -26,10 +27,15 @@ const MANAGEMENT_VIEW_DETAILS: Record<
 
 interface SettingsManagementViewProps {
   readonly onBack: () => void;
+  readonly onOpenBackups: () => void;
   readonly view: SettingsManagementView;
 }
 
-export function SettingsManagementDetail({ onBack, view }: SettingsManagementViewProps) {
+export function SettingsManagementDetail({
+  onBack,
+  onOpenBackups,
+  view
+}: SettingsManagementViewProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const details = MANAGEMENT_VIEW_DETAILS[view];
 
@@ -41,10 +47,10 @@ export function SettingsManagementDetail({ onBack, view }: SettingsManagementVie
     <div className="settings-management-view">
       <header className="settings-management-view__header">
         <Button onClick={onBack} size="small" variant="ghost">
-          ← Back to privacy & maintenance
+          ← Back to privacy &amp; maintenance
         </Button>
         <div>
-          <p className="route-page__eyebrow">Privacy & maintenance</p>
+          <p className="route-page__eyebrow">Privacy &amp; maintenance</p>
           <h2 ref={headingRef} tabIndex={-1}>
             {details.title}
           </h2>
@@ -53,7 +59,9 @@ export function SettingsManagementDetail({ onBack, view }: SettingsManagementVie
       </header>
       <div className="settings-management-view__body">
         {view === "activity" ? <ActivitySection showHeading={false} /> : null}
-        {view === "diagnostics" ? <DiagnosticsSection /> : null}
+        {view === "diagnostics" ? (
+          <DiagnosticsSection onOpenBackups={onOpenBackups} />
+        ) : null}
         {view === "local-data" ? <LocalDataControlsSection showHeading={false} /> : null}
       </div>
     </div>
