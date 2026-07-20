@@ -70,7 +70,28 @@ jobs:
         run: npm run check:native-schemas
 
       - name: Typecheck
-        run: npm run typecheck
+        id: typecheck
+        continue-on-error: true
+        run: |
+          set +e
+          npm run typecheck > typecheck.log 2>&1
+          exit_code=$?
+          cat typecheck.log
+          echo "exitCode=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload typecheck failure log
+        if: steps.typecheck.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-failure-log
+          path: typecheck.log
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm typecheck
+        if: steps.typecheck.outputs.exitCode != '0'
+        run: exit 1
 
       - name: Run tests
         run: npm run test
