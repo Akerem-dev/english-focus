@@ -12,7 +12,7 @@ const MANAGEMENT_VIEW_DETAILS: Record<
 > = {
   activity: {
     title: "Recent activity",
-    description: "Review the small privacy-safe timeline stored only on this device."
+    description: "See the words and app actions you used recently. This history stays on this device."
   },
   diagnostics: {
     title: "App health",
