@@ -1,27 +1,29 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { ActivityContext, type ActivityContextValue } from "../../../src/app/providers/ActivityContext";
+import {
+  ActivityContext,
+  type ActivityContextValue
+} from "../../../src/app/providers/ActivityContext";
 import { AppProviders } from "../../../src/app/providers";
 import { ActivitySection } from "../../../src/modules/settings/components/ActivitySection";
 
-const activity = Object.freeze([
-  Object.freeze({
-    id: "activity-1",
-    kind: "vocabulary-viewed" as const,
-    scope: "vocabulary" as const,
-    label: "Viewed vocabulary entry",
-    target: "maintain",
-    occurredAt: "2026-07-20T18:00:00.000Z"
-  })
-]);
+const activityRecord = Object.freeze({
+  id: "activity-1",
+  kind: "vocabulary-viewed" as const,
+  scope: "vocabulary" as const,
+  label: "Viewed vocabulary entry",
+  target: "maintain",
+  occurredAt: "2026-07-20T18:00:00.000Z"
+});
+const activity = Object.freeze([activityRecord]);
 
 const readyContext: ActivityContextValue = {
   activity,
   status: "ready",
   error: undefined,
   refreshActivity: async () => activity,
-  recordActivity: async () => activity[0],
+  recordActivity: async () => activityRecord,
   clearActivity: async () => 0
 };
 
