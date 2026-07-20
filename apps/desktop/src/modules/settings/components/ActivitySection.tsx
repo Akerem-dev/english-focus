@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react";
-import type { ActivityFilter } from "@platform/domain";
+import { useState } from "react";
 
 import { useActivity, useToast } from "../../../app/providers";
-import { Button, SelectField } from "../../../components";
+import { Button } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { activityKindLabel, activityScopeLabel, formatActivityTime } from "../../history";
 
@@ -13,13 +12,8 @@ interface ActivitySectionProps {
 export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
   const { activity, clearActivity, error, status } = useActivity();
   const { showToast } = useToast();
-  const [filter, setFilter] = useState<ActivityFilter>("all");
   const [clearReviewOpen, setClearReviewOpen] = useState(false);
 
-  const filteredActivity = useMemo(
-    () => (filter === "all" ? activity : activity.filter((record) => record.scope === filter)),
-    [activity, filter]
-  );
   const isBusy = status === "loading" || status === "recording" || status === "clearing";
   const countLabel =
     status === "loading"
@@ -52,7 +46,7 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
         <header className="activity-section__intro">
           <div>
             <h3>Recent activity</h3>
-            <p>A simple list of important actions saved only on this device.</p>
+            <p>See the words and app actions you used recently.</p>
           </div>
           <span className="activity-section__count" aria-live="polite">
             {countLabel}
@@ -61,7 +55,7 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
       ) : (
         <div className="activity-section__compact-summary" aria-live="polite">
           <span>{countLabel}</span>
-          <span>Only on this device</span>
+          <span>Saved only on this device</span>
         </div>
       )}
 
@@ -69,49 +63,25 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
         <section className="activity-section__error" role="alert">
           <AppIcon name="warning" size={18} />
           <div>
-            <strong>Some older activity was skipped.</strong>
-            <p>Your words, notes, settings, and backups are not affected.</p>
-            <details className="activity-section__technical-error">
-              <summary>Technical details</summary>
-              <pre>{error}</pre>
-            </details>
+            <strong>Some older activity could not be shown.</strong>
+            <p>
+              Your words, notes, settings, and backups are safe. You can keep using the app normally.
+            </p>
           </div>
         </section>
       )}
 
-      <div className="activity-section__toolbar">
-        <SelectField
-          disabled={isBusy}
-          label="Show"
-          onChange={(event) => {
-            setFilter(event.currentTarget.value as ActivityFilter);
-          }}
-          value={filter}
-        >
-          <option value="all">All actions</option>
-          <option value="vocabulary">Words</option>
-          <option value="library">Library</option>
-          <option value="settings">Settings</option>
-          <option value="backup">Backups</option>
-          <option value="system">System</option>
-        </SelectField>
-        <p className="activity-section__privacy">
-          <AppIcon name="check" size={17} />
-          <span>Stored only on this device</span>
-        </p>
-      </div>
-
-      {filteredActivity.length === 0 ? (
+      {activity.length === 0 ? (
         <div className="activity-section__empty">
           <AppIcon name="book-open" size={22} />
           <div>
-            <strong>Nothing to show here</strong>
-            <p>Open a word or use the app to start building this list.</p>
+            <strong>No recent activity yet</strong>
+            <p>Open a word or use the app and your recent actions will appear here.</p>
           </div>
         </div>
       ) : (
         <ol aria-label="Recent local activity" className="activity-list activity-list--focused">
-          {filteredActivity.map((record) => (
+          {activity.map((record) => (
             <li className="activity-list__item" key={record.id}>
               <div className="activity-list__content">
                 <strong>{record.label || activityKindLabel(record.kind)}</strong>
