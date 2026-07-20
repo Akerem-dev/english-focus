@@ -1,0 +1,80 @@
+.diagnostics-health-facts li[data-tone="neutral"] .diagnostics-health-facts__icon {
+  color: var(--color-accent);
+}
+
+.diagnostics-health-facts li[data-tone="neutral"] strong {
+  color: var(--color-text-secondary);
+}
+
+.diagnostics-backup-recommendation {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-accent) 24%, var(--color-border));
+  border-radius: var(--radius-medium);
+  background: color-mix(in srgb, var(--color-accent-soft) 34%, var(--color-surface));
+}
+
+.diagnostics-backup-recommendation > svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: var(--color-accent);
+}
+
+.diagnostics-backup-recommendation strong {
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.diagnostics-backup-recommendation p {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.backup-settings-inline[data-empty] {
+  gap: var(--space-4);
+}
+
+.backup-settings-inline__first-backup {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-left: 0.1875rem solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent-soft) 34%, transparent);
+}
+
+.backup-settings-inline__first-backup > svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: var(--color-accent);
+}
+
+.backup-settings-inline__first-backup strong {
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.backup-settings-inline__first-backup p {
+  margin-top: var(--space-1);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-reading);
+}
+
+.backup-settings-inline[data-empty] .backup-settings-actions {
+  align-items: center;
+}
+
+.backup-settings-inline[data-empty] .backup-settings-note {
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 42rem) {
+  .diagnostics-backup-recommendation,
+  .backup-settings-inline__first-backup {
+    padding: var(--space-3);
+  }
+}
