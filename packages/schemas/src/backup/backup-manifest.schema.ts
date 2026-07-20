@@ -23,13 +23,29 @@ export const backupDescriptorSchema = z
   })
   .strict();
 
-export const backupValidationResultSchema = z
+export const unavailableBackupSchema = z
+  .object({
+    fileName: z.string().min(1),
+    sizeBytes: z.number().int().nonnegative(),
+    issue: z.string().min(1)
+  })
+  .strict();
+
+const nullableBackupDescriptorSchema = z.union([backupDescriptorSchema, z.null()]).optional();
+
+export const backupValidationResultNativeCompatibilitySchema = z
   .object({
     valid: z.boolean(),
     issues: z.array(z.string()),
-    descriptor: backupDescriptorSchema.optional()
+    descriptor: nullableBackupDescriptorSchema
   })
   .strict();
+
+export const backupValidationResultSchema =
+  backupValidationResultNativeCompatibilitySchema.transform((result) => ({
+    ...result,
+    descriptor: result.descriptor ?? undefined
+  }));
 
 export const backupRestoreResultSchema = z
   .object({

@@ -16,6 +16,7 @@ import {
   FULL_LOCAL_RESET_CATEGORIES,
   canCreateSafetyBackup,
   isFullResetConfirmation,
+  presentLocalDataResetResult,
   selectedLocalDataCount
 } from "../application";
 import {
@@ -34,21 +35,10 @@ const emptySnapshot: LocalDataSnapshot = Object.freeze({
 });
 
 type DialogMode = "selective" | "full-reset" | undefined;
+type LocalDataErrorState = "summary" | "action" | "refresh" | undefined;
 
 interface LocalDataControlsSectionProps {
   readonly showHeading?: boolean;
-}
-
-function deletedSummary(result: ResetLocalDataResult): string {
-  const deleted = result.deleted;
-  const total =
-    deleted.studyMetadataRecords +
-    deleted.userVocabularyEntries +
-    deleted.overrideVocabularyEntries +
-    deleted.settingsRecords +
-    deleted.activityRecords +
-    deleted.backupFiles;
-  return `${total} ${total === 1 ? "item" : "items"}`;
 }
 
 export function LocalDataControlsSection({ showHeading = true }: LocalDataControlsSectionProps) {
@@ -61,17 +51,18 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
   const { refresh: refreshVocabulary } = useVocabularyRepository();
   const [snapshot, setSnapshot] = useState<LocalDataSnapshot>(emptySnapshot);
   const [status, setStatus] = useState<"loading" | "ready" | "resetting" | "error">("loading");
-  const [error, setError] = useState<string | undefined>();
+  const [errorState, setErrorState] = useState<LocalDataErrorState>();
   const [dialogMode, setDialogMode] = useState<DialogMode>();
   const [selectedCategories, setSelectedCategories] = useState<readonly LocalDataCategory[]>([]);
   const [reviewConfirmed, setReviewConfirmed] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
   const [createSafetyBackup, setCreateSafetyBackup] = useState(true);
   const [lastResult, setLastResult] = useState<ResetLocalDataResult | undefined>();
+  const [lastResultMessage, setLastResultMessage] = useState<string | undefined>();
 
   const refreshSnapshot = useCallback(async () => {
     setStatus("loading");
-    setError(undefined);
+    setErrorState(undefined);
 
     try {
       const next = await repository.getSnapshot();
@@ -79,9 +70,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
       setStatus("ready");
       return next;
     } catch (cause) {
-      const message =
-        cause instanceof Error ? cause.message : "Your data summary could not be loaded.";
-      setError(message);
+      setErrorState("summary");
       setStatus("error");
       throw cause;
     }
@@ -151,6 +140,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
     setConfirmationText("");
     setCreateSafetyBackup(true);
     setLastResult(undefined);
+    setLastResultMessage(undefined);
   }, []);
 
   const closeDialog = useCallback(() => {
@@ -179,69 +169,77 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
 
   async function performReset(categories: readonly LocalDataCategory[], fullReset: boolean) {
     setStatus("resetting");
-    setError(undefined);
+    setErrorState(undefined);
     setLastResult(undefined);
+    setLastResultMessage(undefined);
+
+    let result: ResetLocalDataResult;
 
     try {
       const safetyAvailable = canCreateSafetyBackup(categories);
-      const result = await repository.resetLocalData({
+      result = await repository.resetLocalData({
         categories,
         createSafetyBackup: safetyAvailable && createSafetyBackup,
         requestedAt: new Date().toISOString()
       });
-
-      await Promise.all([
-        refreshVocabulary(),
-        refreshMetadata(),
-        refreshSettings(),
-        refreshActivity(),
-        refreshBackups()
-      ]);
-
-      if (!categories.includes("activity")) {
-        await recordActivity({
-          kind: "local-data-reset",
-          scope: "settings",
-          label: fullReset ? "English Focus reset" : "Selected data removed"
-        }).catch(() => undefined);
-      }
-
-      const nextSnapshot = await repository.getSnapshot();
-      setSnapshot(nextSnapshot);
-      setLastResult(result);
-      setStatus("ready");
-      showToast({
-        title: fullReset ? "English Focus was reset" : "Selected data was removed",
-        message: `${deletedSummary(result)} removed${result.safetyBackup === undefined ? "." : "; a recovery copy was created first."}`,
-        tone: "success",
-        dedupeKey: fullReset ? "full-local-reset-success" : "selected-local-data-reset-success"
-      });
-    } catch (cause) {
-      const message =
-        cause instanceof Error
-          ? cause.message
-          : fullReset
-            ? "English Focus could not be reset."
-            : "The selected data could not be removed.";
-      setError(message);
+    } catch {
+      setErrorState("action");
       setStatus("error");
       showToast({
         title: fullReset ? "English Focus was not reset" : "Selected data was not removed",
-        message: "The operation did not complete. Review the message and try again.",
+        message: "Nothing was removed. Refresh the summary and try again.",
         tone: "error",
         dedupeKey: fullReset ? "full-local-reset-error" : "selected-local-data-reset-error"
       });
+      return;
     }
-  }
 
-  const resultMessage =
-    lastResult === undefined
-      ? undefined
-      : `${deletedSummary(lastResult)} removed. ${
-          lastResult.safetyBackup === undefined
-            ? "No recovery copy was created."
-            : "A recovery copy was created first."
-        }`;
+    setLastResult(result);
+
+    if (!categories.includes("activity")) {
+      await recordActivity({
+        kind: "local-data-reset",
+        scope: "settings",
+        label: fullReset ? "English Focus reset" : "Selected data removed"
+      }).catch(() => undefined);
+    }
+
+    const refreshResults = await Promise.allSettled([
+      refreshVocabulary(),
+      refreshMetadata(),
+      refreshSettings(),
+      refreshActivity(),
+      refreshBackups()
+    ]);
+    let refreshIncomplete = refreshResults.some(
+      (refreshResult) => refreshResult.status === "rejected"
+    );
+
+    try {
+      const nextSnapshot = await repository.getSnapshot();
+      setSnapshot(nextSnapshot);
+    } catch {
+      refreshIncomplete = true;
+    }
+
+    const presentation = presentLocalDataResetResult(result, refreshIncomplete);
+    setLastResultMessage(presentation.resultMessage);
+    setErrorState(presentation.refreshIncomplete ? "refresh" : undefined);
+    setStatus(presentation.refreshIncomplete ? "error" : "ready");
+    showToast({
+      title:
+        presentation.toastTone === "warning"
+          ? fullReset
+            ? "English Focus was reset with a warning"
+            : "Selected data was removed with a warning"
+          : fullReset
+            ? "English Focus was reset"
+            : "Selected data was removed",
+      message: presentation.toastMessage,
+      tone: presentation.toastTone,
+      dedupeKey: fullReset ? "full-local-reset-success" : "selected-local-data-reset-success"
+    });
+  }
 
   return (
     <div className="local-data-controls">
@@ -252,12 +250,35 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
         </header>
       ) : null}
 
-      {error === undefined ? null : (
+      {errorState === undefined ? null : (
         <section className="local-data-controls__error" role="alert">
           <AppIcon name="warning" size={19} />
           <div>
-            <strong>Your data summary could not be loaded.</strong>
-            <p>{error}</p>
+            <strong>
+              {errorState === "summary"
+                ? "We could not refresh this page."
+                : errorState === "refresh"
+                  ? "The removal finished, but this page needs a refresh."
+                  : "That change was not completed."}
+            </strong>
+            <p>
+              {errorState === "summary"
+                ? "Your words, personal details, settings, and backups are still available."
+                : errorState === "refresh"
+                  ? "The completed removal was not undone. Some totals may still be out of date."
+                  : "Nothing was removed. Your saved information is unchanged."}
+            </p>
+            <Button
+              disabled={status === "loading" || status === "resetting"}
+              isLoading={status === "loading"}
+              onClick={() => {
+                void refreshSnapshot().catch(() => undefined);
+              }}
+              size="small"
+              variant="secondary"
+            >
+              Try again
+            </Button>
           </div>
         </section>
       )}
@@ -326,7 +347,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
         }}
         onToggleCategory={toggleCategory}
         open={dialogMode === "selective"}
-        resultMessage={resultMessage}
+        resultMessage={lastResultMessage}
         reviewConfirmed={reviewConfirmed}
         safetyAvailable={selectiveSafetyAvailable}
         selectedCategories={selectedCategories}
@@ -345,7 +366,7 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
           void performReset(FULL_LOCAL_RESET_CATEGORIES, true);
         }}
         open={dialogMode === "full-reset"}
-        resultMessage={resultMessage}
+        resultMessage={lastResultMessage}
       />
     </div>
   );

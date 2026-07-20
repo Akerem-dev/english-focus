@@ -1,4 +1,4 @@
-import type { LocalDataCategory, LocalDataSnapshot } from "@platform/domain";
+import type { LocalDataCategory, LocalDataSnapshot, ResetLocalDataResult } from "@platform/domain";
 
 export const FULL_LOCAL_RESET_CATEGORIES: readonly LocalDataCategory[] = Object.freeze([
   "study-metadata",
@@ -9,6 +9,13 @@ export const FULL_LOCAL_RESET_CATEGORIES: readonly LocalDataCategory[] = Object.
 ]);
 
 export const RESET_APPLICATION_CONFIRMATION = "RESET ENGLISH FOCUS";
+
+export interface LocalDataResetPresentation {
+  readonly resultMessage: string;
+  readonly toastMessage: string;
+  readonly toastTone: "success" | "warning";
+  readonly refreshIncomplete: boolean;
+}
 
 export function isFullResetConfirmation(value: string): boolean {
   return value.trim() === RESET_APPLICATION_CONFIRMATION;
@@ -43,4 +50,50 @@ export function selectedLocalDataCount(
         return total + snapshot.backupFiles;
     }
   }, 0);
+}
+
+function deletedLocalDataCount(result: ResetLocalDataResult): number {
+  const deleted = result.deleted;
+  return (
+    deleted.studyMetadataRecords +
+    deleted.userVocabularyEntries +
+    deleted.overrideVocabularyEntries +
+    deleted.settingsRecords +
+    deleted.activityRecords +
+    deleted.backupFiles
+  );
+}
+
+export function presentLocalDataResetResult(
+  result: ResetLocalDataResult,
+  refreshIncomplete: boolean
+): LocalDataResetPresentation {
+  const deletedCount = deletedLocalDataCount(result);
+  const deletedLabel = `${deletedCount} ${deletedCount === 1 ? "item" : "items"} removed.`;
+  const recoveryLabel =
+    result.safetyBackup === undefined
+      ? "No recovery copy was created."
+      : "A recovery copy was created first.";
+  const backupFailureCount = result.backupDeletion.failedFiles;
+  const backupNoun = backupFailureCount === 1 ? "backup" : "backups";
+  const backupWarning =
+    backupFailureCount === 0
+      ? undefined
+      : `${backupFailureCount} saved ${backupNoun} could not be removed.`;
+  const refreshWarning = refreshIncomplete
+    ? "The removal finished, but some on-screen totals could not refresh yet."
+    : undefined;
+  const warnings = [backupWarning, refreshWarning].filter(
+    (message): message is string => message !== undefined
+  );
+
+  return Object.freeze({
+    resultMessage: [deletedLabel, recoveryLabel, ...warnings].join(" "),
+    toastMessage:
+      warnings.length === 0
+        ? `${deletedLabel} ${recoveryLabel}`
+        : `${deletedLabel} ${warnings.join(" ")}`,
+    toastTone: warnings.length === 0 ? "success" : "warning",
+    refreshIncomplete
+  });
 }

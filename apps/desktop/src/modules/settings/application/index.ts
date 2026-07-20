@@ -19,5 +19,6 @@ export {
   RESET_APPLICATION_CONFIRMATION,
   canCreateSafetyBackup,
   isFullResetConfirmation,
+  presentLocalDataResetResult,
   selectedLocalDataCount
 } from "./ManageLocalData";

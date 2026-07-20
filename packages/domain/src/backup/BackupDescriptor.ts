@@ -17,6 +17,12 @@ export interface BackupDescriptor {
   readonly counts: BackupCounts;
 }
 
+export interface UnavailableBackup {
+  readonly fileName: string;
+  readonly sizeBytes: number;
+  readonly issue: string;
+}
+
 export interface BackupValidationResult {
   readonly valid: boolean;
   readonly issues: readonly string[];

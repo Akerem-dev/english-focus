@@ -1,0 +1,54 @@
+.vocabulary-metadata-dialog__activity {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settings-about-footer .settings-about {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.settings-about-footer .settings-about__header,
+.settings-about-footer .settings-about__summary {
+  grid-column: 1;
+}
+
+.settings-about-footer .settings-about__summary {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.settings-about-footer .settings-about__item {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.settings-about-footer .settings-about__details {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-width: 13rem;
+  justify-self: end;
+}
+
+@media (max-width: 60rem) {
+  .settings-about-footer .settings-about__summary {
+    grid-column: 1;
+  }
+
+  .settings-about-footer .settings-about__details {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+@media (max-width: 42rem) {
+  .settings-about-footer .settings-about {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-about-footer .settings-about__details {
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+  }
+}

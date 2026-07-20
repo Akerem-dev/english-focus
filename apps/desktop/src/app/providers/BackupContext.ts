@@ -2,7 +2,8 @@ import { createContext } from "react";
 import type {
   BackupDescriptor,
   BackupRestoreResult,
-  BackupValidationResult
+  BackupValidationResult,
+  UnavailableBackup
 } from "@platform/domain";
 
 export type BackupStatus =
@@ -10,14 +11,17 @@ export type BackupStatus =
 
 export interface BackupContextValue {
   readonly backups: readonly BackupDescriptor[];
+  readonly unavailableBackups: readonly UnavailableBackup[];
   readonly status: BackupStatus;
   readonly error?: string | undefined;
+  readonly warning?: string | undefined;
   readonly lastRestore?: BackupRestoreResult | undefined;
   readonly refreshBackups: () => Promise<readonly BackupDescriptor[]>;
   readonly createManualBackup: () => Promise<BackupDescriptor>;
   readonly validateBackup: (fileName: string) => Promise<BackupValidationResult>;
   readonly restoreBackup: (fileName: string) => Promise<BackupRestoreResult>;
   readonly deleteBackup: (fileName: string) => Promise<void>;
+  readonly deleteUnavailableBackup: (fileName: string) => Promise<void>;
   readonly clearLastRestore: () => void;
 }
 

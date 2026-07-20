@@ -1,0 +1,174 @@
+{
+  "activityRecord": {
+    "id": "activity-contract-1",
+    "kind": "settings-updated",
+    "scope": "settings",
+    "label": "Settings updated",
+    "target": null,
+    "occurredAt": "2026-07-19T20:00:00.000Z"
+  },
+  "backupDescriptor": {
+    "fileName": "english-focus-backup-manual-20260719200000000.json",
+    "createdAt": "2026-07-19T20:00:00.000Z",
+    "reason": "manual",
+    "sizeBytes": 2048,
+    "backupVersion": "1.0.0",
+    "databaseSchemaVersion": "3",
+    "checksum": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "counts": {
+      "vocabularyEntries": 2,
+      "vocabularyMetadata": 2,
+      "settingsRecords": 1
+    }
+  },
+  "backupValidationResult": {
+    "valid": true,
+    "issues": [],
+    "descriptor": {
+      "fileName": "english-focus-backup-manual-20260719200000000.json",
+      "createdAt": "2026-07-19T20:00:00.000Z",
+      "reason": "manual",
+      "sizeBytes": 2048,
+      "backupVersion": "1.0.0",
+      "databaseSchemaVersion": "3",
+      "checksum": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "counts": {
+        "vocabularyEntries": 2,
+        "vocabularyMetadata": 2,
+        "settingsRecords": 1
+      }
+    }
+  },
+  "backupValidationWithoutDescriptor": {
+    "valid": false,
+    "issues": ["The file could not be inspected."],
+    "descriptor": null
+  },
+  "backupRestoreResult": {
+    "restoredAt": "2026-07-19T20:05:00.000Z",
+    "restored": {
+      "vocabularyEntries": 2,
+      "vocabularyMetadata": 2,
+      "settingsRecords": 1
+    },
+    "sourceBackup": {
+      "fileName": "english-focus-backup-manual-20260719200000000.json",
+      "createdAt": "2026-07-19T20:00:00.000Z",
+      "reason": "manual",
+      "sizeBytes": 2048,
+      "backupVersion": "1.0.0",
+      "databaseSchemaVersion": "3",
+      "checksum": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "counts": {
+        "vocabularyEntries": 2,
+        "vocabularyMetadata": 2,
+        "settingsRecords": 1
+      }
+    },
+    "safetyBackup": {
+      "fileName": "english-focus-backup-pre-restore-20260719200500000.json",
+      "createdAt": "2026-07-19T20:05:00.000Z",
+      "reason": "pre-restore",
+      "sizeBytes": 1024,
+      "backupVersion": "1.0.0",
+      "databaseSchemaVersion": "3",
+      "checksum": "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+      "counts": {
+        "vocabularyEntries": 1,
+        "vocabularyMetadata": 1,
+        "settingsRecords": 1
+      }
+    }
+  },
+  "unavailableBackup": {
+    "fileName": "damaged.json",
+    "sizeBytes": 14,
+    "issue": "This backup file is incomplete or damaged."
+  },
+  "diagnosticReport": {
+    "generatedAt": "2026-07-19T20:10:00.000Z",
+    "appVersion": "1.0.0",
+    "databaseSchemaVersion": "3",
+    "overallStatus": "healthy",
+    "checks": [
+      {
+        "id": "sqlite-integrity",
+        "title": "SQLite integrity",
+        "status": "passed",
+        "summary": "SQLite quick_check reported no structural problems.",
+        "details": [],
+        "repairable": false
+      }
+    ],
+    "counts": {
+      "vocabularyEntries": 2,
+      "vocabularyMetadata": 2,
+      "settingsRecords": 1,
+      "retainedBackups": 1,
+      "invalidVocabularyJson": 0,
+      "invalidMetadataJson": 0,
+      "invalidSettingsJson": 0,
+      "normalizedWordMismatches": 0
+    },
+    "recommendations": ["No action is required. Local storage is healthy."]
+  },
+  "safeMaintenanceResult": {
+    "completedAt": "2026-07-19T20:10:00.000Z",
+    "actions": ["Reapplied versioned database migrations."],
+    "report": {
+      "generatedAt": "2026-07-19T20:10:00.000Z",
+      "appVersion": "1.0.0",
+      "databaseSchemaVersion": "3",
+      "overallStatus": "healthy",
+      "checks": [
+        {
+          "id": "schema-version",
+          "title": "Database schema version",
+          "status": "passed",
+          "summary": "Schema version 3 matches this application build.",
+          "details": [],
+          "repairable": false
+        }
+      ],
+      "counts": {
+        "vocabularyEntries": 2,
+        "vocabularyMetadata": 2,
+        "settingsRecords": 1,
+        "retainedBackups": 1,
+        "invalidVocabularyJson": 0,
+        "invalidMetadataJson": 0,
+        "invalidSettingsJson": 0,
+        "normalizedWordMismatches": 0
+      },
+      "recommendations": ["No action is required. Local storage is healthy."]
+    }
+  },
+  "diagnosticScanCoverage": {
+    "complete": false,
+    "issues": ["Recent activity could not be scanned completely."]
+  },
+  "localDataSnapshot": {
+    "studyMetadataRecords": 2,
+    "userVocabularyEntries": 1,
+    "overrideVocabularyEntries": 1,
+    "settingsRecords": 1,
+    "activityRecords": 4,
+    "backupFiles": 1
+  },
+  "resetLocalDataResult": {
+    "deleted": {
+      "studyMetadataRecords": 0,
+      "userVocabularyEntries": 0,
+      "overrideVocabularyEntries": 0,
+      "settingsRecords": 1,
+      "activityRecords": 4,
+      "backupFiles": 0
+    },
+    "safetyBackup": null,
+    "backupDeletion": {
+      "requested": false,
+      "deletedFiles": 0,
+      "failedFiles": 0
+    }
+  }
+}

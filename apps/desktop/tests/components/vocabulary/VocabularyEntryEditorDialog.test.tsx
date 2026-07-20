@@ -5,7 +5,7 @@ import { maintainVocabularyEntry } from "../../../src/content";
 import { VocabularyEntryEditorDialog } from "../../../src/modules/vocabulary/components";
 
 describe("VocabularyEntryEditorDialog", () => {
-  it("renders the direct editor for essential vocabulary content", () => {
+  it("renders the direct editor without exposing storage-layer terminology", () => {
     const markup = renderToStaticMarkup(
       <VocabularyEntryEditorDialog
         entry={maintainVocabularyEntry}
@@ -18,8 +18,8 @@ describe("VocabularyEntryEditorDialog", () => {
     );
 
     expect(markup).toContain("Edit vocabulary entry");
-    expect(markup).toContain("Creates local override");
-    expect(markup).toContain("The bundled core record stays unchanged.");
+    expect(markup).not.toContain("Creates local override");
+    expect(markup).not.toContain("The bundled core record stays unchanged.");
     expect(markup).toContain("Turkish translations");
     expect(markup).toContain("Pronunciation");
     expect(markup).toContain("Word forms");

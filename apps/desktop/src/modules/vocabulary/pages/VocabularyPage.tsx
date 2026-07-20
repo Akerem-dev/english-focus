@@ -32,6 +32,13 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
         matchKind: result.matchKind,
         matchedForm: result.matchedForm
       };
+    case "matches":
+      return {
+        kind: "matches",
+        query: result.query,
+        normalizedQuery: result.normalizedQuery,
+        matches: result.matches
+      };
     case "invalid":
       return {
         kind: "invalid",
@@ -44,7 +51,8 @@ function toPageState(result: SearchVocabularyResult): VocabularySearchState {
         kind: "not-found",
         query: result.query,
         normalizedQuery: result.normalizedQuery,
-        suggestions: result.suggestions
+        suggestions: result.suggestions,
+        canCreateEntry: result.canCreateEntry
       };
   }
 }
@@ -57,7 +65,13 @@ export function VocabularyPage() {
   const navigate = useNavigate();
   const { contentSource, saveEntry, storedEntries } = useVocabularyRepository();
   const { activity } = useActivity();
-  const { getMetadata, recordView, saveMetadata, status: metadataStatus } = useVocabularyMetadata();
+  const {
+    getMetadata,
+    metadata,
+    recordView,
+    saveMetadata,
+    status: metadataStatus
+  } = useVocabularyMetadata();
   const { showToast } = useToast();
   const { exporter } = useFileTransfer();
   const { runUndoableAction } = useUndo();
@@ -75,7 +89,10 @@ export function VocabularyPage() {
   const searchSequence = useRef(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const deepLinkHandled = useRef<string | undefined>(undefined);
-  const searchVocabulary = useMemo(() => new SearchVocabulary(contentSource), [contentSource]);
+  const searchVocabulary = useMemo(
+    () => new SearchVocabulary(contentSource, metadata),
+    [contentSource, metadata]
+  );
 
   const recentWords = useMemo(() => {
     const seen = new Set<string>();

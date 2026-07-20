@@ -19,6 +19,8 @@ describe("LibraryPage", () => {
     expect(markup).toContain("<strong>1</strong><span>entry</span>");
     expect(markup).toContain("Browse library by first letter");
     expect(markup).toContain("Show words starting with M");
+    expect(markup).toContain('class="library-table__level-heading"');
+    expect(markup).toContain('class="library-table__level"');
     expect(markup).toContain('data-level="B2"');
     expect(markup).toContain('aria-label="Open maintain details"');
     expect(markup).toContain('class="library-selection__control"');

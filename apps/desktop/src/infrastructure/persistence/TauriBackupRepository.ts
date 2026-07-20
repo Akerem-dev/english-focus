@@ -4,12 +4,14 @@ import type {
   BackupReason,
   BackupRepository,
   BackupRestoreResult,
-  BackupValidationResult
+  BackupValidationResult,
+  UnavailableBackup
 } from "@platform/domain";
 import {
   backupDescriptorSchema,
   backupRestoreResultSchema,
-  backupValidationResultSchema
+  backupValidationResultSchema,
+  unavailableBackupSchema
 } from "@platform/schemas";
 
 function isTauriRuntime(): boolean {
@@ -20,6 +22,19 @@ function parseDescriptor(payload: unknown): BackupDescriptor {
   return Object.freeze(backupDescriptorSchema.parse(payload));
 }
 
+function parseDescriptorList(payloads: readonly unknown[]): readonly BackupDescriptor[] {
+  return Object.freeze(
+    payloads.flatMap((payload) => {
+      const parsed = backupDescriptorSchema.safeParse(payload);
+      return parsed.success ? [Object.freeze(parsed.data)] : [];
+    })
+  );
+}
+
+function parseUnavailableBackup(payload: unknown): UnavailableBackup {
+  return Object.freeze(unavailableBackupSchema.parse(payload));
+}
+
 export class TauriBackupRepository implements BackupRepository {
   async listBackups(): Promise<readonly BackupDescriptor[]> {
     if (!isTauriRuntime()) {
@@ -27,7 +42,16 @@ export class TauriBackupRepository implements BackupRepository {
     }
 
     const payloads = await invoke<readonly unknown[]>("list_backups");
-    return Object.freeze(payloads.map(parseDescriptor));
+    return parseDescriptorList(payloads);
+  }
+
+  async listUnavailableBackups(): Promise<readonly UnavailableBackup[]> {
+    if (!isTauriRuntime()) {
+      return [];
+    }
+
+    const payloads = await invoke<readonly unknown[]>("list_unavailable_backups");
+    return Object.freeze(payloads.map(parseUnavailableBackup));
   }
 
   async createBackup(reason: BackupReason, createdAt: string): Promise<BackupDescriptor> {
@@ -35,7 +59,10 @@ export class TauriBackupRepository implements BackupRepository {
       throw new Error("Backup creation is available only in the English Focus desktop app.");
     }
 
-    const payload = await invoke<unknown>("create_backup", { reason, createdAt });
+    const payload = await invoke<unknown>("create_backup", {
+      reason,
+      createdAt
+    });
     return parseDescriptor(payload);
   }
 
@@ -56,7 +83,10 @@ export class TauriBackupRepository implements BackupRepository {
       throw new Error("Backup restore is available only in the English Focus desktop app.");
     }
 
-    const payload = await invoke<unknown>("restore_backup", { fileName, restoredAt });
+    const payload = await invoke<unknown>("restore_backup", {
+      fileName,
+      restoredAt
+    });
     return Object.freeze(backupRestoreResultSchema.parse(payload));
   }
 
@@ -66,5 +96,13 @@ export class TauriBackupRepository implements BackupRepository {
     }
 
     await invoke("delete_backup", { fileName });
+  }
+
+  async deleteUnavailableBackup(fileName: string): Promise<void> {
+    if (!isTauriRuntime()) {
+      throw new Error("Backup deletion is available only in the English Focus desktop app.");
+    }
+
+    await invoke("delete_unavailable_backup", { fileName });
   }
 }

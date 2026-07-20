@@ -4,10 +4,78 @@ import type {
   DiagnosticsRepository,
   SafeMaintenanceResult
 } from "@platform/domain";
-import { diagnosticReportSchema, safeMaintenanceResultSchema } from "@platform/schemas";
+import {
+  diagnosticReportSchema,
+  diagnosticScanCoverageSchema,
+  safeMaintenanceResultSchema
+} from "@platform/schemas";
+
+interface DiagnosticScanCoverage {
+  readonly complete: boolean;
+  readonly issues: readonly string[];
+}
+
+const COVERAGE_RECOMMENDATION =
+  "Close and reopen English Focus, then check app health again. If the problem remains, validate a recent backup before changing local data.";
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+}
+
+async function loadDiagnosticScanCoverage(): Promise<DiagnosticScanCoverage> {
+  try {
+    const payload = await invoke<unknown>("check_diagnostic_scan_coverage");
+    return Object.freeze(diagnosticScanCoverageSchema.parse(payload));
+  } catch {
+    return Object.freeze({
+      complete: false,
+      issues: Object.freeze(["The diagnostic coverage check could not be completed."])
+    });
+  }
+}
+
+function keepActionableRecommendations(recommendations: readonly string[]): readonly string[] {
+  const actionable = recommendations.filter(
+    (recommendation) => !recommendation.toLowerCase().startsWith("no action is required")
+  );
+
+  return Object.freeze(
+    actionable.includes(COVERAGE_RECOMMENDATION)
+      ? actionable
+      : [...actionable, COVERAGE_RECOMMENDATION]
+  );
+}
+
+export function applyDiagnosticScanCoverage(
+  report: DiagnosticReport,
+  coverage: DiagnosticScanCoverage
+): DiagnosticReport {
+  if (coverage.complete) {
+    return report;
+  }
+
+  const details =
+    coverage.issues.length === 0
+      ? Object.freeze(["One or more local data checks did not finish."])
+      : Object.freeze([...coverage.issues]);
+  const coverageCheck = Object.freeze({
+    id: "diagnostic-coverage",
+    title: "Diagnostic coverage",
+    status: "failed" as const,
+    summary: "One or more local data checks could not be completed.",
+    details,
+    repairable: false
+  });
+
+  return Object.freeze({
+    ...report,
+    overallStatus: "critical",
+    checks: Object.freeze([
+      ...report.checks.filter((check) => check.id !== coverageCheck.id),
+      coverageCheck
+    ]),
+    recommendations: keepActionableRecommendations(report.recommendations)
+  });
 }
 
 export class TauriDiagnosticsRepository implements DiagnosticsRepository {
@@ -42,10 +110,14 @@ export class TauriDiagnosticsRepository implements DiagnosticsRepository {
       });
     }
 
-    const payload = await invoke<unknown>("run_diagnostics", {
-      generatedAt: new Date().toISOString()
-    });
-    return Object.freeze(diagnosticReportSchema.parse(payload));
+    const [payload, coverage] = await Promise.all([
+      invoke<unknown>("run_diagnostics", {
+        generatedAt: new Date().toISOString()
+      }),
+      loadDiagnosticScanCoverage()
+    ]);
+    const report = Object.freeze(diagnosticReportSchema.parse(payload));
+    return applyDiagnosticScanCoverage(report, coverage);
   }
 
   async runSafeMaintenance(completedAt: string): Promise<SafeMaintenanceResult> {
@@ -54,6 +126,12 @@ export class TauriDiagnosticsRepository implements DiagnosticsRepository {
     }
 
     const payload = await invoke<unknown>("run_safe_maintenance", { completedAt });
-    return Object.freeze(safeMaintenanceResultSchema.parse(payload));
+    const result = Object.freeze(safeMaintenanceResultSchema.parse(payload));
+    const coverage = await loadDiagnosticScanCoverage();
+
+    return Object.freeze({
+      ...result,
+      report: applyDiagnosticScanCoverage(result.report, coverage)
+    });
   }
 }

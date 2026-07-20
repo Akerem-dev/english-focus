@@ -3,7 +3,17 @@ import { dirname, resolve } from "node:path";
 import { format, resolveConfig } from "prettier";
 
 import {
+  activityRecordNativeCompatibilitySchema,
   appSettingsNativeCompatibilitySchema,
+  backupDescriptorSchema,
+  backupRestoreResultSchema,
+  backupValidationResultNativeCompatibilitySchema,
+  diagnosticReportSchema,
+  diagnosticScanCoverageSchema,
+  localDataSnapshotSchema,
+  resetLocalDataResultNativeCompatibilitySchema,
+  safeMaintenanceResultSchema,
+  unavailableBackupSchema,
   vocabularyEntryNativeCompatibilitySchema,
   vocabularyUserMetadataSchema
 } from "@platform/schemas";
@@ -24,6 +34,46 @@ const outputs = [
   {
     path: "apps/desktop/src-tauri/schemas/vocabulary-user-metadata.schema.json",
     schema: vocabularyUserMetadataSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/activity-record.schema.json",
+    schema: activityRecordNativeCompatibilitySchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/backup-descriptor.schema.json",
+    schema: backupDescriptorSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/backup-validation-result.schema.json",
+    schema: backupValidationResultNativeCompatibilitySchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/backup-restore-result.schema.json",
+    schema: backupRestoreResultSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/unavailable-backup.schema.json",
+    schema: unavailableBackupSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/diagnostic-report.schema.json",
+    schema: diagnosticReportSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/safe-maintenance-result.schema.json",
+    schema: safeMaintenanceResultSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/diagnostic-scan-coverage.schema.json",
+    schema: diagnosticScanCoverageSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/local-data-snapshot.schema.json",
+    schema: localDataSnapshotSchema
+  },
+  {
+    path: "apps/desktop/src-tauri/schemas/reset-local-data-result.schema.json",
+    schema: resetLocalDataResultNativeCompatibilitySchema
   }
 ] as const;
 

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "vocabulary-viewed",
+        "favorite-changed",
+        "study-details-saved",
+        "vocabulary-saved",
+        "entry-kept",
+        "export-created",
+        "clipboard-copied",
+        "settings-updated",
+        "backup-created",
+        "backup-restored",
+        "backup-deleted",
+        "diagnostics-run",
+        "local-data-reset",
+        "operation-warning",
+        "operation-failed"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "enum": ["vocabulary", "library", "settings", "backup", "system"]
+    },
+    "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "target": {
+      "anyOf": [{ "type": "string", "minLength": 1, "maxLength": 160 }, { "type": "null" }]
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+    }
+  },
+  "required": ["id", "kind", "scope", "label", "occurredAt"],
+  "additionalProperties": false
+}

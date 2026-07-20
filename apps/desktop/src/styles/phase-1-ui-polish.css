@@ -1,0 +1,172 @@
+.library-word-link {
+  align-items: flex-start;
+}
+
+.library-word-link svg {
+  margin-top: 0.15rem;
+}
+
+.library-table__level,
+.library-table__level-heading {
+  justify-self: start;
+  text-align: left;
+}
+
+.library-table__level .cefr-badge {
+  min-width: 0;
+  min-height: 0;
+  justify-content: flex-start;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: var(--font-size-2);
+  line-height: var(--line-height-tight);
+  box-shadow: none;
+}
+
+.activity-section__compact-summary {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border-width-hairline) solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.activity-section--focused .activity-section__error {
+  border-color: color-mix(in srgb, var(--color-warning) 42%, var(--color-border));
+  background: color-mix(in srgb, var(--color-warning-soft) 60%, var(--color-surface));
+  color: var(--color-warning);
+}
+
+.diagnostics-technical-details {
+  padding-top: var(--space-3);
+}
+
+.diagnostics-technical-details > summary {
+  min-height: 4.25rem;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid var(--color-border-strong);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-subtle);
+  color: var(--color-text);
+  transition:
+    border-color var(--duration-fast) var(--easing-standard),
+    background-color var(--duration-fast) var(--easing-standard),
+    box-shadow var(--duration-fast) var(--easing-standard);
+}
+
+.diagnostics-technical-details > summary:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border-strong));
+  background: color-mix(in srgb, var(--color-accent-soft) 32%, var(--color-surface));
+  box-shadow: var(--shadow-low);
+}
+
+.diagnostics-technical-details > summary:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.diagnostics-technical-details__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.diagnostics-technical-details__trigger svg {
+  transition: transform var(--duration-fast) var(--easing-standard);
+}
+
+.diagnostics-technical-details[open] .diagnostics-technical-details__trigger svg {
+  transform: rotate(180deg);
+}
+
+.settings-about-footer .settings-about {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.settings-about-footer .settings-about__header {
+  display: flex;
+  align-items: center;
+}
+
+.settings-about-footer .settings-about__summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+  padding-left: calc(1.75rem + var(--space-2));
+}
+
+.settings-about-footer .settings-about__item {
+  display: grid;
+  min-height: 2.75rem;
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-2);
+  border-bottom: var(--border-width-hairline) solid var(--color-border);
+}
+
+.settings-about-footer .settings-about__item:last-child {
+  border-bottom: 0;
+}
+
+.settings-about-footer .settings-about__item dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-1);
+}
+
+.settings-about-footer .settings-about__item dd {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.settings-about-footer .settings-about__details {
+  width: 100%;
+  min-width: 0;
+  justify-self: stretch;
+  margin-left: 0;
+  padding-left: calc(1.75rem + var(--space-2));
+}
+
+.settings-about-footer .settings-about__details > summary {
+  width: fit-content;
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 42rem) {
+  .activity-section__compact-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .settings-about-footer .settings-about__summary,
+  .settings-about-footer .settings-about__details {
+    padding-left: 0;
+  }
+
+  .settings-about-footer .settings-about__item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagnostics-technical-details > summary,
+  .diagnostics-technical-details__trigger svg {
+    transition: none;
+  }
+}

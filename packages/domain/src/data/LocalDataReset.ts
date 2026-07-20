@@ -26,7 +26,14 @@ export interface ResetLocalDataInput {
   readonly requestedAt: string;
 }
 
+export interface BackupDeletionResult {
+  readonly requested: boolean;
+  readonly deletedFiles: number;
+  readonly failedFiles: number;
+}
+
 export interface ResetLocalDataResult {
   readonly deleted: LocalDataSnapshot;
   readonly safetyBackup?: BackupDescriptor | undefined;
+  readonly backupDeletion: BackupDeletionResult;
 }

@@ -43,3 +43,10 @@ export const safeMaintenanceResultSchema = z
     report: diagnosticReportSchema
   })
   .strict();
+
+export const diagnosticScanCoverageSchema = z
+  .object({
+    complete: z.boolean(),
+    issues: z.array(z.string().trim().min(1))
+  })
+  .strict();

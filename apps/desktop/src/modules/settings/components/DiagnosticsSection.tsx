@@ -130,7 +130,6 @@ export function DiagnosticsSection({ repository: providedRepository }: Diagnosti
             }}
             presentation={presentDiagnosticHealth(report)}
             repairing={status === "maintaining"}
-            report={report}
           />
           <DiagnosticTechnicalDetails
             copyStatus={copyStatus}

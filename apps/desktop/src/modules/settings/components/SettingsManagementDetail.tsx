@@ -12,7 +12,8 @@ const MANAGEMENT_VIEW_DETAILS: Record<
 > = {
   activity: {
     title: "Recent activity",
-    description: "Review the small privacy-safe timeline stored only on this device."
+    description:
+      "See the words and app actions you used recently. This history stays on this device."
   },
   diagnostics: {
     title: "App health",
@@ -41,10 +42,10 @@ export function SettingsManagementDetail({ onBack, view }: SettingsManagementVie
     <div className="settings-management-view">
       <header className="settings-management-view__header">
         <Button onClick={onBack} size="small" variant="ghost">
-          ← Back to privacy & maintenance
+          ← Back to privacy &amp; maintenance
         </Button>
         <div>
-          <p className="route-page__eyebrow">Privacy & maintenance</p>
+          <p className="route-page__eyebrow">Privacy &amp; maintenance</p>
           <h2 ref={headingRef} tabIndex={-1}>
             {details.title}
           </h2>

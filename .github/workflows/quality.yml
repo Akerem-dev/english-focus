@@ -35,16 +35,98 @@ jobs:
         run: npm run check:dead-code
 
       - name: Check formatting
-        run: npm run format:check
+        id: formatting
+        continue-on-error: true
+        run: |
+          set +e
+          npm run format:check
+          exit_code=$?
+          echo "exitCode=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Prepare formatting failure patch
+        if: steps.formatting.outputs.exitCode != '0'
+        run: |
+          npm run format
+          git diff --binary > formatting.patch
+
+      - name: Upload formatting failure patch
+        if: steps.formatting.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: formatting-failure-patch
+          path: formatting.patch
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm formatting
+        if: steps.formatting.outputs.exitCode != '0'
+        run: exit 1
 
       - name: Lint
         run: npm run lint
 
+      - name: Check native contracts
+        run: npm run check:native-schemas
+
       - name: Typecheck
-        run: npm run typecheck
+        id: typecheck
+        continue-on-error: true
+        run: |
+          set +e
+          npm run typecheck > typecheck.log 2>&1
+          exit_code=$?
+          cat typecheck.log
+          echo "exitCode=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload typecheck failure log
+        if: steps.typecheck.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-failure-log
+          path: typecheck.log
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm typecheck
+        if: steps.typecheck.outputs.exitCode != '0'
+        run: exit 1
 
       - name: Run tests
         run: npm run test
 
       - name: Build
         run: npm run build
+
+  native-tests:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Run native tests
+        id: native
+        continue-on-error: true
+        shell: powershell
+        run: |
+          cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml *> native-test.log
+          "exitCode=$LASTEXITCODE" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload native failure log
+        if: steps.native.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-test-failure-log
+          path: native-test.log
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm native tests
+        if: steps.native.outputs.exitCode != '0'
+        shell: powershell
+        run: exit 1

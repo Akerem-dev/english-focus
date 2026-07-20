@@ -40,4 +40,14 @@ describe("10,000-entry vocabulary search", () => {
 
     expect(performance.now() - startedAt).toBeLessThan(250);
   });
+
+  it("returns ranked prefix matches within the local-search budget", () => {
+    const search = new SearchVocabulary(createCatalog(10_000));
+    const startedAt = performance.now();
+
+    const result = search.execute("wordaa");
+
+    expect(result.kind).toBe("matches");
+    expect(performance.now() - startedAt).toBeLessThan(250);
+  });
 });
