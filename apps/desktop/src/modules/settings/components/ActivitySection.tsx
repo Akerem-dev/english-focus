@@ -10,11 +10,12 @@ interface ActivitySectionProps {
 }
 
 export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
-  const { activity, clearActivity, error, status } = useActivity();
+  const { activity, clearActivity, error, refreshActivity, status } = useActivity();
   const { showToast } = useToast();
   const [clearReviewOpen, setClearReviewOpen] = useState(false);
 
   const isBusy = status === "loading" || status === "recording" || status === "clearing";
+  const loadingFailed = status === "error";
   const countLabel =
     status === "loading"
       ? "Loading"
@@ -63,15 +64,32 @@ export function ActivitySection({ showHeading = true }: ActivitySectionProps) {
         <section className="activity-section__error" role="alert">
           <AppIcon name="warning" size={18} />
           <div>
-            <strong>Some older activity could not be shown.</strong>
+            <strong>
+              {loadingFailed
+                ? "Recent activity is unavailable right now."
+                : "Some older activity could not be shown."}
+            </strong>
             <p>
-              Your words, notes, settings, and backups are safe. You can keep using the app normally.
+              {loadingFailed
+                ? "Your saved words and settings are safe. Try loading the activity list again."
+                : "Your words, notes, settings, and backups are safe. You can keep using the app normally."}
             </p>
+            {loadingFailed ? (
+              <Button
+                onClick={() => {
+                  void refreshActivity().catch(() => undefined);
+                }}
+                size="small"
+                variant="secondary"
+              >
+                Try again
+              </Button>
+            ) : null}
           </div>
         </section>
       )}
 
-      {activity.length === 0 ? (
+      {loadingFailed ? null : activity.length === 0 ? (
         <div className="activity-section__empty">
           <AppIcon name="book-open" size={22} />
           <div>
