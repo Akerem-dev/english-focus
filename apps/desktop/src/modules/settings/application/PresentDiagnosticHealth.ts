@@ -93,7 +93,7 @@ function reportCopy(
 
   if (status === "attention") {
     return {
-      title: "A small issue needs attention",
+      title: "A quick check is recommended",
       description:
         backupState === "unavailable"
           ? "Your app data is available, but backup storage could not be checked right now."
@@ -160,7 +160,7 @@ function nextStepFact(
       : {
           id: "next-step",
           label: "Next step",
-          value: "Protect the current data first",
+          value: "Review details before changes",
           tone: "problem"
         };
   }
