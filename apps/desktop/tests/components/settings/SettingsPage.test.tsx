@@ -55,12 +55,15 @@ describe("SettingsPage", () => {
     expect(markup).not.toContain("Review full local reset");
   });
 
-  it("moves compact application information below the primary workspace", () => {
+  it("moves aligned application information below the primary workspace", () => {
     expect(markup).toContain('class="settings-about-footer"');
     expect(markup).toContain("About this app");
+    expect(markup).toContain("Application");
     expect(markup).toContain("English Focus");
+    expect(markup).toContain("Version");
     expect(markup).toContain("1.0.0");
-    expect(markup).toContain("Local SQLite storage");
+    expect(markup).toContain("Storage");
+    expect(markup).toContain("Local SQLite");
     expect(markup).toContain("View version details");
   });
 
