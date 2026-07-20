@@ -27,15 +27,10 @@ const MANAGEMENT_VIEW_DETAILS: Record<
 
 interface SettingsManagementViewProps {
   readonly onBack: () => void;
-  readonly onOpenBackups: () => void;
   readonly view: SettingsManagementView;
 }
 
-export function SettingsManagementDetail({
-  onBack,
-  onOpenBackups,
-  view
-}: SettingsManagementViewProps) {
+export function SettingsManagementDetail({ onBack, view }: SettingsManagementViewProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const details = MANAGEMENT_VIEW_DETAILS[view];
 
@@ -59,9 +54,7 @@ export function SettingsManagementDetail({
       </header>
       <div className="settings-management-view__body">
         {view === "activity" ? <ActivitySection showHeading={false} /> : null}
-        {view === "diagnostics" ? (
-          <DiagnosticsSection onOpenBackups={onOpenBackups} />
-        ) : null}
+        {view === "diagnostics" ? <DiagnosticsSection /> : null}
         {view === "local-data" ? <LocalDataControlsSection showHeading={false} /> : null}
       </div>
     </div>
