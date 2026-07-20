@@ -6,7 +6,11 @@ import { DiagnosticHealthResult } from "../../../src/modules/settings/components
 
 function renderResult(presentation: DiagnosticHealthPresentation): string {
   return renderToStaticMarkup(
-    <DiagnosticHealthResult onRepair={() => undefined} presentation={presentation} repairing={false} />
+    <DiagnosticHealthResult
+      onRepair={() => undefined}
+      presentation={presentation}
+      repairing={false}
+    />
   );
 }
 
