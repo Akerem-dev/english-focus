@@ -3,7 +3,6 @@ import { AppIcon } from "../../../design-system";
 import type { DiagnosticHealthPresentation } from "../application";
 
 interface DiagnosticHealthResultProps {
-  readonly onOpenBackups: () => void;
   readonly onRepair: () => void;
   readonly presentation: DiagnosticHealthPresentation;
   readonly repairing: boolean;
@@ -22,7 +21,6 @@ function factIconName(tone: DiagnosticHealthPresentation["facts"][number]["tone"
 }
 
 export function DiagnosticHealthResult({
-  onOpenBackups,
   onRepair,
   presentation,
   repairing
@@ -57,19 +55,14 @@ export function DiagnosticHealthResult({
 
       {presentation.status === "healthy" && presentation.backupState === "missing" ? (
         <section className="diagnostics-backup-recommendation">
-          <div className="diagnostics-backup-recommendation__copy">
-            <AppIcon name="download" size={19} />
-            <div>
-              <strong>Create your first backup</strong>
-              <p>
-                A backup is optional, but it gives you a recovery point before large imports or
-                major edits.
-              </p>
-            </div>
+          <AppIcon name="download" size={19} />
+          <div>
+            <strong>Create your first backup</strong>
+            <p>
+              A backup is optional, but it gives you a recovery point before large imports or major
+              edits. Open Data &amp; backups when you are ready.
+            </p>
           </div>
-          <Button onClick={onOpenBackups} variant="secondary">
-            Open Data &amp; backups
-          </Button>
         </section>
       ) : null}
 
@@ -105,9 +98,6 @@ export function DiagnosticHealthResult({
               newest backup that passes the check.
             </p>
           </div>
-          <Button onClick={onOpenBackups} variant="secondary">
-            Open backups
-          </Button>
         </section>
       ) : (
         <section className="diagnostics-recovery-guidance">
