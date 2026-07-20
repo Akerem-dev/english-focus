@@ -15,16 +15,12 @@ import { DiagnosticHealthResult } from "./DiagnosticHealthResult";
 import { DiagnosticTechnicalDetails } from "./DiagnosticTechnicalDetails";
 
 interface DiagnosticsSectionProps {
-  readonly onOpenBackups?: (() => void) | undefined;
   readonly repository?: DiagnosticsRepository;
 }
 
 type DiagnosticsStatus = "idle" | "running" | "ready" | "maintaining" | "error";
 
-export function DiagnosticsSection({
-  onOpenBackups = () => undefined,
-  repository: providedRepository
-}: DiagnosticsSectionProps) {
+export function DiagnosticsSection({ repository: providedRepository }: DiagnosticsSectionProps) {
   const clipboard = useClipboard();
   const { diagnosticsRepository } = useMaintenance();
   const repository = providedRepository ?? diagnosticsRepository;
@@ -129,7 +125,6 @@ export function DiagnosticsSection({
       ) : (
         <>
           <DiagnosticHealthResult
-            onOpenBackups={onOpenBackups}
             onRepair={() => {
               void handleSafeMaintenance();
             }}
