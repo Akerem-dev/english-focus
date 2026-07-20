@@ -31,10 +31,15 @@ export function ActivityProvider({ children }: PropsWithChildren) {
     setError(undefined);
 
     try {
-      const listed = await repository.listActivity(MAX_VISIBLE_ACTIVITY);
-      setActivity(listed);
+      const result = await repository.listActivity(MAX_VISIBLE_ACTIVITY);
+      setActivity(result.records);
+      setError(
+        result.skippedCount > 0
+          ? `${result.skippedCount} older activity record could not be shown.`
+          : undefined
+      );
       setStatus("ready");
-      return listed;
+      return result.records;
     } catch (cause) {
       const message =
         cause instanceof Error ? cause.message : "Recent activity could not be loaded.";
