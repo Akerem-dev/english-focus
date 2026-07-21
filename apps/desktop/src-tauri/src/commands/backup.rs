@@ -121,7 +121,7 @@ fn backup_directory(app: &AppHandle) -> Result<PathBuf, String> {
 }
 
 fn validate_reason(reason: &str) -> Result<(), String> {
-    if reason == "manual" || reason == "automatic" || reason == "pre-restore" {
+    if matches!(reason, "manual" | "automatic" | "pre-restore") {
         Ok(())
     } else {
         Err("Backup reason must be manual, automatic, or pre-restore.".to_string())
@@ -174,6 +174,22 @@ fn checksum_for(algorithm: &str, bytes: &[u8]) -> Option<String> {
     }
 }
 
+fn validate_backup_entry(record: &BackupVocabularyEntry) -> Result<(), String> {
+    if record.layer != "user" && record.layer != "override" {
+        return Err("Stored vocabulary has an invalid storage layer.".to_string());
+    }
+
+    validate_vocabulary_entry(&record.entry)
+        .map_err(|error| format!("Stored vocabulary cannot be backed up safely: {error}"))
+}
+
+fn validate_backup_metadata(record: &BackupVocabularyMetadata) -> Result<(), String> {
+    let value = serde_json::to_value(record)
+        .map_err(|error| format!("Stored vocabulary metadata is invalid: {error}"))?;
+    validate_vocabulary_user_metadata(&value)
+        .map_err(|error| format!("Stored vocabulary metadata cannot be backed up safely: {error}"))
+}
+
 fn read_vocabulary_entries(connection: &Connection) -> Result<Vec<BackupVocabularyEntry>, String> {
     let mut statement = connection
         .prepare("SELECT entry_json, layer FROM vocabulary_entries ORDER BY normalized_word ASC")
@@ -189,7 +205,9 @@ fn read_vocabulary_entries(connection: &Connection) -> Result<Vec<BackupVocabula
             row.map_err(|error| format!("Vocabulary backup row could not be read: {error}"))?;
         let entry = serde_json::from_str(&entry_json)
             .map_err(|error| format!("Stored vocabulary JSON is invalid: {error}"))?;
-        Ok(BackupVocabularyEntry { entry, layer })
+        let record = BackupVocabularyEntry { entry, layer };
+        validate_backup_entry(&record)?;
+        Ok(record)
     })
     .collect()
 }
@@ -248,8 +266,7 @@ fn read_vocabulary_metadata(
         ) = row.map_err(|error| format!("Metadata backup row could not be read: {error}"))?;
         let tags = serde_json::from_str(&tags_json)
             .map_err(|error| format!("Stored metadata tags are invalid: {error}"))?;
-
-        Ok(BackupVocabularyMetadata {
+        let record = BackupVocabularyMetadata {
             normalized_word,
             favorite: favorite != 0,
             tags,
@@ -260,7 +277,9 @@ fn read_vocabulary_metadata(
             view_count,
             created_at,
             updated_at,
-        })
+        };
+        validate_backup_metadata(&record)?;
+        Ok(record)
     })
     .collect()
 }
@@ -277,8 +296,12 @@ fn read_settings(connection: &Connection) -> Result<Option<Value>, String> {
 
     settings_json
         .map(|json| {
-            serde_json::from_str(&json)
-                .map_err(|error| format!("Stored application settings are invalid: {error}"))
+            let settings: Value = serde_json::from_str(&json)
+                .map_err(|error| format!("Stored application settings are invalid: {error}"))?;
+            validate_app_settings(&settings).map_err(|error| {
+                format!("Stored application settings cannot be backed up safely: {error}")
+            })?;
+            Ok(settings)
         })
         .transpose()
 }
@@ -288,6 +311,7 @@ fn build_manifest(
     reason: &str,
     created_at: &str,
 ) -> Result<BackupManifest, String> {
+    validate_reason(reason)?;
     let data = BackupData {
         entries: read_vocabulary_entries(connection)?,
         metadata: read_vocabulary_metadata(connection)?,
@@ -296,7 +320,7 @@ fn build_manifest(
     let counts = BackupCounts {
         vocabulary_entries: data.entries.len(),
         vocabulary_metadata: data.metadata.len(),
-        settings_records: if data.settings.is_some() { 1 } else { 0 },
+        settings_records: usize::from(data.settings.is_some()),
     };
     let checksum_source = serde_json::to_vec(&data)
         .map_err(|error| format!("Backup data could not be serialized: {error}"))?;
@@ -314,6 +338,17 @@ fn build_manifest(
             .ok_or_else(|| "Backup checksum algorithm is unavailable.".to_string())?,
         data,
     })
+}
+
+fn serialized_manifest(manifest: &BackupManifest) -> Result<Vec<u8>, String> {
+    let contents = serde_json::to_vec_pretty(manifest)
+        .map_err(|error| format!("Backup file could not be serialized: {error}"))?;
+
+    if contents.len() as u64 > MAX_BACKUP_BYTES {
+        return Err("The backup would exceed the 32 MB safety limit.".to_string());
+    }
+
+    Ok(contents)
 }
 
 fn descriptor_from_manifest(
@@ -334,11 +369,10 @@ fn descriptor_from_manifest(
 }
 
 fn write_manifest(directory: &Path, manifest: &BackupManifest) -> Result<BackupDescriptor, String> {
+    let contents = serialized_manifest(manifest)?;
     let file_name = filename_for(&manifest.reason, &manifest.created_at);
     let target = directory.join(&file_name);
     let temporary = directory.join(format!("{file_name}.tmp"));
-    let contents = serde_json::to_vec_pretty(manifest)
-        .map_err(|error| format!("Backup file could not be serialized: {error}"))?;
 
     if target.exists() {
         return Err(
@@ -356,6 +390,7 @@ fn write_manifest(directory: &Path, manifest: &BackupManifest) -> Result<BackupD
         .write_all(&contents)
         .and_then(|_| temporary_file.sync_all());
     drop(temporary_file);
+
     if let Err(error) = write_result {
         let _ = fs::remove_file(&temporary);
         return Err(format!(
@@ -385,6 +420,11 @@ fn read_manifest(path: &Path) -> Result<(BackupManifest, u64), String> {
 
     let contents =
         fs::read(path).map_err(|error| format!("Backup file could not be read: {error}"))?;
+
+    if contents.len() as u64 > MAX_BACKUP_BYTES {
+        return Err("The backup file exceeds the 32 MB safety limit.".to_string());
+    }
+
     let manifest = serde_json::from_slice(&contents)
         .map_err(|error| format!("Backup JSON is invalid: {error}"))?;
     Ok((manifest, metadata.len()))
@@ -420,11 +460,7 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
     let expected_counts = BackupCounts {
         vocabulary_entries: manifest.data.entries.len(),
         vocabulary_metadata: manifest.data.metadata.len(),
-        settings_records: if manifest.data.settings.is_some() {
-            1
-        } else {
-            0
-        },
+        settings_records: usize::from(manifest.data.settings.is_some()),
     };
     if manifest.counts.vocabulary_entries != expected_counts.vocabulary_entries
         || manifest.counts.vocabulary_metadata != expected_counts.vocabulary_metadata
@@ -445,27 +481,15 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
     }
 
     for record in &manifest.data.entries {
-        if record.layer != "user" && record.layer != "override" {
-            issues.push("A vocabulary record has an invalid storage layer.".to_string());
-            break;
-        }
-
-        if let Err(error) = validate_vocabulary_entry(&record.entry) {
-            issues.push(format!("A vocabulary record is invalid: {error}"));
+        if let Err(error) = validate_backup_entry(record) {
+            issues.push(error);
             break;
         }
     }
 
     for record in &manifest.data.metadata {
-        let value = match serde_json::to_value(record) {
-            Ok(value) => value,
-            Err(error) => {
-                issues.push(format!("A vocabulary metadata record is invalid: {error}"));
-                break;
-            }
-        };
-        if let Err(error) = validate_vocabulary_user_metadata(&value) {
-            issues.push(format!("A vocabulary metadata record is invalid: {error}"));
+        if let Err(error) = validate_backup_metadata(record) {
+            issues.push(error);
             break;
         }
     }
@@ -479,6 +503,18 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
     }
 
     issues
+}
+
+pub(crate) fn validate_manifest_value(value: &Value) -> Result<(), String> {
+    let manifest: BackupManifest = serde_json::from_value(value.clone())
+        .map_err(|_| "This backup file is incomplete or damaged.".to_string())?;
+    let issues = manifest_issues(&manifest);
+
+    if issues.is_empty() {
+        Ok(())
+    } else {
+        Err(issues.join(" "))
+    }
 }
 
 fn list_descriptors(directory: &Path) -> Result<Vec<BackupDescriptor>, String> {
@@ -504,11 +540,13 @@ fn list_descriptors(directory: &Path) -> Result<Vec<BackupDescriptor>, String> {
         }
 
         if let Ok((manifest, size_bytes)) = read_manifest(&path) {
-            descriptors.push(descriptor_from_manifest(
-                file_name.to_string(),
-                size_bytes,
-                &manifest,
-            ));
+            if manifest_issues(&manifest).is_empty() {
+                descriptors.push(descriptor_from_manifest(
+                    file_name.to_string(),
+                    size_bytes,
+                    &manifest,
+                ));
+            }
         }
     }
 
@@ -543,9 +581,9 @@ pub(crate) fn create_backup_from_connection(
     reason: &str,
     created_at: &str,
 ) -> Result<BackupDescriptor, String> {
-    validate_reason(reason)?;
-    let directory = backup_directory(app)?;
     let manifest = build_manifest(connection, reason, created_at)?;
+    serialized_manifest(&manifest)?;
+    let directory = backup_directory(app)?;
     let descriptor = write_manifest(&directory, &manifest)?;
     apply_retention(&directory)?;
     Ok(descriptor)
@@ -745,7 +783,111 @@ pub fn delete_backup(file_name: String, app: AppHandle) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::checksum_for;
+    use std::{
+        fs,
+        path::{Path, PathBuf},
+        process,
+        time::{SystemTime, UNIX_EPOCH},
+    };
+
+    use rusqlite::{params, Connection};
+    use serde_json::{json, Value};
+
+    use super::{
+        apply_retention, build_manifest, checksum_for, list_descriptors, serialized_manifest,
+        write_manifest, BackupCounts, BackupData, BackupManifest, BackupVocabularyEntry,
+        BACKUP_KIND, BACKUP_VERSION, DATABASE_SCHEMA_VERSION, MAX_BACKUP_BYTES,
+    };
+
+    fn create_required_tables(connection: &Connection) {
+        connection
+            .execute_batch(
+                r#"
+                CREATE TABLE vocabulary_entries (
+                    normalized_word TEXT PRIMARY KEY,
+                    entry_id TEXT NOT NULL,
+                    layer TEXT NOT NULL,
+                    entry_json TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
+                CREATE TABLE vocabulary_user_metadata (
+                    normalized_word TEXT PRIMARY KEY,
+                    favorite INTEGER NOT NULL,
+                    tags_json TEXT NOT NULL,
+                    note TEXT NOT NULL,
+                    learning_status TEXT NOT NULL,
+                    review_status TEXT NOT NULL,
+                    last_viewed_at TEXT,
+                    view_count INTEGER NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
+                CREATE TABLE app_settings (
+                    id INTEGER PRIMARY KEY,
+                    settings_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
+                "#,
+            )
+            .expect("backup test tables should be created");
+    }
+
+    fn bundled_entry() -> Value {
+        serde_json::from_str(include_str!(
+            "../../../src/content/core/entries/maintain.entry.json"
+        ))
+        .expect("bundled entry should be valid JSON")
+    }
+
+    fn manifest(reason: &str, created_at: &str) -> BackupManifest {
+        let data = BackupData {
+            entries: vec![BackupVocabularyEntry {
+                entry: bundled_entry(),
+                layer: "user".to_string(),
+            }],
+            metadata: Vec::new(),
+            settings: None,
+        };
+        let checksum_source =
+            serde_json::to_vec(&data).expect("test backup data should serialize");
+
+        BackupManifest {
+            kind: BACKUP_KIND.to_string(),
+            backup_version: BACKUP_VERSION.to_string(),
+            database_schema_version: DATABASE_SCHEMA_VERSION.to_string(),
+            app_version: "1.0.0".to_string(),
+            created_at: created_at.to_string(),
+            reason: reason.to_string(),
+            counts: BackupCounts {
+                vocabulary_entries: 1,
+                vocabulary_metadata: 0,
+                settings_records: 0,
+            },
+            checksum_algorithm: "sha256".to_string(),
+            checksum: checksum_for("sha256", &checksum_source)
+                .expect("sha256 should be available"),
+            data,
+        }
+    }
+
+    fn temporary_directory(label: &str) -> PathBuf {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("system clock should be after the epoch")
+            .as_nanos();
+        let directory = std::env::temp_dir().join(format!(
+            "english-focus-{label}-{}-{nonce}",
+            process::id()
+        ));
+        fs::create_dir_all(&directory)
+            .expect("temporary backup directory should be created");
+        directory
+    }
+
+    fn remove_directory(directory: &Path) {
+        let _ = fs::remove_dir_all(directory);
+    }
 
     #[test]
     fn calculates_sha256_for_new_backups() {
@@ -766,5 +908,114 @@ mod tests {
     #[test]
     fn rejects_unknown_checksum_algorithms() {
         assert!(checksum_for("md5", b"abc").is_none());
+    }
+
+    #[test]
+    fn rejects_schema_invalid_vocabulary_before_a_backup_is_written() {
+        let connection = Connection::open_in_memory().expect("in-memory database should open");
+        create_required_tables(&connection);
+        connection
+            .execute(
+                r#"
+                INSERT INTO vocabulary_entries(
+                    normalized_word, entry_id, layer, entry_json, created_at, updated_at
+                ) VALUES (?1, ?2, 'user', ?3, ?4, ?4)
+                "#,
+                params![
+                    "broken",
+                    "word:broken",
+                    json!({
+                        "schemaVersion": "1.0.0",
+                        "id": "word:broken",
+                        "word": "broken",
+                        "normalizedWord": "broken"
+                    })
+                    .to_string(),
+                    "2026-07-21T12:00:00.000Z"
+                ],
+            )
+            .expect("invalid vocabulary fixture should be inserted");
+
+        let error = build_manifest(&connection, "manual", "2026-07-21T12:00:00.000Z")
+            .expect_err("schema-invalid vocabulary must stop backup creation");
+
+        assert!(error.contains("cannot be backed up safely"));
+    }
+
+    #[test]
+    fn rejects_a_backup_larger_than_32_mb_before_creating_a_file() {
+        let directory = temporary_directory("oversized-backup");
+        let mut oversized = manifest("manual", "2026-07-21T12:01:00.000Z");
+        oversized.data.entries[0].entry["word"] =
+            Value::String("x".repeat(MAX_BACKUP_BYTES as usize));
+
+        let error = write_manifest(&directory, &oversized)
+            .expect_err("oversized backups must be rejected before writing");
+
+        assert!(error.contains("32 MB"));
+        assert_eq!(
+            fs::read_dir(&directory)
+                .expect("temporary directory should remain readable")
+                .count(),
+            0
+        );
+        remove_directory(&directory);
+    }
+
+    #[test]
+    fn excludes_semantically_invalid_manifests_from_the_available_list() {
+        let directory = temporary_directory("invalid-manifest");
+        let mut invalid = manifest("automatic", "2026-07-21T12:02:00.000Z");
+        invalid.checksum = "0".repeat(64);
+        let path = directory.join("english-focus-backup-automatic-invalid.json");
+        fs::write(
+            &path,
+            serde_json::to_vec_pretty(&invalid).expect("invalid fixture should serialize"),
+        )
+        .expect("invalid fixture should be written");
+
+        let descriptors =
+            list_descriptors(&directory).expect("backup inventory should remain readable");
+
+        assert!(descriptors.is_empty());
+        assert!(path.exists());
+        remove_directory(&directory);
+    }
+
+    #[test]
+    fn retention_counts_only_integrity_checked_backups() {
+        let directory = temporary_directory("retention-integrity");
+
+        for day in 1..=8 {
+            let created_at = format!("2026-07-{day:02}T12:00:00.000Z");
+            write_manifest(&directory, &manifest("automatic", &created_at))
+                .expect("valid automatic backup should be written");
+        }
+
+        let mut invalid = manifest("automatic", "2026-07-21T12:03:00.000Z");
+        invalid.counts.vocabulary_entries = 99;
+        let invalid_path = directory.join("english-focus-backup-automatic-corrupt.json");
+        fs::write(
+            &invalid_path,
+            serde_json::to_vec_pretty(&invalid).expect("invalid fixture should serialize"),
+        )
+        .expect("invalid fixture should be written");
+
+        apply_retention(&directory).expect("retention should process valid backups");
+        let descriptors =
+            list_descriptors(&directory).expect("valid backup inventory should remain readable");
+
+        assert_eq!(descriptors.len(), 7);
+        assert!(invalid_path.exists());
+        remove_directory(&directory);
+    }
+
+    #[test]
+    fn serialized_limit_matches_the_public_32_mb_boundary() {
+        let backup = manifest("manual", "2026-07-21T12:04:00.000Z");
+        let bytes = serialized_manifest(&backup)
+            .expect("normal backup should remain below the limit");
+
+        assert!((bytes.len() as u64) < MAX_BACKUP_BYTES);
     }
 }
