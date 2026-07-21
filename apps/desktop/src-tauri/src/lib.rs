@@ -1,7 +1,6 @@
 mod commands;
 mod contracts;
 mod database;
-mod filesystem;
 mod state;
 mod validation;
 
