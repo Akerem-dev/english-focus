@@ -16,7 +16,13 @@ const expectedSources = new Map([
 ]);
 
 function normalizeSql(value) {
-  return value.replaceAll("\r\n", "\n").trim();
+  return value
+    .replaceAll("\r\n", "\n")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ");
 }
 
 function extractRustSql(source, constantName) {
