@@ -8,6 +8,27 @@ import {
   type VocabularyMetadataStatus
 } from "./VocabularyMetadataContext";
 
+function sameTags(left: readonly string[], right: readonly string[]): boolean {
+  return left.length === right.length && left.every((tag, index) => tag === right[index]);
+}
+
+function isFavoriteOnlyChange(
+  previous: VocabularyUserMetadata | undefined,
+  saved: VocabularyUserMetadata
+): boolean {
+  return (
+    previous !== undefined &&
+    previous.favorite !== saved.favorite &&
+    sameTags(previous.tags, saved.tags) &&
+    previous.note === saved.note &&
+    previous.learningStatus === saved.learningStatus &&
+    previous.reviewStatus === saved.reviewStatus &&
+    previous.lastViewedAt === saved.lastViewedAt &&
+    previous.viewCount === saved.viewCount &&
+    previous.createdAt === saved.createdAt
+  );
+}
+
 export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
   const repository = useMemo(() => new TauriVocabularyUserMetadataRepository(), []);
   const [metadata, setMetadata] = useState<readonly VocabularyUserMetadata[]>([]);
@@ -47,6 +68,7 @@ export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
       setError(undefined);
 
       try {
+        const previous = metadata.find((record) => record.normalizedWord === input.normalizedWord);
         const saved = await repository.saveMetadata(input);
         setMetadata((current) =>
           Object.freeze([
@@ -55,6 +77,23 @@ export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
           ])
         );
         setStatus("ready");
+
+        if (isFavoriteOnlyChange(previous, saved)) {
+          publishActivity({
+            kind: "favorite-changed",
+            scope: "vocabulary",
+            label: saved.favorite ? "Added to favorites" : "Removed from favorites",
+            target: saved.normalizedWord
+          });
+        } else {
+          publishActivity({
+            kind: "study-details-saved",
+            scope: "vocabulary",
+            label: "Personal details saved",
+            target: saved.normalizedWord
+          });
+        }
+
         return saved;
       } catch (cause) {
         const message =
@@ -64,7 +103,7 @@ export function VocabularyMetadataProvider({ children }: PropsWithChildren) {
         throw cause;
       }
     },
-    [repository]
+    [metadata, repository]
   );
 
   const recordView = useCallback(
