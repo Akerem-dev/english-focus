@@ -36,7 +36,7 @@ fn validate_stored_vocabulary_entry<T: Serialize>(value: &T) -> Result<(), Strin
         .ok_or_else(|| "Stored vocabulary entry is missing its storage layer.".to_string())?;
 
     if !matches!(layer, "user" | "override") {
-        return Err("Stored vocabulary layer must be user or override.".to_string());
+        return Err("Stored vocabulary storage layer must be user or override.".to_string());
     }
 
     validation::validate_vocabulary_entry(entry)
