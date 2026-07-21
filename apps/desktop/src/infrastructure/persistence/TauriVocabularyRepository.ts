@@ -72,12 +72,9 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       return undefined;
     }
 
-    const payload = await invoke<unknown>(
-      "contract_get_vocabulary_entry_by_normalized_word",
-      {
-        normalizedWord
-      }
-    );
+    const payload = await invoke<unknown>("contract_get_vocabulary_entry_by_normalized_word", {
+      normalizedWord
+    });
 
     return payload === null ? undefined : parseStoredVocabularyEntry(payload);
   }
