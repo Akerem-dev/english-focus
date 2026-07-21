@@ -16,7 +16,7 @@ test("all primary screens and a long detail state fit the minimum desktop window
   await page.setViewportSize({ width: 900, height: 600 });
 
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Look up an English word" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Search your local vocabulary" })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
   await searchVocabulary(page, "maintain");

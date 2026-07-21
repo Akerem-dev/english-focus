@@ -556,28 +556,11 @@ pub(crate) fn count_backups(app: &AppHandle) -> Result<usize, String> {
     Ok(list_descriptors(&directory)?.len())
 }
 
-pub(crate) fn delete_all_backups(app: &AppHandle) -> Result<usize, String> {
-    let directory = backup_directory(app)?;
-    let descriptors = list_descriptors(&directory)?;
-    let mut deleted = 0;
-
-    for descriptor in descriptors {
-        let path = directory.join(descriptor.file_name);
-        fs::remove_file(path)
-            .map_err(|error| format!("A retained backup could not be deleted: {error}"))?;
-        deleted += 1;
-    }
-
-    Ok(deleted)
-}
-
-#[tauri::command]
 pub fn list_backups(app: AppHandle) -> Result<Vec<BackupDescriptor>, String> {
     let directory = backup_directory(&app)?;
     list_descriptors(&directory)
 }
 
-#[tauri::command]
 pub fn create_backup(
     reason: String,
     created_at: String,
@@ -591,7 +574,6 @@ pub fn create_backup(
     create_backup_from_connection(&connection, &app, &reason, &created_at)
 }
 
-#[tauri::command]
 pub fn validate_backup(
     file_name: String,
     app: AppHandle,
@@ -609,7 +591,6 @@ pub fn validate_backup(
     })
 }
 
-#[tauri::command]
 pub fn restore_backup(
     file_name: String,
     restored_at: String,
