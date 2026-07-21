@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type PropsWithChildren } from "react";
 
 import { Toast } from "../../components";
+import { publishActivity, type ActivityEventDetail } from "../../modules/history";
 import {
   ToastContext,
   type ToastContextValue,
@@ -20,6 +21,34 @@ function createToastId(): string {
   return `toast-${Date.now()}-${fallbackToastSequence}`;
 }
 
+export function resolveToastActivity(input: ToastInput): ActivityEventDetail | undefined {
+  if (input.tone === "success" && input.dedupeKey === "vocabulary-export") {
+    return {
+      kind: "export-created",
+      scope: "vocabulary",
+      label: "Vocabulary export created"
+    };
+  }
+
+  if (input.tone === "success" && input.dedupeKey === "library-export") {
+    return {
+      kind: "export-created",
+      scope: "library",
+      label: "Library export created"
+    };
+  }
+
+  if (input.tone === "info" && input.dedupeKey === "vocabulary-persistence") {
+    return {
+      kind: "entry-kept",
+      scope: "vocabulary",
+      label: "Existing vocabulary entry kept"
+    };
+  }
+
+  return undefined;
+}
+
 export function ToastProvider({ children }: PropsWithChildren) {
   const [toasts, setToasts] = useState<readonly ToastRecord[]>([]);
 
@@ -32,6 +61,11 @@ export function ToastProvider({ children }: PropsWithChildren) {
   }, []);
 
   const showToast = useCallback((input: ToastInput) => {
+    const activity = resolveToastActivity(input);
+    if (activity !== undefined) {
+      publishActivity(activity);
+    }
+
     const id = createToastId();
     const record: ToastRecord = Object.freeze({
       ...input,
