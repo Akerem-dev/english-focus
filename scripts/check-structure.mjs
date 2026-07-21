@@ -22,8 +22,6 @@ const required = [
   "apps/desktop/src/infrastructure/database/migrations/0001_initial.sql",
   "apps/desktop/src/infrastructure/database/migrations/0002_fts.sql",
   "apps/desktop/src/infrastructure/database/migrations/0003_user_metadata.sql",
-  "apps/desktop/src-tauri/src/commands/clipboard.rs",
-  "apps/desktop/src-tauri/src/commands/filesystem.rs",
   "testing/e2e/missing-word-json-flow.spec.ts",
   "testing/performance/search-10000-entries.test.ts"
 ];
@@ -61,6 +59,22 @@ for (const file of walk("apps/desktop/src/modules").filter((path) => /\.tsx?$/.t
   }
 }
 
+const appBoundaryViolations = [];
+for (const file of walk("apps/desktop/src/app").filter((path) => /\.tsx?$/.test(path))) {
+  const content = readFileSync(file, "utf8");
+
+  if (file !== "apps/desktop/src/app/App.tsx" && /from\s+["']\.\.\/router["']/.test(content)) {
+    appBoundaryViolations.push(`${file}: internal app code imports the router barrel`);
+  }
+
+  if (
+    file === "apps/desktop/src/app/router/routes.tsx" &&
+    /from\s+["']\.\.\/performance["']/.test(content)
+  ) {
+    appBoundaryViolations.push(`${file}: route definitions import the performance barrel`);
+  }
+}
+
 const testViolations = [];
 for (const file of walk("testing/e2e").filter((path) => path.endsWith(".spec.ts"))) {
   const content = readFileSync(file, "utf8");
@@ -75,7 +89,7 @@ for (const file of walk("testing/performance").filter((path) => path.endsWith(".
   }
 }
 
-const violations = [...presentationViolations, ...testViolations];
+const violations = [...presentationViolations, ...appBoundaryViolations, ...testViolations];
 if (violations.length > 0) {
   console.error("Architecture or executable-test boundary violations found:");
   for (const violation of violations) console.error(`- ${violation}`);
