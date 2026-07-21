@@ -88,9 +88,7 @@ describe("applyDiagnosticScanCoverage", () => {
       complete: false,
       issues: Object.freeze(["Saved backups could not be scanned completely: permission denied"])
     });
-    const backupCheck = protectedReport.checks.find(
-      (check) => check.id === "backup-availability"
-    );
+    const backupCheck = protectedReport.checks.find((check) => check.id === "backup-availability");
 
     expect(backupCheck).toEqual(
       expect.objectContaining({
