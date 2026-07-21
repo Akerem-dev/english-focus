@@ -2,10 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const rustMigrationPath = resolve(
-  root,
-  "apps/desktop/src-tauri/src/database/migrations.rs"
-);
+const rustMigrationPath = resolve(root, "apps/desktop/src-tauri/src/database/migrations.rs");
 const sqlDirectory = resolve(root, "apps/desktop/src/infrastructure/database/migrations");
 
 const expectedSources = new Map([
@@ -26,9 +23,7 @@ function normalizeSql(value) {
 }
 
 function extractRustSql(source, constantName) {
-  const expression = new RegExp(
-    `const\\s+${constantName}:\\s*&str\\s*=\\s*r#"([\\s\\S]*?)"#;`
-  );
+  const expression = new RegExp(`const\\s+${constantName}:\\s*&str\\s*=\\s*r#"([\\s\\S]*?)"#;`);
   const match = source.match(expression);
 
   if (match?.[1] === undefined) {
