@@ -20,7 +20,9 @@ export class TauriVocabularyUserMetadataRepository implements VocabularyUserMeta
       return [];
     }
 
-    const payloads = await invoke<readonly unknown[]>("list_vocabulary_user_metadata");
+    const payloads = await invoke<readonly unknown[]>(
+      "contract_list_vocabulary_user_metadata"
+    );
     return Object.freeze(payloads.map(parseMetadata));
   }
 
@@ -31,7 +33,7 @@ export class TauriVocabularyUserMetadataRepository implements VocabularyUserMeta
       return undefined;
     }
 
-    const payload = await invoke<unknown | null>("get_vocabulary_user_metadata", {
+    const payload = await invoke<unknown | null>("contract_get_vocabulary_user_metadata", {
       normalizedWord
     });
     return payload === null ? undefined : parseMetadata(payload);
@@ -42,7 +44,7 @@ export class TauriVocabularyUserMetadataRepository implements VocabularyUserMeta
       throw new Error("Vocabulary metadata saving is available only in the desktop app.");
     }
 
-    const payload = await invoke<unknown>("save_vocabulary_user_metadata", {
+    const payload = await invoke<unknown>("contract_save_vocabulary_user_metadata", {
       request: input
     });
     return parseMetadata(payload);
@@ -66,7 +68,7 @@ export class TauriVocabularyUserMetadataRepository implements VocabularyUserMeta
       });
     }
 
-    const payload = await invoke<unknown>("record_vocabulary_view", {
+    const payload = await invoke<unknown>("contract_record_vocabulary_view", {
       normalizedWord,
       viewedAt
     });
