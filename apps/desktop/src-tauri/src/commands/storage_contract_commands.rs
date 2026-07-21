@@ -48,7 +48,7 @@ fn validate_vocabulary_metadata<T: Serialize>(value: &T) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub fn list_vocabulary_entries(
+pub fn contract_list_vocabulary_entries(
     state: State<'_, AppState>,
 ) -> Result<Vec<database::StoredVocabularyEntry>, String> {
     let records = database::list_vocabulary_entries(state)?;
@@ -57,7 +57,7 @@ pub fn list_vocabulary_entries(
 }
 
 #[tauri::command]
-pub fn get_vocabulary_entry_by_normalized_word(
+pub fn contract_get_vocabulary_entry_by_normalized_word(
     normalized_word: String,
     state: State<'_, AppState>,
 ) -> Result<Option<database::StoredVocabularyEntry>, String> {
@@ -69,7 +69,7 @@ pub fn get_vocabulary_entry_by_normalized_word(
 }
 
 #[tauri::command]
-pub fn save_vocabulary_entry(
+pub fn contract_save_vocabulary_entry(
     request: database::SaveVocabularyEntryRequest,
     state: State<'_, AppState>,
 ) -> Result<database::StoredVocabularyEntry, String> {
@@ -79,7 +79,7 @@ pub fn save_vocabulary_entry(
 }
 
 #[tauri::command]
-pub fn save_vocabulary_entries(
+pub fn contract_save_vocabulary_entries(
     requests: Vec<database::SaveVocabularyEntryRequest>,
     state: State<'_, AppState>,
 ) -> Result<Vec<database::StoredVocabularyEntry>, String> {
@@ -89,7 +89,7 @@ pub fn save_vocabulary_entries(
 }
 
 #[tauri::command]
-pub fn list_resilient_vocabulary_entries(
+pub fn contract_list_resilient_vocabulary_entries(
     state: State<'_, AppState>,
 ) -> Result<Vec<resilient_records::StoredVocabularyEntry>, String> {
     let records = resilient_records::list_resilient_vocabulary_entries(state)?;
@@ -98,7 +98,7 @@ pub fn list_resilient_vocabulary_entries(
 }
 
 #[tauri::command]
-pub fn list_vocabulary_user_metadata(
+pub fn contract_list_vocabulary_user_metadata(
     state: State<'_, AppState>,
 ) -> Result<Vec<database::VocabularyUserMetadataRecord>, String> {
     let records = database::list_vocabulary_user_metadata(state)?;
@@ -107,7 +107,7 @@ pub fn list_vocabulary_user_metadata(
 }
 
 #[tauri::command]
-pub fn get_vocabulary_user_metadata(
+pub fn contract_get_vocabulary_user_metadata(
     normalized_word: String,
     state: State<'_, AppState>,
 ) -> Result<Option<database::VocabularyUserMetadataRecord>, String> {
@@ -119,7 +119,7 @@ pub fn get_vocabulary_user_metadata(
 }
 
 #[tauri::command]
-pub fn save_vocabulary_user_metadata(
+pub fn contract_save_vocabulary_user_metadata(
     request: database::SaveVocabularyUserMetadataRequest,
     state: State<'_, AppState>,
 ) -> Result<database::VocabularyUserMetadataRecord, String> {
@@ -129,7 +129,7 @@ pub fn save_vocabulary_user_metadata(
 }
 
 #[tauri::command]
-pub fn record_vocabulary_view(
+pub fn contract_record_vocabulary_view(
     normalized_word: String,
     viewed_at: String,
     state: State<'_, AppState>,
@@ -140,7 +140,7 @@ pub fn record_vocabulary_view(
 }
 
 #[tauri::command]
-pub fn get_app_settings(state: State<'_, AppState>) -> Result<Option<Value>, String> {
+pub fn contract_get_app_settings(state: State<'_, AppState>) -> Result<Option<Value>, String> {
     let settings = settings::get_app_settings(state)?;
     if let Some(settings) = &settings {
         validation::validate_app_settings(settings)?;
@@ -149,7 +149,10 @@ pub fn get_app_settings(state: State<'_, AppState>) -> Result<Option<Value>, Str
 }
 
 #[tauri::command]
-pub fn save_app_settings(settings: Value, state: State<'_, AppState>) -> Result<Value, String> {
+pub fn contract_save_app_settings(
+    settings: Value,
+    state: State<'_, AppState>,
+) -> Result<Value, String> {
     let settings = settings::save_app_settings(settings, state)?;
     validation::validate_app_settings(&settings)?;
     Ok(settings)
