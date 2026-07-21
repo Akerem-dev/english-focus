@@ -26,5 +26,21 @@ export function resolveToastActivity(input: ToastInput): ActivityEventDetail | u
     };
   }
 
+  if (input.tone === "warning") {
+    return {
+      kind: "operation-warning",
+      scope: "system",
+      label: "An operation needs attention"
+    };
+  }
+
+  if (input.tone === "error") {
+    return {
+      kind: "operation-failed",
+      scope: "system",
+      label: "An operation failed"
+    };
+  }
+
   return undefined;
 }
