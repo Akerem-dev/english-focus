@@ -10,7 +10,8 @@ const forbidden = [
   "ollama",
   "glassmorphism",
   "streak",
-  "experience points"
+  "experience points",
+  "Production implementation pending."
 ];
 
 function walk(path) {
