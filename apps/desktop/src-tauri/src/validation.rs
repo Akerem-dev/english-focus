@@ -203,10 +203,17 @@ mod tests {
     #[test]
     fn rejects_intermediate_example_counts() {
         let mut entry = bundled_maintain_entry();
-        entry["examples"]
-            .as_array_mut()
-            .expect("examples must be an array")
-            .truncate(4);
+
+        {
+            let examples = entry["examples"]
+                .as_array_mut()
+                .expect("examples must be an array");
+            let mut fourth_example = examples[0].clone();
+            fourth_example["id"] = Value::String("maintain.example.04".to_string());
+            examples.push(fourth_example);
+
+            assert_eq!(examples.len(), 4);
+        }
 
         assert!(validate_vocabulary_entry(&entry).is_err());
     }

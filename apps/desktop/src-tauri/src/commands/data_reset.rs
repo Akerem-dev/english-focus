@@ -133,7 +133,8 @@ fn prepare_backup_deletion(app: &AppHandle) -> Result<Vec<PathBuf>, String> {
     for entry in fs::read_dir(directory)
         .map_err(|error| format!("The backup directory could not be read: {error}"))?
     {
-        let entry = entry.map_err(|error| format!("A backup directory item is invalid: {error}"))?;
+        let entry =
+            entry.map_err(|error| format!("A backup directory item is invalid: {error}"))?;
         let file_type = entry
             .file_type()
             .map_err(|error| format!("A backup file type could not be read: {error}"))?;
@@ -162,7 +163,6 @@ fn delete_prepared_backups(paths: Vec<PathBuf>) -> BackupDeletionResult {
     result
 }
 
-#[tauri::command]
 pub fn get_local_data_snapshot(
     app: AppHandle,
     state: State<'_, AppState>,
@@ -175,7 +175,6 @@ pub fn get_local_data_snapshot(
     snapshot_from_connection(&connection, backup_files)
 }
 
-#[tauri::command]
 pub fn reset_local_data(
     request: ResetLocalDataRequest,
     app: AppHandle,

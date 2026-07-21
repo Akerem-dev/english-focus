@@ -140,8 +140,8 @@ mod tests {
 
     use super::{
         ACTIVITY_RECORD, BACKUP_DESCRIPTOR, BACKUP_RESTORE_RESULT, BACKUP_VALIDATION_RESULT,
-        DIAGNOSTIC_REPORT, DIAGNOSTIC_SCAN_COVERAGE, LOCAL_DATA_SNAPSHOT,
-        RESET_LOCAL_DATA_RESULT, SAFE_MAINTENANCE_RESULT, UNAVAILABLE_BACKUP,
+        DIAGNOSTIC_REPORT, DIAGNOSTIC_SCAN_COVERAGE, LOCAL_DATA_SNAPSHOT, RESET_LOCAL_DATA_RESULT,
+        SAFE_MAINTENANCE_RESULT, UNAVAILABLE_BACKUP,
     };
 
     fn fixtures() -> Value {
@@ -158,7 +158,10 @@ mod tests {
             ("activityRecord", &ACTIVITY_RECORD),
             ("backupDescriptor", &BACKUP_DESCRIPTOR),
             ("backupValidationResult", &BACKUP_VALIDATION_RESULT),
-            ("backupValidationWithoutDescriptor", &BACKUP_VALIDATION_RESULT),
+            (
+                "backupValidationWithoutDescriptor",
+                &BACKUP_VALIDATION_RESULT,
+            ),
             ("backupRestoreResult", &BACKUP_RESTORE_RESULT),
             ("unavailableBackup", &UNAVAILABLE_BACKUP),
             ("diagnosticReport", &DIAGNOSTIC_REPORT),

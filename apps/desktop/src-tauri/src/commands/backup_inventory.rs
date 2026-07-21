@@ -44,10 +44,7 @@ fn has_string(object: &Map<String, Value>, key: &str) -> bool {
 }
 
 fn has_nonnegative_integer(object: &Map<String, Value>, key: &str) -> bool {
-    object
-        .get(key)
-        .and_then(Value::as_u64)
-        .is_some()
+    object.get(key).and_then(Value::as_u64).is_some()
 }
 
 fn is_supported_checksum(value: &str) -> bool {
@@ -80,7 +77,9 @@ fn is_readable_manifest_shape(value: &Value) -> bool {
     if manifest.get("kind").and_then(Value::as_str) != Some("english-focus-backup")
         || manifest.get("backupVersion").and_then(Value::as_str) != Some("1.0.0")
         || !matches!(
-            manifest.get("databaseSchemaVersion").and_then(Value::as_str),
+            manifest
+                .get("databaseSchemaVersion")
+                .and_then(Value::as_str),
             Some("2" | "3")
         )
         || !matches!(
@@ -102,13 +101,9 @@ fn is_readable_manifest_shape(value: &Value) -> bool {
     let Some(counts) = manifest.get("counts").and_then(Value::as_object) else {
         return false;
     };
-    if ![
-        "vocabularyEntries",
-        "vocabularyMetadata",
-        "settingsRecords",
-    ]
-    .iter()
-    .all(|key| has_nonnegative_integer(counts, key))
+    if !["vocabularyEntries", "vocabularyMetadata", "settingsRecords"]
+        .iter()
+        .all(|key| has_nonnegative_integer(counts, key))
     {
         return false;
     }
@@ -158,7 +153,6 @@ fn classify_unavailable(path: &Path) -> Result<Option<UnavailableBackup>, String
     }))
 }
 
-#[tauri::command]
 pub fn list_unavailable_backups(app: AppHandle) -> Result<Vec<UnavailableBackup>, String> {
     let directory = backup_directory(&app)?;
     let mut unavailable = Vec::new();
@@ -255,7 +249,9 @@ mod tests {
         });
 
         assert!(is_readable_manifest_shape(&manifest));
-        assert!(!is_readable_manifest_shape(&json!({ "kind": "english-focus-backup" })));
+        assert!(!is_readable_manifest_shape(
+            &json!({ "kind": "english-focus-backup" })
+        ));
         assert!(!is_readable_manifest_shape(&json!({
             "kind": "english-focus-backup",
             "backupVersion": "99",
