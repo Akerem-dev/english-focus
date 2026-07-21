@@ -79,7 +79,9 @@ for (const file of walk("apps/desktop/src/app").filter((path) => /\.tsx?$/.test(
     normalizedFile === "apps/desktop/src/app/router/routes.tsx" &&
     /from\s+["']\.\.\/performance["']/.test(content)
   ) {
-    appBoundaryViolations.push(`${normalizedFile}: route definitions import the performance barrel`);
+    appBoundaryViolations.push(
+      `${normalizedFile}: route definitions import the performance barrel`
+    );
   }
 }
 
