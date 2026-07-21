@@ -1,13 +1,14 @@
 import { useCallback, useMemo, useState, type PropsWithChildren } from "react";
 
 import { Toast } from "../../components";
-import { publishActivity, type ActivityEventDetail } from "../../modules/history";
+import { publishActivity } from "../../modules/history";
 import {
   ToastContext,
   type ToastContextValue,
   type ToastInput,
   type ToastRecord
 } from "./ToastContext";
+import { resolveToastActivity } from "./toastActivityPolicy";
 
 const MAX_VISIBLE_TOASTS = 4;
 let fallbackToastSequence = 0;
@@ -19,34 +20,6 @@ function createToastId(): string {
 
   fallbackToastSequence += 1;
   return `toast-${Date.now()}-${fallbackToastSequence}`;
-}
-
-export function resolveToastActivity(input: ToastInput): ActivityEventDetail | undefined {
-  if (input.tone === "success" && input.dedupeKey === "vocabulary-export") {
-    return {
-      kind: "export-created",
-      scope: "vocabulary",
-      label: "Vocabulary export created"
-    };
-  }
-
-  if (input.tone === "success" && input.dedupeKey === "library-export") {
-    return {
-      kind: "export-created",
-      scope: "library",
-      label: "Library export created"
-    };
-  }
-
-  if (input.tone === "info" && input.dedupeKey === "vocabulary-persistence") {
-    return {
-      kind: "entry-kept",
-      scope: "vocabulary",
-      label: "Existing vocabulary entry kept"
-    };
-  }
-
-  return undefined;
 }
 
 export function ToastProvider({ children }: PropsWithChildren) {
