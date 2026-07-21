@@ -8,8 +8,23 @@ import {
   type VocabularyMetadataStatus
 } from "./VocabularyMetadataContext";
 
-function sameTags(left: readonly string[], right: readonly string[]): boolean {
-  return left.length === right.length && left.every((tag, index) => tag === right[index]);
+function sameTags(
+  left: VocabularyUserMetadata["tags"],
+  right: VocabularyUserMetadata["tags"]
+): boolean {
+  return (
+    left.length === right.length &&
+    left.every((tag, index) => {
+      const candidate = right[index];
+      return (
+        candidate !== undefined &&
+        tag.id === candidate.id &&
+        tag.name === candidate.name &&
+        tag.normalizedName === candidate.normalizedName &&
+        tag.createdAt === candidate.createdAt
+      );
+    })
+  );
 }
 
 function isFavoriteOnlyChange(
