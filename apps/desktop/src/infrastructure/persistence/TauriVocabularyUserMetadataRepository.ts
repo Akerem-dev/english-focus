@@ -20,9 +20,7 @@ export class TauriVocabularyUserMetadataRepository implements VocabularyUserMeta
       return [];
     }
 
-    const payloads = await invoke<readonly unknown[]>(
-      "contract_list_vocabulary_user_metadata"
-    );
+    const payloads = await invoke<readonly unknown[]>("contract_list_vocabulary_user_metadata");
     return Object.freeze(payloads.map(parseMetadata));
   }
 
