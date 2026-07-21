@@ -61,7 +61,7 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       return [];
     }
 
-    const payload = await invoke<unknown>("list_resilient_vocabulary_entries");
+    const payload = await invoke<unknown>("contract_list_resilient_vocabulary_entries");
     return parseStoredVocabularyEntryList(payload);
   }
 
@@ -72,9 +72,12 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       return undefined;
     }
 
-    const payload = await invoke<unknown>("get_vocabulary_entry_by_normalized_word", {
-      normalizedWord
-    });
+    const payload = await invoke<unknown>(
+      "contract_get_vocabulary_entry_by_normalized_word",
+      {
+        normalizedWord
+      }
+    );
 
     return payload === null ? undefined : parseStoredVocabularyEntry(payload);
   }
@@ -84,7 +87,7 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       throw new Error("Local SQLite saving is available only in the English Focus desktop app.");
     }
 
-    const payload = await invoke<unknown>("save_vocabulary_entry", {
+    const payload = await invoke<unknown>("contract_save_vocabulary_entry", {
       request: input
     });
     return parseStoredVocabularyEntry(payload);
@@ -97,7 +100,7 @@ export class TauriVocabularyRepository implements VocabularyRepository {
       throw new Error("Local SQLite saving is available only in the English Focus desktop app.");
     }
 
-    const payloads = await invoke<readonly unknown[]>("save_vocabulary_entries", {
+    const payloads = await invoke<readonly unknown[]>("contract_save_vocabulary_entries", {
       requests: inputs
     });
     return Object.freeze(payloads.map(parseStoredVocabularyEntry));
