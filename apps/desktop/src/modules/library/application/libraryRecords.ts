@@ -63,7 +63,11 @@ export function matchesSearch(
   if (terms.length === 0) return true;
 
   const [onlyTerm] = terms;
-  if (terms.length === 1 && onlyTerm !== undefined && record.entry.normalizedWord.includes(onlyTerm)) {
+  if (
+    terms.length === 1 &&
+    onlyTerm !== undefined &&
+    record.entry.normalizedWord.includes(onlyTerm)
+  ) {
     return true;
   }
 
