@@ -20,7 +20,7 @@ export class TauriSettingsRepository implements SettingsRepository {
       return undefined;
     }
 
-    const payload = await invoke<unknown | null>("get_app_settings");
+    const payload = await invoke<unknown | null>("contract_get_app_settings");
     return payload === null ? undefined : parseStoredSettings(payload);
   }
 
@@ -31,7 +31,7 @@ export class TauriSettingsRepository implements SettingsRepository {
       return validated;
     }
 
-    const payload = await invoke<unknown>("save_app_settings", {
+    const payload = await invoke<unknown>("contract_save_app_settings", {
       settings: validated
     });
     return parseStoredSettings(payload);
