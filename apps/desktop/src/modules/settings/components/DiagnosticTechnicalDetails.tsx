@@ -9,7 +9,8 @@ const FRIENDLY_CHECK_TITLES: Readonly<Record<string, string>> = Object.freeze({
   "schema-version": "App data compatibility",
   "database-pragmas": "Data protection settings",
   "data-consistency": "Saved data",
-  "backup-availability": "Backup availability"
+  "backup-availability": "Backup availability",
+  "diagnostic-coverage": "Check completeness"
 });
 
 function checkStatusLabel(status: DiagnosticCheckStatus): string {
@@ -39,6 +40,34 @@ function formatGeneratedAt(value: string): string {
   });
 }
 
+function coverageDetails(report: DiagnosticReport): readonly string[] {
+  const coverageCheck = report.checks.find(
+    (check) => check.id === "diagnostic-coverage" && check.status === "failed"
+  );
+  return coverageCheck?.details ?? [];
+}
+
+function savedDataCountsAvailable(report: DiagnosticReport): boolean {
+  const details = coverageDetails(report).map((detail) => detail.toLowerCase());
+
+  return !details.some(
+    (detail) =>
+      detail.startsWith("saved words") ||
+      detail.startsWith("favorites, tags, and notes") ||
+      detail.startsWith("application preferences") ||
+      detail.startsWith("one or more local data checks")
+  );
+}
+
+function backupCountAvailable(report: DiagnosticReport): boolean {
+  const backupCheck = report.checks.find((check) => check.id === "backup-availability");
+  return backupCheck?.status !== "failed";
+}
+
+function countValue(value: number, available: boolean): string | number {
+  return available ? value : "Could not be checked";
+}
+
 interface DiagnosticTechnicalDetailsProps {
   readonly copyStatus: "idle" | "copied" | "failed";
   readonly onCopy: () => void;
@@ -50,6 +79,9 @@ export function DiagnosticTechnicalDetails({
   onCopy,
   report
 }: DiagnosticTechnicalDetailsProps) {
+  const dataCountsAvailable = savedDataCountsAvailable(report);
+  const backupsAvailable = backupCountAvailable(report);
+
   return (
     <details className="diagnostics-technical-details">
       <summary>
@@ -82,15 +114,15 @@ export function DiagnosticTechnicalDetails({
         <dl className="diagnostics-technical-counts">
           <div>
             <dt>Saved words</dt>
-            <dd>{report.counts.vocabularyEntries}</dd>
+            <dd>{countValue(report.counts.vocabularyEntries, dataCountsAvailable)}</dd>
           </div>
           <div>
-            <dt>Favorites, tags & notes</dt>
-            <dd>{report.counts.vocabularyMetadata}</dd>
+            <dt>Favorites, tags &amp; notes</dt>
+            <dd>{countValue(report.counts.vocabularyMetadata, dataCountsAvailable)}</dd>
           </div>
           <div>
             <dt>Saved backups</dt>
-            <dd>{report.counts.retainedBackups}</dd>
+            <dd>{countValue(report.counts.retainedBackups, backupsAvailable)}</dd>
           </div>
           <div>
             <dt>App version</dt>
