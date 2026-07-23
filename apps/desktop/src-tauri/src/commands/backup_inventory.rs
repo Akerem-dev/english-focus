@@ -132,9 +132,7 @@ mod tests {
         });
         let checksum = format!(
             "{:x}",
-            Sha256::digest(
-                serde_json::to_vec(&data).expect("empty backup data should serialize")
-            )
+            Sha256::digest(serde_json::to_vec(&data).expect("empty backup data should serialize"))
         );
 
         json!({

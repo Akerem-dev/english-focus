@@ -106,7 +106,7 @@ pub struct BackupRestoreResult {
     restored_at: String,
     restored: BackupCounts,
     source_backup: BackupDescriptor,
-    safety_backup: BackupDescriptor,
+    safety_backup: Option<BackupDescriptor>,
 }
 
 fn backup_directory(app: &AppHandle) -> Result<PathBuf, String> {
@@ -188,6 +188,31 @@ fn validate_backup_metadata(record: &BackupVocabularyMetadata) -> Result<(), Str
         .map_err(|error| format!("Stored vocabulary metadata is invalid: {error}"))?;
     validate_vocabulary_user_metadata(&value)
         .map_err(|error| format!("Stored vocabulary metadata cannot be backed up safely: {error}"))
+}
+
+fn is_current_data_corruption_error(error: &str) -> bool {
+    [
+        "Stored vocabulary JSON is invalid:",
+        "Stored vocabulary has an invalid storage layer.",
+        "Stored vocabulary cannot be backed up safely:",
+        "Stored metadata tags are invalid:",
+        "Stored vocabulary metadata is invalid:",
+        "Stored vocabulary metadata cannot be backed up safely:",
+        "Stored application settings are invalid:",
+        "Stored application settings cannot be backed up safely:",
+    ]
+    .iter()
+    .any(|prefix| error.starts_with(prefix))
+}
+
+fn resolve_pre_restore_backup_result(
+    result: Result<BackupDescriptor, String>,
+) -> Result<Option<BackupDescriptor>, String> {
+    match result {
+        Ok(descriptor) => Ok(Some(descriptor)),
+        Err(error) if is_current_data_corruption_error(&error) => Ok(None),
+        Err(error) => Err(error),
+    }
 }
 
 fn read_vocabulary_entries(connection: &Connection) -> Result<Vec<BackupVocabularyEntry>, String> {
@@ -589,11 +614,6 @@ pub(crate) fn create_backup_from_connection(
     Ok(descriptor)
 }
 
-pub(crate) fn count_backups(app: &AppHandle) -> Result<usize, String> {
-    let directory = backup_directory(app)?;
-    Ok(list_descriptors(&directory)?.len())
-}
-
 pub fn list_backups(app: AppHandle) -> Result<Vec<BackupDescriptor>, String> {
     let directory = backup_directory(&app)?;
     list_descriptors(&directory)
@@ -653,8 +673,12 @@ pub fn restore_backup(
         .database
         .lock()
         .map_err(|_| "The local database lock is unavailable for restore.".to_string())?;
-    let safety_backup =
-        create_backup_from_connection(&connection, &app, "pre-restore", &restored_at)?;
+    let safety_backup = resolve_pre_restore_backup_result(create_backup_from_connection(
+        &connection,
+        &app,
+        "pre-restore",
+        &restored_at,
+    ))?;
     let transaction = connection
         .transaction()
         .map_err(|error| format!("The restore transaction could not start: {error}"))?;
@@ -794,9 +818,10 @@ mod tests {
     use serde_json::{json, Value};
 
     use super::{
-        apply_retention, build_manifest, checksum_for, list_descriptors, serialized_manifest,
-        write_manifest, BackupCounts, BackupData, BackupManifest, BackupVocabularyEntry,
-        BACKUP_KIND, BACKUP_VERSION, DATABASE_SCHEMA_VERSION, MAX_BACKUP_BYTES,
+        apply_retention, build_manifest, checksum_for, list_descriptors,
+        resolve_pre_restore_backup_result, serialized_manifest, write_manifest, BackupCounts,
+        BackupData, BackupManifest, BackupVocabularyEntry, BACKUP_KIND, BACKUP_VERSION,
+        DATABASE_SCHEMA_VERSION, MAX_BACKUP_BYTES,
     };
 
     fn create_required_tables(connection: &Connection) {
@@ -849,8 +874,7 @@ mod tests {
             metadata: Vec::new(),
             settings: None,
         };
-        let checksum_source =
-            serde_json::to_vec(&data).expect("test backup data should serialize");
+        let checksum_source = serde_json::to_vec(&data).expect("test backup data should serialize");
 
         BackupManifest {
             kind: BACKUP_KIND.to_string(),
@@ -865,8 +889,7 @@ mod tests {
                 settings_records: 0,
             },
             checksum_algorithm: "sha256".to_string(),
-            checksum: checksum_for("sha256", &checksum_source)
-                .expect("sha256 should be available"),
+            checksum: checksum_for("sha256", &checksum_source).expect("sha256 should be available"),
             data,
         }
     }
@@ -876,12 +899,9 @@ mod tests {
             .duration_since(UNIX_EPOCH)
             .expect("system clock should be after the epoch")
             .as_nanos();
-        let directory = std::env::temp_dir().join(format!(
-            "english-focus-{label}-{}-{nonce}",
-            process::id()
-        ));
-        fs::create_dir_all(&directory)
-            .expect("temporary backup directory should be created");
+        let directory =
+            std::env::temp_dir().join(format!("english-focus-{label}-{}-{nonce}", process::id()));
+        fs::create_dir_all(&directory).expect("temporary backup directory should be created");
         directory
     }
 
@@ -908,6 +928,26 @@ mod tests {
     #[test]
     fn rejects_unknown_checksum_algorithms() {
         assert!(checksum_for("md5", b"abc").is_none());
+    }
+
+    #[test]
+    fn current_data_corruption_can_skip_the_pre_restore_safety_backup() {
+        let result = resolve_pre_restore_backup_result(Err(
+            "Stored vocabulary JSON is invalid: expected value".to_string(),
+        ))
+        .expect("current-data corruption should not block a validated restore");
+
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn operational_safety_backup_failures_still_stop_restore() {
+        let error = resolve_pre_restore_backup_result(Err(
+            "Temporary backup file could not be written durably: access denied".to_string(),
+        ))
+        .expect_err("operational backup failures must still abort restore");
+
+        assert!(error.contains("could not be written durably"));
     }
 
     #[test]
@@ -1013,8 +1053,8 @@ mod tests {
     #[test]
     fn serialized_limit_matches_the_public_32_mb_boundary() {
         let backup = manifest("manual", "2026-07-21T12:04:00.000Z");
-        let bytes = serialized_manifest(&backup)
-            .expect("normal backup should remain below the limit");
+        let bytes =
+            serialized_manifest(&backup).expect("normal backup should remain below the limit");
 
         assert!((bytes.len() as u64) < MAX_BACKUP_BYTES);
     }

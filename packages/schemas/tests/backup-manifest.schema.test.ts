@@ -52,6 +52,15 @@ describe("backup schemas", () => {
         safetyBackup: { ...descriptor, reason: "pre-restore" }
       })
     ).toMatchObject({ restoredAt: "2026-07-15T13:00:00.000Z" });
+
+    expect(
+      backupRestoreResultSchema.parse({
+        restoredAt: "2026-07-15T13:00:00.000Z",
+        restored: descriptor.counts,
+        sourceBackup: descriptor,
+        safetyBackup: null
+      })
+    ).toEqual(expect.objectContaining({ safetyBackup: undefined }));
   });
 
   it("accepts a safe unavailable-backup summary without exposing parser details", () => {

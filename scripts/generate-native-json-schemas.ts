@@ -6,7 +6,7 @@ import {
   activityRecordNativeCompatibilitySchema,
   appSettingsNativeCompatibilitySchema,
   backupDescriptorSchema,
-  backupRestoreResultSchema,
+  backupRestoreResultNativeCompatibilitySchema,
   backupValidationResultNativeCompatibilitySchema,
   diagnosticReportSchema,
   diagnosticScanCoverageSchema,
@@ -49,7 +49,7 @@ const outputs = [
   },
   {
     path: "apps/desktop/src-tauri/schemas/backup-restore-result.schema.json",
-    schema: backupRestoreResultSchema
+    schema: backupRestoreResultNativeCompatibilitySchema
   },
   {
     path: "apps/desktop/src-tauri/schemas/unavailable-backup.schema.json",
