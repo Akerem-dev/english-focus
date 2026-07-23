@@ -120,15 +120,7 @@ fn is_managed_backup_file(path: &Path) -> bool {
         })
 }
 
-fn prepare_backup_deletion(app: &AppHandle) -> Result<Vec<PathBuf>, String> {
-    let directory = app
-        .path()
-        .app_data_dir()
-        .map_err(|error| format!("The application data directory is unavailable: {error}"))?
-        .join("backups");
-    fs::create_dir_all(&directory)
-        .map_err(|error| format!("The backup directory could not be created: {error}"))?;
-
+fn managed_backup_paths(directory: &Path) -> Result<Vec<PathBuf>, String> {
     let mut paths = Vec::new();
     for entry in fs::read_dir(directory)
         .map_err(|error| format!("The backup directory could not be read: {error}"))?
@@ -144,7 +136,19 @@ fn prepare_backup_deletion(app: &AppHandle) -> Result<Vec<PathBuf>, String> {
         }
     }
 
+    paths.sort();
     Ok(paths)
+}
+
+fn prepare_backup_deletion(app: &AppHandle) -> Result<Vec<PathBuf>, String> {
+    let directory = app
+        .path()
+        .app_data_dir()
+        .map_err(|error| format!("The application data directory is unavailable: {error}"))?
+        .join("backups");
+    fs::create_dir_all(&directory)
+        .map_err(|error| format!("The backup directory could not be created: {error}"))?;
+    managed_backup_paths(&directory)
 }
 
 fn delete_prepared_backups(paths: Vec<PathBuf>) -> BackupDeletionResult {
@@ -167,7 +171,7 @@ pub fn get_local_data_snapshot(
     app: AppHandle,
     state: State<'_, AppState>,
 ) -> Result<LocalDataSnapshot, String> {
-    let backup_files = backup::count_backups(&app)?;
+    let backup_files = prepare_backup_deletion(&app)?.len();
     let connection = state
         .database
         .lock()
@@ -279,9 +283,31 @@ pub fn reset_local_data(
 
 #[cfg(test)]
 mod tests {
-    use std::path::Path;
+    use std::{
+        fs,
+        path::{Path, PathBuf},
+        process,
+        time::{SystemTime, UNIX_EPOCH},
+    };
 
-    use super::is_managed_backup_file;
+    use super::{delete_prepared_backups, is_managed_backup_file, managed_backup_paths};
+
+    fn temporary_directory(label: &str) -> PathBuf {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("system clock should be after the epoch")
+            .as_nanos();
+        let directory = std::env::temp_dir().join(format!(
+            "english-focus-data-reset-{label}-{}-{nonce}",
+            process::id()
+        ));
+        fs::create_dir_all(&directory).expect("temporary directory should be created");
+        directory
+    }
+
+    fn write_fixture(directory: &Path, file_name: &str, contents: &str) {
+        fs::write(directory.join(file_name), contents).expect("fixture should be written");
+    }
 
     #[test]
     fn recognizes_only_managed_backup_json_files() {
@@ -292,5 +318,34 @@ mod tests {
         assert!(!is_managed_backup_file(Path::new(
             "english-focus-backup-manual-20260719120000000.json.tmp"
         )));
+    }
+
+    #[test]
+    fn preview_count_and_deletion_use_the_same_managed_backup_set() {
+        let directory = temporary_directory("preview-parity");
+        let valid_name = "english-focus-backup-manual-valid.json";
+        let damaged_name = "english-focus-backup-automatic-damaged.json";
+
+        write_fixture(&directory, valid_name, "{}");
+        write_fixture(&directory, damaged_name, "not-json");
+        write_fixture(&directory, "notes.json", "{}");
+        write_fixture(
+            &directory,
+            "english-focus-backup-manual-pending.json.tmp",
+            "{}",
+        );
+
+        let paths =
+            managed_backup_paths(&directory).expect("managed backup inventory should be readable");
+        assert_eq!(paths.len(), 2);
+
+        let result = delete_prepared_backups(paths);
+        assert_eq!(result.deleted_files, 2);
+        assert_eq!(result.failed_files, 0);
+        assert!(!directory.join(valid_name).exists());
+        assert!(!directory.join(damaged_name).exists());
+        assert!(directory.join("notes.json").exists());
+
+        fs::remove_dir_all(directory).expect("temporary directory should be removed");
     }
 }

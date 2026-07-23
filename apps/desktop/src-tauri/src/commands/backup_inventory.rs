@@ -4,8 +4,10 @@ use std::{
 };
 
 use serde::Serialize;
-use serde_json::{Map, Value};
+use serde_json::Value;
 use tauri::{AppHandle, Manager};
+
+use crate::commands::backup;
 
 const MAX_BACKUP_BYTES: u64 = 32 * 1024 * 1024;
 
@@ -39,84 +41,6 @@ fn recognized_backup_file_name(file_name: &str) -> bool {
     safe_json_file_name(file_name) && file_name.starts_with("english-focus-backup-")
 }
 
-fn has_string(object: &Map<String, Value>, key: &str) -> bool {
-    object.get(key).is_some_and(Value::is_string)
-}
-
-fn has_nonnegative_integer(object: &Map<String, Value>, key: &str) -> bool {
-    object.get(key).and_then(Value::as_u64).is_some()
-}
-
-fn is_supported_checksum(value: &str) -> bool {
-    (value.len() == 16 || value.len() == 64)
-        && value
-            .chars()
-            .all(|character| matches!(character, '0'..='9' | 'a'..='f'))
-}
-
-fn is_readable_manifest_shape(value: &Value) -> bool {
-    let Some(manifest) = value.as_object() else {
-        return false;
-    };
-
-    for key in [
-        "kind",
-        "backupVersion",
-        "databaseSchemaVersion",
-        "appVersion",
-        "createdAt",
-        "reason",
-        "checksumAlgorithm",
-        "checksum",
-    ] {
-        if !has_string(manifest, key) {
-            return false;
-        }
-    }
-
-    if manifest.get("kind").and_then(Value::as_str) != Some("english-focus-backup")
-        || manifest.get("backupVersion").and_then(Value::as_str) != Some("1.0.0")
-        || !matches!(
-            manifest
-                .get("databaseSchemaVersion")
-                .and_then(Value::as_str),
-            Some("2" | "3")
-        )
-        || !matches!(
-            manifest.get("reason").and_then(Value::as_str),
-            Some("manual" | "automatic" | "pre-restore")
-        )
-        || !matches!(
-            manifest.get("checksumAlgorithm").and_then(Value::as_str),
-            Some("sha256" | "fnv1a64")
-        )
-        || !manifest
-            .get("checksum")
-            .and_then(Value::as_str)
-            .is_some_and(is_supported_checksum)
-    {
-        return false;
-    }
-
-    let Some(counts) = manifest.get("counts").and_then(Value::as_object) else {
-        return false;
-    };
-    if !["vocabularyEntries", "vocabularyMetadata", "settingsRecords"]
-        .iter()
-        .all(|key| has_nonnegative_integer(counts, key))
-    {
-        return false;
-    }
-
-    let Some(data) = manifest.get("data").and_then(Value::as_object) else {
-        return false;
-    };
-
-    data.get("entries").is_some_and(Value::is_array)
-        && data.get("metadata").is_some_and(Value::is_array)
-        && data.contains_key("settings")
-}
-
 fn classify_unavailable(path: &Path) -> Result<Option<UnavailableBackup>, String> {
     let Some(file_name) = path.file_name().and_then(|value| value.to_str()) else {
         return Ok(None);
@@ -139,7 +63,7 @@ fn classify_unavailable(path: &Path) -> Result<Option<UnavailableBackup>, String
     } else {
         match fs::read(path) {
             Ok(contents) => match serde_json::from_slice::<Value>(&contents) {
-                Ok(value) if is_readable_manifest_shape(&value) => None,
+                Ok(value) if backup::validate_manifest_value(&value).is_ok() => None,
                 Ok(_) | Err(_) => Some("This backup file is incomplete or damaged."),
             },
             Err(_) => Some("This backup file could not be read."),
@@ -195,11 +119,39 @@ pub fn delete_unavailable_backup(file_name: String, app: AppHandle) -> Result<()
 #[cfg(test)]
 mod tests {
     use serde_json::json;
+    use sha2::{Digest, Sha256};
 
-    use super::{
-        is_readable_manifest_shape, is_supported_checksum, recognized_backup_file_name,
-        safe_json_file_name,
-    };
+    use super::{recognized_backup_file_name, safe_json_file_name};
+    use crate::commands::backup;
+
+    fn valid_empty_manifest() -> serde_json::Value {
+        let data = json!({
+            "entries": [],
+            "metadata": [],
+            "settings": null
+        });
+        let checksum = format!(
+            "{:x}",
+            Sha256::digest(serde_json::to_vec(&data).expect("empty backup data should serialize"))
+        );
+
+        json!({
+            "kind": "english-focus-backup",
+            "backupVersion": "1.0.0",
+            "databaseSchemaVersion": "3",
+            "appVersion": "1.0.0",
+            "createdAt": "2026-07-21T12:00:00.000Z",
+            "reason": "manual",
+            "counts": {
+                "vocabularyEntries": 0,
+                "vocabularyMetadata": 0,
+                "settingsRecords": 0
+            },
+            "checksumAlgorithm": "sha256",
+            "checksum": checksum,
+            "data": data
+        })
+    }
 
     #[test]
     fn accepts_only_safe_json_file_names() {
@@ -217,60 +169,14 @@ mod tests {
     }
 
     #[test]
-    fn accepts_only_supported_checksum_shapes() {
-        assert!(is_supported_checksum("0123456789abcdef"));
-        assert!(is_supported_checksum(
-            "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        ));
-        assert!(!is_supported_checksum("broken"));
-    }
+    fn classifies_semantically_invalid_manifests_as_unavailable() {
+        let valid = valid_empty_manifest();
+        backup::validate_manifest_value(&valid)
+            .expect("valid empty backup should pass integrity validation");
 
-    #[test]
-    fn recognizes_the_current_manifest_shape() {
-        let manifest = json!({
-            "kind": "english-focus-backup",
-            "backupVersion": "1.0.0",
-            "databaseSchemaVersion": "3",
-            "appVersion": "1.0.0",
-            "createdAt": "2026-07-19T12:00:00.000Z",
-            "reason": "manual",
-            "counts": {
-                "vocabularyEntries": 0,
-                "vocabularyMetadata": 0,
-                "settingsRecords": 1
-            },
-            "checksumAlgorithm": "sha256",
-            "checksum": "0123456789abcdef",
-            "data": {
-                "entries": [],
-                "metadata": [],
-                "settings": null
-            }
-        });
+        let mut invalid = valid;
+        invalid["counts"]["settingsRecords"] = json!(1);
 
-        assert!(is_readable_manifest_shape(&manifest));
-        assert!(!is_readable_manifest_shape(
-            &json!({ "kind": "english-focus-backup" })
-        ));
-        assert!(!is_readable_manifest_shape(&json!({
-            "kind": "english-focus-backup",
-            "backupVersion": "99",
-            "databaseSchemaVersion": "3",
-            "appVersion": "1.0.0",
-            "createdAt": "2026-07-19T12:00:00.000Z",
-            "reason": "manual",
-            "counts": {
-                "vocabularyEntries": 0,
-                "vocabularyMetadata": 0,
-                "settingsRecords": 1
-            },
-            "checksumAlgorithm": "sha256",
-            "checksum": "0123456789abcdef",
-            "data": {
-                "entries": [],
-                "metadata": [],
-                "settings": null
-            }
-        })));
+        assert!(backup::validate_manifest_value(&invalid).is_err());
     }
 }
