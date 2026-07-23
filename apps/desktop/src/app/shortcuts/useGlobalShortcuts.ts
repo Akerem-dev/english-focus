@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { dispatchAppCommand } from "../command-bar";
 
 export interface GlobalShortcutHandlers {
+  readonly canExportCurrent: boolean;
+  readonly canSaveCurrent: boolean;
   readonly onOpenCommandBar: () => void;
   readonly onOpenShortcuts: () => void;
   readonly onNavigateLibrary: () => void;
@@ -28,6 +30,8 @@ function modalIsOpen(): boolean {
 }
 
 export function useGlobalShortcuts({
+  canExportCurrent,
+  canSaveCurrent,
   onFocusSearch,
   onNavigateLibrary,
   onNavigateSettings,
@@ -75,14 +79,14 @@ export function useGlobalShortcuts({
         return;
       }
 
-      if (modifier && key === "e") {
+      if (modifier && key === "e" && canExportCurrent) {
         event.preventDefault();
         event.stopPropagation();
         dispatchAppCommand("export-current");
         return;
       }
 
-      if (modifier && key === "s" && !isEditableTarget(event.target)) {
+      if (modifier && key === "s" && canSaveCurrent && !isEditableTarget(event.target)) {
         event.preventDefault();
         event.stopPropagation();
         dispatchAppCommand("save-current");
@@ -108,5 +112,13 @@ export function useGlobalShortcuts({
     return () => {
       document.removeEventListener("keydown", handleKeyDown, true);
     };
-  }, [onFocusSearch, onNavigateLibrary, onNavigateSettings, onOpenCommandBar, onOpenShortcuts]);
+  }, [
+    canExportCurrent,
+    canSaveCurrent,
+    onFocusSearch,
+    onNavigateLibrary,
+    onNavigateSettings,
+    onOpenCommandBar,
+    onOpenShortcuts
+  ]);
 }

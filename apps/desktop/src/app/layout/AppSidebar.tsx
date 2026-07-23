@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, EnglishFocusMark } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
+import { APP_ROUTES } from "../router/routes";
+import { ROUTE_PATHS } from "../router/routeIds";
 import { connectToRuntime, type RuntimeConnection } from "../runtime/runtimeBridge";
-import { APP_ROUTES, ROUTE_PATHS } from "../router";
 
 function runtimeLabel(connection: RuntimeConnection | undefined) {
   if (connection === undefined) {

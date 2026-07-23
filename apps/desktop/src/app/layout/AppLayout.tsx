@@ -6,14 +6,21 @@ import {
   createCommandRegistry,
   dispatchAppCommand,
   useCommandBar,
+  type AppCommandAction,
   type CommandDefinition
 } from "../command-bar";
-import { RouteAccessibilityManager } from "../performance";
-import { ROUTE_PATHS } from "../router";
+import { RouteAccessibilityManager } from "../performance/RouteAccessibilityManager";
+import { ROUTE_PATHS } from "../router/routeIds";
 import { KeyboardShortcutsDialog, useGlobalShortcuts } from "../shortcuts";
 import { AppContent } from "./AppContent";
 import { AppSidebar } from "./AppSidebar";
 import { AppTopBar } from "./AppTopBar";
+
+function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
+  return commands.some(
+    (command) => command.target.kind === "action" && command.target.action === action
+  );
+}
 
 export function AppLayout({ children }: PropsWithChildren) {
   const location = useLocation();
@@ -21,6 +28,8 @@ export function AppLayout({ children }: PropsWithChildren) {
   const commandBar = useCommandBar();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const commands = useMemo(() => createCommandRegistry(location.pathname), [location.pathname]);
+  const canExportCurrent = hasAction(commands, "export-current");
+  const canSaveCurrent = hasAction(commands, "save-current");
 
   function openVocabularyHome() {
     if (location.pathname === ROUTE_PATHS.vocabulary) {
@@ -72,6 +81,8 @@ export function AppLayout({ children }: PropsWithChildren) {
   }
 
   useGlobalShortcuts({
+    canExportCurrent,
+    canSaveCurrent,
     onFocusSearch: focusCurrentSearch,
     onNavigateLibrary: () => {
       navigate(ROUTE_PATHS.library);
