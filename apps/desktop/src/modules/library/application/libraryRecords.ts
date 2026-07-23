@@ -14,6 +14,22 @@ export interface LibraryRecord {
   readonly layer: LibraryLayer;
 }
 
+const WORD_COLLATOR = new Intl.Collator("en", {
+  sensitivity: "base"
+});
+
+let cachedSearchQuery: string | undefined;
+let cachedSearchTerms: readonly string[] = Object.freeze([]);
+
+function searchTerms(query: string): readonly string[] {
+  if (query !== cachedSearchQuery) {
+    cachedSearchQuery = query;
+    cachedSearchTerms = tokenizeSearchText(query);
+  }
+
+  return cachedSearchTerms;
+}
+
 function searchableText(
   record: LibraryRecord,
   metadata: VocabularyUserMetadata | undefined
@@ -43,8 +59,14 @@ export function matchesSearch(
   metadata: VocabularyUserMetadata | undefined,
   query: string
 ): boolean {
-  const terms = tokenizeSearchText(query);
+  const terms = searchTerms(query);
   if (terms.length === 0) return true;
+
+  const [onlyTerm] = terms;
+  if (terms.length === 1 && onlyTerm !== undefined && record.entry.normalizedWord.includes(onlyTerm)) {
+    return true;
+  }
+
   const text = searchableText(record, metadata);
   return terms.every((term) => text.includes(term));
 }
@@ -56,13 +78,9 @@ export function compareRecords(
 ): number {
   switch (sort) {
     case "word-asc":
-      return left.entry.word.localeCompare(right.entry.word, "en", {
-        sensitivity: "base"
-      });
+      return WORD_COLLATOR.compare(left.entry.word, right.entry.word);
     case "word-desc":
-      return right.entry.word.localeCompare(left.entry.word, "en", {
-        sensitivity: "base"
-      });
+      return WORD_COLLATOR.compare(right.entry.word, left.entry.word);
     case "updated-desc":
     default:
       return right.entry.updatedAt.localeCompare(left.entry.updatedAt);
