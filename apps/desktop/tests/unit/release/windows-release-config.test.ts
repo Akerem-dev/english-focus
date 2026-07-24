@@ -91,7 +91,7 @@ describe("Windows release configuration", () => {
   it("removes stale Windows installer outputs before packaging", () => {
     const releaseScript = readText("scripts/build-windows-installers.ps1");
 
-    expect(releaseScript).toContain('Remove-Item -LiteralPath $bundleRoot -Recurse -Force');
+    expect(releaseScript).toContain("Remove-Item -LiteralPath $bundleRoot -Recurse -Force");
     expect(releaseScript).toContain(
       'foreach ($staleReleaseFile in @("english-learning-platform.exe", "english-learning-platform.pdb"))'
     );
