@@ -8,29 +8,27 @@ import { normalizeSearchText, tokenizeSearchText } from "../../search/services";
 
 export type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
 type LibraryLayer = "core" | VocabularyStorageLayer;
+type LibrarySearchPredicate = (record: LibraryRecord, metadata?: VocabularyUserMetadata) => boolean;
 
 export interface LibraryRecord {
   readonly entry: VocabularyEntry;
   readonly layer: LibraryLayer;
 }
 
+interface CachedSearchDocument {
+  readonly metadata: VocabularyUserMetadata | undefined;
+  readonly text: string;
+}
+
 const WORD_COLLATOR = new Intl.Collator("en", {
   sensitivity: "base"
 });
+const SEARCH_DOCUMENTS = new WeakMap<VocabularyEntry, CachedSearchDocument>();
 
-let cachedSearchQuery: string | undefined;
-let cachedSearchTerms: readonly string[] = Object.freeze([]);
+let cachedPredicateQuery: string | undefined;
+let cachedPredicate: LibrarySearchPredicate | undefined;
 
-function searchTerms(query: string): readonly string[] {
-  if (query !== cachedSearchQuery) {
-    cachedSearchQuery = query;
-    cachedSearchTerms = tokenizeSearchText(query);
-  }
-
-  return cachedSearchTerms;
-}
-
-function searchableText(
+function buildSearchableText(
   record: LibraryRecord,
   metadata: VocabularyUserMetadata | undefined
 ): string {
@@ -54,25 +52,61 @@ function searchableText(
   );
 }
 
+function cachedSearchableText(
+  record: LibraryRecord,
+  metadata: VocabularyUserMetadata | undefined
+): string {
+  const cached = SEARCH_DOCUMENTS.get(record.entry);
+  if (cached !== undefined && cached.metadata === metadata) {
+    return cached.text;
+  }
+
+  const text = buildSearchableText(record, metadata);
+  SEARCH_DOCUMENTS.set(record.entry, Object.freeze({ metadata, text }));
+  return text;
+}
+
+function createLibrarySearchPredicate(query: string): LibrarySearchPredicate {
+  const terms = tokenizeSearchText(query);
+
+  if (terms.length === 0) {
+    return (record, metadata) => {
+      cachedSearchableText(record, metadata);
+      return true;
+    };
+  }
+
+  const [onlyTerm] = terms;
+
+  return (record, metadata) => {
+    if (
+      terms.length === 1 &&
+      onlyTerm !== undefined &&
+      record.entry.normalizedWord.includes(onlyTerm)
+    ) {
+      return true;
+    }
+
+    const text = cachedSearchableText(record, metadata);
+    return terms.every((term) => text.includes(term));
+  };
+}
+
+function searchPredicate(query: string): LibrarySearchPredicate {
+  if (query !== cachedPredicateQuery || cachedPredicate === undefined) {
+    cachedPredicateQuery = query;
+    cachedPredicate = createLibrarySearchPredicate(query);
+  }
+
+  return cachedPredicate;
+}
+
 export function matchesSearch(
   record: LibraryRecord,
   metadata: VocabularyUserMetadata | undefined,
   query: string
 ): boolean {
-  const terms = searchTerms(query);
-  if (terms.length === 0) return true;
-
-  const [onlyTerm] = terms;
-  if (
-    terms.length === 1 &&
-    onlyTerm !== undefined &&
-    record.entry.normalizedWord.includes(onlyTerm)
-  ) {
-    return true;
-  }
-
-  const text = searchableText(record, metadata);
-  return terms.every((term) => text.includes(term));
+  return searchPredicate(query)(record, metadata);
 }
 
 export function compareRecords(
