@@ -8,10 +8,7 @@ import { normalizeSearchText, tokenizeSearchText } from "../../search/services";
 
 export type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
 type LibraryLayer = "core" | VocabularyStorageLayer;
-type LibrarySearchPredicate = (
-  record: LibraryRecord,
-  metadata?: VocabularyUserMetadata
-) => boolean;
+type LibrarySearchPredicate = (record: LibraryRecord, metadata?: VocabularyUserMetadata) => boolean;
 
 export interface LibraryRecord {
   readonly entry: VocabularyEntry;
