@@ -35,20 +35,18 @@ function readJson<T>(relativePath: string): T {
   ) as T;
 }
 
+function readText(relativePath: string): string {
+  return readFileSync(resolve(repositoryRoot, relativePath), "utf8").replace(/^\uFEFF/, "");
+}
+
 describe("Windows release configuration", () => {
   it("keeps all release-bearing application versions synchronized", () => {
     const rootPackage = readJson<PackageJson>("package.json");
     const desktopPackage = readJson<PackageJson>("apps/desktop/package.json");
     const packageLock = readJson<PackageLock>("package-lock.json");
     const tauriConfig = readJson<TauriConfig>("apps/desktop/src-tauri/tauri.conf.json");
-    const cargo = readFileSync(
-      resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.toml"),
-      "utf8"
-    );
-    const cargoLock = readFileSync(
-      resolve(repositoryRoot, "apps/desktop/src-tauri/Cargo.lock"),
-      "utf8"
-    );
+    const cargo = readText("apps/desktop/src-tauri/Cargo.toml");
+    const cargoLock = readText("apps/desktop/src-tauri/Cargo.lock");
     const cargoVersion = cargo.match(/^\s*version\s*=\s*"([^"]+)"/m)?.[1];
     const cargoLockVersion = cargoLock.match(
       /\[\[package\]\]\r?\nname = "english-learning-platform"\r?\nversion = "([^"]+)"/
@@ -80,5 +78,25 @@ describe("Windows release configuration", () => {
     expect(config.bundle.windows.allowDowngrades).toBe(false);
     expect(config.bundle.windows.nsis.installMode).toBe("currentUser");
     expect(config.bundle.windows.wix.upgradeCode).toMatch(/^[0-9A-F-]{36}$/);
+  });
+
+  it("keeps release builds detached from a Windows console", () => {
+    const mainSource = readText("apps/desktop/src-tauri/src/main.rs");
+
+    expect(mainSource).toContain(
+      '#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]'
+    );
+  });
+
+  it("removes stale Windows installer outputs before packaging", () => {
+    const releaseScript = readText("scripts/build-windows-installers.ps1");
+
+    expect(releaseScript).toContain('Remove-Item -LiteralPath $bundleRoot -Recurse -Force');
+    expect(releaseScript).toContain(
+      'foreach ($staleReleaseFile in @("english-learning-platform.exe", "english-learning-platform.pdb"))'
+    );
+    expect(releaseScript).toContain(
+      "Get-ChildItem -LiteralPath $artifactRoot -Force | Remove-Item -Recurse -Force"
+    );
   });
 });
