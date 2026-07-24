@@ -24,11 +24,20 @@ export type LibrarySearchPredicate = (
   metadata?: VocabularyUserMetadata
 ) => boolean;
 
+interface CachedSearchDocument {
+  readonly metadata: VocabularyUserMetadata | undefined;
+  readonly text: string;
+}
+
 const WORD_COLLATOR = new Intl.Collator("en", {
   sensitivity: "base"
 });
+const SEARCH_DOCUMENTS = new WeakMap<VocabularyEntry, CachedSearchDocument>();
 
-function searchableText(
+let cachedPredicateQuery: string | undefined;
+let cachedPredicate: LibrarySearchPredicate | undefined;
+
+function buildSearchableText(
   record: LibraryRecord,
   metadata: VocabularyUserMetadata | undefined
 ): string {
@@ -52,6 +61,20 @@ function searchableText(
   );
 }
 
+function cachedSearchableText(
+  record: LibraryRecord,
+  metadata: VocabularyUserMetadata | undefined
+): string {
+  const cached = SEARCH_DOCUMENTS.get(record.entry);
+  if (cached !== undefined && cached.metadata === metadata) {
+    return cached.text;
+  }
+
+  const text = buildSearchableText(record, metadata);
+  SEARCH_DOCUMENTS.set(record.entry, Object.freeze({ metadata, text }));
+  return text;
+}
+
 function isPreparedLibraryRecord(record: LibraryRecord): record is PreparedLibraryRecord {
   return "searchText" in record;
 }
@@ -63,13 +86,19 @@ export function prepareLibraryRecord(
   return Object.freeze({
     ...record,
     metadata,
-    searchText: searchableText(record, metadata)
+    searchText: cachedSearchableText(record, metadata)
   });
 }
 
 export function createLibrarySearchPredicate(query: string): LibrarySearchPredicate {
   const terms = tokenizeSearchText(query);
-  if (terms.length === 0) return () => true;
+
+  if (terms.length === 0) {
+    return (record, metadata) => {
+      cachedSearchableText(record, metadata);
+      return true;
+    };
+  }
 
   const [onlyTerm] = terms;
 
@@ -84,9 +113,18 @@ export function createLibrarySearchPredicate(query: string): LibrarySearchPredic
 
     const text = isPreparedLibraryRecord(record)
       ? record.searchText
-      : searchableText(record, metadata);
+      : cachedSearchableText(record, metadata);
     return terms.every((term) => text.includes(term));
   };
+}
+
+function searchPredicate(query: string): LibrarySearchPredicate {
+  if (query !== cachedPredicateQuery || cachedPredicate === undefined) {
+    cachedPredicateQuery = query;
+    cachedPredicate = createLibrarySearchPredicate(query);
+  }
+
+  return cachedPredicate;
 }
 
 export function matchesSearch(
@@ -94,7 +132,7 @@ export function matchesSearch(
   metadata: VocabularyUserMetadata | undefined,
   query: string
 ): boolean {
-  return createLibrarySearchPredicate(query)(record, metadata);
+  return searchPredicate(query)(record, metadata);
 }
 
 export function compareRecords(
