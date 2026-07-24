@@ -8,16 +8,15 @@ import { normalizeSearchText, tokenizeSearchText } from "../../search/services";
 
 export type LibrarySort = "updated-desc" | "word-asc" | "word-desc";
 type LibraryLayer = "core" | VocabularyStorageLayer;
+type LibrarySearchPredicate = (
+  record: LibraryRecord,
+  metadata?: VocabularyUserMetadata
+) => boolean;
 
 export interface LibraryRecord {
   readonly entry: VocabularyEntry;
   readonly layer: LibraryLayer;
 }
-
-export type LibrarySearchPredicate = (
-  record: LibraryRecord,
-  metadata?: VocabularyUserMetadata
-) => boolean;
 
 interface CachedSearchDocument {
   readonly metadata: VocabularyUserMetadata | undefined;
@@ -70,7 +69,7 @@ function cachedSearchableText(
   return text;
 }
 
-export function createLibrarySearchPredicate(query: string): LibrarySearchPredicate {
+function createLibrarySearchPredicate(query: string): LibrarySearchPredicate {
   const terms = tokenizeSearchText(query);
 
   if (terms.length === 0) {
