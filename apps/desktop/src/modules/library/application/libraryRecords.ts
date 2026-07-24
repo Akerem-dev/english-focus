@@ -14,21 +14,19 @@ export interface LibraryRecord {
   readonly layer: LibraryLayer;
 }
 
+export interface PreparedLibraryRecord extends LibraryRecord {
+  readonly metadata: VocabularyUserMetadata | undefined;
+  readonly searchText: string;
+}
+
+export type LibrarySearchPredicate = (
+  record: LibraryRecord,
+  metadata?: VocabularyUserMetadata
+) => boolean;
+
 const WORD_COLLATOR = new Intl.Collator("en", {
   sensitivity: "base"
 });
-
-let cachedSearchQuery: string | undefined;
-let cachedSearchTerms: readonly string[] = Object.freeze([]);
-
-function searchTerms(query: string): readonly string[] {
-  if (query !== cachedSearchQuery) {
-    cachedSearchQuery = query;
-    cachedSearchTerms = tokenizeSearchText(query);
-  }
-
-  return cachedSearchTerms;
-}
 
 function searchableText(
   record: LibraryRecord,
@@ -54,25 +52,49 @@ function searchableText(
   );
 }
 
+function isPreparedLibraryRecord(record: LibraryRecord): record is PreparedLibraryRecord {
+  return "searchText" in record;
+}
+
+export function prepareLibraryRecord(
+  record: LibraryRecord,
+  metadata: VocabularyUserMetadata | undefined
+): PreparedLibraryRecord {
+  return Object.freeze({
+    ...record,
+    metadata,
+    searchText: searchableText(record, metadata)
+  });
+}
+
+export function createLibrarySearchPredicate(query: string): LibrarySearchPredicate {
+  const terms = tokenizeSearchText(query);
+  if (terms.length === 0) return () => true;
+
+  const [onlyTerm] = terms;
+
+  return (record, metadata) => {
+    if (
+      terms.length === 1 &&
+      onlyTerm !== undefined &&
+      record.entry.normalizedWord.includes(onlyTerm)
+    ) {
+      return true;
+    }
+
+    const text = isPreparedLibraryRecord(record)
+      ? record.searchText
+      : searchableText(record, metadata);
+    return terms.every((term) => text.includes(term));
+  };
+}
+
 export function matchesSearch(
   record: LibraryRecord,
   metadata: VocabularyUserMetadata | undefined,
   query: string
 ): boolean {
-  const terms = searchTerms(query);
-  if (terms.length === 0) return true;
-
-  const [onlyTerm] = terms;
-  if (
-    terms.length === 1 &&
-    onlyTerm !== undefined &&
-    record.entry.normalizedWord.includes(onlyTerm)
-  ) {
-    return true;
-  }
-
-  const text = searchableText(record, metadata);
-  return terms.every((term) => text.includes(term));
+  return createLibrarySearchPredicate(query)(record, metadata);
 }
 
 export function compareRecords(
