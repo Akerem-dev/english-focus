@@ -33,5 +33,5 @@ export interface BackupRestoreResult {
   readonly restoredAt: string;
   readonly restored: BackupCounts;
   readonly sourceBackup: BackupDescriptor;
-  readonly safetyBackup: BackupDescriptor;
+  readonly safetyBackup?: BackupDescriptor | undefined;
 }

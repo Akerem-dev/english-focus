@@ -1,5 +1,5 @@
 import type { AppIconName } from "../../design-system";
-import { ROUTE_PATHS } from "../router";
+import { ROUTE_PATHS } from "../router/routeIds";
 
 export type AppCommandAction =
   | "edit-study-details"

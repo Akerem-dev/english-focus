@@ -1,4 +1,3 @@
--- User-owned state remains separate from replaceable vocabulary content.
 CREATE TABLE IF NOT EXISTS vocabulary_user_metadata (
   normalized_word TEXT PRIMARY KEY,
   favorite INTEGER NOT NULL DEFAULT 0 CHECK (favorite IN (0, 1)),

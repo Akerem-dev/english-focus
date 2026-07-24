@@ -39,6 +39,21 @@ describe("Library filtering and sorting", () => {
     expect(matchesSearch(item, metadata, "missing phrase")).toBe(false);
   });
 
+  it("refreshes the prepared search document when personal details change", () => {
+    const item = record("allocate", "2026-07-16T10:00:00.000Z");
+    const essayMetadata = createVocabularyUserMetadataBuilder()
+      .with({ normalizedWord: "allocate", note: "IELTS essay" })
+      .build();
+    const speakingMetadata = createVocabularyUserMetadataBuilder()
+      .with({ normalizedWord: "allocate", note: "Speaking practice" })
+      .build();
+
+    expect(matchesSearch(item, essayMetadata, "")).toBe(true);
+    expect(matchesSearch(item, essayMetadata, "ielts")).toBe(true);
+    expect(matchesSearch(item, speakingMetadata, "ielts")).toBe(false);
+    expect(matchesSearch(item, speakingMetadata, "speaking")).toBe(true);
+  });
+
   it("uses the same accent-insensitive Turkish matching as vocabulary search", () => {
     const item = record("maintain", "2026-07-16T10:00:00.000Z");
 

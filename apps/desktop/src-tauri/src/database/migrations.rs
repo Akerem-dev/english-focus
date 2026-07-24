@@ -73,7 +73,10 @@ impl fmt::Display for MigrationError {
         match self {
             Self::Database(error) => write!(formatter, "{error}"),
             Self::InvalidStoredVersion(value) => {
-                write!(formatter, "Stored database schema version '{value}' is invalid.")
+                write!(
+                    formatter,
+                    "Stored database schema version '{value}' is invalid."
+                )
             }
             Self::UnsupportedFutureVersion { found, supported } => write!(
                 formatter,
@@ -171,11 +174,7 @@ fn require_table(
     Ok(())
 }
 
-fn require_index(
-    connection: &Connection,
-    version: u32,
-    index: &str,
-) -> Result<(), MigrationError> {
+fn require_index(connection: &Connection, version: u32, index: &str) -> Result<(), MigrationError> {
     if object_exists(connection, "index", index)? {
         Ok(())
     } else {
@@ -474,7 +473,9 @@ mod tests {
 
         let error = run(&connection).expect_err("future schema must be rejected");
 
-        assert!(error.to_string().contains("newer than the supported version"));
+        assert!(error
+            .to_string()
+            .contains("newer than the supported version"));
         assert_eq!(version(&connection), Some(99));
     }
 

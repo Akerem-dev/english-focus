@@ -7,6 +7,7 @@ import {
   LayeredVocabularyContentSource
 } from "../../infrastructure/content";
 import { TauriVocabularyRepository } from "../../infrastructure/persistence";
+import { publishActivity } from "../../modules/history";
 import {
   VocabularyRepositoryContext,
   type VocabularyRepositoryStatus
@@ -52,6 +53,12 @@ export function VocabularyRepositoryProvider({ children }: PropsWithChildren) {
       );
       setStatus("ready");
       setError(undefined);
+      publishActivity({
+        kind: "vocabulary-saved",
+        scope: "vocabulary",
+        label: "Vocabulary saved locally",
+        target: saved.entry.normalizedWord
+      });
       return saved;
     },
     [repository]
@@ -69,6 +76,15 @@ export function VocabularyRepositoryProvider({ children }: PropsWithChildren) {
       );
       setStatus("ready");
       setError(undefined);
+
+      if (saved.length > 0) {
+        publishActivity({
+          kind: "vocabulary-saved",
+          scope: "vocabulary",
+          label: `${saved.length} vocabulary ${saved.length === 1 ? "entry" : "entries"} saved locally`
+        });
+      }
+
       return saved;
     },
     [repository]

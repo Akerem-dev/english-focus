@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { createCommandRegistry } from "../../../src/app/command-bar";
+import { createCommandRegistry, type AppCommandAction } from "../../../src/app/command-bar";
 import { KEYBOARD_SHORTCUTS } from "../../../src/app/shortcuts";
+
+function supportsAction(pathname: string, action: AppCommandAction): boolean {
+  return createCommandRegistry(pathname).some(
+    (command) => command.target.kind === "action" && command.target.action === action
+  );
+}
 
 describe("keyboard shortcut registry", () => {
   it("contains every approved global shortcut exactly once", () => {
@@ -31,5 +37,16 @@ describe("keyboard shortcut registry", () => {
     expect(settingsCommands.filter((command) => command.target.kind === "navigate")).toHaveLength(
       3
     );
+  });
+
+  it("exposes export and save only on routes that can handle them", () => {
+    expect(supportsAction("/", "export-current")).toBe(true);
+    expect(supportsAction("/", "save-current")).toBe(true);
+
+    expect(supportsAction("/library", "export-current")).toBe(true);
+    expect(supportsAction("/library", "save-current")).toBe(false);
+
+    expect(supportsAction("/settings", "export-current")).toBe(false);
+    expect(supportsAction("/settings", "save-current")).toBe(false);
   });
 });

@@ -28,12 +28,12 @@ test("settings categories support keyboard navigation and focused maintenance to
   await page.getByRole("button", { name: "Check now" }).click();
   await expect(
     page.getByRole("heading", {
-      name: /Everything looks good|A small issue was found|Your data needs attention/
+      name: /Everything looks good|Your app data looks good|A quick check is recommended|Your data needs attention/
     })
   ).toBeVisible();
   await expect(page.getByText("Your data", { exact: true })).toBeVisible();
   await expect(page.getByText("Next step", { exact: true })).toBeVisible();
-  await expect(page.getByText("Check details", { exact: true })).toBeVisible();
+  await expect(page.getByText("View check details", { exact: true })).toBeVisible();
   await expect(page.getByText("SQLite integrity", { exact: true })).not.toBeVisible();
 
   await page.getByRole("button", { name: /Back to privacy & maintenance/ }).click();

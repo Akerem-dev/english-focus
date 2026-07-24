@@ -153,7 +153,6 @@ pub fn list_resilient_vocabulary_entries(
     read_vocabulary_entries(&connection)
 }
 
-#[tauri::command]
 pub fn list_resilient_activity(
     limit: Option<i64>,
     state: State<'_, AppState>,
@@ -238,7 +237,7 @@ mod tests {
                     '2026-07-19T11:00:00.000Z'
                 );
                 INSERT INTO activity_log VALUES(
-                    'bad-label', 'diagnostics-run', 'system', 42, NULL,
+                    'bad-label', 'diagnostics-run', 'system', X'FF', NULL,
                     '2026-07-19T10:00:00.000Z'
                 );
                 "#,

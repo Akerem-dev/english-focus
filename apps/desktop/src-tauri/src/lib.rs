@@ -1,7 +1,6 @@
 mod commands;
 mod contracts;
 mod database;
-mod filesystem;
 mod state;
 mod validation;
 
@@ -21,19 +20,19 @@ pub fn run() {
             commands::contract_commands::record_activity,
             commands::activity::clear_activity,
             commands::contract_commands::list_resilient_activity,
-            commands::database::list_vocabulary_entries,
-            commands::database::get_vocabulary_entry_by_normalized_word,
-            commands::database::save_vocabulary_entry,
-            commands::database::save_vocabulary_entries,
-            commands::resilient_records::list_resilient_vocabulary_entries,
-            commands::database::list_vocabulary_user_metadata,
-            commands::database::get_vocabulary_user_metadata,
-            commands::database::save_vocabulary_user_metadata,
-            commands::database::record_vocabulary_view,
+            commands::storage_contract_commands::contract_list_vocabulary_entries,
+            commands::storage_contract_commands::contract_get_vocabulary_entry_by_normalized_word,
+            commands::storage_contract_commands::contract_save_vocabulary_entry,
+            commands::storage_contract_commands::contract_save_vocabulary_entries,
+            commands::storage_contract_commands::contract_list_resilient_vocabulary_entries,
+            commands::storage_contract_commands::contract_list_vocabulary_user_metadata,
+            commands::storage_contract_commands::contract_get_vocabulary_user_metadata,
+            commands::storage_contract_commands::contract_save_vocabulary_user_metadata,
+            commands::storage_contract_commands::contract_record_vocabulary_view,
             commands::contract_commands::get_local_data_snapshot,
             commands::contract_commands::reset_local_data,
-            commands::settings::get_app_settings,
-            commands::settings::save_app_settings,
+            commands::storage_contract_commands::contract_get_app_settings,
+            commands::storage_contract_commands::contract_save_app_settings,
             commands::contract_commands::list_backups,
             commands::contract_commands::create_backup,
             commands::contract_commands::validate_backup,

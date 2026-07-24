@@ -477,7 +477,6 @@ fn collect_report(
     })
 }
 
-#[tauri::command]
 pub fn run_diagnostics(
     generated_at: String,
     app: AppHandle,
@@ -490,7 +489,6 @@ pub fn run_diagnostics(
     collect_report(&connection, &app, generated_at)
 }
 
-#[tauri::command]
 pub fn run_safe_maintenance(
     completed_at: String,
     app: AppHandle,

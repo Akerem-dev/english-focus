@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { BackupDescriptor } from "@platform/domain";
+import type { BackupDescriptor, BackupRestoreResult } from "@platform/domain";
 
 import { BackupRestoreDialog } from "../../../src/modules/backup/overlays";
 
@@ -49,5 +49,32 @@ describe("BackupRestoreDialog", () => {
     expect(markup).not.toContain("Storage format");
     expect(markup).toContain('class="backup-list-item__size"');
     expect(markup).toContain("disabled");
+  });
+
+  it("reports when restore succeeds without a recovery copy", () => {
+    const lastRestore: BackupRestoreResult = {
+      restoredAt: "2026-07-15T13:00:00.000Z",
+      restored: descriptor.counts,
+      sourceBackup: descriptor
+    };
+    const markup = renderToStaticMarkup(
+      <BackupRestoreDialog
+        backups={[descriptor]}
+        busy={false}
+        lastRestore={lastRestore}
+        onClearRestoreResult={() => undefined}
+        onClose={() => undefined}
+        onDelete={async () => undefined}
+        onRestore={async () => lastRestore}
+        onValidate={async () => ({ valid: true, issues: [], descriptor })}
+        open
+      />
+    );
+
+    expect(markup).toContain("Backup restored");
+    expect(markup).toContain(
+      "No recovery copy was created because the previous stored data was damaged."
+    );
+    expect(markup).not.toContain("A recovery copy was created first.");
   });
 });

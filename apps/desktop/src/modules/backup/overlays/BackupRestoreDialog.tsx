@@ -201,11 +201,19 @@ export function BackupRestoreDialog({
           </span>
           <div>
             <strong>Backup restored</strong>
-            <p>
-              {lastRestore.restored.vocabularyEntries} saved words and{" "}
-              {lastRestore.restored.vocabularyMetadata} personal details were restored. A recovery
-              copy was created first.
-            </p>
+            {lastRestore.safetyBackup === undefined ? (
+              <p>
+                {lastRestore.restored.vocabularyEntries} saved words and{" "}
+                {lastRestore.restored.vocabularyMetadata} personal details were restored. No
+                recovery copy was created because the previous stored data was damaged.
+              </p>
+            ) : (
+              <p>
+                {lastRestore.restored.vocabularyEntries} saved words and{" "}
+                {lastRestore.restored.vocabularyMetadata} personal details were restored. A recovery
+                copy was created first.
+              </p>
+            )}
           </div>
         </section>
       )}
@@ -325,7 +333,11 @@ export function BackupRestoreDialog({
                     />
                     <span>
                       <strong>Replace my current saved data with this backup.</strong>
-                      <small>A recovery copy of the current data will be created first.</small>
+                      <small>
+                        English Focus will try to create a recovery copy first. If the current
+                        stored data is damaged, the validated backup can still be restored without
+                        that copy.
+                      </small>
                     </span>
                   </label>
                 ) : null}

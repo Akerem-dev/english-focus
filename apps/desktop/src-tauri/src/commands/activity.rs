@@ -83,7 +83,6 @@ fn validate_request(request: &RecordActivityRequest) -> Result<(), String> {
     Ok(())
 }
 
-#[tauri::command]
 pub fn list_activity(
     limit: Option<i64>,
     state: State<'_, AppState>,
@@ -120,7 +119,6 @@ pub fn list_activity(
         .collect()
 }
 
-#[tauri::command]
 pub fn record_activity(
     request: RecordActivityRequest,
     state: State<'_, AppState>,

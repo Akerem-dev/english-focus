@@ -64,7 +64,7 @@ describe("applyDiagnosticScanCoverage", () => {
 
     const protectedReport = applyDiagnosticScanCoverage(healthyReport, {
       complete: false,
-      issues: Object.freeze(["Recent activity could not be scanned completely."])
+      issues: Object.freeze(["Recent activity could not be scanned completely: invalid value"])
     });
 
     expect(protectedReport.overallStatus).toBe("critical");
@@ -72,13 +72,47 @@ describe("applyDiagnosticScanCoverage", () => {
       expect.objectContaining({
         id: "diagnostic-coverage",
         status: "failed",
-        repairable: false
+        repairable: false,
+        details: ["Recent activity could not be checked completely."]
       })
     );
     expect(protectedReport.recommendations).not.toContain(
       "No action is required. Local storage is healthy."
     );
     expect(protectedReport.recommendations.at(-1)).toContain("check app health again");
+    expect(JSON.stringify(protectedReport)).not.toContain("invalid value");
+  });
+
+  it("marks backup availability unavailable when the backup scan did not finish", () => {
+    const protectedReport = applyDiagnosticScanCoverage(report, {
+      complete: false,
+      issues: Object.freeze(["Saved backups could not be scanned completely: permission denied"])
+    });
+    const backupCheck = protectedReport.checks.find((check) => check.id === "backup-availability");
+
+    expect(backupCheck).toEqual(
+      expect.objectContaining({
+        status: "failed",
+        summary: "Saved backups could not be checked right now.",
+        details: ["The backup folder was unavailable during this check."]
+      })
+    );
+    expect(JSON.stringify(protectedReport)).not.toContain("permission denied");
+  });
+
+  it("deduplicates friendly coverage messages", () => {
+    const protectedReport = applyDiagnosticScanCoverage(report, {
+      complete: false,
+      issues: Object.freeze([
+        "Vocabulary records could not be scanned completely: row 1",
+        "Vocabulary records could not be scanned completely: row 2"
+      ])
+    });
+    const coverageCheck = protectedReport.checks.find(
+      (check) => check.id === "diagnostic-coverage"
+    );
+
+    expect(coverageCheck?.details).toEqual(["Saved words could not be checked completely."]);
   });
 
   it("leaves a fully covered diagnostic report unchanged", () => {

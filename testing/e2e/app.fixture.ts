@@ -5,8 +5,8 @@ export { expect };
 
 export async function searchVocabulary(page: Page, word: string): Promise<void> {
   await page.goto("/");
-  await page.getByLabel("Search vocabulary", { exact: true }).fill(word);
-  await page.getByRole("button", { name: "Search word" }).click();
+  await page.getByRole("searchbox", { name: "Search vocabulary" }).fill(word);
+  await page.getByRole("button", { name: "Search vocabulary" }).click();
 }
 
 export async function openImportSource(page: Page): Promise<void> {

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
-import { getRouteByPath } from "../router";
+import { getRouteByPath } from "../router/routeLookup";
 import { getDocumentTitle } from "./documentTitle";
 
 export function RouteAccessibilityManager() {

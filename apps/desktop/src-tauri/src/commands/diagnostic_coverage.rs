@@ -18,9 +18,9 @@ fn read_string(row: &Row<'_>, index: usize) -> rusqlite::Result<String> {
 }
 
 fn scan_vocabulary_entries(connection: &Connection, issues: &mut Vec<String>) {
-    let mut statement = match connection.prepare(
-        "SELECT normalized_word, entry_json, layer, updated_at FROM vocabulary_entries",
-    ) {
+    let mut statement = match connection
+        .prepare("SELECT normalized_word, entry_json, layer, updated_at FROM vocabulary_entries")
+    {
         Ok(statement) => statement,
         Err(error) => {
             issues.push(format!(
@@ -109,23 +109,28 @@ fn scan_settings(connection: &Connection, issues: &mut Vec<String>) {
     let mut statement = match connection.prepare("SELECT id, settings_json FROM app_settings") {
         Ok(statement) => statement,
         Err(error) => {
-            issues.push(format!("App settings could not be scanned completely: {error}"));
+            issues.push(format!(
+                "App settings could not be scanned completely: {error}"
+            ));
             return;
         }
     };
-    let rows = match statement.query_map([], |row| {
-        Ok((row.get::<_, i64>(0)?, read_string(row, 1)?))
-    }) {
-        Ok(rows) => rows,
-        Err(error) => {
-            issues.push(format!("App settings could not be scanned completely: {error}"));
-            return;
-        }
-    };
+    let rows =
+        match statement.query_map([], |row| Ok((row.get::<_, i64>(0)?, read_string(row, 1)?))) {
+            Ok(rows) => rows,
+            Err(error) => {
+                issues.push(format!(
+                    "App settings could not be scanned completely: {error}"
+                ));
+                return;
+            }
+        };
 
     for row in rows {
         if let Err(error) = row {
-            issues.push(format!("App settings could not be scanned completely: {error}"));
+            issues.push(format!(
+                "App settings could not be scanned completely: {error}"
+            ));
             break;
         }
     }
@@ -214,7 +219,6 @@ fn backup_scan_issue(app: &AppHandle) -> Option<String> {
     }
 }
 
-#[tauri::command]
 pub fn check_diagnostic_scan_coverage(
     app: AppHandle,
     state: State<'_, AppState>,
@@ -299,7 +303,7 @@ mod tests {
         create_required_tables(&connection);
         connection
             .execute(
-                "INSERT INTO activity_log VALUES ('broken', 'diagnostics-run', 'system', 42, NULL, '2026-07-19T12:00:00.000Z')",
+                "INSERT INTO activity_log VALUES ('broken', 'diagnostics-run', 'system', X'FF', NULL, '2026-07-19T12:00:00.000Z')",
                 [],
             )
             .expect("broken row should be inserted");

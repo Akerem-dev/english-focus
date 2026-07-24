@@ -9,3 +9,4 @@ pub mod diagnostics;
 pub mod resilient_records;
 pub mod runtime;
 pub mod settings;
+pub mod storage_contract_commands;
