@@ -47,11 +47,18 @@ export const backupValidationResultSchema =
     descriptor: result.descriptor ?? undefined
   }));
 
-export const backupRestoreResultSchema = z
+export const backupRestoreResultNativeCompatibilitySchema = z
   .object({
     restoredAt: z.string().datetime({ offset: true }),
     restored: backupCountsSchema,
     sourceBackup: backupDescriptorSchema,
-    safetyBackup: backupDescriptorSchema
+    safetyBackup: z.union([backupDescriptorSchema, z.null()])
   })
   .strict();
+
+export const backupRestoreResultSchema = backupRestoreResultNativeCompatibilitySchema.transform(
+  (result) => ({
+    ...result,
+    safetyBackup: result.safetyBackup ?? undefined
+  })
+);

@@ -46,6 +46,44 @@ function keepActionableRecommendations(recommendations: readonly string[]): read
   );
 }
 
+function friendlyCoverageIssue(issue: string): string {
+  const normalized = issue.toLowerCase();
+
+  if (normalized.startsWith("vocabulary records")) {
+    return "Saved words could not be checked completely.";
+  }
+
+  if (normalized.startsWith("study details")) {
+    return "Favorites, tags, and notes could not be checked completely.";
+  }
+
+  if (normalized.startsWith("app settings")) {
+    return "Application preferences could not be checked completely.";
+  }
+
+  if (normalized.startsWith("recent activity")) {
+    return "Recent activity could not be checked completely.";
+  }
+
+  if (normalized.startsWith("saved backups")) {
+    return "Saved backups could not be checked completely.";
+  }
+
+  return "One or more local data checks did not finish.";
+}
+
+function friendlyCoverageIssues(issues: readonly string[]): readonly string[] {
+  const friendly =
+    issues.length === 0
+      ? ["One or more local data checks did not finish."]
+      : issues.map(friendlyCoverageIssue);
+  return Object.freeze([...new Set(friendly)]);
+}
+
+function backupScanFailed(issues: readonly string[]): boolean {
+  return issues.some((issue) => issue.toLowerCase().startsWith("saved backups"));
+}
+
 export function applyDiagnosticScanCoverage(
   report: DiagnosticReport,
   coverage: DiagnosticScanCoverage
@@ -54,26 +92,39 @@ export function applyDiagnosticScanCoverage(
     return report;
   }
 
-  const details =
-    coverage.issues.length === 0
-      ? Object.freeze(["One or more local data checks did not finish."])
-      : Object.freeze([...coverage.issues]);
   const coverageCheck = Object.freeze({
     id: "diagnostic-coverage",
     title: "Diagnostic coverage",
     status: "failed" as const,
     summary: "One or more local data checks could not be completed.",
-    details,
+    details: friendlyCoverageIssues(coverage.issues),
     repairable: false
   });
+  const backupUnavailable = backupScanFailed(coverage.issues);
+  const checks = report.checks.filter(
+    (check) =>
+      check.id !== coverageCheck.id && (!backupUnavailable || check.id !== "backup-availability")
+  );
+
+  if (backupUnavailable) {
+    checks.push(
+      Object.freeze({
+        id: "backup-availability",
+        title: "Recovery readiness",
+        status: "failed" as const,
+        summary: "Saved backups could not be checked right now.",
+        details: Object.freeze(["The backup folder was unavailable during this check."]),
+        repairable: false
+      })
+    );
+  }
+
+  checks.push(coverageCheck);
 
   return Object.freeze({
     ...report,
     overallStatus: "critical",
-    checks: Object.freeze([
-      ...report.checks.filter((check) => check.id !== coverageCheck.id),
-      coverageCheck
-    ]),
+    checks: Object.freeze(checks),
     recommendations: keepActionableRecommendations(report.recommendations)
   });
 }

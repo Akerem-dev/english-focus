@@ -5,7 +5,8 @@ import { Button } from "../../components";
 import { AppIcon } from "../../design-system";
 import type { SingleEntryFileImportPayload } from "../../modules/import-export/overlays/SingleEntryFileImportDialog";
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../command-bar";
-import { getRouteByPath, ROUTE_PATHS } from "../router";
+import { ROUTE_PATHS } from "../router/routeIds";
+import { getRouteByPath } from "../router/routeLookup";
 
 const ImportSourceDialog = lazy(async () => {
   const module = await import("../../modules/import-export/overlays/ImportSourceDialog");

@@ -1,7 +1,8 @@
 import { lazy, Suspense, type ReactElement } from "react";
 
 import type { AppIconName } from "../../design-system";
-import { RouteErrorBoundary, RouteLoadingFallback } from "../performance";
+import { RouteErrorBoundary } from "../performance/RouteErrorBoundary";
+import { RouteLoadingFallback } from "../performance/RouteLoadingFallback";
 import { ROUTE_PATHS, type AppRouteId, type AppRoutePath } from "./routeIds";
 
 const VocabularyPage = lazy(async () => {

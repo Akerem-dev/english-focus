@@ -1,11 +1,3 @@
--- SQLite vocabulary persistence baseline.
-PRAGMA foreign_keys = ON;
-
-CREATE TABLE IF NOT EXISTS schema_metadata (
-  key TEXT PRIMARY KEY,
-  value TEXT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS vocabulary_entries (
   normalized_word TEXT PRIMARY KEY,
   entry_id TEXT NOT NULL,

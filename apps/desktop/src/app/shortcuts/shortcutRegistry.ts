@@ -39,14 +39,14 @@ export const KEYBOARD_SHORTCUTS: readonly KeyboardShortcutDefinition[] = [
     id: "export",
     keys: ["Ctrl", "E"],
     label: "Export current context",
-    description: "Export the open vocabulary entry or the current Library selection.",
+    description: "Export only when the active Vocabulary or Library screen supports it.",
     group: "Actions"
   },
   {
     id: "save",
     keys: ["Ctrl", "S"],
     label: "Favorite or save",
-    description: "Favorite the open vocabulary entry; save an open study-details dialog.",
+    description: "Favorite an open vocabulary entry or save an active editor dialog.",
     group: "Actions"
   },
   {
