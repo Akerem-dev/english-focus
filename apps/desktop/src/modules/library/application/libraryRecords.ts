@@ -14,11 +14,6 @@ export interface LibraryRecord {
   readonly layer: LibraryLayer;
 }
 
-export interface PreparedLibraryRecord extends LibraryRecord {
-  readonly metadata: VocabularyUserMetadata | undefined;
-  readonly searchText: string;
-}
-
 export type LibrarySearchPredicate = (
   record: LibraryRecord,
   metadata?: VocabularyUserMetadata
@@ -75,21 +70,6 @@ function cachedSearchableText(
   return text;
 }
 
-function isPreparedLibraryRecord(record: LibraryRecord): record is PreparedLibraryRecord {
-  return "searchText" in record;
-}
-
-export function prepareLibraryRecord(
-  record: LibraryRecord,
-  metadata: VocabularyUserMetadata | undefined
-): PreparedLibraryRecord {
-  return Object.freeze({
-    ...record,
-    metadata,
-    searchText: cachedSearchableText(record, metadata)
-  });
-}
-
 export function createLibrarySearchPredicate(query: string): LibrarySearchPredicate {
   const terms = tokenizeSearchText(query);
 
@@ -111,9 +91,7 @@ export function createLibrarySearchPredicate(query: string): LibrarySearchPredic
       return true;
     }
 
-    const text = isPreparedLibraryRecord(record)
-      ? record.searchText
-      : cachedSearchableText(record, metadata);
+    const text = cachedSearchableText(record, metadata);
     return terms.every((term) => text.includes(term));
   };
 }
