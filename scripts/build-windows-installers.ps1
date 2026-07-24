@@ -68,18 +68,25 @@ else {
     $targetRoot = Join-Path $root $env:CARGO_TARGET_DIR
 }
 
-$bundleRoot = Join-Path $targetRoot "release\bundle"
-foreach ($bundleType in @("msi", "nsis")) {
-    $bundleDirectory = Join-Path $bundleRoot $bundleType
-    if (Test-Path $bundleDirectory) {
-        Remove-Item -Recurse -Force $bundleDirectory
+$releaseRoot = Join-Path $targetRoot "release"
+$bundleRoot = Join-Path $releaseRoot "bundle"
+if (Test-Path -LiteralPath $bundleRoot) {
+    Remove-Item -LiteralPath $bundleRoot -Recurse -Force
+}
+
+foreach ($staleReleaseFile in @("english-learning-platform.exe", "english-learning-platform.pdb")) {
+    $staleReleasePath = Join-Path $releaseRoot $staleReleaseFile
+    if (Test-Path -LiteralPath $staleReleasePath) {
+        Remove-Item -LiteralPath $staleReleasePath -Force
     }
 }
 
-$artifactOutput = Join-Path $root "release-artifacts\windows\$version"
-if (Test-Path $artifactOutput) {
-    Remove-Item -Recurse -Force $artifactOutput
+$artifactRoot = Join-Path $root "release-artifacts\windows"
+if (Test-Path -LiteralPath $artifactRoot) {
+    Get-ChildItem -LiteralPath $artifactRoot -Force | Remove-Item -Recurse -Force
 }
+
+$artifactOutput = Join-Path $artifactRoot $version
 
 $tauriArguments = @("run", "tauri", "--workspace=@app/desktop", "--", "build", "--bundles", "msi,nsis", "--ci")
 $signingConfigPath = $null
