@@ -140,8 +140,8 @@ export function LibraryPage() {
       return;
     }
 
-    const pack = exportVocabularyPack(libraryEntries.map((record) => record.entry));
     try {
+      const pack = exportVocabularyPack(libraryEntries.map((record) => record.entry));
       await exporter.saveText(pack.fileName, pack.json, "application/json");
       showToast({
         title: "Library pack exported",
@@ -164,13 +164,13 @@ export function LibraryPage() {
       return;
     }
 
-    const pack = exportVocabularyPack(selectedEntries.map((record) => record.entry));
-    const fileName = pack.fileName.replace(
-      "vocabulary-pack",
-      `vocabulary-pack-selected-${selectedEntries.length}`
-    );
-
     try {
+      const pack = exportVocabularyPack(selectedEntries.map((record) => record.entry));
+      const fileName = pack.fileName.replace(
+        "vocabulary-pack",
+        `vocabulary-pack-selected-${selectedEntries.length}`
+      );
+
       await exporter.saveText(fileName, pack.json, "application/json");
       showToast({
         title: "Selected pack exported",
