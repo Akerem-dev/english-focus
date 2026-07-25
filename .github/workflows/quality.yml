@@ -45,6 +45,9 @@ jobs:
       - name: Check dead code
         run: npm run check:dead-code
 
+      - name: Check V1 feature coverage
+        run: npm run check:feature-coverage
+
       - name: Check formatting
         id: formatting
         continue-on-error: true

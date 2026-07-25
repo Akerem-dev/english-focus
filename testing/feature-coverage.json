@@ -1,0 +1,375 @@
+{
+  "version": 1,
+  "automatedFeatures": [
+    {
+      "id": "vocabulary.search",
+      "label": "Vocabulary search, inflection resolution, and entry navigation",
+      "evidence": [
+        {
+          "path": "testing/e2e/vocabulary-existing-word.spec.ts",
+          "contains": "an existing core word opens as a Vocabulary state"
+        },
+        {
+          "path": "apps/desktop/tests/unit/search/search-vocabulary.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/unit/search/resolve-inflected-form.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "vocabulary.missing-word-flow",
+      "label": "Missing-word instruction, pasted JSON, correction, preview, and persistence flow",
+      "evidence": [
+        {
+          "path": "testing/e2e/missing-word-json-flow.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "testing/e2e/json-validation-error-correction.spec.ts",
+          "contains": "test("
+        }
+      ]
+    },
+    {
+      "id": "vocabulary.edit",
+      "label": "Direct editing of locally stored vocabulary",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/unit/vocabulary/prepare-vocabulary-entry-edit.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/components/vocabulary/VocabularyPage.test.tsx",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "vocabulary.personal-metadata",
+      "label": "Favorites, tags, personal notes, view metadata, and activity side effects",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/components/vocabulary/VocabularyMetadataDialog.test.tsx",
+          "contains": "Edit personal details"
+        },
+        {
+          "path": "apps/desktop/tests/unit/history/activity-write-coordinator.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "packages/schemas/tests/vocabulary-user-metadata.schema.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "library.browse-filter-sort",
+      "label": "Library browsing, filtering, sorting, opening entries, and large-data projection",
+      "evidence": [
+        {
+          "path": "testing/e2e/library-search-filter-sort.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "apps/desktop/tests/integration/library/library-filter-sort.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "testing/performance/library-scroll-10000-entries.test.ts",
+          "contains": "10,000-entry Library projection"
+        }
+      ]
+    },
+    {
+      "id": "library.bulk-export",
+      "label": "Library selection and bulk export controls",
+      "evidence": [
+        {
+          "path": "testing/e2e/library-bulk-actions.spec.ts",
+          "contains": "Library selection enables bulk export"
+        }
+      ]
+    },
+    {
+      "id": "import-export.single-entry",
+      "label": "Single-entry import and export",
+      "evidence": [
+        {
+          "path": "testing/e2e/single-entry-import-export.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "apps/desktop/tests/unit/import/export-vocabulary-entry.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "import-export.pack",
+      "label": "Vocabulary-pack import, validation, and large-pack performance",
+      "evidence": [
+        {
+          "path": "testing/e2e/vocabulary-pack-import.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "testing/performance/import-5000-entry-pack.test.ts",
+          "contains": "5,000"
+        },
+        {
+          "path": "packages/schemas/tests/vocabulary-pack.schema.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "import-export.duplicates",
+      "label": "Duplicate comparison, keep, and replacement decisions",
+      "evidence": [
+        {
+          "path": "testing/e2e/duplicate-entry-replacement.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "packages/domain/tests/duplicate-decision.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "settings.preferences",
+      "label": "Settings navigation, explanation preferences, and persistence coordinators",
+      "evidence": [
+        {
+          "path": "testing/e2e/settings-navigation.spec.ts",
+          "contains": "settings categories support keyboard navigation"
+        },
+        {
+          "path": "apps/desktop/tests/unit/settings/app-settings.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/components/settings/InstructionSettingsHandlers.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "backup.restore-retention",
+      "label": "Backup inventory, validation, restore, recovery, and retention",
+      "evidence": [
+        {
+          "path": "testing/e2e/backup-restore.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx",
+          "contains": "BackupRestoreDialog"
+        },
+        {
+          "path": "apps/desktop/src-tauri/src/commands/backup.rs",
+          "contains": "current_data_corruption_can_skip_the_pre_restore_safety_backup"
+        }
+      ]
+    },
+    {
+      "id": "maintenance.diagnostics",
+      "label": "Diagnostics, honest incomplete scans, and safe maintenance",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/unit/settings/diagnostics.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/components/settings/DiagnosticsSection.test.tsx",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/src-tauri/src/commands/diagnostic_coverage.rs",
+          "contains": "missing_tables_make_diagnostic_coverage_incomplete"
+        }
+      ]
+    },
+    {
+      "id": "maintenance.data-reset",
+      "label": "Selective removal, guarded reset, and backup deletion parity",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/components/settings/LocalDataControlsSection.test.tsx",
+          "contains": "describe("
+        },
+        {
+          "path": "testing/e2e/settings-navigation.spec.ts",
+          "contains": "Reset English Focus"
+        },
+        {
+          "path": "apps/desktop/src-tauri/src/commands/data_reset.rs",
+          "contains": "preview_count_and_deletion_use_the_same_managed_backup_set"
+        }
+      ]
+    },
+    {
+      "id": "activity.history",
+      "label": "Stable activity recording and user-facing presentation",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/unit/history/toast-activity-policy.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/unit/history/activity-presentation.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/unit/history/activity-write-coordinator.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "desktop.commands-keyboard",
+      "label": "Command bar, keyboard navigation, route-aware shortcuts, and undo registry",
+      "evidence": [
+        {
+          "path": "testing/e2e/command-bar.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "testing/e2e/keyboard-navigation.spec.ts",
+          "contains": "test("
+        },
+        {
+          "path": "apps/desktop/tests/unit/shortcuts/shortcut-registry.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/unit/undo/undo-registry.test.ts",
+          "contains": "describe("
+        }
+      ]
+    },
+    {
+      "id": "desktop.accessibility-responsive",
+      "label": "Accessibility semantics, focus management, reduced motion, and narrow-window layouts",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/accessibility/ReleaseShell.accessibility.test.tsx",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/accessibility/VocabularyPage.accessibility.test.tsx",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/accessibility/LibraryPage.accessibility.test.tsx",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/accessibility/ImportFlow.accessibility.test.tsx",
+          "contains": "describe("
+        },
+        {
+          "path": "testing/e2e/narrow-window.spec.ts",
+          "contains": "minimum desktop window"
+        }
+      ]
+    },
+    {
+      "id": "storage.migrations-contracts",
+      "label": "Versioned SQLite migrations and TypeScript-Rust storage contracts",
+      "evidence": [
+        {
+          "path": "packages/schemas/tests/schema-migrations.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/src-tauri/src/database/migrations.rs",
+          "contains": "future schema must be rejected"
+        },
+        {
+          "path": "apps/desktop/src-tauri/src/commands/storage_contract_commands.rs",
+          "contains": "rejects_an_unknown_storage_layer_at_the_bridge"
+        }
+      ]
+    },
+    {
+      "id": "content.core-validation",
+      "label": "Bundled core content, editorial rules, and generated schemas",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/content/maintainVocabularyEntry.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/tests/content/pilotCoreVocabularyPack.test.ts",
+          "contains": "describe("
+        },
+        {
+          "path": "apps/desktop/src-tauri/src/validation.rs",
+          "contains": "rejects_intermediate_example_counts"
+        }
+      ]
+    },
+    {
+      "id": "release.windows",
+      "label": "Windows GUI subsystem, clean installer packaging, artifact verification, and bundle budget",
+      "evidence": [
+        {
+          "path": "apps/desktop/tests/unit/release/windows-release-config.test.ts",
+          "contains": "windows"
+        },
+        {
+          "path": "scripts/build-windows-installers.ps1",
+          "contains": "WINDOWS INSTALLERS BUILT AND VERIFIED"
+        },
+        {
+          "path": "scripts/check-release-artifacts.mjs",
+          "contains": "release-artifacts"
+        }
+      ]
+    },
+    {
+      "id": "performance.local-scale",
+      "label": "Search, Library projection, and import performance budgets",
+      "evidence": [
+        {
+          "path": "testing/performance/search-10000-entries.test.ts",
+          "contains": "10,000"
+        },
+        {
+          "path": "testing/performance/library-scroll-10000-entries.test.ts",
+          "contains": "10,000"
+        },
+        {
+          "path": "testing/performance/import-5000-entry-pack.test.ts",
+          "contains": "5,000"
+        }
+      ]
+    }
+  ],
+  "manualChecks": [
+    {
+      "id": "windows.real-installer-lifecycle",
+      "label": "Install, upgrade, launch from Start, verify no CMD window, and uninstall on Windows"
+    },
+    {
+      "id": "windows.native-file-dialogs",
+      "label": "Exercise real operating-system file pickers, save dialogs, and clipboard permissions"
+    },
+    {
+      "id": "accessibility.real-screen-reader",
+      "label": "Verify announcements and focus order with a real Windows screen reader"
+    },
+    {
+      "id": "backup.scheduled-time-behavior",
+      "label": "Observe automatic backup timing and retention across real application restarts"
+    },
+    {
+      "id": "release.authenticode",
+      "label": "Build and verify a signed installer with the production Authenticode environment"
+    }
+  ]
+}
