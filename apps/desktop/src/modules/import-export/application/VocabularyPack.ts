@@ -114,15 +114,40 @@ function createDocument(
   });
 }
 
+function assertExportEntryCount(entryCount: number): void {
+  if (entryCount === 0) {
+    throw new Error("A vocabulary pack must contain at least one entry.");
+  }
+
+  if (entryCount > MAX_VOCABULARY_PACK_ENTRIES) {
+    throw new Error(
+      `A vocabulary pack can contain at most ${MAX_VOCABULARY_PACK_ENTRIES.toLocaleString("en-US")} entries. Select a smaller group and export again.`
+    );
+  }
+}
+
+function assertExportSize(json: string): void {
+  const byteLength = new TextEncoder().encode(json).byteLength;
+
+  if (json.length > MAX_VOCABULARY_PACK_CHARACTERS || byteLength > MAX_VOCABULARY_PACK_BYTES) {
+    throw new Error(
+      `The vocabulary pack exceeds the ${MAX_VOCABULARY_PACK_BYTES.toLocaleString("en-US")} byte transfer limit. Export fewer entries and try again.`
+    );
+  }
+}
+
 export function exportVocabularyPack(
   entries: readonly VocabularyEntry[],
   createdAt = new Date().toISOString()
 ): VocabularyPackExport {
+  assertExportEntryCount(entries.length);
   const document = createDocument(entries, createdAt);
+  const json = `${JSON.stringify(document, null, 2)}\n`;
+  assertExportSize(json);
 
   return Object.freeze({
     fileName: `english-focus-vocabulary-pack-${formatDateStamp(createdAt)}.json`,
-    json: `${JSON.stringify(document, null, 2)}\n`,
+    json,
     entryCount: document.entryCount
   });
 }

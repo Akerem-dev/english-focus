@@ -10,6 +10,8 @@ import {
   VOCABULARY_PACK_VERSION
 } from "../../../src/modules/import-export";
 
+const vocabularyPackEntryLimit = 500;
+
 describe("vocabulary pack transfer", () => {
   it("exports a deterministic readable pack with canonical three-example entries", () => {
     const exported = exportVocabularyPack(
@@ -57,6 +59,23 @@ describe("vocabulary pack transfer", () => {
         true
       );
     }
+  });
+
+  it("rejects an empty export instead of creating a pack the importer cannot read", () => {
+    expect(() => exportVocabularyPack([])).toThrow(
+      "A vocabulary pack must contain at least one entry."
+    );
+  });
+
+  it("rejects exports above the importer entry limit", () => {
+    const entries = Array.from(
+      { length: vocabularyPackEntryLimit + 1 },
+      () => maintainVocabularyEntry
+    );
+
+    expect(() => exportVocabularyPack(entries)).toThrow(
+      `A vocabulary pack can contain at most ${vocabularyPackEntryLimit.toLocaleString("en-US")} entries.`
+    );
   });
 
   it("accepts and normalizes legacy ten-example pack entries", () => {
