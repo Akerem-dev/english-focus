@@ -24,7 +24,7 @@ The matrix covers:
 - Windows release configuration and artifact checks
 - search, Library, and import performance budgets
 
-`npm run check:feature-coverage` fails when a required capability loses its mapped test evidence, when a referenced file disappears, or when the expected test marker is removed.
+`npm run check:feature-coverage` fails when a required capability loses its mapped test evidence, when a referenced file disappears, or when the expected test marker is removed. GitHub runs this check as part of the normal Quality workflow.
 
 ## Complete automated release gate
 
@@ -34,7 +34,7 @@ Run the full cross-workspace gate:
 npm run quality:release
 ```
 
-This runs structure, migration, forbidden-pattern, CSS-token, dead-code, formatting, lint, generated native-schema, release-metadata, core-content, TypeScript, unit, component, integration, accessibility, performance, production-build, Playwright, and bundle-budget checks.
+This runs structure, migration, forbidden-pattern, CSS-token, dead-code, feature-coverage, formatting, lint, generated native-schema, release-metadata, core-content, TypeScript, unit, component, integration, accessibility, performance, production-build, Playwright, and bundle-budget checks.
 
 Run the native Rust gate:
 
@@ -58,6 +58,8 @@ cargo clippy `
   -D warnings
 ```
 
+The GitHub Quality workflow enforces the application gate, Microsoft Edge Playwright flows, Rust formatting, Clippy, and native tests on pull requests and `main` pushes.
+
 ## One-command Windows final verification
 
 From a clean branch on Windows:
@@ -78,6 +80,8 @@ npm run verify:final -- -SkipInstaller
 
 ## Manual Windows checks
 
+The detailed acceptance procedure is maintained in [`release/WINDOWS_RELEASE_SMOKE_TEST.md`](release/WINDOWS_RELEASE_SMOKE_TEST.md). It records the tested source commit, installer hashes, Windows version, display scale, and pass/fail evidence for both MSI and NSIS packages.
+
 The following checks cannot be represented honestly by browser mocks or unit tests alone:
 
 1. Install or upgrade the generated setup on Windows, launch from the Start menu, confirm that no Command Prompt window appears, and uninstall cleanly.
@@ -86,7 +90,7 @@ The following checks cannot be represented honestly by browser mocks or unit tes
 4. Observe automatic backup timing and retention across application restarts.
 5. Build and verify a signed installer in the production Authenticode environment.
 
-These checks remain explicit in the feature matrix instead of being reported as automated coverage.
+These checks remain explicit in the feature matrix and smoke-test protocol instead of being reported as automated coverage.
 
 ## Release decision rule
 
@@ -94,6 +98,6 @@ A release is considered technically ready only when:
 
 - the automated feature matrix is current;
 - `npm run verify:final` passes on Windows;
-- the manual Windows checks relevant to the release have been completed;
+- the MSI and NSIS smoke-test records are complete;
 - the Git working tree is clean; and
 - the README describes only behavior supported by the code, tests, and release configuration.
