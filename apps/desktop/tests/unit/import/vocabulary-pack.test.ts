@@ -5,11 +5,12 @@ import rawAllocateEntry from "../../../../../testing/manual/cp11-allocate-valid-
 import { maintainVocabularyEntry } from "../../../src/content";
 import {
   exportVocabularyPack,
-  MAX_VOCABULARY_PACK_ENTRIES,
   parseVocabularyPackJson,
   VOCABULARY_PACK_KIND,
   VOCABULARY_PACK_VERSION
 } from "../../../src/modules/import-export";
+
+const vocabularyPackEntryLimit = 500;
 
 describe("vocabulary pack transfer", () => {
   it("exports a deterministic readable pack with canonical three-example entries", () => {
@@ -68,12 +69,12 @@ describe("vocabulary pack transfer", () => {
 
   it("rejects exports above the importer entry limit", () => {
     const entries = Array.from(
-      { length: MAX_VOCABULARY_PACK_ENTRIES + 1 },
+      { length: vocabularyPackEntryLimit + 1 },
       () => maintainVocabularyEntry
     );
 
     expect(() => exportVocabularyPack(entries)).toThrow(
-      `A vocabulary pack can contain at most ${MAX_VOCABULARY_PACK_ENTRIES.toLocaleString("en-US")} entries.`
+      `A vocabulary pack can contain at most ${vocabularyPackEntryLimit.toLocaleString("en-US")} entries.`
     );
   });
 
