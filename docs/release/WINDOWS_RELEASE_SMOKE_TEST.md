@@ -6,16 +6,16 @@ Use this protocol on the final MSI and NSIS artifacts before publishing a stable
 
 Record the following before testing:
 
-| Field | Value |
-| --- | --- |
-| App version |  |
-| Source commit |  |
-| Installer type | MSI / NSIS |
-| Installer SHA-256 |  |
-| Windows version |  |
-| Display scale |  |
-| Tester |  |
-| Date |  |
+| Field             | Value      |
+| ----------------- | ---------- |
+| App version       |            |
+| Source commit     |            |
+| Installer type    | MSI / NSIS |
+| Installer SHA-256 |            |
+| Windows version   |            |
+| Display scale     |            |
+| Tester            |            |
+| Date              |            |
 
 A release passes only when every required item below passes or has an explicitly accepted release note.
 
