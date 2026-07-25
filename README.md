@@ -97,15 +97,15 @@ More detail is available in [docs/architecture/ARCHITECTURE.md](docs/architectur
 
 ## Technology
 
-| Layer | Technology |
-| --- | --- |
-| Desktop shell | Tauri 2 |
-| Frontend | React, TypeScript, Vite |
-| Native layer | Rust |
-| Persistence | SQLite |
-| Validation | Zod and generated native JSON Schemas |
-| Testing | Vitest, Playwright, Rust tests |
-| Packaging | WiX MSI and NSIS |
+| Layer         | Technology                            |
+| ------------- | ------------------------------------- |
+| Desktop shell | Tauri 2                               |
+| Frontend      | React, TypeScript, Vite               |
+| Native layer  | Rust                                  |
+| Persistence   | SQLite                                |
+| Validation    | Zod and generated native JSON Schemas |
+| Testing       | Vitest, Playwright, Rust tests        |
+| Packaging     | WiX MSI and NSIS                      |
 
 ## Getting started
 
