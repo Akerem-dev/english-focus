@@ -5,8 +5,16 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
+    name: Application quality
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +33,9 @@ jobs:
       - name: Check structure
         run: npm run check:structure
 
+      - name: Check migrations
+        run: npm run check:migrations
+
       - name: Check forbidden patterns
         run: npm run check:forbidden
 
@@ -33,6 +44,9 @@ jobs:
 
       - name: Check dead code
         run: npm run check:dead-code
+
+      - name: Check V1 feature coverage
+        run: npm run check:feature-coverage
 
       - name: Check formatting
         id: formatting
@@ -69,6 +83,12 @@ jobs:
       - name: Check native contracts
         run: npm run check:native-schemas
 
+      - name: Check release metadata
+        run: npm run check:release-metadata
+
+      - name: Check core content
+        run: npm run check:core-content
+
       - name: Typecheck
         id: typecheck
         continue-on-error: true
@@ -96,10 +116,40 @@ jobs:
       - name: Run tests
         run: npm run test
 
+      - name: Check performance budgets
+        run: npm run test:performance
+
       - name: Build
         run: npm run build
 
-  native-tests:
+      - name: Check bundle budgets
+        run: npm run check:bundle
+
+  browser-tests:
+    name: Browser workflows
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run Playwright flows in Microsoft Edge
+        run: npm run test:e2e
+
+  native-quality:
+    name: Native quality
     runs-on: windows-latest
 
     steps:
@@ -108,25 +158,14 @@ jobs:
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Check Rust formatting
+        run: cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all -- --check
+
+      - name: Run Clippy
+        run: cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
 
       - name: Run native tests
-        id: native
-        continue-on-error: true
-        shell: powershell
-        run: |
-          cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml *> native-test.log
-          "exitCode=$LASTEXITCODE" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
-
-      - name: Upload native failure log
-        if: steps.native.outputs.exitCode != '0'
-        uses: actions/upload-artifact@v4
-        with:
-          name: native-test-failure-log
-          path: native-test.log
-          if-no-files-found: error
-          retention-days: 3
-
-      - name: Confirm native tests
-        if: steps.native.outputs.exitCode != '0'
-        shell: powershell
-        run: exit 1
+        run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features
