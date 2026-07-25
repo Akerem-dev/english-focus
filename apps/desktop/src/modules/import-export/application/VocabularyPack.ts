@@ -9,7 +9,7 @@ export const VOCABULARY_PACK_KIND = "english-focus-vocabulary-pack" as const;
 export const VOCABULARY_PACK_VERSION = "1.0.0" as const;
 export const MAX_VOCABULARY_PACK_CHARACTERS = 5_242_880;
 export const MAX_VOCABULARY_PACK_BYTES = 5_242_880;
-export const MAX_VOCABULARY_PACK_ENTRIES = 500;
+const MAX_VOCABULARY_PACK_ENTRIES = 500;
 
 interface VocabularyPackDocument {
   readonly kind: typeof VOCABULARY_PACK_KIND;
