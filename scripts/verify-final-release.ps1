@@ -107,4 +107,4 @@ if ($SkipInstaller) {
 else {
     Write-Host "Windows installers: rebuilt and verified as unsigned local rehearsal artifacts" -ForegroundColor Green
 }
-Write-Host "Manual OS checks remain listed in docs/TESTING.md." -ForegroundColor Yellow
+Write-Host "Manual OS checks remain in docs/release/WINDOWS_RELEASE_SMOKE_TEST.md." -ForegroundColor Yellow
