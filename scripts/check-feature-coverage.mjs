@@ -52,7 +52,11 @@ function normalizedRepositoryPath(relativePath) {
   }
 
   const normalized = path.normalize(relativePath);
-  if (path.isAbsolute(normalized) || normalized.startsWith(`..${path.sep}`) || normalized === "..") {
+  if (
+    path.isAbsolute(normalized) ||
+    normalized.startsWith(`..${path.sep}`) ||
+    normalized === ".."
+  ) {
     throw new Error(`evidence path must stay inside the repository: ${relativePath}`);
   }
 
@@ -88,9 +92,7 @@ if (!fs.existsSync(matrixPath)) {
     fail(`unsupported matrix version '${matrix.version}'.`);
   }
 
-  const automatedFeatures = Array.isArray(matrix.automatedFeatures)
-    ? matrix.automatedFeatures
-    : [];
+  const automatedFeatures = Array.isArray(matrix.automatedFeatures) ? matrix.automatedFeatures : [];
   const manualChecks = Array.isArray(matrix.manualChecks) ? matrix.manualChecks : [];
 
   const automatedIds = checkUniqueIds(automatedFeatures, "automatedFeatures");
