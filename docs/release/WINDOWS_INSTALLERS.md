@@ -29,6 +29,12 @@ Expected outputs are one WiX `.msi`, one NSIS `.exe`, `SHA256SUMS.txt`, and `rel
 - WebView2 uses the installed runtime when available and the official bootstrapper fallback when required.
 - The application identifier and MSI upgrade code must stay unchanged across future upgrades.
 
+## Release verification
+
+A successful package build is not final release approval. Complete [`WINDOWS_RELEASE_SMOKE_TEST.md`](WINDOWS_RELEASE_SMOKE_TEST.md) against both installer formats on a real Windows machine before publishing.
+
+The tested installer hashes, source commit, Windows version, and accepted exceptions must be recorded with the release evidence.
+
 ## Signing
 
 Stable builds require either `EF_WINDOWS_CERTIFICATE_THUMBPRINT` plus a timestamp URL or an external `EF_WINDOWS_SIGN_COMMAND`. The working tree must be clean, Authenticode is verified after packaging, and the artifact manifest records the source commit and signing request. Secrets and private keys are never committed.
