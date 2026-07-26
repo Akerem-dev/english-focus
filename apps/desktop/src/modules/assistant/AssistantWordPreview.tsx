@@ -44,9 +44,7 @@ export function createAssistantWordPreview(
   return {
     word: entry.word,
     normalizedWord: entry.normalizedWord,
-    ...(partOfSpeech === undefined
-      ? {}
-      : { partOfSpeech: formatPartOfSpeech(partOfSpeech) }),
+    ...(partOfSpeech === undefined ? {} : { partOfSpeech: formatPartOfSpeech(partOfSpeech) }),
     cefr: entry.cefr,
     translationsTr: Object.freeze([...(primaryMeaning?.translationsTr ?? [])]),
     ...(primaryMeaning?.definitionEn === undefined
@@ -96,8 +94,7 @@ export function AssistantWordPreview({
     (value): value is string => value !== undefined
   );
   const canOpen =
-    (preview.state === "existing" || preview.state === "saved") &&
-    onOpenExisting !== undefined;
+    (preview.state === "existing" || preview.state === "saved") && onOpenExisting !== undefined;
   const canAdd = preview.state === "ready" && onAdd !== undefined;
 
   return (
