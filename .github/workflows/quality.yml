@@ -78,7 +78,28 @@ jobs:
         run: exit 1
 
       - name: Lint
-        run: npm run lint
+        id: lint
+        continue-on-error: true
+        run: |
+          set +e
+          npm run lint > lint.log 2>&1
+          exit_code=$?
+          cat lint.log
+          echo "exitCode=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload lint failure log
+        if: steps.lint.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-failure-log
+          path: lint.log
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm lint
+        if: steps.lint.outputs.exitCode != '0'
+        run: exit 1
 
       - name: Check native contracts
         run: npm run check:native-schemas
