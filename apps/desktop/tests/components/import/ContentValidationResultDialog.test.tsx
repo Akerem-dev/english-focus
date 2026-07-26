@@ -17,10 +17,10 @@ const blockingIssue: ImportIssue = {
 const warning: ImportIssue = {
   source: "quality",
   severity: "warning",
-  code: "missing_etymology",
-  path: ["etymology"],
-  pathText: "etymology",
-  message: "No reliable etymology is included."
+  code: "generator_warning",
+  path: ["generation", "warnings", 0],
+  pathText: "generation.warnings[0]",
+  message: "Generator warning: Content is unvalidated and should be reviewed before trusted use."
 };
 
 const callbacks = {
@@ -31,7 +31,7 @@ const callbacks = {
 } as const;
 
 describe("ContentValidationResultDialog", () => {
-  it("renders blocking semantic issues and a correction action", () => {
+  it("renders blocking content issues in plain language", () => {
     const markup = renderToStaticMarkup(
       <ContentValidationResultDialog
         {...callbacks}
@@ -48,15 +48,16 @@ describe("ContentValidationResultDialog", () => {
       />
     );
 
-    expect(markup).toContain("Content validation found issues");
-    expect(markup).toContain("Blocking semantic issues");
-    expect(markup).toContain("target_word_mismatch");
-    expect(markup).toContain("Non-blocking quality warnings");
-    expect(markup).toContain("Correction required");
-    expect(markup).toContain("Copy correction instruction");
+    expect(markup).toContain("Some content needs attention");
+    expect(markup).toContain("Items to fix");
+    expect(markup).toContain("Expected allocate, but the entry represents maintain.");
+    expect(markup).toContain("Copy correction request");
+    expect(markup).toContain("Edit entry data");
+    expect(markup).not.toContain("target_word_mismatch");
+    expect(markup).not.toContain("normalizedWord");
   });
 
-  it("allows warnings without treating them as blockers", () => {
+  it("shows a human review note without exposing generator metadata", () => {
     const markup = renderToStaticMarkup(
       <ContentValidationResultDialog
         {...callbacks}
@@ -73,12 +74,15 @@ describe("ContentValidationResultDialog", () => {
       />
     );
 
-    expect(markup).toContain("Content checks passed with warnings");
-    expect(markup).toContain("Semantic checks passed");
-    expect(markup).toContain("1 quality warnings");
-    expect(markup).toContain("Ready for preview");
-    expect(markup).toContain("Copy improvement instruction");
-    expect(markup).toContain("Preview next");
+    expect(markup).toContain("Entry is ready to review");
+    expect(markup).toContain("Everything looks consistent");
+    expect(markup).toContain("1 review note");
+    expect(markup).toContain("This entry has not been reviewed yet");
+    expect(markup).toContain("Review entry");
+    expect(markup).not.toContain("generation.warnings[0]");
+    expect(markup).not.toContain("generator_warning");
+    expect(markup).not.toContain("Generator warning");
+    expect(markup).not.toContain("Copy improvement instruction");
   });
 
   it("renders a clean content result", () => {
@@ -98,8 +102,9 @@ describe("ContentValidationResultDialog", () => {
       />
     );
 
-    expect(markup).toContain("Content checks passed");
-    expect(markup).toContain("Quality review clean");
-    expect(markup).not.toContain("Copy correction instruction");
+    expect(markup).toContain("Entry is ready to review");
+    expect(markup).toContain("No review notes");
+    expect(markup).toContain("Review entry");
+    expect(markup).not.toContain("Copy correction request");
   });
 });

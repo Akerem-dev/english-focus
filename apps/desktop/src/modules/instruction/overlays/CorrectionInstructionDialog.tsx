@@ -56,14 +56,14 @@ export function CorrectionInstructionDialog({
 
   return (
     <Modal
-      description={`Copy this provider-independent repair instruction into the same external AI conversation for “${targetWord}”.`}
+      description={`Copy this request, revise “${targetWord}”, and paste the corrected entry back into English Focus.`}
       footer={
         <>
           <Button onClick={onClose} variant="ghost">
-            Close import
+            Close
           </Button>
           <Button onClick={onBack} variant="secondary">
-            Back to issues
+            Back
           </Button>
           <Button
             isLoading={copyState === "copying"}
@@ -71,39 +71,40 @@ export function CorrectionInstructionDialog({
             onClick={() => void copyInstruction()}
             variant="primary"
           >
-            {copyState === "copied" ? "Copied" : "Copy correction instruction"}
+            {copyState === "copied" ? "Copied" : "Copy correction request"}
           </Button>
         </>
       }
       onClose={onBack}
       open={open}
       size="large"
-      title="Correction instruction"
+      title="Correction request"
     >
-      <div className="instruction-dialog__metadata" aria-label="Correction metadata">
+      <div className="instruction-dialog__metadata" aria-label="Correction request summary">
         <StatusBadge tone="accent">Word: {targetWord}</StatusBadge>
         <StatusBadge
           tone={issues.some((issue) => issue.severity === "error") ? "danger" : "warning"}
         >
-          {issues.length} validation issues
+          {issues.length} {issues.length === 1 ? "item" : "items"} to fix
         </StatusBadge>
-        <StatusBadge>Provider independent</StatusBadge>
+        <StatusBadge>Prepared on this device</StatusBadge>
       </div>
 
       <p className="instruction-dialog__privacy">
-        Nothing is uploaded. The original JSON, schema paths, semantic checks, quality signals, and
-        required schema are combined locally into plain text for your clipboard.
+        English Focus combines the entry and the detected issues into a clear correction request on
+        this device. Nothing is uploaded.
       </p>
 
       <ValidationIssueList
-        heading="Validation issues included in the instruction"
+        heading="Items included in the request"
         issues={issues}
+        showTechnicalDetails={false}
       />
 
       <TextAreaField
         className="instruction-dialog__text correction-instruction-dialog__text"
-        helperText={`${instruction.text.length.toLocaleString("en-US")} characters · schema ${instruction.vocabularySchemaVersion}`}
-        label="Generated correction instruction"
+        helperText={`${instruction.text.length.toLocaleString("en-US")} characters`}
+        label="Correction request"
         readOnly
         rows={16}
         value={instruction.text}
@@ -111,13 +112,13 @@ export function CorrectionInstructionDialog({
 
       {copyState === "error" ? (
         <p className="instruction-dialog__error" role="alert">
-          Clipboard access failed. Select the instruction text and copy it manually.
+          Clipboard access failed. Select the request text and copy it manually.
         </p>
       ) : null}
       {copyState === "copied" ? (
         <p className="instruction-dialog__success" role="status">
-          Correction instruction copied. Paste it into the external AI conversation that produced
-          the JSON that needs correction or improvement.
+          Correction request copied. Use it to revise the entry, then paste the corrected data back
+          here.
         </p>
       ) : null}
     </Modal>

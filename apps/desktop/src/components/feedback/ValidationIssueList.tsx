@@ -6,11 +6,15 @@ import { AppIcon } from "../../design-system";
 export interface ValidationIssueListProps {
   readonly issues: readonly ImportIssue[];
   readonly heading?: string;
+  readonly showTechnicalDetails?: boolean;
+  readonly formatMessage?: ((issue: ImportIssue) => string) | undefined;
 }
 
 export function ValidationIssueList({
+  formatMessage,
   heading = "Validation issues",
-  issues
+  issues,
+  showTechnicalDetails = true
 }: ValidationIssueListProps) {
   const headingId = useId();
   const tone = issues.some((issue) => issue.severity === "error") ? "danger" : "warning";
@@ -32,11 +36,13 @@ export function ValidationIssueList({
               <AppIcon name="warning" size={17} />
             </span>
             <div>
-              <code>{issue.pathText}</code>
-              <p>{issue.message}</p>
-              <small>
-                {issue.source} · {issue.severity} · {issue.code}
-              </small>
+              {showTechnicalDetails ? <code>{issue.pathText}</code> : null}
+              <p>{formatMessage?.(issue) ?? issue.message}</p>
+              {showTechnicalDetails ? (
+                <small>
+                  {issue.source} · {issue.severity} · {issue.code}
+                </small>
+              ) : null}
             </div>
           </li>
         ))}

@@ -22,7 +22,7 @@ const sharedCallbacks = {
 } as const;
 
 describe("ValidationResultDialog", () => {
-  it("renders detailed schema issues and the correction action", () => {
+  it("renders required-field issues without exposing schema paths", () => {
     const markup = renderToStaticMarkup(
       <ValidationResultDialog
         {...sharedCallbacks}
@@ -32,14 +32,17 @@ describe("ValidationResultDialog", () => {
       />
     );
 
-    expect(markup).toContain("Schema validation found issues");
-    expect(markup).toContain("meanings[2].usageNoteTr");
+    expect(markup).toContain("Some required information needs attention");
+    expect(markup).toContain("Items to fix");
     expect(markup).toContain("Invalid input: expected string");
-    expect(markup).toContain("Copy correction instruction");
-    expect(markup).toContain("Edit JSON");
+    expect(markup).toContain("Copy correction request");
+    expect(markup).toContain("Edit entry data");
+    expect(markup).not.toContain("meanings[2].usageNoteTr");
+    expect(markup).not.toContain("invalid_type");
+    expect(markup).not.toContain("Schema validation");
   });
 
-  it("offers the semantic and quality gate after structural validation", () => {
+  it("offers a plain-language content review after required fields pass", () => {
     const markup = renderToStaticMarkup(
       <ValidationResultDialog
         {...sharedCallbacks}
@@ -49,13 +52,13 @@ describe("ValidationResultDialog", () => {
       />
     );
 
-    expect(markup).toContain("Schema validation passed");
-    expect(markup).toContain("Vocabulary structure is valid");
-    expect(markup).toContain("three primary examples");
-    expect(markup).toContain("Next gate: content checks");
-    expect(markup).toContain("Run content checks");
-    expect(markup).not.toContain("Copy correction instruction");
-    expect(markup).not.toContain("exactly ten");
+    expect(markup).toContain("Required information is complete");
+    expect(markup).toContain("The entry is complete");
+    expect(markup).toContain("three examples");
+    expect(markup).toContain("Continue review");
+    expect(markup).not.toContain("Schema 1.0.0");
+    expect(markup).not.toContain("semantic");
+    expect(markup).not.toContain("Zod");
   });
 
   it("renders nothing while closed", () => {
