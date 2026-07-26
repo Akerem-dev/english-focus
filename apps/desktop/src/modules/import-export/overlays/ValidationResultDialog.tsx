@@ -27,16 +27,16 @@ export function ValidationResultDialog({
     <Modal
       description={
         passed
-          ? `The JSON for “${expectedWord}” matches the versioned vocabulary structure.`
-          : `The JSON for “${expectedWord}” does not match the versioned vocabulary structure yet.`
+          ? `“${expectedWord}” includes all required information and is ready for the next review.`
+          : `Some required information in “${expectedWord}” is missing or invalid.`
       }
       footer={
         <>
           <Button onClick={onClose} variant="ghost">
-            Close import
+            Close
           </Button>
           <Button onClick={onEditJson} variant="secondary">
-            Edit JSON
+            Edit entry data
           </Button>
           {passed ? (
             <Button
@@ -44,7 +44,7 @@ export function ValidationResultDialog({
               onClick={onRunContentChecks}
               variant="primary"
             >
-              Run content checks
+              Continue review
             </Button>
           ) : (
             <Button
@@ -52,7 +52,7 @@ export function ValidationResultDialog({
               onClick={onOpenCorrectionInstruction}
               variant="primary"
             >
-              Copy correction instruction
+              Copy correction request
             </Button>
           )}
         </>
@@ -60,13 +60,12 @@ export function ValidationResultDialog({
       onClose={onClose}
       open={open}
       size="large"
-      title={passed ? "Schema validation passed" : "Schema validation found issues"}
+      title={passed ? "Required information is complete" : "Some required information needs attention"}
     >
-      <div className="validation-result-dialog__metadata" aria-label="Validation metadata">
-        <StatusBadge tone="accent">Expected word: {expectedWord}</StatusBadge>
-        <StatusBadge>Schema 1.0.0</StatusBadge>
+      <div className="validation-result-dialog__metadata" aria-label="Entry check summary">
+        <StatusBadge tone="accent">Word: {expectedWord}</StatusBadge>
         <StatusBadge tone={passed ? "success" : "danger"}>
-          {passed ? "Structurally valid" : `${result.issues.length} issues`}
+          {passed ? "Ready to continue" : `${result.issues.length} ${result.issues.length === 1 ? "item" : "items"} to fix`}
         </StatusBadge>
       </div>
 
@@ -76,25 +75,24 @@ export function ValidationResultDialog({
             <AppIcon name="check" size={22} />
           </span>
           <div>
-            <h3>Vocabulary structure is valid</h3>
-            <p>
-              Required fields, value types, strict object boundaries, and three primary examples
-              passed the local Zod contract.
-            </p>
+            <h3>The entry is complete</h3>
+            <p>The word details, translations, forms, and three examples are present and readable.</p>
           </div>
         </section>
       ) : (
-        <ValidationIssueList issues={result.issues} />
+        <ValidationIssueList
+          heading="Items to fix"
+          issues={result.issues}
+          showTechnicalDetails={false}
+        />
       )}
 
-      <div className="validation-result-dialog__next-stage">
-        <h3>{passed ? "Next gate: content checks" : "Structure must be corrected first"}</h3>
-        <p>
-          {passed
-            ? "English Focus will next verify target-word consistency, cross-field relationships, import provenance, and non-blocking quality signals. Nothing is saved yet."
-            : "Semantic and quality checks can only run after the complete versioned structure passes."}
-        </p>
-      </div>
+      {passed ? null : (
+        <div className="validation-result-dialog__next-stage">
+          <h3>Fix these items to continue</h3>
+          <p>Edit the entry data, correct the items above, and check it again.</p>
+        </div>
+      )}
     </Modal>
   );
 }
