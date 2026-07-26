@@ -63,7 +63,9 @@ interface VocabularyLookupViewProps {
   readonly onClear: () => void;
   readonly onEditSearch: () => void;
   readonly onSearch: (query: string) => void;
+  readonly onOpenInstruction: (word: string) => void;
   readonly onCloseInstruction: () => void;
+  readonly onOpenImport: (word: string) => void;
   readonly onCloseImport: () => void;
 }
 
