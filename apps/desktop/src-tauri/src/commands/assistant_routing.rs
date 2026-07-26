@@ -86,9 +86,9 @@ fn normalize_headword(word: &str) -> Result<String, String> {
 
     if normalized.is_empty()
         || normalized.len() > 80
-        || !normalized
-            .chars()
-            .all(|character| character.is_ascii_alphabetic() || matches!(character, ' ' | '-' | '\''))
+        || !normalized.chars().all(|character| {
+            character.is_ascii_alphabetic() || matches!(character, ' ' | '-' | '\'')
+        })
     {
         return Err("Enter one English word or a short phrasal verb.".to_string());
     }
@@ -241,22 +241,10 @@ fn response_schema() -> Result<Value, String> {
             Some(1),
             4,
         ),
-        (
-            "/properties/meanings/items/properties/registers",
-            None,
-            4,
-        ),
-        (
-            "/properties/morphology/properties/inflectedForms",
-            None,
-            8,
-        ),
+        ("/properties/meanings/items/properties/registers", None, 4),
+        ("/properties/morphology/properties/inflectedForms", None, 8),
         ("/properties/examples", Some(3), 3),
-        (
-            "/properties/examples/items/properties/registers",
-            None,
-            4,
-        ),
+        ("/properties/examples/items/properties/registers", None, 4),
     ] {
         set_array_limits(&mut schema, pointer, minimum, maximum);
     }
@@ -359,13 +347,15 @@ fn finalize_candidate(mut value: Value, normalized_word: &str) -> Result<Value, 
     assign_stable_ids(&mut value, &slug);
 
     let timestamp = Utc::now().to_rfc3339_opts(SecondsFormat::Millis, true);
-    let fields = value
-        .as_object_mut()
-        .ok_or_else(|| "assistant_generation_invalid: Gemini returned no vocabulary object.".to_string())?;
+    let fields = value.as_object_mut().ok_or_else(|| {
+        "assistant_generation_invalid: Gemini returned no vocabulary object.".to_string()
+    })?;
     let morphology = fields
         .get_mut("morphology")
         .and_then(Value::as_object_mut)
-        .ok_or_else(|| "assistant_generation_invalid: Gemini returned incomplete morphology.".to_string())?;
+        .ok_or_else(|| {
+            "assistant_generation_invalid: Gemini returned incomplete morphology.".to_string()
+        })?;
     morphology.insert("baseForm".to_string(), json!(normalized_word));
 
     fields.insert("schemaVersion".to_string(), json!("1.0.0"));
@@ -418,7 +408,9 @@ fn extract_output_text(response: &GeminiInteractionResponse) -> Result<&str, Str
                 .find(|content| content.kind == "text")
         })
         .and_then(|content| content.text.as_deref())
-        .ok_or_else(|| "assistant_generation_invalid: Gemini returned no vocabulary content.".to_string())
+        .ok_or_else(|| {
+            "assistant_generation_invalid: Gemini returned no vocabulary content.".to_string()
+        })
 }
 
 async fn api_error(status: StatusCode, response: reqwest::Response) -> String {
@@ -487,7 +479,9 @@ async fn generate_primary(
         .json(&request)
         .send()
         .await
-        .map_err(|error| format!("assistant_network_error: Gemini could not be reached: {error}"))?;
+        .map_err(|error| {
+            format!("assistant_network_error: Gemini could not be reached: {error}")
+        })?;
     let status = response.status();
 
     if !status.is_success() {
@@ -497,10 +491,13 @@ async fn generate_primary(
     let response = response
         .json::<GeminiInteractionResponse>()
         .await
-        .map_err(|error| format!("assistant_generation_invalid: Gemini returned an unreadable response: {error}"))?;
+        .map_err(|error| {
+            format!("assistant_generation_invalid: Gemini returned an unreadable response: {error}")
+        })?;
     let output = extract_output_text(&response)?;
-    let candidate: Value = serde_json::from_str(output)
-        .map_err(|error| format!("assistant_generation_invalid: Gemini returned invalid JSON: {error}"))?;
+    let candidate: Value = serde_json::from_str(output).map_err(|error| {
+        format!("assistant_generation_invalid: Gemini returned invalid JSON: {error}")
+    })?;
 
     Ok(AssistantRoutingCandidateResponse {
         value: finalize_candidate(candidate, &normalized_word)?,
@@ -524,14 +521,17 @@ async fn generate_quality(
     word: String,
     preferences: AssistantRoutingPreferences,
 ) -> Result<AssistantRoutingCandidateResponse, String> {
-    let preferences = serde_json::from_value(serde_json::to_value(preferences).map_err(|error| {
-        format!("The word helper preferences could not be prepared: {error}")
-    })?)
-    .map_err(|error| format!("The word helper preferences are invalid: {error}"))?;
+    let preferences =
+        serde_json::from_value(serde_json::to_value(preferences).map_err(|error| {
+            format!("The word helper preferences could not be prepared: {error}")
+        })?)
+        .map_err(|error| format!("The word helper preferences are invalid: {error}"))?;
     let response = assistant_generation::generate_vocabulary_candidate(word, preferences).await?;
-    serde_json::from_value(serde_json::to_value(response).map_err(|error| {
-        format!("The quality-model response could not be prepared: {error}")
-    })?)
+    serde_json::from_value(
+        serde_json::to_value(response).map_err(|error| {
+            format!("The quality-model response could not be prepared: {error}")
+        })?,
+    )
     .map_err(|error| format!("The quality-model response is invalid: {error}"))
 }
 
