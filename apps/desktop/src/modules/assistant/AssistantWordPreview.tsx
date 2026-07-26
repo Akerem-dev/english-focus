@@ -2,7 +2,7 @@ import type { VocabularyEntry } from "@platform/domain";
 
 import { Button } from "../../components";
 
-export type AssistantWordPreviewState = "waiting" | "existing" | "ready" | "saved";
+type AssistantWordPreviewState = "waiting" | "existing" | "ready" | "saved";
 
 export interface AssistantWordPreviewModel {
   readonly word: string;
