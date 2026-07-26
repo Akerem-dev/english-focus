@@ -18,21 +18,6 @@ if ($env:OS -ne "Windows_NT") {
     throw "Windows system acceptance tests must run on Windows."
 }
 
-if (-not $SkipBuild) {
-    Write-Host "==> Build and verify fresh unsigned Windows installers" -ForegroundColor Cyan
-    & npm run release:windows:unsigned
-    if ($LASTEXITCODE -ne 0) {
-        throw "Windows installer build failed with exit code $LASTEXITCODE."
-    }
-}
-
-if ([string]::IsNullOrWhiteSpace($ArtifactsDirectory)) {
-    $ArtifactsDirectory = Join-Path $root "release-artifacts\windows\1.0.0"
-}
-elseif (-not [System.IO.Path]::IsPathRooted($ArtifactsDirectory)) {
-    $ArtifactsDirectory = Join-Path $root $ArtifactsDirectory
-}
-
 if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
     $OutputDirectory = Join-Path $root "test-results\windows-system"
 }
@@ -44,19 +29,18 @@ $runDirectory = Join-Path $OutputDirectory (Get-Date -Format "yyyyMMdd-HHmmss")
 $logDirectory = Join-Path $runDirectory "logs"
 $screenshotDirectory = Join-Path $runDirectory "screenshots"
 $treeDirectory = Join-Path $runDirectory "ui-tree"
-$dataBackupDirectory = Join-Path $runDirectory "preserved-user-data"
+$preservedDirectory = Join-Path $runDirectory "preserved-user-data"
 
-New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
-New-Item -ItemType Directory -Force -Path $screenshotDirectory | Out-Null
-New-Item -ItemType Directory -Force -Path $treeDirectory | Out-Null
-New-Item -ItemType Directory -Force -Path $dataBackupDirectory | Out-Null
+foreach ($directory in @($runDirectory, $logDirectory, $screenshotDirectory, $treeDirectory, $preservedDirectory)) {
+    New-Item -ItemType Directory -Force -Path $directory | Out-Null
+}
 
 $results = New-Object System.Collections.Generic.List[object]
-$script:WinAppExecutable = $null
+$preservedData = New-Object System.Collections.Generic.List[object]
 $script:CurrentFamily = "General"
-$script:PreservedData = New-Object System.Collections.Generic.List[object]
+$script:WinApp = $null
 
-function Add-TestResult {
+function Add-Result {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Name,
@@ -74,6 +58,11 @@ function Add-TestResult {
         timestamp = (Get-Date).ToString("o")
     })
 
+    $suffix = ""
+    if (-not [string]::IsNullOrWhiteSpace($Details)) {
+        $suffix = " - $Details"
+    }
+
     $color = switch ($Status) {
         "PASS" { "Green" }
         "FAIL" { "Red" }
@@ -81,10 +70,10 @@ function Add-TestResult {
         default { "Gray" }
     }
 
-    Write-Host "[$Status] $Name$(if ($Details) { " — $Details" } else { "" })" -ForegroundColor $color
+    Write-Host "[$Status] $Name$suffix" -ForegroundColor $color
 }
 
-function Invoke-TestCheck {
+function Invoke-Check {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Name,
@@ -99,16 +88,17 @@ function Invoke-TestCheck {
             $details = ""
         }
         elseif ($details -is [array]) {
-            $details = ($details -join [Environment]::NewLine)
+            $details = $details -join [Environment]::NewLine
         }
         else {
             $details = [string]$details
         }
-        Add-TestResult -Name $Name -Status "PASS" -Details $details
+
+        Add-Result -Name $Name -Status "PASS" -Details $details
         return $true
     }
     catch {
-        Add-TestResult -Name $Name -Status "FAIL" -Details $_.Exception.Message
+        Add-Result -Name $Name -Status "FAIL" -Details $_.Exception.Message
         if ($Fatal) {
             throw
         }
@@ -116,56 +106,61 @@ function Invoke-TestCheck {
     }
 }
 
-function Invoke-NativeCommand {
+function Invoke-CommandLogged {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$FilePath,
+        [string]$Executable,
         [Parameter(Mandatory = $true)]
         [string[]]$Arguments,
         [Parameter(Mandatory = $true)]
-        [string]$LogName
+        [string]$LogName,
+        [switch]$AllowFailure
     )
 
     $logPath = Join-Path $logDirectory $LogName
-    $output = & $FilePath @Arguments 2>&1
+    $output = & $Executable @Arguments 2>&1
     $exitCode = $LASTEXITCODE
     $output | Out-File -FilePath $logPath -Encoding utf8
 
-    if ($exitCode -ne 0) {
-        throw "$FilePath exited with code $exitCode. See $logPath"
+    if (-not $AllowFailure -and $exitCode -ne 0) {
+        throw "$Executable exited with code $exitCode. See $logPath"
     }
 
-    return ($output -join [Environment]::NewLine)
+    return [pscustomobject]@{
+        ExitCode = $exitCode
+        Output = $output -join [Environment]::NewLine
+        LogPath = $logPath
+    }
 }
 
-function Resolve-WinAppExecutable {
+function Resolve-WinApp {
     $command = Get-Command winapp -ErrorAction SilentlyContinue
     if ($null -ne $command) {
         return $command.Source
     }
 
     if ($SkipWinAppInstall) {
-        throw "winapp CLI is not installed and -SkipWinAppInstall was supplied."
+        throw "winapp CLI is missing and -SkipWinAppInstall was supplied."
     }
 
     $winget = Get-Command winget -ErrorAction SilentlyContinue
     if ($null -eq $winget) {
-        throw "winget is required to install Microsoft.WinAppCLI automatically."
+        throw "winget is required to install Microsoft.winappcli."
     }
 
-    Write-Host "==> Install Microsoft WinApp CLI" -ForegroundColor Cyan
-    $process = Start-Process -FilePath $winget.Source -ArgumentList @(
+    $arguments = @(
         "install",
-        "--id", "Microsoft.WinAppCLI",
+        "--id", "Microsoft.winappcli",
         "--exact",
+        "--source", "winget",
         "--silent",
         "--accept-package-agreements",
         "--accept-source-agreements",
         "--disable-interactivity"
-    ) -Wait -PassThru -NoNewWindow
-
+    )
+    $process = Start-Process -FilePath $winget.Source -ArgumentList $arguments -Wait -PassThru -NoNewWindow
     if ($process.ExitCode -ne 0) {
-        throw "Microsoft.WinAppCLI installation failed with exit code $($process.ExitCode)."
+        throw "Microsoft.winappcli installation failed with exit code $($process.ExitCode)."
     }
 
     $command = Get-Command winapp -ErrorAction SilentlyContinue
@@ -173,16 +168,14 @@ function Resolve-WinAppExecutable {
         return $command.Source
     }
 
-    $searchRoots = @(
+    $roots = @(
         (Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Packages"),
         (Join-Path $env:ProgramFiles "WindowsApps")
     )
-
-    foreach ($searchRoot in $searchRoots) {
+    foreach ($searchRoot in $roots) {
         if (-not (Test-Path $searchRoot)) {
             continue
         }
-
         $candidate = Get-ChildItem -Path $searchRoot -Filter "winapp.exe" -File -Recurse -ErrorAction SilentlyContinue |
             Select-Object -First 1
         if ($null -ne $candidate) {
@@ -190,7 +183,7 @@ function Resolve-WinAppExecutable {
         }
     }
 
-    throw "Microsoft.WinAppCLI was installed but winapp.exe could not be located."
+    throw "Microsoft.winappcli was installed, but winapp.exe could not be located."
 }
 
 function Invoke-WinApp {
@@ -198,136 +191,15 @@ function Invoke-WinApp {
         [Parameter(Mandatory = $true)]
         [string[]]$Arguments,
         [Parameter(Mandatory = $true)]
-        [string]$LogName
+        [string]$LogName,
+        [switch]$AllowFailure
     )
 
-    if ([string]::IsNullOrWhiteSpace([string]$script:WinAppExecutable)) {
-        throw "winapp CLI has not been resolved."
+    if ([string]::IsNullOrWhiteSpace([string]$script:WinApp)) {
+        throw "winapp CLI is not initialized."
     }
 
-    return Invoke-NativeCommand -FilePath $script:WinAppExecutable -Arguments $Arguments -LogName $LogName
-}
-
-function Get-NodeProperty {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Node,
-        [Parameter(Mandatory = $true)]
-        [string[]]$Names
-    )
-
-    foreach ($name in $Names) {
-        $property = $Node.PSObject.Properties[$name]
-        if ($null -ne $property) {
-            return $property.Value
-        }
-    }
-
-    return $null
-}
-
-function Add-FlattenedNode {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Node,
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.List[object]]$Target
-    )
-
-    $Target.Add($Node)
-    $children = Get-NodeProperty -Node $Node -Names @("children", "Children")
-    if ($null -eq $children) {
-        return
-    }
-
-    foreach ($child in @($children)) {
-        Add-FlattenedNode -Node $child -Target $Target
-    }
-}
-
-function Get-UiNodes {
-    param(
-        [Parameter(Mandatory = $true)]
-        [int]$ApplicationProcessId,
-        [Parameter(Mandatory = $true)]
-        [string]$FileName
-    )
-
-    $raw = Invoke-WinApp -Arguments @(
-        "ui", "inspect",
-        "-a", [string]$ApplicationProcessId,
-        "--interactive",
-        "--depth", "12",
-        "--json"
-    ) -LogName $FileName
-
-    $raw | Out-File -FilePath (Join-Path $treeDirectory $FileName) -Encoding utf8
-    $document = $raw | ConvertFrom-Json
-    $nodes = New-Object System.Collections.Generic.List[object]
-    $windows = Get-NodeProperty -Node $document -Names @("windows", "Windows")
-
-    foreach ($window in @($windows)) {
-        $elements = Get-NodeProperty -Node $window -Names @("elements", "Elements", "children", "Children")
-        foreach ($element in @($elements)) {
-            Add-FlattenedNode -Node $element -Target $nodes
-        }
-    }
-
-    return ,$nodes
-}
-
-function Find-UiSelector {
-    param(
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.List[object]]$Nodes,
-        [Parameter(Mandatory = $true)]
-        [string]$NamePattern,
-        [string]$TypePattern = ".*"
-    )
-
-    foreach ($node in $Nodes) {
-        $name = [string](Get-NodeProperty -Node $node -Names @("name", "Name"))
-        $type = [string](Get-NodeProperty -Node $node -Names @("controlType", "ControlType", "type", "Type"))
-        if ($name -match $NamePattern -and $type -match $TypePattern) {
-            $selector = Get-NodeProperty -Node $node -Names @("elementId", "ElementId", "id", "Id", "selector", "Selector")
-            if (-not [string]::IsNullOrWhiteSpace([string]$selector)) {
-                return [string]$selector
-            }
-            return $name
-        }
-    }
-
-    throw "No UI element matched name '$NamePattern' and type '$TypePattern'."
-}
-
-function Assert-AccessibleInteractiveControls {
-    param(
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.List[object]]$Nodes
-    )
-
-    $missingNames = New-Object System.Collections.Generic.List[string]
-    foreach ($node in $Nodes) {
-        $focusable = Get-NodeProperty -Node $node -Names @(
-            "isKeyboardFocusable",
-            "IsKeyboardFocusable",
-            "keyboardFocusable",
-            "KeyboardFocusable"
-        )
-        $name = [string](Get-NodeProperty -Node $node -Names @("name", "Name"))
-        $type = [string](Get-NodeProperty -Node $node -Names @("controlType", "ControlType", "type", "Type"))
-        $selector = [string](Get-NodeProperty -Node $node -Names @("elementId", "ElementId", "id", "Id"))
-
-        if ($focusable -eq $true -and [string]::IsNullOrWhiteSpace($name)) {
-            $missingNames.Add("$type ($selector)")
-        }
-    }
-
-    if ($missingNames.Count -gt 0) {
-        throw "Keyboard-focusable controls without accessible names: $($missingNames -join ', ')"
-    }
-
-    return "$($Nodes.Count) interactive UI nodes inspected; no unnamed keyboard-focusable controls found."
+    return Invoke-CommandLogged -Executable $script:WinApp -Arguments $Arguments -LogName $LogName -AllowFailure:$AllowFailure
 }
 
 function Get-UninstallEntries {
@@ -345,14 +217,14 @@ function Get-UninstallEntries {
             $entries.Add($item)
         }
     }
-
     return $entries
 }
 
-function Wait-ForUninstallEntry {
+function Wait-UninstallState {
     param(
+        [Parameter(Mandatory = $true)]
         [bool]$ShouldExist,
-        [int]$TimeoutSeconds = 30
+        [int]$TimeoutSeconds = 45
     )
 
     $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
@@ -364,71 +236,7 @@ function Wait-ForUninstallEntry {
         Start-Sleep -Milliseconds 500
     } while ((Get-Date) -lt $deadline)
 
-    throw "English Focus uninstall registry state did not become '$ShouldExist' within $TimeoutSeconds seconds."
-}
-
-function Get-ExecutableFromEntry {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Entry
-    )
-
-    $candidates = New-Object System.Collections.Generic.List[string]
-    if (-not [string]::IsNullOrWhiteSpace([string]$Entry.DisplayIcon)) {
-        $displayIcon = [string]$Entry.DisplayIcon
-        if ($displayIcon -match '^"([^"]+)"') {
-            $candidates.Add($Matches[1])
-        }
-        elseif ($displayIcon -match '^([^,]+)') {
-            $candidates.Add($Matches[1].Trim('"'))
-        }
-    }
-
-    if (-not [string]::IsNullOrWhiteSpace([string]$Entry.InstallLocation)) {
-        $installLocation = [string]$Entry.InstallLocation
-        $candidates.Add((Join-Path $installLocation "English Focus.exe"))
-        $candidates.Add((Join-Path $installLocation "english-learning-platform.exe"))
-        if (Test-Path $installLocation) {
-            foreach ($file in @(Get-ChildItem -Path $installLocation -Filter "*.exe" -File -ErrorAction SilentlyContinue)) {
-                if ($file.Name -notmatch "uninstall") {
-                    $candidates.Add($file.FullName)
-                }
-            }
-        }
-    }
-
-    $candidates.Add((Join-Path $env:LOCALAPPDATA "English Focus\English Focus.exe"))
-    $candidates.Add((Join-Path $env:LOCALAPPDATA "English Focus\english-learning-platform.exe"))
-    $candidates.Add((Join-Path $env:ProgramFiles "English Focus\English Focus.exe"))
-    $candidates.Add((Join-Path $env:ProgramFiles "English Focus\english-learning-platform.exe"))
-
-    foreach ($candidate in $candidates) {
-        if (-not [string]::IsNullOrWhiteSpace($candidate) -and (Test-Path $candidate)) {
-            return (Resolve-Path $candidate).Path
-        }
-    }
-
-    throw "The installed English Focus executable could not be found."
-}
-
-function Get-StartMenuShortcuts {
-    $roots = @(
-        (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"),
-        (Join-Path $env:ProgramData "Microsoft\Windows\Start Menu\Programs")
-    )
-
-    $shortcuts = New-Object System.Collections.Generic.List[object]
-    foreach ($shortcutRoot in $roots) {
-        if (-not (Test-Path $shortcutRoot)) {
-            continue
-        }
-        foreach ($shortcut in @(Get-ChildItem -Path $shortcutRoot -Filter "*.lnk" -Recurse -File -ErrorAction SilentlyContinue |
-            Where-Object { $_.Name -like "*English Focus*" })) {
-            $shortcuts.Add($shortcut)
-        }
-    }
-
-    return $shortcuts
+    throw "English Focus uninstall state did not become '$ShouldExist' in time."
 }
 
 function Install-EnglishFocus {
@@ -444,23 +252,21 @@ function Install-EnglishFocus {
         $process = Start-Process -FilePath $InstallerPath -ArgumentList "/S" -Wait -PassThru
     }
     else {
-        $process = Start-Process -FilePath "msiexec.exe" -ArgumentList @(
-            "/i", "`"$InstallerPath`"", "/qn", "/norestart"
-        ) -Wait -PassThru
+        $arguments = @("/i", $InstallerPath, "/qn", "/norestart")
+        $process = Start-Process -FilePath "msiexec.exe" -ArgumentList $arguments -Wait -PassThru
     }
 
     if ($process.ExitCode -notin @(0, 3010)) {
         throw "$Family installer exited with code $($process.ExitCode)."
     }
-
-    Wait-ForUninstallEntry -ShouldExist $true
+    Wait-UninstallState -ShouldExist $true
 }
 
 function Uninstall-EnglishFocus {
     $entries = Get-UninstallEntries
     foreach ($entry in $entries) {
         $uninstallString = [string]$entry.UninstallString
-        $quietUninstallString = [string]$entry.QuietUninstallString
+        $quietString = [string]$entry.QuietUninstallString
         $productCode = [string]$entry.PSChildName
 
         if ($entry.WindowsInstaller -eq 1 -or $uninstallString -match "MsiExec") {
@@ -472,17 +278,16 @@ function Uninstall-EnglishFocus {
             ) -Wait -PassThru
         }
         else {
-            $command = if (-not [string]::IsNullOrWhiteSpace($quietUninstallString)) {
-                $quietUninstallString
-            }
-            else {
-                $uninstallString
-            }
-
+            $command = $quietString
             if ([string]::IsNullOrWhiteSpace($command)) {
-                throw "English Focus has no usable uninstall command."
+                $command = $uninstallString
+            }
+            if ([string]::IsNullOrWhiteSpace($command)) {
+                throw "No NSIS uninstall command was registered."
             }
 
+            $executable = ""
+            $arguments = ""
             if ($command -match '^"([^"]+)"\s*(.*)$') {
                 $executable = $Matches[1]
                 $arguments = $Matches[2]
@@ -490,9 +295,10 @@ function Uninstall-EnglishFocus {
             else {
                 $parts = $command.Split(' ', 2)
                 $executable = $parts[0]
-                $arguments = if ($parts.Count -gt 1) { $parts[1] } else { "" }
+                if ($parts.Count -gt 1) {
+                    $arguments = $parts[1]
+                }
             }
-
             if ($arguments -notmatch '(^|\s)/S($|\s)') {
                 $arguments = "$arguments /S".Trim()
             }
@@ -500,200 +306,291 @@ function Uninstall-EnglishFocus {
         }
 
         if ($process.ExitCode -notin @(0, 1605, 1614, 3010)) {
-            throw "English Focus uninstaller exited with code $($process.ExitCode)."
+            throw "Uninstaller exited with code $($process.ExitCode)."
+        }
+    }
+    Wait-UninstallState -ShouldExist $false
+}
+
+function Get-InstalledExecutable {
+    param([Parameter(Mandatory = $true)][object]$Entry)
+
+    $candidates = New-Object System.Collections.Generic.List[string]
+    if (-not [string]::IsNullOrWhiteSpace([string]$Entry.DisplayIcon)) {
+        $icon = [string]$Entry.DisplayIcon
+        if ($icon -match '^"([^"]+)"') {
+            $candidates.Add($Matches[1])
+        }
+        else {
+            $candidates.Add(($icon -split ',')[0].Trim('"'))
+        }
+    }
+    if (-not [string]::IsNullOrWhiteSpace([string]$Entry.InstallLocation)) {
+        $location = [string]$Entry.InstallLocation
+        foreach ($file in @(Get-ChildItem -Path $location -Filter "*.exe" -File -ErrorAction SilentlyContinue)) {
+            if ($file.Name -notmatch "uninstall") {
+                $candidates.Add($file.FullName)
+            }
         }
     }
 
-    Wait-ForUninstallEntry -ShouldExist $false
+    foreach ($candidate in $candidates) {
+        if (-not [string]::IsNullOrWhiteSpace($candidate) -and (Test-Path $candidate)) {
+            return (Resolve-Path $candidate).Path
+        }
+    }
+    throw "Installed English Focus executable could not be found."
+}
+
+function Get-StartMenuShortcuts {
+    $roots = @(
+        (Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs"),
+        (Join-Path $env:ProgramData "Microsoft\Windows\Start Menu\Programs")
+    )
+    $found = New-Object System.Collections.Generic.List[object]
+    foreach ($menuRoot in $roots) {
+        if (-not (Test-Path $menuRoot)) {
+            continue
+        }
+        foreach ($shortcut in @(Get-ChildItem -Path $menuRoot -Filter "*.lnk" -File -Recurse -ErrorAction SilentlyContinue |
+            Where-Object { $_.Name -like "*English Focus*" })) {
+            $found.Add($shortcut)
+        }
+    }
+    return $found
+}
+
+function Get-PeSubsystem {
+    param([Parameter(Mandatory = $true)][string]$ExecutablePath)
+
+    $stream = [System.IO.File]::OpenRead($ExecutablePath)
+    $reader = New-Object System.IO.BinaryReader($stream)
+    try {
+        $stream.Position = 0x3C
+        $peOffset = $reader.ReadInt32()
+        $stream.Position = $peOffset + 24
+        $magic = $reader.ReadUInt16()
+        if ($magic -notin @(0x10B, 0x20B)) {
+            throw "Unsupported PE optional-header magic: $magic"
+        }
+        $stream.Position = $peOffset + 24 + 68
+        return $reader.ReadUInt16()
+    }
+    finally {
+        $reader.Dispose()
+        $stream.Dispose()
+    }
+}
+
+function Get-JsonObjects {
+    param([Parameter(Mandatory = $true)][object]$Value)
+
+    $items = New-Object System.Collections.Generic.List[object]
+    function Visit-Value {
+        param([object]$Current)
+        if ($null -eq $Current) {
+            return
+        }
+        if ($Current -is [string] -or $Current.GetType().IsPrimitive) {
+            return
+        }
+        $items.Add($Current)
+        if ($Current -is [System.Collections.IEnumerable] -and $Current -isnot [pscustomobject]) {
+            foreach ($child in $Current) {
+                Visit-Value -Current $child
+            }
+            return
+        }
+        foreach ($property in $Current.PSObject.Properties) {
+            Visit-Value -Current $property.Value
+        }
+    }
+    Visit-Value -Current $Value
+    return $items
+}
+
+function Get-PropertyValue {
+    param(
+        [Parameter(Mandatory = $true)][object]$Object,
+        [Parameter(Mandatory = $true)][string[]]$Names
+    )
+    foreach ($name in $Names) {
+        $property = $Object.PSObject.Properties[$name]
+        if ($null -ne $property) {
+            return $property.Value
+        }
+    }
+    return $null
+}
+
+function Find-UiElementId {
+    param(
+        [Parameter(Mandatory = $true)][int]$ProcessId,
+        [Parameter(Mandatory = $true)][string]$SearchText,
+        [Parameter(Mandatory = $true)][string]$ControlTypePattern,
+        [Parameter(Mandatory = $true)][string]$LogPrefix
+    )
+
+    $search = Invoke-WinApp -Arguments @(
+        "ui", "search", $SearchText,
+        "-a", [string]$ProcessId,
+        "--json"
+    ) -LogName "$LogPrefix-search.json" -AllowFailure
+    if ($search.ExitCode -ne 0) {
+        throw "No UI element matched '$SearchText'. See $($search.LogPath)"
+    }
+
+    $document = $search.Output | ConvertFrom-Json
+    foreach ($item in @(Get-JsonObjects -Value $document)) {
+        $name = [string](Get-PropertyValue -Object $item -Names @("name", "Name"))
+        $type = [string](Get-PropertyValue -Object $item -Names @("controlType", "ControlType", "type", "Type"))
+        $id = [string](Get-PropertyValue -Object $item -Names @("elementId", "ElementId", "id", "Id", "slug", "Slug"))
+        if ($name -eq $SearchText -and $type -match $ControlTypePattern -and -not [string]::IsNullOrWhiteSpace($id)) {
+            return $id
+        }
+    }
+    throw "A matching '$SearchText' control was found, but its stable element id was unavailable."
 }
 
 function Stop-EnglishFocusProcesses {
     Get-Process -ErrorAction SilentlyContinue |
         Where-Object {
-            $_.ProcessName -in @("english-learning-platform", "English Focus") -or
+            $_.ProcessName -eq "english-learning-platform" -or
             $_.MainWindowTitle -eq "English Focus"
         } |
         Stop-Process -Force -ErrorAction SilentlyContinue
 }
 
-function Wait-ForProcessExit {
-    param(
-        [Parameter(Mandatory = $true)]
-        [int]$ApplicationProcessId,
-        [int]$TimeoutSeconds = 15
-    )
-
-    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+function Wait-ProcessExit {
+    param([Parameter(Mandatory = $true)][int]$ProcessId)
+    $deadline = (Get-Date).AddSeconds(20)
     do {
-        if ($null -eq (Get-Process -Id $ApplicationProcessId -ErrorAction SilentlyContinue)) {
+        if ($null -eq (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)) {
             return
         }
         Start-Sleep -Milliseconds 250
     } while ((Get-Date) -lt $deadline)
-
-    throw "Application process $ApplicationProcessId did not exit within $TimeoutSeconds seconds."
+    throw "English Focus process $ProcessId did not exit in time."
 }
 
 function Preserve-UserData {
-    $dataPaths = @(
+    $paths = @(
         (Join-Path $env:APPDATA "com.englishfocus.desktop"),
         (Join-Path $env:APPDATA "English Focus")
     )
-
-    foreach ($dataPath in $dataPaths) {
-        if (-not (Test-Path $dataPath)) {
+    foreach ($path in $paths) {
+        if (-not (Test-Path $path)) {
             continue
         }
-
-        $backupName = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($dataPath)).TrimEnd('=').Replace('/', '_').Replace('+', '-')
-        $backupPath = Join-Path $dataBackupDirectory $backupName
-        Copy-Item -Path $dataPath -Destination $backupPath -Recurse -Force
-        Remove-Item -Path $dataPath -Recurse -Force
-        $script:PreservedData.Add([pscustomobject]@{
-            original = $dataPath
-            backup = $backupPath
-        })
+        $name = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($path)).TrimEnd('=').Replace('/', '_').Replace('+', '-')
+        $backup = Join-Path $preservedDirectory $name
+        Copy-Item -Path $path -Destination $backup -Recurse -Force
+        Remove-Item -Path $path -Recurse -Force
+        $preservedData.Add([pscustomobject]@{ Original = $path; Backup = $backup })
     }
 }
 
 function Restore-UserData {
-    $testDataPaths = @(
+    $testPaths = @(
         (Join-Path $env:APPDATA "com.englishfocus.desktop"),
         (Join-Path $env:APPDATA "English Focus")
     )
-
-    foreach ($dataPath in $testDataPaths) {
-        if (Test-Path $dataPath) {
-            Remove-Item -Path $dataPath -Recurse -Force
+    foreach ($path in $testPaths) {
+        if (Test-Path $path) {
+            Remove-Item -Path $path -Recurse -Force
         }
     }
-
-    foreach ($preserved in $script:PreservedData) {
-        $parent = Split-Path -Parent $preserved.original
-        New-Item -ItemType Directory -Force -Path $parent | Out-Null
-        Copy-Item -Path $preserved.backup -Destination $preserved.original -Recurse -Force
+    foreach ($record in $preservedData) {
+        Copy-Item -Path $record.Backup -Destination $record.Original -Recurse -Force
     }
 }
 
-function Test-ApplicationUi {
+function Test-NativeApplication {
     param(
-        [Parameter(Mandatory = $true)]
-        [string]$ApplicationPath,
-        [Parameter(Mandatory = $true)]
-        [string]$Family
+        [Parameter(Mandatory = $true)][string]$ExecutablePath,
+        [Parameter(Mandatory = $true)][string]$Family
     )
 
-    $process = Start-Process -FilePath $ApplicationPath -PassThru
+    $subsystem = Get-PeSubsystem -ExecutablePath $ExecutablePath
+    if ($subsystem -ne 2) {
+        throw "Installed executable uses PE subsystem $subsystem instead of Windows GUI subsystem 2."
+    }
+
+    $process = Start-Process -FilePath $ExecutablePath -PassThru
     try {
         Invoke-WinApp -Arguments @(
             "ui", "wait-for", "Search your local vocabulary",
             "-a", [string]$process.Id,
             "--timeout", "30000"
-        ) -LogName "$Family-wait-initial.log" | Out-Null
-
+        ) -LogName "$Family-wait-home.log" | Out-Null
         Invoke-WinApp -Arguments @(
             "ui", "wait-for", "Local runtime connected",
             "-a", [string]$process.Id,
             "--timeout", "30000"
-        ) -LogName "$Family-runtime.log" | Out-Null
-
+        ) -LogName "$Family-wait-runtime.log" | Out-Null
         Invoke-WinApp -Arguments @(
             "ui", "screenshot",
             "-a", [string]$process.Id,
-            "-o", (Join-Path $screenshotDirectory "$Family-01-vocabulary.png")
-        ) -LogName "$Family-screenshot-vocabulary.log" | Out-Null
+            "--output", (Join-Path $screenshotDirectory "$Family-vocabulary.png")
+        ) -LogName "$Family-screenshot-home.log" | Out-Null
 
-        $nodes = Get-UiNodes -ApplicationProcessId $process.Id -FileName "$Family-initial-ui.json"
-        Assert-AccessibleInteractiveControls -Nodes $nodes | Out-Null
+        $tree = Invoke-WinApp -Arguments @(
+            "ui", "inspect",
+            "-a", [string]$process.Id,
+            "--interactive",
+            "--depth", "12",
+            "--json"
+        ) -LogName "$Family-ui-tree.json"
+        $tree.Output | Out-File -FilePath (Join-Path $treeDirectory "$Family-ui-tree.json") -Encoding utf8
 
-        $searchInput = Find-UiSelector -Nodes $nodes -NamePattern '^Search vocabulary$' -TypePattern 'Edit|TextBox|Document'
-        $searchButton = Find-UiSelector -Nodes $nodes -NamePattern '^(Search|Search vocabulary)$' -TypePattern 'Button'
+        $document = $tree.Output | ConvertFrom-Json
+        $unnamed = New-Object System.Collections.Generic.List[string]
+        foreach ($item in @(Get-JsonObjects -Value $document)) {
+            $focusable = Get-PropertyValue -Object $item -Names @("isKeyboardFocusable", "IsKeyboardFocusable")
+            $name = [string](Get-PropertyValue -Object $item -Names @("name", "Name"))
+            $type = [string](Get-PropertyValue -Object $item -Names @("controlType", "ControlType", "type", "Type"))
+            if ($focusable -eq $true -and [string]::IsNullOrWhiteSpace($name)) {
+                $unnamed.Add($type)
+            }
+        }
+        if ($unnamed.Count -gt 0) {
+            throw "Focusable controls without accessible names: $($unnamed -join ', ')"
+        }
 
+        $searchInput = Find-UiElementId -ProcessId $process.Id -SearchText "Search vocabulary" -ControlTypePattern "Edit|TextBox" -LogPrefix "$Family-search-input"
+        $searchButton = Find-UiElementId -ProcessId $process.Id -SearchText "Search vocabulary" -ControlTypePattern "Button" -LogPrefix "$Family-search-button"
         Invoke-WinApp -Arguments @(
             "ui", "set-value", $searchInput, "maintain",
             "-a", [string]$process.Id
         ) -LogName "$Family-set-search.log" | Out-Null
-
         Invoke-WinApp -Arguments @(
             "ui", "invoke", $searchButton,
             "-a", [string]$process.Id
         ) -LogName "$Family-submit-search.log" | Out-Null
-
         Invoke-WinApp -Arguments @(
             "ui", "wait-for", "maintain",
             "-a", [string]$process.Id,
             "--timeout", "10000"
         ) -LogName "$Family-wait-maintain.log" | Out-Null
 
-        Invoke-WinApp -Arguments @(
-            "ui", "screenshot",
-            "-a", [string]$process.Id,
-            "-o", (Join-Path $screenshotDirectory "$Family-02-maintain.png")
-        ) -LogName "$Family-screenshot-maintain.log" | Out-Null
+        Invoke-WinApp -Arguments @("ui", "invoke", "Library", "-a", [string]$process.Id) -LogName "$Family-open-library.log" | Out-Null
+        Invoke-WinApp -Arguments @("ui", "wait-for", "Library", "-a", [string]$process.Id, "--timeout", "10000") -LogName "$Family-wait-library.log" | Out-Null
+        Invoke-WinApp -Arguments @("ui", "screenshot", "-a", [string]$process.Id, "--output", (Join-Path $screenshotDirectory "$Family-library.png")) -LogName "$Family-screenshot-library.log" | Out-Null
 
-        Invoke-WinApp -Arguments @(
-            "ui", "invoke", "Library",
-            "-a", [string]$process.Id
-        ) -LogName "$Family-open-library.log" | Out-Null
+        Invoke-WinApp -Arguments @("ui", "invoke", "Settings", "-a", [string]$process.Id) -LogName "$Family-open-settings.log" | Out-Null
+        Invoke-WinApp -Arguments @("ui", "wait-for", "Settings", "-a", [string]$process.Id, "--timeout", "10000") -LogName "$Family-wait-settings.log" | Out-Null
+        Invoke-WinApp -Arguments @("ui", "screenshot", "-a", [string]$process.Id, "--output", (Join-Path $screenshotDirectory "$Family-settings.png")) -LogName "$Family-screenshot-settings.log" | Out-Null
 
-        Invoke-WinApp -Arguments @(
-            "ui", "wait-for", "Library",
-            "-a", [string]$process.Id,
-            "--timeout", "10000"
-        ) -LogName "$Family-wait-library.log" | Out-Null
+        [void]$process.CloseMainWindow()
+        Wait-ProcessExit -ProcessId $process.Id
 
-        Invoke-WinApp -Arguments @(
-            "ui", "screenshot",
-            "-a", [string]$process.Id,
-            "-o", (Join-Path $screenshotDirectory "$Family-03-library.png")
-        ) -LogName "$Family-screenshot-library.log" | Out-Null
-
-        Invoke-WinApp -Arguments @(
-            "ui", "invoke", "Settings",
-            "-a", [string]$process.Id
-        ) -LogName "$Family-open-settings.log" | Out-Null
-
-        Invoke-WinApp -Arguments @(
-            "ui", "wait-for", "Settings",
-            "-a", [string]$process.Id,
-            "--timeout", "10000"
-        ) -LogName "$Family-wait-settings.log" | Out-Null
-
-        Invoke-WinApp -Arguments @(
-            "ui", "screenshot",
-            "-a", [string]$process.Id,
-            "-o", (Join-Path $screenshotDirectory "$Family-04-settings.png")
-        ) -LogName "$Family-screenshot-settings.log" | Out-Null
-
-        $windowOutput = Invoke-WinApp -Arguments @(
-            "ui", "list-windows",
-            "-a", [string]$process.Id,
-            "--json"
-        ) -LogName "$Family-windows.json"
-        $windowOutput | Out-File -FilePath (Join-Path $treeDirectory "$Family-windows.json") -Encoding utf8
-        if ($windowOutput -match '(?i)command prompt|powershell') {
-            throw "A console window was associated with the English Focus process."
-        }
-
-        Invoke-WinApp -Arguments @(
-            "ui", "send-keys", "alt+f4",
-            "-a", [string]$process.Id
-        ) -LogName "$Family-close.log" | Out-Null
-        Wait-ForProcessExit -ApplicationProcessId $process.Id
-
-        $reopened = Start-Process -FilePath $ApplicationPath -PassThru
+        $reopened = Start-Process -FilePath $ExecutablePath -PassThru
         try {
             Invoke-WinApp -Arguments @(
                 "ui", "wait-for", "maintain",
                 "-a", [string]$reopened.Id,
                 "--timeout", "30000"
-            ) -LogName "$Family-persistence.log" | Out-Null
-
-            Invoke-WinApp -Arguments @(
-                "ui", "screenshot",
-                "-a", [string]$reopened.Id,
-                "-o", (Join-Path $screenshotDirectory "$Family-05-persistence.png")
-            ) -LogName "$Family-screenshot-persistence.log" | Out-Null
+            ) -LogName "$Family-reopen-persistence.log" | Out-Null
         }
         finally {
             if ($null -ne (Get-Process -Id $reopened.Id -ErrorAction SilentlyContinue)) {
@@ -702,17 +599,15 @@ function Test-ApplicationUi {
         }
 
         $dataPath = Join-Path $env:APPDATA "com.englishfocus.desktop"
-        if (-not (Test-Path $dataPath)) {
-            throw "Expected Tauri application data directory was not created: $dataPath"
+        $databasePath = Join-Path $dataPath "english-focus.sqlite3"
+        if (-not (Test-Path $databasePath)) {
+            throw "Expected SQLite database was not created: $databasePath"
+        }
+        if ((Get-Item $databasePath).Length -le 0) {
+            throw "SQLite database exists but is empty."
         }
 
-        $databaseFiles = Get-ChildItem -Path $dataPath -File -Recurse -ErrorAction SilentlyContinue |
-            Where-Object { $_.Extension -in @(".db", ".sqlite", ".sqlite3") -and $_.Length -gt 0 }
-        if (@($databaseFiles).Count -eq 0) {
-            throw "No non-empty SQLite database file was found under $dataPath."
-        }
-
-        return "Installed binary launched through the native runtime; navigation, exact search, accessibility tree, no-console-window check, restart persistence, and SQLite creation passed."
+        return "PE GUI subsystem, real Rust runtime, UI Automation tree, exact search, navigation, restart persistence, screenshots, and SQLite creation passed."
     }
     finally {
         if ($null -ne (Get-Process -Id $process.Id -ErrorAction SilentlyContinue)) {
@@ -723,81 +618,73 @@ function Test-ApplicationUi {
 
 function Test-InstallerFamily {
     param(
-        [Parameter(Mandatory = $true)]
-        [ValidateSet("NSIS", "MSI")]
-        [string]$Family,
-        [Parameter(Mandatory = $true)]
-        [string]$InstallerPath
+        [Parameter(Mandatory = $true)][ValidateSet("NSIS", "MSI")][string]$Family,
+        [Parameter(Mandatory = $true)][string]$InstallerPath
     )
 
     $script:CurrentFamily = $Family
     Stop-EnglishFocusProcesses
-
     if ((Get-UninstallEntries).Count -gt 0) {
-        Invoke-TestCheck -Name "Remove pre-existing English Focus installation" -Action {
-            Uninstall-EnglishFocus
-            "Previous installation removed before the isolated $Family test."
-        } -Fatal | Out-Null
+        Uninstall-EnglishFocus
     }
 
-    $installed = Invoke-TestCheck -Name "$Family clean installation" -Action {
+    $installed = Invoke-Check -Name "$Family clean installation" -Action {
         Install-EnglishFocus -Family $Family -InstallerPath $InstallerPath
         "$Family installer completed successfully."
     }
-
     if (-not $installed) {
-        Add-TestResult -Name "$Family installed application checks" -Status "SKIP" -Details "Installation failed."
+        Add-Result -Name "$Family native checks" -Status "SKIP" -Details "Installation did not complete."
         return
     }
 
+    $executablePath = ""
     try {
         $entries = Get-UninstallEntries
-        Invoke-TestCheck -Name "$Family uninstall registration and version" -Action {
+        Invoke-Check -Name "$Family registration and version" -Action {
             if ($entries.Count -eq 0) {
                 throw "No uninstall registration was found."
             }
             $entry = $entries | Select-Object -First 1
             if ([string]$entry.DisplayVersion -ne "1.0.0") {
-                throw "Expected DisplayVersion 1.0.0, got '$($entry.DisplayVersion)'."
+                throw "Expected version 1.0.0, got '$($entry.DisplayVersion)'."
             }
-            "DisplayName and DisplayVersion are registered correctly."
+            "English Focus 1.0.0 is registered."
         } | Out-Null
 
-        $applicationPath = $null
-        Invoke-TestCheck -Name "$Family installed executable" -Action {
-            $script:ResolvedApplicationPath = Get-ExecutableFromEntry -Entry ($entries | Select-Object -First 1)
-            "Executable: $script:ResolvedApplicationPath"
+        Invoke-Check -Name "$Family executable discovery" -Action {
+            $script:ResolvedExecutable = Get-InstalledExecutable -Entry ($entries | Select-Object -First 1)
+            $script:ResolvedExecutable
         } -Fatal | Out-Null
-        $applicationPath = [string]$script:ResolvedApplicationPath
+        $executablePath = [string]$script:ResolvedExecutable
 
-        Invoke-TestCheck -Name "$Family Start menu shortcut" -Action {
+        Invoke-Check -Name "$Family Start menu shortcut" -Action {
             $shortcuts = Get-StartMenuShortcuts
             if ($shortcuts.Count -eq 0) {
-                throw "No English Focus Start menu shortcut was found."
+                throw "English Focus Start menu shortcut is missing."
             }
-            ($shortcuts | ForEach-Object { $_.FullName }) -join "; "
+            $shortcuts[0].FullName
         } | Out-Null
 
-        Invoke-TestCheck -Name "$Family native application acceptance" -Action {
-            Test-ApplicationUi -ApplicationPath $applicationPath -Family $Family
+        Invoke-Check -Name "$Family native application acceptance" -Action {
+            Test-NativeApplication -ExecutablePath $executablePath -Family $Family
         } | Out-Null
     }
     finally {
         Stop-EnglishFocusProcesses
-        Invoke-TestCheck -Name "$Family uninstall lifecycle" -Action {
+        Invoke-Check -Name "$Family uninstall cleanup" -Action {
             Uninstall-EnglishFocus
-            if (-not [string]::IsNullOrWhiteSpace([string]$applicationPath) -and (Test-Path $applicationPath)) {
-                throw "Installed executable still exists after uninstall: $applicationPath"
+            if (-not [string]::IsNullOrWhiteSpace($executablePath) -and (Test-Path $executablePath)) {
+                throw "Installed executable remains after uninstall: $executablePath"
             }
             if ((Get-StartMenuShortcuts).Count -gt 0) {
-                throw "English Focus Start menu shortcut still exists after uninstall."
+                throw "Start menu shortcut remains after uninstall."
             }
-            "$Family uninstall removed registry registration, executable, and Start menu shortcut."
+            "Registration, executable, and shortcuts were removed."
         } | Out-Null
     }
 }
 
-function Write-TestReports {
+function Write-Reports {
     $jsonPath = Join-Path $runDirectory "windows-system-report.json"
     $markdownPath = Join-Path $runDirectory "windows-system-report.md"
     $results | ConvertTo-Json -Depth 8 | Out-File -FilePath $jsonPath -Encoding utf8
@@ -817,95 +704,91 @@ function Write-TestReports {
     $lines.Add("")
     $lines.Add("| Installer | Check | Result | Details |")
     $lines.Add("| --- | --- | --- | --- |")
-
     foreach ($result in $results) {
         $details = ([string]$result.details).Replace("|", "\|").Replace("`r", " ").Replace("`n", " ")
         $lines.Add("| $($result.family) | $($result.name) | $($result.status) | $details |")
     }
-
     $lines.Add("")
-    $lines.Add("## Deliberately manual release checks")
+    $lines.Add("## Deliberately manual release evidence")
     $lines.Add("")
-    $lines.Add("The automated run cannot honestly judge visual polish, listen to Narrator speech quality, establish SmartScreen reputation, or verify a production Authenticode certificate that was not supplied. Those checks remain explicit release evidence rather than being reported as automated passes.")
+    $lines.Add("Code cannot honestly judge subjective visual polish, listen to Narrator speech quality, establish SmartScreen reputation, or verify a production certificate that was not supplied.")
     $lines | Out-File -FilePath $markdownPath -Encoding utf8
 
-    return [pscustomobject]@{
-        Json = $jsonPath
-        Markdown = $markdownPath
-        Passed = $passed
-        Failed = $failed
-        Skipped = $skipped
-    }
+    return [pscustomobject]@{ Passed = $passed; Failed = $failed; Skipped = $skipped; Markdown = $markdownPath }
 }
 
-$nsisInstaller = Get-ChildItem -Path $ArtifactsDirectory -Filter "*-setup.exe" -File -ErrorAction SilentlyContinue |
-    Select-Object -First 1
-$msiInstaller = Get-ChildItem -Path $ArtifactsDirectory -Filter "*.msi" -File -ErrorAction SilentlyContinue |
-    Select-Object -First 1
-$manifestPath = Join-Path $ArtifactsDirectory "release-manifest.json"
-$checksumsPath = Join-Path $ArtifactsDirectory "SHA256SUMS.txt"
-
 try {
+    if (-not $SkipBuild) {
+        $script:CurrentFamily = "Build"
+        Invoke-Check -Name "Fresh unsigned MSI and NSIS build" -Action {
+            $result = Invoke-CommandLogged -Executable "npm" -Arguments @("run", "release:windows:unsigned") -LogName "release-build.log"
+            $result.Output | Select-Object -Last 1
+        } -Fatal | Out-Null
+    }
+
+    if ([string]::IsNullOrWhiteSpace($ArtifactsDirectory)) {
+        $ArtifactsDirectory = Join-Path $root "release-artifacts\windows\1.0.0"
+    }
+    elseif (-not [System.IO.Path]::IsPathRooted($ArtifactsDirectory)) {
+        $ArtifactsDirectory = Join-Path $root $ArtifactsDirectory
+    }
+
+    $nsis = Get-ChildItem -Path $ArtifactsDirectory -Filter "*-setup.exe" -File -ErrorAction SilentlyContinue | Select-Object -First 1
+    $msi = Get-ChildItem -Path $ArtifactsDirectory -Filter "*.msi" -File -ErrorAction SilentlyContinue | Select-Object -First 1
+    $manifestPath = Join-Path $ArtifactsDirectory "release-manifest.json"
+    $checksumPath = Join-Path $ArtifactsDirectory "SHA256SUMS.txt"
+
     $script:CurrentFamily = "Artifacts"
-    Invoke-TestCheck -Name "Release artifact set" -Action {
-        if ($null -eq $nsisInstaller) {
-            throw "NSIS installer is missing from $ArtifactsDirectory."
+    Invoke-Check -Name "Artifact inventory" -Action {
+        if ($null -eq $nsis -or $null -eq $msi -or -not (Test-Path $manifestPath) -or -not (Test-Path $checksumPath)) {
+            throw "MSI, NSIS, release-manifest.json, or SHA256SUMS.txt is missing."
         }
-        if ($null -eq $msiInstaller) {
-            throw "MSI installer is missing from $ArtifactsDirectory."
-        }
-        if (-not (Test-Path $manifestPath)) {
-            throw "release-manifest.json is missing."
-        }
-        if (-not (Test-Path $checksumsPath)) {
-            throw "SHA256SUMS.txt is missing."
-        }
-        "MSI, NSIS, manifest, and checksum files are present."
+        "Complete artifact set found."
     } -Fatal | Out-Null
 
-    Invoke-TestCheck -Name "Release manifest source and version" -Action {
-        $manifestText = Get-Content -Path $manifestPath -Raw
+    Invoke-Check -Name "Manifest version and source commit" -Action {
+        $manifest = Get-Content -Path $manifestPath -Raw
         $commit = (git rev-parse HEAD).Trim()
-        if ($manifestText -notmatch [regex]::Escape($commit)) {
-            throw "release-manifest.json does not contain source commit $commit."
+        if ($manifest -notmatch [regex]::Escape($commit)) {
+            throw "Manifest does not contain source commit $commit."
         }
-        if ($manifestText -notmatch '"version"\s*:\s*"1\.0\.0"') {
-            throw "release-manifest.json does not report version 1.0.0."
+        if ($manifest -notmatch '"version"\s*:\s*"1\.0\.0"') {
+            throw "Manifest does not report version 1.0.0."
         }
-        "Manifest matches version 1.0.0 and source commit $commit."
+        "Manifest matches version 1.0.0 and commit $commit."
     } | Out-Null
 
-    Invoke-TestCheck -Name "Installer SHA-256 integrity" -Action {
-        $checksumText = Get-Content -Path $checksumsPath -Raw
-        foreach ($installer in @($nsisInstaller, $msiInstaller)) {
+    Invoke-Check -Name "Installer SHA-256 checksums" -Action {
+        $checksums = (Get-Content -Path $checksumPath -Raw).ToLowerInvariant()
+        foreach ($installer in @($nsis, $msi)) {
             $hash = (Get-FileHash -Path $installer.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
-            if ($checksumText.ToLowerInvariant() -notmatch [regex]::Escape($hash)) {
-                throw "SHA256SUMS.txt does not contain the computed hash for $($installer.Name)."
+            if ($checksums -notmatch [regex]::Escape($hash)) {
+                throw "Checksum mismatch for $($installer.Name)."
             }
         }
-        "Both installer hashes match SHA256SUMS.txt."
+        "Both hashes match SHA256SUMS.txt."
     } | Out-Null
 
     $script:CurrentFamily = "Prerequisites"
-    Invoke-TestCheck -Name "Preserve existing user data" -Action {
+    Invoke-Check -Name "Preserve existing user data" -Action {
         Preserve-UserData
-        if ($script:PreservedData.Count -eq 0) {
-            return "No existing English Focus user data was present."
-        }
-        return "$($script:PreservedData.Count) existing data directories were preserved for restoration."
+        "$($preservedData.Count) existing data directories preserved."
     } -Fatal | Out-Null
 
-    Invoke-TestCheck -Name "Microsoft WinApp CLI" -Action {
-        $script:WinAppExecutable = Resolve-WinAppExecutable
-        $version = Invoke-NativeCommand -FilePath $script:WinAppExecutable -Arguments @("--version") -LogName "winapp-version.log"
-        "winapp: $version"
+    Invoke-Check -Name "Microsoft winapp CLI" -Action {
+        $script:WinApp = Resolve-WinApp
+        $help = Invoke-CommandLogged -Executable $script:WinApp -Arguments @("--help") -LogName "winapp-help.log"
+        if ($help.Output -notmatch "winapp") {
+            throw "winapp CLI help output was unexpected."
+        }
+        $script:WinApp
     } -Fatal | Out-Null
 
     if ($InstallerFamily -in @("Both", "NSIS")) {
-        Test-InstallerFamily -Family "NSIS" -InstallerPath $nsisInstaller.FullName
+        Test-InstallerFamily -Family "NSIS" -InstallerPath $nsis.FullName
     }
     if ($InstallerFamily -in @("Both", "MSI")) {
-        Test-InstallerFamily -Family "MSI" -InstallerPath $msiInstaller.FullName
+        Test-InstallerFamily -Family "MSI" -InstallerPath $msi.FullName
     }
 }
 finally {
@@ -915,39 +798,40 @@ finally {
             Uninstall-EnglishFocus
         }
         catch {
-            Add-TestResult -Name "Final cleanup uninstall" -Status "FAIL" -Details $_.Exception.Message
+            $script:CurrentFamily = "Cleanup"
+            Add-Result -Name "Final uninstall cleanup" -Status "FAIL" -Details $_.Exception.Message
         }
     }
 
     try {
         Restore-UserData
         $script:CurrentFamily = "Cleanup"
-        Add-TestResult -Name "Restore preserved user data" -Status "PASS" -Details "Test data was removed and any pre-existing user data was restored."
+        Add-Result -Name "Restore preserved user data" -Status "PASS" -Details "Test data removed and original data restored."
     }
     catch {
         $script:CurrentFamily = "Cleanup"
-        Add-TestResult -Name "Restore preserved user data" -Status "FAIL" -Details $_.Exception.Message
+        Add-Result -Name "Restore preserved user data" -Status "FAIL" -Details $_.Exception.Message
     }
 
-    if (-not $LeaveUninstalled -and $null -ne $msiInstaller) {
+    if (-not $LeaveUninstalled -and $null -ne $msi) {
         try {
-            Install-EnglishFocus -Family "MSI" -InstallerPath $msiInstaller.FullName
+            Install-EnglishFocus -Family "MSI" -InstallerPath $msi.FullName
             $script:CurrentFamily = "Cleanup"
-            Add-TestResult -Name "Leave verified MSI installed" -Status "PASS" -Details "English Focus 1.0.0 was reinstalled after the isolated acceptance run."
+            Add-Result -Name "Leave verified MSI installed" -Status "PASS" -Details "English Focus 1.0.0 reinstalled after acceptance."
         }
         catch {
             $script:CurrentFamily = "Cleanup"
-            Add-TestResult -Name "Leave verified MSI installed" -Status "FAIL" -Details $_.Exception.Message
+            Add-Result -Name "Leave verified MSI installed" -Status "FAIL" -Details $_.Exception.Message
         }
     }
 }
 
-$report = Write-TestReports
+$report = Write-Reports
 Write-Host ""
 Write-Host "WINDOWS SYSTEM ACCEPTANCE COMPLETE" -ForegroundColor Cyan
-Write-Host "Passed: $($report.Passed)" -ForegroundColor Green
-Write-Host "Failed: $($report.Failed)" -ForegroundColor $(if ($report.Failed -gt 0) { "Red" } else { "Green" })
-Write-Host "Skipped: $($report.Skipped)" -ForegroundColor Yellow
+Write-Host "Passed: $($report.Passed)"
+Write-Host "Failed: $($report.Failed)"
+Write-Host "Skipped: $($report.Skipped)"
 Write-Host "Report: $($report.Markdown)"
 Write-Host "Evidence: $runDirectory"
 
