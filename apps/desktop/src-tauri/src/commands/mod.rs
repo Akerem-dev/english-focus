@@ -1,5 +1,6 @@
 pub mod activity;
 pub mod assistant;
+pub mod assistant_generation;
 pub mod backup;
 pub mod backup_inventory;
 pub mod contract_commands;
