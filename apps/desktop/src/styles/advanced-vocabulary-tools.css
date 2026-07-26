@@ -14,7 +14,7 @@
   position: absolute;
   top: calc(100% + var(--space-2));
   right: 0;
-  z-index: var(--layer-popover);
+  z-index: var(--layer-dropdown);
   display: none;
   width: min(21rem, calc(100vw - var(--space-6)));
   overflow: hidden;
