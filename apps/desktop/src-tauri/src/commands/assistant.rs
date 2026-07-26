@@ -10,12 +10,10 @@ use serde_json::{json, Value};
 use crate::validation::validate_vocabulary_entry;
 
 const ASSISTANT_MODEL: &str = "gemini-3.6-flash";
-const GEMINI_INTERACTIONS_URL: &str =
-    "https://generativelanguage.googleapis.com/v1/interactions";
+const GEMINI_INTERACTIONS_URL: &str = "https://generativelanguage.googleapis.com/v1/interactions";
 const KEYRING_SERVICE: &str = "English Focus";
 const KEYRING_USERNAME: &str = "gemini-api-key";
-const VOCABULARY_ENTRY_SCHEMA: &str =
-    include_str!("../../schemas/vocabulary-entry.schema.json");
+const VOCABULARY_ENTRY_SCHEMA: &str = include_str!("../../schemas/vocabulary-entry.schema.json");
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -94,9 +92,10 @@ fn normalize_headword(word: &str) -> Result<String, String> {
         return Err("Enter one English word or a short phrasal verb.".to_string());
     }
 
-    if !normalized.chars().all(|character| {
-        character.is_ascii_alphabetic() || matches!(character, ' ' | '-' | '\'')
-    }) {
+    if !normalized
+        .chars()
+        .all(|character| character.is_ascii_alphabetic() || matches!(character, ' ' | '-' | '\''))
+    {
         return Err("Enter one English word or a short phrasal verb.".to_string());
     }
 
@@ -172,9 +171,7 @@ fn preparation_prompt(
         _ => return Err("The selected explanation detail is not supported.".to_string()),
     };
     let target = match preferences.target_proficiency.as_str() {
-        "A1" | "A2" | "B1" | "B2" | "C1" | "C2" => {
-            preferences.target_proficiency.as_str()
-        }
+        "A1" | "A2" | "B1" | "B2" | "C1" | "C2" => preferences.target_proficiency.as_str(),
         _ => return Err("The selected proficiency level is not supported.".to_string()),
     };
     let grammar = if preferences.include_grammar_notes {
@@ -343,14 +340,12 @@ async fn api_error_message(status: StatusCode, response: reqwest::Response) -> S
     };
 
     let body = response.text().await.unwrap_or_default();
-    let detail = serde_json::from_str::<Value>(&body)
-        .ok()
-        .and_then(|value| {
-            value
-                .pointer("/error/message")
-                .and_then(Value::as_str)
-                .map(str::to_string)
-        });
+    let detail = serde_json::from_str::<Value>(&body).ok().and_then(|value| {
+        value
+            .pointer("/error/message")
+            .and_then(Value::as_str)
+            .map(str::to_string)
+    });
 
     detail.map_or_else(
         || fallback.to_string(),
