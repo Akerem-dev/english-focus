@@ -9,12 +9,7 @@ import mascotSleeping from "./assets/mascot/mascot-sleeping.png";
 import mascotSuccess from "./assets/mascot/mascot-success.png";
 import mascotThinking from "./assets/mascot/mascot-thinking.png";
 
-export type AssistantMascotState =
-  | "ready"
-  | "thinking"
-  | "success"
-  | "confused"
-  | "sleeping";
+export type AssistantMascotState = "ready" | "thinking" | "success" | "confused" | "sleeping";
 
 interface MascotVisual {
   readonly mascot: string;
