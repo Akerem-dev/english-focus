@@ -1,4 +1,4 @@
-export type AssistantWordPreparationResult =
+type AssistantWordPreparationResult =
   | { readonly kind: "candidate"; readonly value: unknown }
   | { readonly kind: "provider-unavailable" };
 
