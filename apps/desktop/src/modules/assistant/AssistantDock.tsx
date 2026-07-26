@@ -1,10 +1,15 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useVocabularyRepository } from "../../app/providers";
+import { useToast, useVocabularyRepository } from "../../app/providers";
 import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
+import type { VocabularyPersistencePlan } from "../import-export/application";
+import {
+  inspectAssistantCandidate,
+  prepareAssistantWord
+} from "./application";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import {
@@ -17,6 +22,8 @@ import {
   createAssistantWordPreview,
   type AssistantWordPreviewModel
 } from "./AssistantWordPreview";
+
+type AssistantSavePlan = Extract<VocabularyPersistencePlan, { readonly kind: "save" }>;
 
 type AssistantMessage = Readonly<{
   id: number;
@@ -40,7 +47,7 @@ const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
   sleeping: "Resting nearby"
 });
 
-const MOCK_PREPARATION_DELAY_MS = 2400;
+const MOCK_PREPARATION_DELAY_MS = 1200;
 const HEADWORD_PATTERN =
   /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
@@ -52,22 +59,35 @@ function isPlausibleHeadword(value: string): boolean {
   return HEADWORD_PATTERN.test(value);
 }
 
+function userFacingSaveError(cause: unknown): string {
+  if (cause instanceof Error && cause.message.includes("desktop app")) {
+    return "Open the English Focus desktop app to save this word.";
+  }
+
+  return "This word could not be saved. Please try again.";
+}
+
 export function AssistantDock() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { contentSource } = useVocabularyRepository();
+  const { contentSource, saveEntry } = useVocabularyRepository();
+  const { showToast } = useToast();
   const titleId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const attentionTimerRef = useRef<number | undefined>(undefined);
   const responseTimerRef = useRef<number | undefined>(undefined);
+  const preparationSequenceRef = useRef(0);
   const [open, setOpen] = useState(false);
   const [attention, setAttention] = useState(false);
   const [input, setInput] = useState("");
   const [mascotState, setMascotState] = useState<AssistantMascotState>("ready");
   const [messages, setMessages] = useState<readonly AssistantMessage[]>(INITIAL_MESSAGES);
   const [preview, setPreview] = useState<AssistantWordPreviewModel | undefined>();
+  const [savePlan, setSavePlan] = useState<AssistantSavePlan | undefined>();
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | undefined>();
   const visible = supportsAssistant(location.pathname);
-  const isPreparing = mascotState === "thinking";
+  const isPreparing = mascotState === "thinking" && !isSaving;
   const launcherState = attention ? "awake" : "sleeping";
 
   useEffect(() => {
@@ -108,11 +128,15 @@ export function AssistantDock() {
       if (detail.word !== undefined) {
         setInput(detail.word);
         setPreview(undefined);
+        setSavePlan(undefined);
+        setSaveError(undefined);
       }
 
+      preparationSequenceRef.current += 1;
       setMascotState("ready");
       setAttention(false);
       window.clearTimeout(attentionTimerRef.current);
+      window.clearTimeout(responseTimerRef.current);
 
       window.requestAnimationFrame(() => {
         setAttention(true);
@@ -133,11 +157,19 @@ export function AssistantDock() {
       window.removeEventListener(ASSISTANT_REQUEST_EVENT, handleAssistantRequest);
       window.clearTimeout(attentionTimerRef.current);
       window.clearTimeout(responseTimerRef.current);
+      preparationSequenceRef.current += 1;
     };
   }, []);
 
   if (!visible) {
     return null;
+  }
+
+  function clearReview() {
+    setPreview(undefined);
+    setSavePlan(undefined);
+    setSaveError(undefined);
+    setIsSaving(false);
   }
 
   function openAssistant() {
@@ -146,7 +178,7 @@ export function AssistantDock() {
   }
 
   function focusWordInput() {
-    setPreview(undefined);
+    clearReview();
     openAssistant();
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -158,8 +190,10 @@ export function AssistantDock() {
       return;
     }
 
+    preparationSequenceRef.current += 1;
+    window.clearTimeout(responseTimerRef.current);
     setInput(preview.word);
-    setPreview(undefined);
+    clearReview();
     setMascotState("ready");
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -176,6 +210,101 @@ export function AssistantDock() {
     setOpen(false);
   }
 
+  async function finishPreparation(
+    word: string,
+    messageId: number,
+    sequence: number
+  ): Promise<void> {
+    const normalizedWord = word.toLocaleLowerCase("en-US");
+    const existingEntry = contentSource.getEntryByNormalizedWord(normalizedWord);
+
+    if (existingEntry !== undefined) {
+      if (sequence !== preparationSequenceRef.current) {
+        return;
+      }
+
+      const nextPreview = createAssistantWordPreview(word, existingEntry, "existing");
+      setPreview(nextPreview);
+      setMessages((current) => [
+        ...current,
+        {
+          id: messageId + 1,
+          author: "assistant",
+          text: `I found “${nextPreview.word}” in your local vocabulary. Review it below.`
+        }
+      ]);
+      setMascotState("ready");
+      return;
+    }
+
+    const preparation = await prepareAssistantWord(word);
+
+    if (sequence !== preparationSequenceRef.current) {
+      return;
+    }
+
+    if (preparation.kind === "provider-unavailable") {
+      const nextPreview = createAssistantWordPreview(word);
+      setPreview(nextPreview);
+      setMessages((current) => [
+        ...current,
+        {
+          id: messageId + 1,
+          author: "assistant",
+          text: `The review space for “${word}” is ready. Word preparation will be connected next.`
+        }
+      ]);
+      setMascotState("ready");
+      return;
+    }
+
+    const review = inspectAssistantCandidate(preparation.value, word, contentSource);
+
+    if (review.kind === "invalid") {
+      setPreview(undefined);
+      setSavePlan(undefined);
+      setMascotState("confused");
+      setMessages((current) => [
+        ...current,
+        {
+          id: messageId + 1,
+          author: "assistant",
+          text: `I could not prepare a reliable entry for “${word}”. Please try again.`
+        }
+      ]);
+      return;
+    }
+
+    if (review.kind === "existing") {
+      const nextPreview = createAssistantWordPreview(word, review.entry, "existing");
+      setPreview(nextPreview);
+      setSavePlan(undefined);
+      setMessages((current) => [
+        ...current,
+        {
+          id: messageId + 1,
+          author: "assistant",
+          text: `“${nextPreview.word}” is already available locally. Review it below.`
+        }
+      ]);
+      setMascotState("ready");
+      return;
+    }
+
+    const nextPreview = createAssistantWordPreview(word, review.entry, "ready");
+    setPreview(nextPreview);
+    setSavePlan(review.plan);
+    setMessages((current) => [
+      ...current,
+      {
+        id: messageId + 1,
+        author: "assistant",
+        text: `“${nextPreview.word}” is ready. Check the meaning and example before adding it.`
+      }
+    ]);
+    setMascotState("ready");
+  }
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const word = input.trim();
@@ -188,7 +317,7 @@ export function AssistantDock() {
     const messageId = Date.now();
 
     if (!isPlausibleHeadword(word)) {
-      setPreview(undefined);
+      clearReview();
       setMascotState("confused");
       setMessages((current) => [
         ...current,
@@ -202,30 +331,65 @@ export function AssistantDock() {
       return;
     }
 
-    const normalizedWord = word.toLocaleLowerCase("en-US");
-    const existingEntry = contentSource.getEntryByNormalizedWord(normalizedWord);
-
+    preparationSequenceRef.current += 1;
+    const sequence = preparationSequenceRef.current;
     window.clearTimeout(responseTimerRef.current);
-    setPreview(undefined);
+    clearReview();
     setMascotState("thinking");
     setMessages((current) => [...current, { id: messageId, author: "user", text: word }]);
     setInput("");
 
     responseTimerRef.current = window.setTimeout(() => {
-      const nextPreview = createAssistantWordPreview(word, existingEntry);
-      setPreview(nextPreview);
+      void finishPreparation(word, messageId, sequence);
+    }, MOCK_PREPARATION_DELAY_MS);
+  }
+
+  async function addPreviewToLibrary(): Promise<void> {
+    if (savePlan === undefined || preview?.state !== "ready") {
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError(undefined);
+    setMascotState("thinking");
+
+    try {
+      const record = await saveEntry({
+        entry: savePlan.entry,
+        layer: savePlan.layer
+      });
+      const savedPreview = createAssistantWordPreview(record.entry.word, record.entry, "saved");
+      setPreview(savedPreview);
+      setSavePlan(undefined);
+      setMascotState("success");
       setMessages((current) => [
         ...current,
         {
-          id: messageId + 1,
+          id: Date.now(),
           author: "assistant",
-          text: nextPreview.complete
-            ? `I found “${nextPreview.word}” in your local vocabulary. Review it below.`
-            : `I opened a review for “${nextPreview.word}”. Its meaning and examples will appear here before it can be added.`
+          text: `I added “${record.entry.word}” to your library.`
         }
       ]);
-      setMascotState("ready");
-    }, MOCK_PREPARATION_DELAY_MS);
+      showToast({
+        title: "Word added",
+        message: `“${record.entry.word}” is now in your local library.`,
+        tone: "success",
+        dedupeKey: "assistant-vocabulary-save"
+      });
+    } catch (cause) {
+      const message = userFacingSaveError(cause);
+      setSaveError(message);
+      setMascotState("confused");
+      showToast({
+        title: "Word not saved",
+        message,
+        tone: "error",
+        durationMs: 8_000,
+        dedupeKey: "assistant-vocabulary-save"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -266,9 +430,12 @@ export function AssistantDock() {
             ))}
             {preview === undefined ? null : (
               <AssistantWordPreview
+                isSaving={isSaving}
+                onAdd={savePlan === undefined ? undefined : () => void addPreviewToLibrary()}
                 onEdit={editPreviewWord}
                 onOpenExisting={openExistingPreview}
                 preview={preview}
+                saveError={saveError}
               />
             )}
           </div>
@@ -298,13 +465,14 @@ export function AssistantDock() {
             </label>
             <input
               autoComplete="off"
-              disabled={isPreparing}
+              disabled={isPreparing || isSaving}
               id="assistant-word-input"
               maxLength={80}
               onChange={(event) => {
                 setInput(event.currentTarget.value);
                 if (mascotState === "confused") {
                   setMascotState("ready");
+                  setSaveError(undefined);
                 }
               }}
               placeholder="Type an English word"
@@ -313,7 +481,7 @@ export function AssistantDock() {
               value={input}
             />
             <Button
-              disabled={input.trim().length === 0}
+              disabled={input.trim().length === 0 || isSaving}
               isLoading={isPreparing}
               size="small"
               type="submit"
