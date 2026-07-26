@@ -1,6 +1,7 @@
 import { useMemo, useState, type PropsWithChildren } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { AssistantDock } from "../../modules/assistant";
 import {
   CommandBar,
   createCommandRegistry,
@@ -108,6 +109,7 @@ export function AppLayout({ children }: PropsWithChildren) {
         <AppContent>{children}</AppContent>
       </div>
 
+      <AssistantDock />
       <CommandBar
         commands={commands}
         onClose={commandBar.closeCommandBar}
