@@ -112,7 +112,7 @@ export class TauriAssistantRepository {
     }
 
     try {
-      const payload = await invoke<unknown>("assistant_generate_vocabulary", {
+      const payload = await invoke<unknown>("assistant_generate_vocabulary_v2", {
         word,
         preferences
       });
