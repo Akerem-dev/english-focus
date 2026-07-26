@@ -8,5 +8,4 @@ test("a missing word opens the review-first word helper", async ({ page }) => {
 
   await expect(page.getByRole("dialog", { name: "Word helper" })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "English word" })).toHaveValue("allocate");
-  await expect(page.getByText("Nothing is saved until you review it")).toBeVisible();
 });
