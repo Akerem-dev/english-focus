@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { Button } from "../../components";
@@ -90,6 +91,8 @@ export function AssistantWordPreview({
   preview,
   saveError
 }: AssistantWordPreviewProps) {
+  const titleId = useId();
+  const statusId = useId();
   const metadata = [preview.partOfSpeech, preview.cefr].filter(
     (value): value is string => value !== undefined
   );
@@ -99,6 +102,9 @@ export function AssistantWordPreview({
 
   return (
     <article
+      aria-busy={isSaving || undefined}
+      aria-describedby={statusId}
+      aria-labelledby={titleId}
       className="assistant-preview"
       data-complete={preview.complete || undefined}
       data-state={preview.state}
@@ -106,7 +112,7 @@ export function AssistantWordPreview({
       <header className="assistant-preview__header">
         <div>
           <p className="assistant-preview__eyebrow">{EYEBROW_BY_STATE[preview.state]}</p>
-          <h3>{preview.word}</h3>
+          <h3 id={titleId}>{preview.word}</h3>
         </div>
         {metadata.length === 0 ? null : (
           <p className="assistant-preview__metadata">{metadata.join(" · ")}</p>
@@ -143,9 +149,13 @@ export function AssistantWordPreview({
       </div>
 
       <footer className="assistant-preview__footer">
-        <div className="assistant-preview__status">
+        <div className="assistant-preview__status" id={statusId}>
           <p>{FOOTER_BY_STATE[preview.state]}</p>
-          {saveError === undefined ? null : <p data-error="true">{saveError}</p>}
+          {saveError === undefined ? null : (
+            <p data-error="true" role="alert">
+              {saveError}
+            </p>
+          )}
         </div>
         <div className="assistant-preview__actions">
           {preview.state === "saved" ? null : (
@@ -154,12 +164,18 @@ export function AssistantWordPreview({
             </Button>
           )}
           {canOpen ? (
-            <Button onClick={onOpenExisting} size="small" variant="secondary">
+            <Button disabled={isSaving} onClick={onOpenExisting} size="small" variant="secondary">
               View word
             </Button>
           ) : null}
           {canAdd ? (
-            <Button isLoading={isSaving} onClick={onAdd} size="small" variant="primary">
+            <Button
+              disabled={isSaving}
+              isLoading={isSaving}
+              onClick={onAdd}
+              size="small"
+              variant="primary"
+            >
               Add to Library
             </Button>
           ) : null}
