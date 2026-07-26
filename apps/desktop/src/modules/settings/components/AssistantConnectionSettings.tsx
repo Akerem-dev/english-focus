@@ -99,10 +99,14 @@ export function AssistantConnectionSettings() {
   }
 
   return (
-    <section className="assistant-connection-settings" aria-labelledby="assistant-connection-title">
+    <section
+      aria-labelledby="assistant-connection-title"
+      className="assistant-connection-settings"
+      data-configured={connection.configured || undefined}
+    >
       <header className="assistant-connection-settings__header">
         <span aria-hidden="true" className="assistant-connection-settings__icon">
-          <AppIcon name="sparkles" size={18} />
+          <AppIcon name="star" size={18} />
         </span>
         <div>
           <h3 id="assistant-connection-title">Word helper connection</h3>
@@ -120,7 +124,10 @@ export function AssistantConnectionSettings() {
         <small>{connection.model}</small>
       </div>
 
-      <form className="assistant-connection-settings__form" onSubmit={(event) => void handleSave(event)}>
+      <form
+        className="assistant-connection-settings__form"
+        onSubmit={(event) => void handleSave(event)}
+      >
         <TextField
           autoComplete="off"
           disabled={!desktopAvailable || isBusy}
