@@ -9,6 +9,7 @@
 @import "./assistant.css";
 @import "./assistant-mascot-states.css";
 @import "./assistant-preview.css";
+@import "./assistant-layout-polish.css";
 @import "./route-pages.css";
 @import "./vocabulary-search-results.css";
 @import "./instruction.css";
@@ -17,6 +18,7 @@
 @import "./library.css";
 @import "./library-row-polish.css";
 @import "./settings.css";
+@import "./assistant-settings.css";
 @import "./backup.css";
 @import "./backup-resilience.css";
 @import "./diagnostics.css";
