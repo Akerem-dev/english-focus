@@ -10,10 +10,12 @@ use serde_json::{json, Value};
 use crate::validation::validate_vocabulary_entry;
 
 const ASSISTANT_MODEL: &str = "gemini-3.6-flash";
-const GEMINI_INTERACTIONS_URL: &str = "https://generativelanguage.googleapis.com/v1/interactions";
+const GEMINI_INTERACTIONS_URL: &str =
+    "https://generativelanguage.googleapis.com/v1/interactions";
 const KEYRING_SERVICE: &str = "English Focus";
 const KEYRING_USERNAME: &str = "gemini-api-key";
-const VOCABULARY_ENTRY_SCHEMA: &str = include_str!("../../schemas/vocabulary-entry.schema.json");
+const VOCABULARY_ENTRY_SCHEMA: &str =
+    include_str!("../../schemas/vocabulary-entry.schema.json");
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -92,10 +94,9 @@ fn normalize_headword(word: &str) -> Result<String, String> {
         return Err("Enter one English word or a short phrasal verb.".to_string());
     }
 
-    if !normalized
-        .chars()
-        .all(|character| character.is_ascii_alphabetic() || matches!(character, ' ' | '-' | '\''))
-    {
+    if !normalized.chars().all(|character| {
+        character.is_ascii_alphabetic() || matches!(character, ' ' | '-' | '\'')
+    }) {
         return Err("Enter one English word or a short phrasal verb.".to_string());
     }
 
@@ -351,7 +352,10 @@ async fn api_error_message(status: StatusCode, response: reqwest::Response) -> S
                 .map(str::to_string)
         });
 
-    detail.map_or_else(|| fallback.to_string(), |message| format!("{fallback} {message}"))
+    detail.map_or_else(
+        || fallback.to_string(),
+        |message| format!("{fallback} {message}"),
+    )
 }
 
 #[tauri::command]
@@ -397,8 +401,9 @@ pub async fn assistant_generate_vocabulary(
     word: String,
     preferences: AssistantPreferences,
 ) -> Result<AssistantCandidateResponse, String> {
-    let api_key = read_api_key()?
-        .ok_or_else(|| "assistant_api_key_missing: Connect the word helper in Settings.".to_string())?;
+    let api_key = read_api_key()?.ok_or_else(|| {
+        "assistant_api_key_missing: Connect the word helper in Settings.".to_string()
+    })?;
     let normalized_word = normalize_headword(&word)?;
     let prompt = preparation_prompt(&normalized_word, &preferences)?;
     let request = json!({
