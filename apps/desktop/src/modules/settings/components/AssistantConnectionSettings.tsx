@@ -110,9 +110,7 @@ export function AssistantConnectionSettings() {
         </span>
         <div>
           <h3 id="assistant-connection-title">Word helper connection</h3>
-          <p>
-            Connect your own Gemini API key to prepare missing vocabulary inside English Focus.
-          </p>
+          <p>Connect your own Gemini API key to prepare missing vocabulary inside English Focus.</p>
         </div>
       </header>
 
