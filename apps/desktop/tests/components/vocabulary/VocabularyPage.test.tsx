@@ -83,8 +83,7 @@ describe("VocabularyPage search states", () => {
         canCreateEntry
         normalizedQuery="maintan"
         onEditSearch={() => undefined}
-        onOpenInstruction={() => undefined}
-        onOpenPasteGeneratedJson={() => undefined}
+        onOpenAssistant={() => undefined}
         onSelectSuggestion={() => undefined}
         suggestions={["maintain"]}
       />
@@ -93,9 +92,9 @@ describe("VocabularyPage search states", () => {
     expect(markup).toContain("“maintan” was not found");
     expect(markup).toContain("Did you mean");
     expect(markup).toContain("maintain");
-    expect(markup).toContain("Copy AI instruction");
-    expect(markup).toContain("Paste generated JSON");
-    expect(markup).not.toContain('title="Available in the JSON ingestion checkpoint"');
+    expect(markup).toContain("Prepare this word");
+    expect(markup).not.toContain("Copy AI instruction");
+    expect(markup).not.toContain("Paste generated JSON");
   });
 
   it("keeps entry-creation actions out of translation and phrase misses", () => {
@@ -104,14 +103,14 @@ describe("VocabularyPage search states", () => {
         canCreateEntry={false}
         normalizedQuery="eksik ifade"
         onEditSearch={() => undefined}
-        onOpenInstruction={() => undefined}
-        onOpenPasteGeneratedJson={() => undefined}
+        onOpenAssistant={() => undefined}
         onSelectSuggestion={() => undefined}
         suggestions={[]}
       />
     );
 
     expect(markup).toContain("No local match");
+    expect(markup).not.toContain("Prepare this word");
     expect(markup).not.toContain("Copy AI instruction");
     expect(markup).not.toContain("Paste generated JSON");
   });
