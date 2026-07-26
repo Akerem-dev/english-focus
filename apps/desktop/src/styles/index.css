@@ -8,6 +8,7 @@
 @import "./app-shell.css";
 @import "./assistant.css";
 @import "./assistant-mascot-states.css";
+@import "./assistant-preview.css";
 @import "./route-pages.css";
 @import "./vocabulary-search-results.css";
 @import "./instruction.css";
