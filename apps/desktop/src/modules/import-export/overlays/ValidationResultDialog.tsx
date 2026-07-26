@@ -60,12 +60,16 @@ export function ValidationResultDialog({
       onClose={onClose}
       open={open}
       size="large"
-      title={passed ? "Required information is complete" : "Some required information needs attention"}
+      title={
+        passed ? "Required information is complete" : "Some required information needs attention"
+      }
     >
       <div className="validation-result-dialog__metadata" aria-label="Entry check summary">
         <StatusBadge tone="accent">Word: {expectedWord}</StatusBadge>
         <StatusBadge tone={passed ? "success" : "danger"}>
-          {passed ? "Ready to continue" : `${result.issues.length} ${result.issues.length === 1 ? "item" : "items"} to fix`}
+          {passed
+            ? "Ready to continue"
+            : `${result.issues.length} ${result.issues.length === 1 ? "item" : "items"} to fix`}
         </StatusBadge>
       </div>
 
@@ -76,7 +80,9 @@ export function ValidationResultDialog({
           </span>
           <div>
             <h3>The entry is complete</h3>
-            <p>The word details, translations, forms, and three examples are present and readable.</p>
+            <p>
+              The word details, translations, forms, and three examples are present and readable.
+            </p>
           </div>
         </section>
       ) : (
