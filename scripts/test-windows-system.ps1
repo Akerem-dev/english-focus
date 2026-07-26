@@ -809,8 +809,8 @@ function Write-TestReports {
     $lines = New-Object System.Collections.Generic.List[string]
     $lines.Add("# English Focus Windows System Acceptance")
     $lines.Add("")
-    $lines.Add("- Source commit: `$(git rev-parse HEAD)`")
-    $lines.Add("- Generated: `$(Get-Date -Format o)`")
+    $lines.Add("- Source commit: $((git rev-parse HEAD).Trim())")
+    $lines.Add("- Generated: $(Get-Date -Format o)")
     $lines.Add("- Passed: **$passed**")
     $lines.Add("- Failed: **$failed**")
     $lines.Add("- Skipped: **$skipped**")
