@@ -616,7 +616,11 @@ export function AssistantDock() {
             </div>
           ) : null}
 
-          <form aria-busy={isBusy || undefined} className="assistant-composer" onSubmit={handleSubmit}>
+          <form
+            aria-busy={isBusy || undefined}
+            className="assistant-composer"
+            onSubmit={handleSubmit}
+          >
             <label className="visually-hidden" htmlFor="assistant-word-input">
               English word
             </label>
