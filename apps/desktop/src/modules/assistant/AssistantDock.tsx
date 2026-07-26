@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { ROUTE_PATHS } from "../../app/router";
+import { useVocabularyRepository } from "../../app/providers";
+import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
@@ -11,6 +12,11 @@ import {
   AssistantPanelMascot,
   type AssistantMascotState
 } from "./AssistantMascot";
+import {
+  AssistantWordPreview,
+  createAssistantWordPreview,
+  type AssistantWordPreviewModel
+} from "./AssistantWordPreview";
 
 type AssistantMessage = Readonly<{
   id: number;
@@ -35,7 +41,8 @@ const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
 });
 
 const MOCK_PREPARATION_DELAY_MS = 2400;
-const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
+const HEADWORD_PATTERN =
+  /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
@@ -48,6 +55,7 @@ function isPlausibleHeadword(value: string): boolean {
 export function AssistantDock() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { contentSource } = useVocabularyRepository();
   const titleId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const attentionTimerRef = useRef<number | undefined>(undefined);
@@ -57,6 +65,7 @@ export function AssistantDock() {
   const [input, setInput] = useState("");
   const [mascotState, setMascotState] = useState<AssistantMascotState>("ready");
   const [messages, setMessages] = useState<readonly AssistantMessage[]>(INITIAL_MESSAGES);
+  const [preview, setPreview] = useState<AssistantWordPreviewModel | undefined>();
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking";
   const launcherState = attention ? "awake" : "sleeping";
@@ -98,6 +107,7 @@ export function AssistantDock() {
 
       if (detail.word !== undefined) {
         setInput(detail.word);
+        setPreview(undefined);
       }
 
       setMascotState("ready");
@@ -136,10 +146,34 @@ export function AssistantDock() {
   }
 
   function focusWordInput() {
+    setPreview(undefined);
     openAssistant();
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
     });
+  }
+
+  function editPreviewWord() {
+    if (preview === undefined) {
+      return;
+    }
+
+    setInput(preview.word);
+    setPreview(undefined);
+    setMascotState("ready");
+    window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    });
+  }
+
+  function openExistingPreview() {
+    if (preview?.complete !== true) {
+      return;
+    }
+
+    navigate(buildVocabularyEntryPath(preview.normalizedWord));
+    setOpen(false);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -154,6 +188,7 @@ export function AssistantDock() {
     const messageId = Date.now();
 
     if (!isPlausibleHeadword(word)) {
+      setPreview(undefined);
       setMascotState("confused");
       setMessages((current) => [
         ...current,
@@ -167,18 +202,26 @@ export function AssistantDock() {
       return;
     }
 
+    const normalizedWord = word.toLocaleLowerCase("en-US");
+    const existingEntry = contentSource.getEntryByNormalizedWord(normalizedWord);
+
     window.clearTimeout(responseTimerRef.current);
+    setPreview(undefined);
     setMascotState("thinking");
     setMessages((current) => [...current, { id: messageId, author: "user", text: word }]);
     setInput("");
 
     responseTimerRef.current = window.setTimeout(() => {
+      const nextPreview = createAssistantWordPreview(word, existingEntry);
+      setPreview(nextPreview);
       setMessages((current) => [
         ...current,
         {
           id: messageId + 1,
           author: "assistant",
-          text: `I’m getting “${word}” ready for review. Nothing will be saved until you approve it.`
+          text: nextPreview.complete
+            ? `I found “${nextPreview.word}” in your local vocabulary. Review it below.`
+            : `I opened a review for “${nextPreview.word}”. Its meaning and examples will appear here before it can be added.`
         }
       ]);
       setMascotState("ready");
@@ -213,28 +256,41 @@ export function AssistantDock() {
 
           <div aria-live="polite" className="assistant-messages">
             {messages.map((message) => (
-              <div className="assistant-message" data-author={message.author} key={message.id}>
+              <div
+                className="assistant-message"
+                data-author={message.author}
+                key={message.id}
+              >
                 <p>{message.text}</p>
               </div>
             ))}
+            {preview === undefined ? null : (
+              <AssistantWordPreview
+                onEdit={editPreviewWord}
+                onOpenExisting={openExistingPreview}
+                preview={preview}
+              />
+            )}
           </div>
 
-          <div className="assistant-shortcuts" aria-label="Word helper suggestions">
-            <button onClick={focusWordInput} type="button">
-              <AppIcon name="book-open" size={18} />
-              <span>Add a new word</span>
-            </button>
-            <button
-              onClick={() => {
-                navigate(ROUTE_PATHS.library);
-                setOpen(false);
-              }}
-              type="button"
-            >
-              <AppIcon name="books" size={18} />
-              <span>Open recent words</span>
-            </button>
-          </div>
+          {preview === undefined ? (
+            <div className="assistant-shortcuts" aria-label="Word helper suggestions">
+              <button onClick={focusWordInput} type="button">
+                <AppIcon name="book-open" size={18} />
+                <span>Add a new word</span>
+              </button>
+              <button
+                onClick={() => {
+                  navigate(ROUTE_PATHS.library);
+                  setOpen(false);
+                }}
+                type="button"
+              >
+                <AppIcon name="books" size={18} />
+                <span>Open recent words</span>
+              </button>
+            </div>
+          ) : null}
 
           <form className="assistant-composer" onSubmit={handleSubmit}>
             <label className="visually-hidden" htmlFor="assistant-word-input">
