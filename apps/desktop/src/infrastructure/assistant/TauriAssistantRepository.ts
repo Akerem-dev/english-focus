@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { InstructionPreferences } from "@platform/domain";
 
-export const ASSISTANT_MODEL = "gemini-3.6-flash";
+export const ASSISTANT_MODEL = "Automatic · Gemini 3.5 Flash-Lite → 3.6 Flash";
 
 export interface AssistantConnectionStatus {
   readonly runtime: "browser" | "desktop";
