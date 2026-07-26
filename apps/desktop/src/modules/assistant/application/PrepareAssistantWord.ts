@@ -9,6 +9,7 @@ type AssistantWordPreparationResult =
  * is connected. The Gemini implementation will replace this unavailable result in the next
  * roadmap stage while keeping the user-facing review and save flow unchanged.
  */
-export function prepareAssistantWord(_word: string): Promise<AssistantWordPreparationResult> {
+export function prepareAssistantWord(word: string): Promise<AssistantWordPreparationResult> {
+  void word;
   return Promise.resolve(Object.freeze({ kind: "provider-unavailable" as const }));
 }
