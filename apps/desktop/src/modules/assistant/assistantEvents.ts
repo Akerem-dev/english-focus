@@ -1,6 +1,6 @@
 export const ASSISTANT_REQUEST_EVENT = "english-focus:assistant-request";
 
-export type AssistantRequestKind = "wake" | "open";
+type AssistantRequestKind = "wake" | "open";
 
 export interface AssistantRequestDetail {
   readonly kind: AssistantRequestKind;
