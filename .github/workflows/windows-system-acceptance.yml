@@ -71,14 +71,22 @@ jobs:
 
       - name: Build and verify fresh installers
         shell: powershell
+        timeout-minutes: 30
         run: |
           $evidenceRoot = "test-results/windows-system"
           New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
-          $logPath = Join-Path $evidenceRoot "installer-build.log"
-          & npm run release:windows:unsigned 2>&1 | Tee-Object -FilePath $logPath
-          $exitCode = $LASTEXITCODE
-          if ($exitCode -ne 0) {
-            exit $exitCode
+          $stdoutPath = Join-Path $evidenceRoot "installer-build.stdout.log"
+          $stderrPath = Join-Path $evidenceRoot "installer-build.stderr.log"
+          $npm = (Get-Command npm.cmd).Source
+          $process = Start-Process -FilePath $npm `
+            -ArgumentList @("run", "release:windows:unsigned") `
+            -Wait -PassThru -NoNewWindow `
+            -RedirectStandardOutput $stdoutPath `
+            -RedirectStandardError $stderrPath
+          Get-Content $stdoutPath -ErrorAction SilentlyContinue
+          Get-Content $stderrPath -ErrorAction SilentlyContinue
+          if ($process.ExitCode -ne 0) {
+            exit $process.ExitCode
           }
 
       - name: Install pinned WinApp CLI
@@ -86,15 +94,22 @@ jobs:
 
       - name: Run Windows system acceptance
         shell: powershell
+        timeout-minutes: 25
         run: |
           $evidenceRoot = "test-results/windows-system"
           New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
-          $logPath = Join-Path $evidenceRoot "workflow-output.log"
-          & npm run test:windows:system -- -SkipBuild -LeaveUninstalled 2>&1 |
-            Tee-Object -FilePath $logPath
-          $exitCode = $LASTEXITCODE
-          if ($exitCode -ne 0) {
-            exit $exitCode
+          $stdoutPath = Join-Path $evidenceRoot "system-acceptance.stdout.log"
+          $stderrPath = Join-Path $evidenceRoot "system-acceptance.stderr.log"
+          $npm = (Get-Command npm.cmd).Source
+          $process = Start-Process -FilePath $npm `
+            -ArgumentList @("run", "test:windows:system", "--", "-SkipBuild", "-LeaveUninstalled") `
+            -Wait -PassThru -NoNewWindow `
+            -RedirectStandardOutput $stdoutPath `
+            -RedirectStandardError $stderrPath
+          Get-Content $stdoutPath -ErrorAction SilentlyContinue
+          Get-Content $stderrPath -ErrorAction SilentlyContinue
+          if ($process.ExitCode -ne 0) {
+            exit $process.ExitCode
           }
 
       - name: Upload system acceptance evidence
