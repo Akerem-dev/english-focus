@@ -529,8 +529,7 @@ async fn api_error_message(status: StatusCode, response: reqwest::Response) -> S
     )
 }
 
-#[tauri::command]
-pub async fn assistant_generate_vocabulary_v2(
+pub async fn generate_vocabulary_candidate(
     word: String,
     preferences: AssistantGenerationPreferences,
 ) -> Result<AssistantGenerationCandidateResponse, String> {
