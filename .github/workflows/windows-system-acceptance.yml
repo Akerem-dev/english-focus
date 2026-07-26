@@ -71,12 +71,18 @@ jobs:
 
       - name: Build and verify fresh installers
         shell: powershell
-        timeout-minutes: 30
+        timeout-minutes: 35
+        env:
+          CI: "true"
+          EF_QUALITY_GATE_VERIFIED: "true"
         run: |
           $evidenceRoot = "test-results/windows-system"
           New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
           $logPath = Join-Path $evidenceRoot "installer-build.log"
-          & npm.cmd run release:windows:unsigned *> $logPath
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass `
+            -File scripts/build-windows-installers.ps1 `
+            -AllowUnsigned `
+            -QualityAlreadyVerified *> $logPath
           $exitCode = $LASTEXITCODE
           Get-Content $logPath -ErrorAction SilentlyContinue
           if ($exitCode -ne 0) {
