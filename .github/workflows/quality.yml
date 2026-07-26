@@ -183,7 +183,35 @@ jobs:
           components: rustfmt, clippy
 
       - name: Check Rust formatting
-        run: cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all -- --check
+        id: rustfmt
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all -- --check
+          exit_code=$?
+          echo "exitCode=$exit_code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Prepare Rust formatting failure patch
+        if: steps.rustfmt.outputs.exitCode != '0'
+        shell: bash
+        run: |
+          cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all
+          git diff --binary > rustfmt.patch
+
+      - name: Upload Rust formatting failure patch
+        if: steps.rustfmt.outputs.exitCode != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rustfmt-failure-patch
+          path: rustfmt.patch
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Confirm Rust formatting
+        if: steps.rustfmt.outputs.exitCode != '0'
+        run: exit 1
 
       - name: Run Clippy
         run: cargo clippy --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets --all-features -- -D warnings
