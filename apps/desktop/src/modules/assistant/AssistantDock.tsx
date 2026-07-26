@@ -87,10 +87,18 @@ export function AssistantDock() {
   const launcherState = attention ? "awake" : "sleeping";
 
   useEffect(() => {
-    if (!visible) {
+    if (visible) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
       setOpen(false);
       setAttention(false);
-    }
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
   }, [visible]);
 
   useEffect(() => {
@@ -98,8 +106,8 @@ export function AssistantDock() {
       return;
     }
 
-    setAttention(false);
     const frame = window.requestAnimationFrame(() => {
+      setAttention(false);
       inputRef.current?.focus();
     });
 
