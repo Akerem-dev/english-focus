@@ -9,22 +9,28 @@
 .assistant-launcher {
   position: relative;
   display: block;
-  width: 8.25rem;
-  height: 6.75rem;
+  width: 9.25rem;
+  height: 7.5rem;
+  overflow: visible;
   padding: 0;
   border: 0;
-  border-radius: 2rem;
+  border-radius: 2.25rem;
   background: transparent;
   cursor: pointer;
-  filter: drop-shadow(0 0.75rem 1.25rem rgb(37 31 28 / 14%));
+  isolation: isolate;
+  filter: drop-shadow(0 0.8rem 1.4rem rgb(37 31 28 / 14%));
   transition:
     transform var(--duration-normal) var(--easing-standard),
     filter var(--duration-normal) var(--easing-standard);
 }
 
 .assistant-launcher:hover {
-  filter: drop-shadow(0 1rem 1.75rem rgb(37 31 28 / 18%));
-  transform: translateY(-0.1875rem) scale(1.015);
+  filter: drop-shadow(0 1.1rem 2rem rgb(37 31 28 / 19%));
+  transform: translateY(-0.25rem) scale(1.025);
+}
+
+.assistant-launcher:active {
+  transform: translateY(-0.08rem) scale(0.99);
 }
 
 .assistant-launcher:focus-visible {
@@ -32,8 +38,53 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+.assistant-launcher__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.assistant-launcher__glow::before {
+  position: absolute;
+  top: 52%;
+  left: 48%;
+  width: 78%;
+  height: 72%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(123 23 34 / 22%) 0%,
+    rgb(123 23 34 / 10%) 38%,
+    transparent 72%
+  );
+  content: "";
+  filter: blur(1.15rem);
+  opacity: 0.3;
+  transform: translate(-50%, -50%) scale(0.94);
+  transition:
+    opacity var(--duration-normal) var(--easing-standard),
+    transform var(--duration-normal) var(--easing-standard),
+    filter var(--duration-normal) var(--easing-standard);
+}
+
+.assistant-launcher:hover .assistant-launcher__glow::before {
+  filter: blur(1.4rem);
+  opacity: 0.56;
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.assistant-launcher[data-attention="true"] {
+  animation: assistant-launcher-wake 760ms var(--easing-emphasized) both;
+}
+
+.assistant-launcher[data-attention="true"] .assistant-launcher__glow::before {
+  animation: assistant-launcher-glow 1000ms var(--easing-emphasized) both;
+}
+
 .assistant-launcher__frame,
-.assistant-launcher__mascot {
+.assistant-launcher__mascot,
+.assistant-launcher__wake-rays {
   position: absolute;
   display: block;
   object-fit: contain;
@@ -41,22 +92,57 @@
   user-select: none;
 }
 
+.assistant-launcher__wake-rays {
+  top: -7%;
+  left: 12%;
+  z-index: 0;
+  width: 67%;
+  height: 58%;
+  opacity: 0;
+  transform: scale(0.72);
+  transform-origin: 55% 70%;
+}
+
+.assistant-launcher[data-attention="true"] .assistant-launcher__wake-rays {
+  animation: assistant-wake-rays 900ms var(--easing-emphasized) both;
+}
+
 .assistant-launcher__frame {
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
+  filter: drop-shadow(0 0.4rem 0.55rem rgb(53 38 31 / 9%));
+  transition:
+    transform var(--duration-normal) var(--easing-standard),
+    filter var(--duration-normal) var(--easing-standard);
+}
+
+.assistant-launcher:hover .assistant-launcher__frame {
+  filter: drop-shadow(0 0.55rem 0.75rem rgb(53 38 31 / 13%));
+  transform: scale(1.015);
 }
 
 .assistant-launcher__mascot {
-  top: 15%;
-  left: 24%;
-  width: 50%;
-  height: 58%;
+  top: 11.5%;
+  left: 20.5%;
+  z-index: 2;
+  width: 59%;
+  height: 67%;
+  transform-origin: center;
+  transition:
+    transform var(--duration-normal) var(--easing-standard),
+    filter var(--duration-fast) var(--easing-standard);
+}
+
+.assistant-launcher:hover .assistant-launcher__mascot {
+  filter: brightness(1.025);
+  transform: translateY(-0.15rem) scale(1.04);
 }
 
 .assistant-panel {
   display: grid;
-  width: min(28rem, calc(100vw - var(--sidebar-width) - 3rem));
+  width: min(29rem, calc(100vw - var(--sidebar-width) - 3rem));
   max-height: min(42rem, calc(100vh - 7rem));
   grid-template-rows: auto minmax(10rem, 1fr) auto auto;
   overflow: hidden;
@@ -68,19 +154,76 @@
 
 .assistant-panel__header {
   display: grid;
-  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  min-height: 8.25rem;
+  grid-template-columns: 7.5rem minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: 6.25rem;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   border-bottom: var(--border-width-hairline) solid var(--color-border);
   background: color-mix(in srgb, var(--color-surface-muted) 72%, var(--color-surface));
 }
 
+.assistant-panel__mascot-stage {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+  overflow: visible;
+}
+
 .assistant-panel__mascot {
-  width: 5rem;
-  height: 5rem;
+  position: absolute;
+  display: block;
+  max-width: none;
   object-fit: contain;
+  transform-origin: center;
+  user-select: none;
+}
+
+.assistant-panel__mascot--ready {
+  top: 0.15rem;
+  left: 0.2rem;
+  width: 7.05rem;
+  height: 7.05rem;
+}
+
+.assistant-panel__mascot--thinking {
+  top: -0.05rem;
+  left: -0.05rem;
+  width: 7.45rem;
+  height: 7.45rem;
+}
+
+.assistant-panel__mascot--success {
+  top: -0.35rem;
+  left: -0.35rem;
+  width: 8.05rem;
+  height: 8.05rem;
+}
+
+.assistant-panel__mascot--confused {
+  top: 0.05rem;
+  left: 0.05rem;
+  width: 7.25rem;
+  height: 7.25rem;
+}
+
+.assistant-panel__mascot--sleeping {
+  top: 0.2rem;
+  left: -0.25rem;
+  width: 7.65rem;
+  height: 7.1rem;
+}
+
+.assistant-panel__mascot-stage[data-state="thinking"] {
+  animation: assistant-thinking-tilt 720ms ease-in-out infinite alternate;
+}
+
+.assistant-panel__mascot-stage[data-state="success"] {
+  animation: assistant-success-hop 820ms var(--easing-emphasized) both;
+}
+
+.assistant-panel__mascot-stage[data-state="confused"] {
+  animation: assistant-confused-tilt 520ms var(--easing-emphasized) both;
 }
 
 .assistant-panel__heading {
@@ -211,23 +354,131 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+.assistant-composer input:disabled {
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+}
+
+@keyframes assistant-launcher-wake {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  38% {
+    transform: translateY(-0.42rem) rotate(-1.8deg) scale(1.045);
+  }
+
+  66% {
+    transform: translateY(-0.12rem) rotate(1deg) scale(1.018);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes assistant-launcher-glow {
+  0%,
+  100% {
+    filter: blur(1.15rem);
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+
+  45% {
+    filter: blur(1.5rem);
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(1.12);
+  }
+}
+
+@keyframes assistant-wake-rays {
+  0% {
+    opacity: 0;
+    transform: scale(0.72) rotate(-5deg);
+  }
+
+  35% {
+    opacity: 0.9;
+  }
+
+  72% {
+    opacity: 0.55;
+    transform: scale(1.05) rotate(1deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.12) rotate(2deg);
+  }
+}
+
+@keyframes assistant-thinking-tilt {
+  from {
+    transform: rotate(-0.8deg) translateY(0);
+  }
+
+  to {
+    transform: rotate(0.8deg) translateY(-0.08rem);
+  }
+}
+
+@keyframes assistant-success-hop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  45% {
+    transform: translateY(-0.35rem) scale(1.035);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes assistant-confused-tilt {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  45% {
+    transform: rotate(-2deg);
+  }
+
+  72% {
+    transform: rotate(1.2deg);
+  }
+}
+
 @media (max-width: 60rem) {
   .assistant-panel {
-    width: min(27rem, calc(100vw - var(--sidebar-width-collapsed) - 3rem));
+    width: min(28rem, calc(100vw - var(--sidebar-width-collapsed) - 3rem));
   }
 
   .assistant-launcher {
-    width: 7.5rem;
-    height: 6.125rem;
+    width: 8.5rem;
+    height: 6.9rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .assistant-launcher {
+  .assistant-launcher,
+  .assistant-launcher__frame,
+  .assistant-launcher__mascot,
+  .assistant-launcher__glow::before,
+  .assistant-launcher__wake-rays,
+  .assistant-panel__mascot-stage {
+    animation: none !important;
     transition: none;
   }
 
-  .assistant-launcher:hover {
+  .assistant-launcher:hover,
+  .assistant-launcher:active,
+  .assistant-launcher:hover .assistant-launcher__frame,
+  .assistant-launcher:hover .assistant-launcher__mascot,
+  .assistant-launcher:hover .assistant-launcher__glow::before {
     transform: none;
   }
 }
