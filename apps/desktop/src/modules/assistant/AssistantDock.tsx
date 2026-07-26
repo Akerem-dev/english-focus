@@ -5,6 +5,7 @@ import { ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
 
+import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import mascotMini from "./assets/mascot/mascot-mini.png";
 import mascotReady from "./assets/mascot/mascot-ready.png";
 
@@ -22,8 +23,14 @@ const INITIAL_MESSAGES: readonly AssistantMessage[] = Object.freeze([
   }
 ]);
 
+const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
+
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
+}
+
+function isPlausibleHeadword(value: string): boolean {
+  return HEADWORD_PATTERN.test(value);
 }
 
 export function AssistantDock() {
@@ -86,6 +93,20 @@ export function AssistantDock() {
     }
 
     const nextId = messages.length + 1;
+
+    if (!isPlausibleHeadword(word)) {
+      setMessages((current) => [
+        ...current,
+        {
+          id: nextId,
+          author: "assistant",
+          text: "Please enter one English word or a short phrasal verb."
+        }
+      ]);
+      inputRef.current?.focus();
+      return;
+    }
+
     setMessages((current) => [
       ...current,
       { id: nextId, author: "user", text: word },
@@ -111,7 +132,7 @@ export function AssistantDock() {
             <img alt="" className="assistant-panel__mascot" src={mascotReady} />
             <div className="assistant-panel__heading">
               <h2 id={titleId}>Word helper</h2>
-              <p>Ready when you are</p>
+              <p>Add a word to your library</p>
             </div>
             <IconButton
               className="assistant-panel__close"
@@ -184,7 +205,8 @@ export function AssistantDock() {
           title="Open word helper"
           type="button"
         >
-          <img alt="" src={mascotMini} />
+          <img alt="" className="assistant-launcher__frame" src={launcherFrame} />
+          <img alt="" className="assistant-launcher__mascot" src={mascotMini} />
         </button>
       )}
     </aside>
