@@ -7,27 +7,24 @@
 }
 
 .assistant-launcher {
-  display: grid;
-  width: 4.75rem;
-  height: 4.75rem;
-  place-items: center;
-  overflow: hidden;
-  padding: 0.2rem;
-  border: var(--border-width-control) solid var(--color-border-strong);
-  border-radius: 1.35rem;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-medium);
+  position: relative;
+  display: block;
+  width: 8.25rem;
+  height: 6.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 2rem;
+  background: transparent;
   cursor: pointer;
+  filter: drop-shadow(0 0.75rem 1.25rem rgb(37 31 28 / 14%));
   transition:
     transform var(--duration-normal) var(--easing-standard),
-    border-color var(--duration-fast) var(--easing-standard),
-    box-shadow var(--duration-normal) var(--easing-standard);
+    filter var(--duration-normal) var(--easing-standard);
 }
 
 .assistant-launcher:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
-  box-shadow: var(--shadow-high);
-  transform: translateY(-0.125rem);
+  filter: drop-shadow(0 1rem 1.75rem rgb(37 31 28 / 18%));
+  transform: translateY(-0.1875rem) scale(1.015);
 }
 
 .assistant-launcher:focus-visible {
@@ -35,18 +32,33 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-.assistant-launcher img {
+.assistant-launcher__frame,
+.assistant-launcher__mascot {
+  position: absolute;
   display: block;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.assistant-launcher__frame {
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+}
+
+.assistant-launcher__mascot {
+  top: 15%;
+  left: 24%;
+  width: 50%;
+  height: 58%;
 }
 
 .assistant-panel {
   display: grid;
-  width: min(24rem, calc(100vw - var(--sidebar-width) - 3rem));
-  max-height: min(38rem, calc(100vh - 7rem));
-  grid-template-rows: auto minmax(8rem, 1fr) auto auto;
+  width: min(28rem, calc(100vw - var(--sidebar-width) - 3rem));
+  max-height: min(42rem, calc(100vh - 7rem));
+  grid-template-rows: auto minmax(10rem, 1fr) auto auto;
   overflow: hidden;
   border: var(--border-width-hairline) solid var(--color-border-strong);
   border-radius: var(--radius-extra-large);
@@ -56,18 +68,18 @@
 
 .assistant-panel__header {
   display: grid;
-  grid-template-columns: 4rem minmax(0, 1fr) auto;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: 5.5rem;
+  min-height: 6.25rem;
   padding: var(--space-3) var(--space-4);
   border-bottom: var(--border-width-hairline) solid var(--color-border);
   background: color-mix(in srgb, var(--color-surface-muted) 72%, var(--color-surface));
 }
 
 .assistant-panel__mascot {
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   object-fit: contain;
 }
 
@@ -105,8 +117,8 @@
 }
 
 .assistant-message {
-  max-width: 88%;
-  padding: 0.7rem 0.8rem;
+  max-width: 86%;
+  padding: 0.75rem 0.85rem;
   border: var(--border-width-hairline) solid var(--color-border);
   border-radius: var(--radius-medium);
   background: var(--color-surface-muted);
@@ -140,7 +152,7 @@
 
 .assistant-shortcuts button {
   display: flex;
-  min-height: 2.75rem;
+  min-height: 2.875rem;
   align-items: center;
   gap: var(--space-3);
   padding: 0 var(--space-3);
@@ -180,7 +192,7 @@
 
 .assistant-composer input {
   min-width: 0;
-  min-height: 2.5rem;
+  min-height: 2.625rem;
   padding: 0 var(--space-3);
   border: var(--border-width-control) solid var(--color-border-strong);
   border-radius: var(--radius-medium);
@@ -201,7 +213,12 @@
 
 @media (max-width: 60rem) {
   .assistant-panel {
-    width: min(24rem, calc(100vw - var(--sidebar-width-collapsed) - 3rem));
+    width: min(27rem, calc(100vw - var(--sidebar-width-collapsed) - 3rem));
+  }
+
+  .assistant-launcher {
+    width: 7.5rem;
+    height: 6.125rem;
   }
 }
 
