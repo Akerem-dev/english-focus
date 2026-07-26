@@ -123,11 +123,7 @@ export function VocabularyHeader({
                 role="menu"
               >
                 <p className="vocabulary-advanced-menu__eyebrow">Advanced JSON tools</p>
-                <button
-                  onClick={() => runAdvancedAction(onExport)}
-                  role="menuitem"
-                  type="button"
-                >
+                <button onClick={() => runAdvancedAction(onExport)} role="menuitem" type="button">
                   <AppIcon name="download" size={17} />
                   <span>
                     <strong>Export entry JSON</strong>
