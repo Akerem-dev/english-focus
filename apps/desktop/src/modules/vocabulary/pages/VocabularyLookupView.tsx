@@ -1,7 +1,8 @@
-import type { FormEvent, RefObject } from "react";
+import { useEffect, type FormEvent, type RefObject } from "react";
 
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant";
 import { AiInstructionDialog } from "../../instruction";
 import { PasteGeneratedJsonDialog } from "../../import-export";
 import type { VocabularySearchState } from "../../search/state";
@@ -86,6 +87,20 @@ export function VocabularyLookupView({
   searchInputRef,
   state
 }: VocabularyLookupViewProps) {
+  const missingWord =
+    state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
+
+  useEffect(() => {
+    if (missingWord === undefined) {
+      return;
+    }
+
+    dispatchAssistantRequest({
+      kind: "wake",
+      word: missingWord
+    });
+  }, [missingWord]);
+
   return (
     <div className="route-page route-page--vocabulary">
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
@@ -143,8 +158,12 @@ export function VocabularyLookupView({
           canCreateEntry={state.canCreateEntry}
           normalizedQuery={state.normalizedQuery}
           onEditSearch={onEditSearch}
-          onOpenInstruction={() => onOpenInstruction(state.normalizedQuery)}
-          onOpenPasteGeneratedJson={() => onOpenImport(state.normalizedQuery)}
+          onOpenAssistant={() => {
+            dispatchAssistantRequest({
+              kind: "open",
+              word: state.normalizedQuery
+            });
+          }}
           onSelectSuggestion={onSearch}
           suggestions={state.suggestions}
         />
