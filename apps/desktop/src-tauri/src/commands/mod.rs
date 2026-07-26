@@ -1,4 +1,5 @@
 pub mod activity;
+pub mod assistant;
 pub mod backup;
 pub mod backup_inventory;
 pub mod contract_commands;
