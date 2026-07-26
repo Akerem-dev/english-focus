@@ -19,9 +19,7 @@ function messageFromError(cause: unknown): string {
     return cause.message;
   }
 
-  return typeof cause === "string"
-    ? cause
-    : "The word helper connection could not be checked.";
+  return typeof cause === "string" ? cause : "The word helper connection could not be checked.";
 }
 
 export function AssistantProvider({ children }: PropsWithChildren) {
