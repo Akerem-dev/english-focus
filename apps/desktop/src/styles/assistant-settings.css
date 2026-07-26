@@ -74,8 +74,7 @@
   box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--color-text-muted) 12%, transparent);
 }
 
-.assistant-connection-settings[data-configured="true"]
-  .assistant-connection-settings__status-dot {
+.assistant-connection-settings[data-configured="true"] .assistant-connection-settings__status-dot {
   background: var(--color-success);
   box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--color-success) 14%, transparent);
 }
