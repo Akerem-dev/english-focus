@@ -6,10 +6,7 @@ import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
 import type { VocabularyPersistencePlan } from "../import-export/application";
-import {
-  inspectAssistantCandidate,
-  prepareAssistantWord
-} from "./application";
+import { inspectAssistantCandidate, prepareAssistantWord } from "./application";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import {
@@ -48,8 +45,7 @@ const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
 });
 
 const MOCK_PREPARATION_DELAY_MS = 1200;
-const HEADWORD_PATTERN =
-  /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
+const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
@@ -420,11 +416,7 @@ export function AssistantDock() {
 
           <div aria-live="polite" className="assistant-messages">
             {messages.map((message) => (
-              <div
-                className="assistant-message"
-                data-author={message.author}
-                key={message.id}
-              >
+              <div className="assistant-message" data-author={message.author} key={message.id}>
                 <p>{message.text}</p>
               </div>
             ))}
