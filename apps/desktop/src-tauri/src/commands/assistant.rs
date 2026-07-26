@@ -1,12 +1,11 @@
 use keyring::{Entry, Error as KeyringError};
 use serde::Serialize;
 
-use super::assistant_generation::{
-    generate_vocabulary_candidate, AssistantGenerationCandidateResponse,
-    AssistantGenerationPreferences,
+use super::assistant_routing::{
+    generate_vocabulary_candidate, AssistantRoutingCandidateResponse, AssistantRoutingPreferences,
 };
 
-const ASSISTANT_MODEL: &str = "gemini-3.6-flash";
+const ASSISTANT_MODEL: &str = "Automatic · Gemini 3.5 Flash-Lite → 3.6 Flash";
 const KEYRING_SERVICE: &str = "English Focus";
 const KEYRING_USERNAME: &str = "gemini-api-key";
 
@@ -74,7 +73,7 @@ pub fn assistant_clear_api_key() -> Result<AssistantStatus, String> {
 #[tauri::command]
 pub async fn assistant_generate_vocabulary(
     word: String,
-    preferences: AssistantGenerationPreferences,
-) -> Result<AssistantGenerationCandidateResponse, String> {
+    preferences: AssistantRoutingPreferences,
+) -> Result<AssistantRoutingCandidateResponse, String> {
     generate_vocabulary_candidate(word, preferences).await
 }
