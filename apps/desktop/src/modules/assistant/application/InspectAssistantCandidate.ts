@@ -1,8 +1,4 @@
-import type {
-  ImportIssue,
-  VocabularyContentSource,
-  VocabularyEntry
-} from "@platform/domain";
+import type { ImportIssue, VocabularyContentSource, VocabularyEntry } from "@platform/domain";
 
 import {
   compareDuplicateEntries,
