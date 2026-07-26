@@ -5,7 +5,7 @@ import { expect, openImportSource, test } from "./app.fixture";
 test("invalid JSON reports an error and accepts a corrected object", async ({ page }) => {
   await page.goto("/");
   await openImportSource(page);
-  await page.getByRole("button", { name: /One vocabulary entry/ }).click();
+  await page.getByRole("button", { name: /Advanced JSON entry/ }).click();
   await page
     .locator('input[type="file"]')
     .setInputFiles(resolve("testing/manual/cp11-allocate-valid-with-warnings.entry.json"));
