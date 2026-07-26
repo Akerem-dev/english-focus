@@ -13,5 +13,7 @@ test("replacement JSON preserves the explicit duplicate-review boundary", async 
     );
   await page.getByRole("button", { name: "Check JSON syntax" }).click();
   await page.getByRole("button", { name: "Validate schema" }).click();
-  await expect(page.getByText(/Schema validation passed|Content validation/)).toBeVisible();
+  await expect(
+    page.getByRole("dialog", { name: "Required information is complete" })
+  ).toBeVisible();
 });
