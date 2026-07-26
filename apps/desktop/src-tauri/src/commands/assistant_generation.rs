@@ -590,7 +590,9 @@ pub async fn generate_vocabulary_candidate(
 mod tests {
     use serde_json::json;
 
-    use super::{entry_slug, normalize_aliases, normalize_headword, response_schema};
+    use super::{
+        entry_slug, finalize_candidate, normalize_aliases, normalize_headword, response_schema,
+    };
 
     #[test]
     fn normalizes_supported_headwords() {
@@ -621,5 +623,56 @@ mod tests {
         let mut value = json!({ "aliases": ["maintain", "Maintained", "maintained"] });
         normalize_aliases(&mut value, "maintain");
         assert_eq!(value["aliases"], json!(["Maintained"]));
+    }
+
+    #[test]
+    fn finalization_owns_ids_and_provenance() {
+        let candidate = json!({
+            "aliases": [],
+            "pronunciations": [{ "ipa": "/ɪnˈsens/", "variant": "general" }],
+            "cefr": "B2",
+            "registers": ["neutral"],
+            "partsOfSpeech": ["noun"],
+            "meanings": [{
+                "partOfSpeech": "noun",
+                "definitionEn": "A substance burned for its pleasant smell.",
+                "translationsTr": ["tütsü"],
+                "registers": ["neutral"]
+            }],
+            "morphology": {
+                "baseForm": "wrong",
+                "inflectedForms": []
+            },
+            "grammar": {
+                "summaryEn": "Usually used as an uncountable noun.",
+                "summaryTr": "Genellikle sayılamayan isim olarak kullanılır."
+            },
+            "examples": [
+                {
+                    "sentenceEn": "They burned incense in the room.",
+                    "translationTr": "Odada tütsü yaktılar.",
+                    "registers": ["neutral"]
+                },
+                {
+                    "sentenceEn": "The incense had a gentle fragrance.",
+                    "translationTr": "Tütsünün hafif bir kokusu vardı.",
+                    "registers": ["neutral"]
+                },
+                {
+                    "sentenceEn": "Incense is often used during ceremonies.",
+                    "translationTr": "Tütsü törenlerde sıkça kullanılır.",
+                    "registers": ["neutral"]
+                }
+            ]
+        });
+
+        let finalized = finalize_candidate(candidate, "incense").unwrap();
+
+        assert_eq!(finalized["id"], json!("user.incense.v1"));
+        assert_eq!(finalized["morphology"]["baseForm"], json!("incense"));
+        assert_eq!(finalized["meanings"][0]["id"], json!("incense.meaning.01"));
+        assert_eq!(finalized["examples"][2]["id"], json!("incense.example.03"));
+        assert_eq!(finalized["source"]["sourceId"], json!("english-focus-assistant"));
+        assert_eq!(finalized["generation"]["validationStatus"], json!("unvalidated"));
     }
 }
