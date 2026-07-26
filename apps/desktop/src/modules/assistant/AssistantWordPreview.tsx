@@ -2,6 +2,8 @@ import type { VocabularyEntry } from "@platform/domain";
 
 import { Button } from "../../components";
 
+export type AssistantWordPreviewState = "waiting" | "existing" | "ready" | "saved";
+
 export interface AssistantWordPreviewModel {
   readonly word: string;
   readonly normalizedWord: string;
@@ -11,6 +13,7 @@ export interface AssistantWordPreviewModel {
   readonly definitionEn?: string | undefined;
   readonly exampleEn?: string | undefined;
   readonly exampleTr?: string | undefined;
+  readonly state: AssistantWordPreviewState;
   readonly complete: boolean;
 }
 
@@ -21,13 +24,15 @@ function formatPartOfSpeech(value: string): string {
 
 export function createAssistantWordPreview(
   word: string,
-  entry?: VocabularyEntry
+  entry?: VocabularyEntry,
+  state: AssistantWordPreviewState = entry === undefined ? "waiting" : "existing"
 ): AssistantWordPreviewModel {
   if (entry === undefined) {
     return {
       word,
       normalizedWord: word.trim().toLocaleLowerCase("en-US"),
       translationsTr: Object.freeze([]),
+      state: "waiting",
       complete: false
     };
   }
@@ -51,32 +56,59 @@ export function createAssistantWordPreview(
     ...(primaryExample?.translationTr === undefined
       ? {}
       : { exampleTr: primaryExample.translationTr }),
+    state,
     complete: true
   };
 }
 
+const EYEBROW_BY_STATE: Readonly<Record<AssistantWordPreviewState, string>> = Object.freeze({
+  waiting: "Review",
+  existing: "Local entry",
+  ready: "Ready to add",
+  saved: "Added"
+});
+
+const FOOTER_BY_STATE: Readonly<Record<AssistantWordPreviewState, string>> = Object.freeze({
+  waiting: "Nothing has been saved.",
+  existing: "Already available locally.",
+  ready: "Review the details, then add the word.",
+  saved: "Saved to your local library."
+});
+
 interface AssistantWordPreviewProps {
   readonly preview: AssistantWordPreviewModel;
   readonly onEdit: () => void;
+  readonly onAdd?: (() => void) | undefined;
   readonly onOpenExisting?: (() => void) | undefined;
+  readonly isSaving?: boolean | undefined;
+  readonly saveError?: string | undefined;
 }
 
 export function AssistantWordPreview({
+  isSaving = false,
+  onAdd,
   onEdit,
   onOpenExisting,
-  preview
+  preview,
+  saveError
 }: AssistantWordPreviewProps) {
   const metadata = [preview.partOfSpeech, preview.cefr].filter(
     (value): value is string => value !== undefined
   );
+  const canOpen =
+    (preview.state === "existing" || preview.state === "saved") &&
+    onOpenExisting !== undefined;
+  const canAdd = preview.state === "ready" && onAdd !== undefined;
 
   return (
-    <article className="assistant-preview" data-complete={preview.complete || undefined}>
+    <article
+      className="assistant-preview"
+      data-complete={preview.complete || undefined}
+      data-state={preview.state}
+    >
       <header className="assistant-preview__header">
         <div>
-          <p className="assistant-preview__eyebrow">
-            {preview.complete ? "Local entry" : "Review"}
-          </p>
+          <p className="assistant-preview__eyebrow">{EYEBROW_BY_STATE[preview.state]}</p>
           <h3>{preview.word}</h3>
         </div>
         {metadata.length === 0 ? null : (
@@ -114,14 +146,24 @@ export function AssistantWordPreview({
       </div>
 
       <footer className="assistant-preview__footer">
-        <p>{preview.complete ? "Already available locally." : "Nothing has been saved."}</p>
+        <div className="assistant-preview__status">
+          <p>{FOOTER_BY_STATE[preview.state]}</p>
+          {saveError === undefined ? null : <p data-error="true">{saveError}</p>}
+        </div>
         <div className="assistant-preview__actions">
-          <Button onClick={onEdit} size="small" variant="ghost">
-            Change word
-          </Button>
-          {preview.complete && onOpenExisting !== undefined ? (
+          {preview.state === "saved" ? null : (
+            <Button disabled={isSaving} onClick={onEdit} size="small" variant="ghost">
+              Change word
+            </Button>
+          )}
+          {canOpen ? (
             <Button onClick={onOpenExisting} size="small" variant="secondary">
               View word
+            </Button>
+          ) : null}
+          {canAdd ? (
+            <Button isLoading={isSaving} onClick={onAdd} size="small" variant="primary">
+              Add to Library
             </Button>
           ) : null}
         </div>
