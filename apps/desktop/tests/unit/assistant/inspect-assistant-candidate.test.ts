@@ -19,11 +19,7 @@ function cloneMaintainEntry(): unknown {
 
 describe("inspectAssistantCandidate", () => {
   it("accepts a valid new candidate and prepares a reviewed user-layer save", () => {
-    const review = inspectAssistantCandidate(
-      cloneMaintainEntry(),
-      "maintain",
-      sourceWith([])
-    );
+    const review = inspectAssistantCandidate(cloneMaintainEntry(), "maintain", sourceWith([]));
 
     expect(review.kind).toBe("ready");
     if (review.kind === "ready") {
@@ -48,11 +44,7 @@ describe("inspectAssistantCandidate", () => {
   });
 
   it("blocks malformed provider output before review or persistence", () => {
-    const review = inspectAssistantCandidate(
-      { word: "maintain" },
-      "maintain",
-      sourceWith([])
-    );
+    const review = inspectAssistantCandidate({ word: "maintain" }, "maintain", sourceWith([]));
 
     expect(review.kind).toBe("invalid");
     if (review.kind === "invalid") {
@@ -62,11 +54,7 @@ describe("inspectAssistantCandidate", () => {
   });
 
   it("blocks a structurally valid entry when it represents the wrong word", () => {
-    const review = inspectAssistantCandidate(
-      cloneMaintainEntry(),
-      "allocate",
-      sourceWith([])
-    );
+    const review = inspectAssistantCandidate(cloneMaintainEntry(), "allocate", sourceWith([]));
 
     expect(review.kind).toBe("invalid");
     if (review.kind === "invalid") {
