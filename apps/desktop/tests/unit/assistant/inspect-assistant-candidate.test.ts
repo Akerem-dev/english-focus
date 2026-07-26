@@ -1,4 +1,5 @@
 import type { VocabularyContentSource, VocabularyEntry } from "@platform/domain";
+import { createValidVocabularyEntry } from "@platform/testing";
 import { describe, expect, it } from "vitest";
 
 import { maintainVocabularyEntry } from "../../../src/content/core";
@@ -13,13 +14,26 @@ function sourceWith(entries: readonly VocabularyEntry[]): VocabularyContentSourc
   };
 }
 
-function cloneMaintainEntry(): unknown {
-  return structuredClone(maintainVocabularyEntry);
+function createGeneratedCandidate(): VocabularyEntry {
+  return createValidVocabularyEntry({
+    source: {
+      kind: "user",
+      sourceId: "assistant-test",
+      sourceLabel: "Word helper"
+    },
+    generation: {
+      method: "external-ai",
+      generatedAt: "2026-01-01T00:00:00.000Z",
+      validationStatus: "unvalidated",
+      generatorLabel: "Assistant test provider",
+      warnings: []
+    }
+  });
 }
 
 describe("inspectAssistantCandidate", () => {
   it("accepts a valid new candidate and prepares a reviewed user-layer save", () => {
-    const review = inspectAssistantCandidate(cloneMaintainEntry(), "maintain", sourceWith([]));
+    const review = inspectAssistantCandidate(createGeneratedCandidate(), "maintain", sourceWith([]));
 
     expect(review.kind).toBe("ready");
     if (review.kind === "ready") {
@@ -32,7 +46,7 @@ describe("inspectAssistantCandidate", () => {
 
   it("returns the effective local entry instead of preparing an accidental replacement", () => {
     const review = inspectAssistantCandidate(
-      cloneMaintainEntry(),
+      createGeneratedCandidate(),
       "maintain",
       sourceWith([maintainVocabularyEntry])
     );
@@ -54,7 +68,7 @@ describe("inspectAssistantCandidate", () => {
   });
 
   it("blocks a structurally valid entry when it represents the wrong word", () => {
-    const review = inspectAssistantCandidate(cloneMaintainEntry(), "allocate", sourceWith([]));
+    const review = inspectAssistantCandidate(createGeneratedCandidate(), "allocate", sourceWith([]));
 
     expect(review.kind).toBe("invalid");
     if (review.kind === "invalid") {
