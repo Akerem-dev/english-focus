@@ -46,15 +46,26 @@ jobs:
       - name: Validate Windows acceptance script syntax
         shell: powershell
         run: |
+          $evidenceRoot = "test-results/windows-system"
+          New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
           $tokens = $null
           $errors = $null
           [System.Management.Automation.Language.Parser]::ParseFile(
-            (Resolve-Path "scripts/test-windows-system.ps1"),
+            (Resolve-Path "scripts/test-windows-system.ps1").Path,
             [ref]$tokens,
             [ref]$errors
           ) | Out-Null
           if ($errors.Count -gt 0) {
-            $errors | ForEach-Object { Write-Error $_.Message }
+            $errors | ForEach-Object {
+              [pscustomobject]@{
+                Message = $_.Message
+                ErrorId = $_.ErrorId
+                Line = $_.Extent.StartLineNumber
+                Column = $_.Extent.StartColumnNumber
+                Text = $_.Extent.Text
+              }
+            } | Format-List | Out-File "$evidenceRoot/parser-errors.txt" -Encoding utf8
+            Get-Content "$evidenceRoot/parser-errors.txt"
             exit 1
           }
 
