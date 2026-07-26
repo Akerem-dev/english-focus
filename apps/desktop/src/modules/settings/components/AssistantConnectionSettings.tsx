@@ -9,7 +9,7 @@ function connectionLabel(runtime: "browser" | "desktop", configured: boolean): s
     return "Desktop app required";
   }
 
-  return configured ? "Connected" : "Not connected";
+  return configured ? "API key saved" : "No API key saved";
 }
 
 function messageFromError(cause: unknown): string {
@@ -44,10 +44,10 @@ export function AssistantConnectionSettings() {
     try {
       await saveApiKey(nextApiKey);
       setApiKey("");
-      setFeedback("The word helper connection is ready.");
+      setFeedback("The API key is saved securely and will be checked on the next word request.");
       showToast({
-        title: "Word helper connected",
-        message: "Your API key is stored in the operating system credential vault.",
+        title: "Gemini API key saved",
+        message: "The key is stored in the operating system credential vault.",
         tone: "success",
         dedupeKey: "assistant-connection"
       });
@@ -55,7 +55,7 @@ export function AssistantConnectionSettings() {
       const message = messageFromError(cause);
       setError(message);
       showToast({
-        title: "Connection not saved",
+        title: "API key not saved",
         message,
         tone: "error",
         dedupeKey: "assistant-connection"
@@ -77,10 +77,10 @@ export function AssistantConnectionSettings() {
     try {
       await clearApiKey();
       setApiKey("");
-      setFeedback("The saved connection was removed.");
+      setFeedback("The saved API key was removed.");
       showToast({
-        title: "Word helper disconnected",
-        message: "The saved API key was removed from the credential vault.",
+        title: "Gemini API key removed",
+        message: "The saved key was removed from the credential vault.",
         tone: "success",
         dedupeKey: "assistant-connection"
       });
@@ -88,7 +88,7 @@ export function AssistantConnectionSettings() {
       const message = messageFromError(cause);
       setError(message);
       showToast({
-        title: "Connection not removed",
+        title: "API key not removed",
         message,
         tone: "error",
         dedupeKey: "assistant-connection"
@@ -110,7 +110,7 @@ export function AssistantConnectionSettings() {
         </span>
         <div>
           <h3 id="assistant-connection-title">Word helper connection</h3>
-          <p>Connect your own Gemini API key to prepare missing vocabulary inside English Focus.</p>
+          <p>Save your own Gemini API key to prepare missing vocabulary inside English Focus.</p>
         </div>
       </header>
 
@@ -133,7 +133,7 @@ export function AssistantConnectionSettings() {
           fieldClassName="assistant-connection-settings__field"
           helperText={
             desktopAvailable
-              ? "The key is sent only to the Rust backend and stored in your operating system credential vault."
+              ? "The key is sent only to the Rust backend and stored in your operating system credential vault. Saving confirms storage; Gemini validates the key when a word is prepared."
               : "Open the Tauri desktop app to save or use an API key. Browser preview never receives the key."
           }
           label="Gemini API key"
@@ -155,7 +155,7 @@ export function AssistantConnectionSettings() {
             type="submit"
             variant="primary"
           >
-            {connection.configured ? "Replace key" : "Save connection"}
+            {connection.configured ? "Replace key" : "Save API key"}
           </Button>
           {connection.configured ? (
             <Button
@@ -166,7 +166,7 @@ export function AssistantConnectionSettings() {
               type="button"
               variant="ghost"
             >
-              Disconnect
+              Remove key
             </Button>
           ) : null}
         </div>
