@@ -1,0 +1,190 @@
+.assistant-dock {
+  right: var(--space-4);
+  bottom: var(--space-4);
+}
+
+.assistant-panel {
+  width: min(34rem, calc(100vw - var(--sidebar-width) - var(--space-8)));
+  height: min(46rem, calc(100vh - var(--space-8)));
+  max-height: calc(100vh - var(--space-8));
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.assistant-panel__header {
+  min-height: 7rem;
+  grid-template-columns: 6.25rem minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+}
+
+.assistant-panel__mascot-stage {
+  width: 6.25rem;
+  height: 6.25rem;
+}
+
+.assistant-panel__mascot {
+  max-width: none;
+}
+
+.assistant-panel__mascot--ready {
+  top: -0.7rem;
+  left: -1.75rem;
+  width: 8.4rem;
+  height: 8.4rem;
+  clip-path: inset(0 0 0 34%);
+}
+
+.assistant-panel__mascot--thinking {
+  top: -0.65rem;
+  left: -1rem;
+  width: 7.9rem;
+  height: 7.9rem;
+}
+
+.assistant-panel__mascot--success {
+  top: -1.65rem;
+  left: -2.3rem;
+  width: 9.75rem;
+  height: 9.75rem;
+}
+
+.assistant-panel__mascot--confused {
+  top: -1.9rem;
+  left: -2.85rem;
+  width: 10.5rem;
+  height: 10.5rem;
+}
+
+.assistant-panel__mascot--sleeping {
+  top: -0.9rem;
+  left: -1.7rem;
+  width: 8.25rem;
+  height: 8.25rem;
+  clip-path: inset(0 0 0 27%);
+}
+
+.assistant-panel__state-effect--thinking,
+.assistant-panel__state-effect--confused,
+.assistant-panel__state-effect--sleeping {
+  right: -0.1rem;
+}
+
+.assistant-panel__state-effect--success {
+  right: -0.35rem;
+}
+
+.assistant-panel__heading h2 {
+  font-size: var(--font-size-5);
+}
+
+.assistant-panel__heading p {
+  max-width: 20rem;
+  line-height: var(--line-height-normal);
+}
+
+.assistant-messages {
+  min-height: 0;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  scrollbar-color: color-mix(in srgb, var(--color-accent) 48%, var(--color-border-strong))
+    transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.assistant-messages::-webkit-scrollbar {
+  width: 0.55rem;
+}
+
+.assistant-messages::-webkit-scrollbar-track {
+  margin-block: var(--space-2);
+  background: transparent;
+}
+
+.assistant-messages::-webkit-scrollbar-thumb {
+  border: 0.15rem solid transparent;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-accent) 48%, var(--color-border-strong));
+  background-clip: padding-box;
+}
+
+.assistant-messages::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-accent) 72%, var(--color-border-strong));
+  background-clip: padding-box;
+}
+
+.assistant-message {
+  max-width: 82%;
+  padding: var(--space-2) var(--space-3);
+}
+
+.assistant-messages[data-has-preview="true"] .assistant-message {
+  max-width: 92%;
+  font-size: var(--font-size-1);
+}
+
+.assistant-shortcuts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 0 var(--space-4) var(--space-3);
+}
+
+.assistant-shortcuts button {
+  min-height: 2.65rem;
+  gap: var(--space-2);
+}
+
+.assistant-composer {
+  padding: var(--space-3) var(--space-4);
+}
+
+.assistant-launcher[data-state="awake"] .assistant-launcher__mascot {
+  top: 2%;
+  left: 3%;
+  width: 90%;
+  height: 90%;
+  clip-path: inset(0 0 0 34%);
+}
+
+.assistant-launcher[data-state="sleeping"] .assistant-launcher__mascot {
+  top: 8%;
+  left: 2%;
+  width: 88%;
+  height: 82%;
+  clip-path: inset(0 0 0 27%);
+}
+
+@media (max-width: 60rem) {
+  .assistant-panel {
+    width: min(32rem, calc(100vw - var(--sidebar-width-collapsed) - var(--space-6)));
+  }
+}
+
+@media (max-width: 44rem) {
+  .assistant-dock {
+    right: var(--space-3);
+    bottom: var(--space-3);
+    left: var(--space-3);
+  }
+
+  .assistant-panel {
+    width: 100%;
+    height: min(43rem, calc(100vh - var(--space-6)));
+    max-height: calc(100vh - var(--space-6));
+  }
+
+  .assistant-panel__header {
+    min-height: 6.25rem;
+    grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  }
+
+  .assistant-panel__mascot-stage {
+    width: 5.5rem;
+    height: 5.5rem;
+    transform: scale(0.88);
+    transform-origin: left center;
+  }
+
+  .assistant-shortcuts {
+    grid-template-columns: 1fr;
+  }
+}
