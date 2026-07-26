@@ -42,7 +42,13 @@ export function AssistantProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   useEffect(() => {
-    void refreshConnection();
+    const frame = window.requestAnimationFrame(() => {
+      void refreshConnection();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
   }, [refreshConnection]);
 
   const saveApiKey = useCallback(
