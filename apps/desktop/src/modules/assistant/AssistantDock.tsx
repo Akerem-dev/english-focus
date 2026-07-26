@@ -1,13 +1,38 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent
+} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
-
+import {
+  ASSISTANT_REQUEST_EVENT,
+  type AssistantRequestDetail
+} from "./assistantEvents";
+import effectQuestionMark from "./assets/effects/effect-question-mark.png";
+import effectSleepZ from "./assets/effects/effect-sleep-z.png";
+import effectSparkles from "./assets/effects/effect-sparkles.png";
+import effectThinkingDots from "./assets/effects/effect-thinking-dots.png";
+import effectWakeRays from "./assets/effects/effect-wake-rays.png";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
+import mascotConfused from "./assets/mascot/mascot-confused.png";
 import mascotMini from "./assets/mascot/mascot-mini.png";
 import mascotReady from "./assets/mascot/mascot-ready.png";
+import mascotSleeping from "./assets/mascot/mascot-sleeping.png";
+import mascotSuccess from "./assets/mascot/mascot-success.png";
+import mascotThinking from "./assets/mascot/mascot-thinking.png";
+
+type AssistantMascotState =
+  | "ready"
+  | "thinking"
+  | "success"
+  | "confused"
+  | "sleeping";
 
 type AssistantMessage = Readonly<{
   id: number;
@@ -22,6 +47,29 @@ const INITIAL_MESSAGES: readonly AssistantMessage[] = Object.freeze([
     text: "Tell me the English word you want to add. Nothing is saved until you review it."
   }
 ]);
+
+const MASCOT_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.freeze({
+  ready: mascotReady,
+  thinking: mascotThinking,
+  success: mascotSuccess,
+  confused: mascotConfused,
+  sleeping: mascotSleeping
+});
+
+const EFFECT_BY_STATE: Readonly<Partial<Record<AssistantMascotState, string>>> = Object.freeze({
+  thinking: effectThinkingDots,
+  success: effectSparkles,
+  confused: effectQuestionMark,
+  sleeping: effectSleepZ
+});
+
+const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.freeze({
+  ready: "Add a word to your library",
+  thinking: "Preparing a review",
+  success: "Saved to your library",
+  confused: "Check the word and try again",
+  sleeping: "Resting nearby"
+});
 
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
@@ -38,14 +86,21 @@ export function AssistantDock() {
   const navigate = useNavigate();
   const titleId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const attentionTimerRef = useRef<number | undefined>(undefined);
+  const responseTimerRef = useRef<number | undefined>(undefined);
   const [open, setOpen] = useState(false);
+  const [attention, setAttention] = useState(false);
   const [input, setInput] = useState("");
+  const [mascotState, setMascotState] = useState<AssistantMascotState>("ready");
   const [messages, setMessages] = useState<readonly AssistantMessage[]>(INITIAL_MESSAGES);
   const visible = supportsAssistant(location.pathname);
+  const isPreparing = mascotState === "thinking";
+  const stateEffect = EFFECT_BY_STATE[mascotState];
 
   useEffect(() => {
     if (!visible) {
       setOpen(false);
+      setAttention(false);
     }
   }, [visible]);
 
@@ -54,6 +109,7 @@ export function AssistantDock() {
       return;
     }
 
+    setAttention(false);
     const frame = window.requestAnimationFrame(() => {
       inputRef.current?.focus();
     });
@@ -72,11 +128,46 @@ export function AssistantDock() {
     };
   }, [open]);
 
+  useEffect(() => {
+    function handleAssistantRequest(event: Event) {
+      const detail = (event as CustomEvent<AssistantRequestDetail>).detail;
+
+      if (detail.word !== undefined) {
+        setInput(detail.word);
+      }
+
+      setMascotState("ready");
+      setAttention(false);
+      window.clearTimeout(attentionTimerRef.current);
+
+      window.requestAnimationFrame(() => {
+        setAttention(true);
+      });
+
+      attentionTimerRef.current = window.setTimeout(() => {
+        setAttention(false);
+      }, 1100);
+
+      if (detail.kind === "open") {
+        setOpen(true);
+      }
+    }
+
+    window.addEventListener(ASSISTANT_REQUEST_EVENT, handleAssistantRequest);
+
+    return () => {
+      window.removeEventListener(ASSISTANT_REQUEST_EVENT, handleAssistantRequest);
+      window.clearTimeout(attentionTimerRef.current);
+      window.clearTimeout(responseTimerRef.current);
+    };
+  }, []);
+
   if (!visible) {
     return null;
   }
 
   function focusWordInput() {
+    setMascotState("ready");
     setOpen(true);
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -92,13 +183,14 @@ export function AssistantDock() {
       return;
     }
 
-    const nextId = messages.length + 1;
+    const messageId = Date.now();
 
     if (!isPlausibleHeadword(word)) {
+      setMascotState("confused");
       setMessages((current) => [
         ...current,
         {
-          id: nextId,
+          id: messageId,
           author: "assistant",
           text: "Please enter one English word or a short phrasal verb."
         }
@@ -107,16 +199,25 @@ export function AssistantDock() {
       return;
     }
 
+    window.clearTimeout(responseTimerRef.current);
+    setMascotState("thinking");
     setMessages((current) => [
       ...current,
-      { id: nextId, author: "user", text: word },
-      {
-        id: nextId + 1,
-        author: "assistant",
-        text: `I’ll prepare “${word}” for review here. You will check the meanings and examples before it is added.`
-      }
+      { id: messageId, author: "user", text: word }
     ]);
     setInput("");
+
+    responseTimerRef.current = window.setTimeout(() => {
+      setMessages((current) => [
+        ...current,
+        {
+          id: messageId + 1,
+          author: "assistant",
+          text: `I’m getting “${word}” ready for review. Nothing will be saved until you approve it.`
+        }
+      ]);
+      setMascotState("ready");
+    }, 700);
   }
 
   return (
@@ -129,10 +230,23 @@ export function AssistantDock() {
           role="dialog"
         >
           <header className="assistant-panel__header">
-            <img alt="" className="assistant-panel__mascot" src={mascotReady} />
+            <div className="assistant-panel__mascot-stage" data-state={mascotState}>
+              <img
+                alt=""
+                className={`assistant-panel__mascot assistant-panel__mascot--${mascotState}`}
+                src={MASCOT_BY_STATE[mascotState]}
+              />
+              {stateEffect === undefined ? null : (
+                <img
+                  alt=""
+                  className={`assistant-panel__effect assistant-panel__effect--${mascotState}`}
+                  src={stateEffect}
+                />
+              )}
+            </div>
             <div className="assistant-panel__heading">
               <h2 id={titleId}>Word helper</h2>
-              <p>Add a word to your library</p>
+              <p>{STATUS_BY_STATE[mascotState]}</p>
             </div>
             <IconButton
               className="assistant-panel__close"
@@ -180,17 +294,27 @@ export function AssistantDock() {
             </label>
             <input
               autoComplete="off"
+              disabled={isPreparing}
               id="assistant-word-input"
               maxLength={80}
               onChange={(event) => {
                 setInput(event.currentTarget.value);
+                if (mascotState === "confused") {
+                  setMascotState("ready");
+                }
               }}
               placeholder="Type an English word"
               ref={inputRef}
               spellCheck="false"
               value={input}
             />
-            <Button disabled={input.trim().length === 0} size="small" type="submit" variant="primary">
+            <Button
+              disabled={input.trim().length === 0}
+              isLoading={isPreparing}
+              size="small"
+              type="submit"
+              variant="primary"
+            >
               Continue
             </Button>
           </form>
@@ -199,12 +323,15 @@ export function AssistantDock() {
         <button
           aria-label="Open word helper"
           className="assistant-launcher"
+          data-attention={attention || undefined}
           onClick={() => {
             setOpen(true);
           }}
           title="Open word helper"
           type="button"
         >
+          <span aria-hidden="true" className="assistant-launcher__glow" />
+          <img alt="" className="assistant-launcher__wake-rays" src={effectWakeRays} />
           <img alt="" className="assistant-launcher__frame" src={launcherFrame} />
           <img alt="" className="assistant-launcher__mascot" src={mascotMini} />
         </button>
