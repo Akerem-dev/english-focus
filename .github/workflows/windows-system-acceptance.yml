@@ -43,9 +43,6 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Install pinned WinApp CLI
-        run: npm install --no-save --package-lock=false @microsoft/winappcli@0.3.1
-
       - name: Validate Windows acceptance script syntax
         shell: powershell
         run: |
@@ -72,13 +69,28 @@ jobs:
             exit 1
           }
 
+      - name: Build and verify fresh installers
+        shell: powershell
+        run: |
+          $evidenceRoot = "test-results/windows-system"
+          New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
+          $logPath = Join-Path $evidenceRoot "installer-build.log"
+          & npm run release:windows:unsigned 2>&1 | Tee-Object -FilePath $logPath
+          $exitCode = $LASTEXITCODE
+          if ($exitCode -ne 0) {
+            exit $exitCode
+          }
+
+      - name: Install pinned WinApp CLI
+        run: npm install --no-save --package-lock=false @microsoft/winappcli@0.3.1
+
       - name: Run Windows system acceptance
         shell: powershell
         run: |
           $evidenceRoot = "test-results/windows-system"
           New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
           $logPath = Join-Path $evidenceRoot "workflow-output.log"
-          & npm run test:windows:system -- -LeaveUninstalled 2>&1 |
+          & npm run test:windows:system -- -SkipBuild -LeaveUninstalled 2>&1 |
             Tee-Object -FilePath $logPath
           $exitCode = $LASTEXITCODE
           if ($exitCode -ne 0) {
