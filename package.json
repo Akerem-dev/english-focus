@@ -20,6 +20,7 @@
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "playwright test",
     "test:performance": "vitest run testing/performance",
+    "test:windows:system": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-windows-system.ps1",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
