@@ -4,6 +4,7 @@ export { AppProviders } from "./AppProviders";
 export { InstructionPreferencesProvider } from "./InstructionPreferencesProvider";
 export { VocabularyMetadataProvider } from "./VocabularyMetadataProvider";
 export { VocabularyRepositoryProvider } from "./VocabularyRepositoryProvider";
+export { useAssistant } from "./useAssistant";
 export { useBackup } from "./useBackup";
 export { useClipboard } from "./useClipboard";
 export { useFileTransfer } from "./useFileTransfer";
