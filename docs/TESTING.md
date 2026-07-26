@@ -78,19 +78,30 @@ To run the same code checks without rebuilding installers:
 npm run verify:final -- -SkipInstaller
 ```
 
-## Manual Windows checks
+## Automated Windows system acceptance
 
-The detailed acceptance procedure is maintained in [`release/WINDOWS_RELEASE_SMOKE_TEST.md`](release/WINDOWS_RELEASE_SMOKE_TEST.md). It records the tested source commit, installer hashes, Windows version, display scale, and pass/fail evidence for both MSI and NSIS packages.
+Run the installed MSI and NSIS packages through the native Windows acceptance runner:
 
-The following checks cannot be represented honestly by browser mocks or unit tests alone:
+```powershell
+npm run test:windows:system
+```
 
-1. Install or upgrade the generated setup on Windows, launch from the Start menu, confirm that no Command Prompt window appears, and uninstall cleanly.
-2. Exercise real Windows open/save dialogs and the system clipboard.
-3. Verify focus order and announcements with a real Windows screen reader.
-4. Observe automatic backup timing and retention across application restarts.
-5. Build and verify a signed installer in the production Authenticode environment.
+This test preserves existing English Focus user data, builds and verifies fresh installers, installs both package families, drives the installed Tauri application through Windows UI Automation, verifies the local Rust runtime and SQLite persistence, captures screenshots and accessibility trees, uninstalls each package, restores user data, and writes a machine-readable report.
 
-These checks remain explicit in the feature matrix and smoke-test protocol instead of being reported as automated coverage.
+The full behavior and command options are documented in [`release/WINDOWS_SYSTEM_ACCEPTANCE.md`](release/WINDOWS_SYSTEM_ACCEPTANCE.md). GitHub runs the same process in the `Windows System Acceptance` workflow and uploads reports, logs, UI trees, and screenshots on success or failure.
+
+## Remaining human Windows checks
+
+The detailed release record is maintained in [`release/WINDOWS_RELEASE_SMOKE_TEST.md`](release/WINDOWS_RELEASE_SMOKE_TEST.md). Most installer and native-runtime checks are automated, but the following cannot be claimed honestly from code alone:
+
+1. Judge visual polish and subjective layout quality.
+2. Listen to actual Narrator speech and assess whether the reading experience is understandable.
+3. Confirm behavior on physical monitors and hardware combinations not represented by the automated runner.
+4. Establish SmartScreen reputation.
+5. Verify production Authenticode signing when no real signing certificate is supplied.
+6. Test upgrade compatibility when no previous stable installer exists.
+
+These checks remain explicit release evidence instead of being reported as automated passes.
 
 ## Release decision rule
 
@@ -98,6 +109,7 @@ A release is considered technically ready only when:
 
 - the automated feature matrix is current;
 - `npm run verify:final` passes on Windows;
-- the MSI and NSIS smoke-test records are complete;
+- the Windows system acceptance report passes for MSI and NSIS;
+- the remaining human release evidence is recorded where applicable;
 - the Git working tree is clean; and
 - the README describes only behavior supported by the code, tests, and release configuration.
