@@ -16,7 +16,7 @@ const issues: readonly ImportIssue[] = [
 ];
 
 describe("CorrectionInstructionDialog", () => {
-  it("renders a local provider-independent repair instruction", () => {
+  it("renders a local correction request without technical metadata", () => {
     const markup = renderToStaticMarkup(
       <CorrectionInstructionDialog
         issues={issues}
@@ -28,13 +28,16 @@ describe("CorrectionInstructionDialog", () => {
       />
     );
 
-    expect(markup).toContain("Correction instruction");
+    expect(markup).toContain("Correction request");
     expect(markup).toContain("Word: allocate");
-    expect(markup).toContain("1 validation issues");
-    expect(markup).toContain("Validation issues included in the instruction");
+    expect(markup).toContain("1 item to fix");
+    expect(markup).toContain("Items included in the request");
     expect(markup).toContain("TARGET WORD: allocate");
-    expect(markup).toContain("Copy correction instruction");
+    expect(markup).toContain("Copy correction request");
     expect(markup).toContain("Nothing is uploaded");
+    expect(markup).not.toContain("too_small");
+    expect(markup).not.toContain("schema · error");
+    expect(markup).not.toContain("Provider independent");
   });
 
   it("renders nothing while closed", () => {
