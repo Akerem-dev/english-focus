@@ -99,4 +99,15 @@ describe("Windows release configuration", () => {
       "Get-ChildItem -LiteralPath $artifactRoot -Force | Remove-Item -Recurse -Force"
     );
   });
+
+  it("runs the release quality gate by default and protects CI reuse", () => {
+    const releaseScript = readText("scripts/build-windows-installers.ps1");
+
+    expect(releaseScript).toContain("npm run quality:release");
+    expect(releaseScript).toContain("[switch]$QualityAlreadyVerified");
+    expect(releaseScript).toContain('if ($env:CI -ne "true" -or $env:EF_QUALITY_GATE_VERIFIED -ne "true")');
+    expect(releaseScript).toContain(
+      "QualityAlreadyVerified is restricted to unsigned CI system-acceptance builds."
+    );
+  });
 });
