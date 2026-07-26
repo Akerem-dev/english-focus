@@ -2,7 +2,7 @@ use keyring::{Entry, Error as KeyringError};
 use serde::Serialize;
 
 use super::assistant_generation::{
-    assistant_generate_vocabulary_v2, AssistantGenerationCandidateResponse,
+    generate_vocabulary_candidate, AssistantGenerationCandidateResponse,
     AssistantGenerationPreferences,
 };
 
@@ -76,5 +76,5 @@ pub async fn assistant_generate_vocabulary(
     word: String,
     preferences: AssistantGenerationPreferences,
 ) -> Result<AssistantGenerationCandidateResponse, String> {
-    assistant_generate_vocabulary_v2(word, preferences).await
+    generate_vocabulary_candidate(word, preferences).await
 }
