@@ -33,7 +33,11 @@ function createGeneratedCandidate(): VocabularyEntry {
 
 describe("inspectAssistantCandidate", () => {
   it("accepts a valid new candidate and prepares a reviewed user-layer save", () => {
-    const review = inspectAssistantCandidate(createGeneratedCandidate(), "maintain", sourceWith([]));
+    const review = inspectAssistantCandidate(
+      createGeneratedCandidate(),
+      "maintain",
+      sourceWith([])
+    );
 
     expect(review.kind).toBe("ready");
     if (review.kind === "ready") {
@@ -68,7 +72,11 @@ describe("inspectAssistantCandidate", () => {
   });
 
   it("blocks a structurally valid entry when it represents the wrong word", () => {
-    const review = inspectAssistantCandidate(createGeneratedCandidate(), "allocate", sourceWith([]));
+    const review = inspectAssistantCandidate(
+      createGeneratedCandidate(),
+      "allocate",
+      sourceWith([])
+    );
 
     expect(review.kind).toBe("invalid");
     if (review.kind === "invalid") {
