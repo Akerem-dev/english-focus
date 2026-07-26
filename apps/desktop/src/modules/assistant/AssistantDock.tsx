@@ -5,16 +5,17 @@ import { ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
+import effectSleepZ from "./assets/effects/effect-sleep-z.png";
 import effectWakeRays from "./assets/effects/effect-wake-rays.png";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import mascotConfused from "./assets/mascot/mascot-confused.png";
-import mascotMini from "./assets/mascot/mascot-mini.png";
 import mascotReady from "./assets/mascot/mascot-ready.png";
 import mascotSleeping from "./assets/mascot/mascot-sleeping.png";
 import mascotSuccess from "./assets/mascot/mascot-success.png";
 import mascotThinking from "./assets/mascot/mascot-thinking.png";
 
 type AssistantMascotState = "ready" | "thinking" | "success" | "confused" | "sleeping";
+type AssistantLauncherState = "sleeping" | "awake";
 
 type AssistantMessage = Readonly<{
   id: number;
@@ -46,6 +47,7 @@ const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
   sleeping: "Resting nearby"
 });
 
+const MOCK_PREPARATION_DELAY_MS = 1500;
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
 function supportsAssistant(pathname: string): boolean {
@@ -70,6 +72,8 @@ export function AssistantDock() {
   const [messages, setMessages] = useState<readonly AssistantMessage[]>(INITIAL_MESSAGES);
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking";
+  const launcherState: AssistantLauncherState = attention ? "awake" : "sleeping";
+  const launcherMascot = attention ? mascotReady : mascotSleeping;
 
   useEffect(() => {
     if (!visible) {
@@ -140,9 +144,13 @@ export function AssistantDock() {
     return null;
   }
 
-  function focusWordInput() {
+  function openAssistant() {
     setMascotState("ready");
     setOpen(true);
+  }
+
+  function focusWordInput() {
+    openAssistant();
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
     });
@@ -188,7 +196,7 @@ export function AssistantDock() {
         }
       ]);
       setMascotState("ready");
-    }, 700);
+    }, MOCK_PREPARATION_DELAY_MS);
   }
 
   return (
@@ -205,6 +213,7 @@ export function AssistantDock() {
               <img
                 alt=""
                 className={`assistant-panel__mascot assistant-panel__mascot--${mascotState}`}
+                key={mascotState}
                 src={MASCOT_BY_STATE[mascotState]}
               />
             </div>
@@ -284,16 +293,21 @@ export function AssistantDock() {
           aria-label="Open word helper"
           className="assistant-launcher"
           data-attention={attention || undefined}
-          onClick={() => {
-            setOpen(true);
-          }}
+          data-state={launcherState}
+          onClick={openAssistant}
           title="Open word helper"
           type="button"
         >
           <span aria-hidden="true" className="assistant-launcher__glow" />
+          <img alt="" className="assistant-launcher__sleep-z" src={effectSleepZ} />
           <img alt="" className="assistant-launcher__wake-rays" src={effectWakeRays} />
           <img alt="" className="assistant-launcher__frame" src={launcherFrame} />
-          <img alt="" className="assistant-launcher__mascot" src={mascotMini} />
+          <img
+            alt=""
+            className="assistant-launcher__mascot"
+            key={launcherState}
+            src={launcherMascot}
+          />
         </button>
       )}
     </aside>
