@@ -81,7 +81,6 @@ export function VocabularyPage() {
   const [searchState, setSearchState] = useState<VocabularySearchState>({
     kind: "initial"
   });
-  const [instructionWord, setInstructionWord] = useState<string | undefined>();
   const [pasteJsonWord, setPasteJsonWord] = useState<string | undefined>();
   const [metadataWord, setMetadataWord] = useState<string | undefined>();
   const [entryEditorOpen, setEntryEditorOpen] = useState(false);
@@ -181,7 +180,6 @@ export function VocabularyPage() {
     searchSequence.current += 1;
     deepLinkHandled.current = undefined;
     setEntryEditorOpen(false);
-    setInstructionWord(undefined);
     setMetadataWord(undefined);
     setPasteJsonWord(undefined);
     setQuery("");
@@ -371,14 +369,8 @@ export function VocabularyPage() {
 
   return (
     <VocabularyLookupView
-      importWord={pasteJsonWord}
-      instructionWord={instructionWord}
       onClear={returnToInitial}
-      onCloseImport={() => setPasteJsonWord(undefined)}
-      onCloseInstruction={() => setInstructionWord(undefined)}
       onEditSearch={editCurrentSearch}
-      onOpenImport={setPasteJsonWord}
-      onOpenInstruction={setInstructionWord}
       onQueryChange={(nextQuery) => {
         searchSequence.current += 1;
         deepLinkHandled.current = undefined;
