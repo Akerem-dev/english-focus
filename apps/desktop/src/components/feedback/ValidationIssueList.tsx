@@ -12,7 +12,7 @@ export interface ValidationIssueListProps {
 
 export function ValidationIssueList({
   formatMessage,
-  heading = "Items to review",
+  heading = "Validation issues",
   issues,
   showTechnicalDetails = true
 }: ValidationIssueListProps) {
