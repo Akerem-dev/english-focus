@@ -16,7 +16,7 @@ const issues: readonly ImportIssue[] = [
 ];
 
 describe("CorrectionInstructionDialog", () => {
-  it("renders a local correction request without technical metadata", () => {
+  it("renders a local correction request without visible technical metadata", () => {
     const markup = renderToStaticMarkup(
       <CorrectionInstructionDialog
         issues={issues}
@@ -35,8 +35,8 @@ describe("CorrectionInstructionDialog", () => {
     expect(markup).toContain("TARGET WORD: allocate");
     expect(markup).toContain("Copy correction request");
     expect(markup).toContain("Nothing is uploaded");
-    expect(markup).not.toContain("too_small");
-    expect(markup).not.toContain("schema · error");
+    expect(markup).not.toContain("<code>examples</code>");
+    expect(markup).not.toContain("<small>schema · error · too_small</small>");
     expect(markup).not.toContain("Provider independent");
   });
 
