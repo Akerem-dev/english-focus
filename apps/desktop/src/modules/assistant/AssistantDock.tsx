@@ -1,19 +1,10 @@
-import {
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type FormEvent
-} from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
-import {
-  ASSISTANT_REQUEST_EVENT,
-  type AssistantRequestDetail
-} from "./assistantEvents";
+import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
 import effectWakeRays from "./assets/effects/effect-wake-rays.png";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import mascotConfused from "./assets/mascot/mascot-confused.png";
@@ -23,12 +14,7 @@ import mascotSleeping from "./assets/mascot/mascot-sleeping.png";
 import mascotSuccess from "./assets/mascot/mascot-success.png";
 import mascotThinking from "./assets/mascot/mascot-thinking.png";
 
-type AssistantMascotState =
-  | "ready"
-  | "thinking"
-  | "success"
-  | "confused"
-  | "sleeping";
+type AssistantMascotState = "ready" | "thinking" | "success" | "confused" | "sleeping";
 
 type AssistantMessage = Readonly<{
   id: number;
@@ -189,10 +175,7 @@ export function AssistantDock() {
 
     window.clearTimeout(responseTimerRef.current);
     setMascotState("thinking");
-    setMessages((current) => [
-      ...current,
-      { id: messageId, author: "user", text: word }
-    ]);
+    setMessages((current) => [...current, { id: messageId, author: "user", text: word }]);
     setInput("");
 
     responseTimerRef.current = window.setTimeout(() => {
@@ -242,11 +225,7 @@ export function AssistantDock() {
 
           <div aria-live="polite" className="assistant-messages">
             {messages.map((message) => (
-              <div
-                className="assistant-message"
-                data-author={message.author}
-                key={message.id}
-              >
+              <div className="assistant-message" data-author={message.author} key={message.id}>
                 <p>{message.text}</p>
               </div>
             ))}
