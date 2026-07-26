@@ -1,5 +1,6 @@
 param(
-    [switch]$AllowUnsigned
+    [switch]$AllowUnsigned,
+    [switch]$QualityAlreadyVerified
 )
 
 $ErrorActionPreference = "Stop"
@@ -37,6 +38,15 @@ if (-not $signedBuild -and -not $AllowUnsigned) {
     throw "Stable Windows releases require EF_WINDOWS_CERTIFICATE_THUMBPRINT or EF_WINDOWS_SIGN_COMMAND. Use release:windows:unsigned only for a local rehearsal."
 }
 
+if ($QualityAlreadyVerified) {
+    if (-not $AllowUnsigned) {
+        throw "QualityAlreadyVerified is restricted to unsigned CI system-acceptance builds. Stable signed releases must run the quality gate in this process."
+    }
+    if ($env:CI -ne "true" -or $env:EF_QUALITY_GATE_VERIFIED -ne "true") {
+        throw "QualityAlreadyVerified requires CI=true and EF_QUALITY_GATE_VERIFIED=true."
+    }
+}
+
 if (-not $AllowUnsigned) {
     $gitStatus = git status --porcelain
     if ($LASTEXITCODE -ne 0) { throw "Git working-tree status could not be read." }
@@ -55,8 +65,13 @@ if ($LASTEXITCODE -ne 0) { throw "Environment check failed." }
 npm run check:native-environment
 if ($LASTEXITCODE -ne 0) { throw "Native Windows environment check failed." }
 
-npm run quality:release
-if ($LASTEXITCODE -ne 0) { throw "Release quality checks failed." }
+if ($QualityAlreadyVerified) {
+    Write-Host "Release quality gate: reused from the verified CI Quality workflow for this commit." -ForegroundColor Cyan
+}
+else {
+    npm run quality:release
+    if ($LASTEXITCODE -ne 0) { throw "Release quality checks failed." }
+}
 
 if ([string]::IsNullOrWhiteSpace($env:CARGO_TARGET_DIR)) {
     $targetRoot = Join-Path $root "apps\desktop\src-tauri\target"
