@@ -105,7 +105,9 @@ describe("Windows release configuration", () => {
 
     expect(releaseScript).toContain("npm run quality:release");
     expect(releaseScript).toContain("[switch]$QualityAlreadyVerified");
-    expect(releaseScript).toContain('if ($env:CI -ne "true" -or $env:EF_QUALITY_GATE_VERIFIED -ne "true")');
+    expect(releaseScript).toContain(
+      'if ($env:CI -ne "true" -or $env:EF_QUALITY_GATE_VERIFIED -ne "true")'
+    );
     expect(releaseScript).toContain(
       "QualityAlreadyVerified is restricted to unsigned CI system-acceptance builds."
     );
