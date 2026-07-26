@@ -14,10 +14,6 @@ import {
   ASSISTANT_REQUEST_EVENT,
   type AssistantRequestDetail
 } from "./assistantEvents";
-import effectQuestionMark from "./assets/effects/effect-question-mark.png";
-import effectSleepZ from "./assets/effects/effect-sleep-z.png";
-import effectSparkles from "./assets/effects/effect-sparkles.png";
-import effectThinkingDots from "./assets/effects/effect-thinking-dots.png";
 import effectWakeRays from "./assets/effects/effect-wake-rays.png";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import mascotConfused from "./assets/mascot/mascot-confused.png";
@@ -56,13 +52,6 @@ const MASCOT_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
   sleeping: mascotSleeping
 });
 
-const EFFECT_BY_STATE: Readonly<Partial<Record<AssistantMascotState, string>>> = Object.freeze({
-  thinking: effectThinkingDots,
-  success: effectSparkles,
-  confused: effectQuestionMark,
-  sleeping: effectSleepZ
-});
-
 const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.freeze({
   ready: "Add a word to your library",
   thinking: "Preparing a review",
@@ -95,7 +84,6 @@ export function AssistantDock() {
   const [messages, setMessages] = useState<readonly AssistantMessage[]>(INITIAL_MESSAGES);
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking";
-  const stateEffect = EFFECT_BY_STATE[mascotState];
 
   useEffect(() => {
     if (!visible) {
@@ -236,13 +224,6 @@ export function AssistantDock() {
                 className={`assistant-panel__mascot assistant-panel__mascot--${mascotState}`}
                 src={MASCOT_BY_STATE[mascotState]}
               />
-              {stateEffect === undefined ? null : (
-                <img
-                  alt=""
-                  className={`assistant-panel__effect assistant-panel__effect--${mascotState}`}
-                  src={stateEffect}
-                />
-              )}
             </div>
             <div className="assistant-panel__heading">
               <h2 id={titleId}>Word helper</h2>
