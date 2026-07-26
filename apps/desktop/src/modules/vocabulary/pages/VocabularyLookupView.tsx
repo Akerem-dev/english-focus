@@ -3,8 +3,6 @@ import { useEffect, type FormEvent, type RefObject } from "react";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { dispatchAssistantRequest } from "../../assistant";
-import { AiInstructionDialog } from "../../instruction";
-import { PasteGeneratedJsonDialog } from "../../import-export";
 import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
@@ -56,25 +54,15 @@ interface VocabularyLookupViewProps {
   readonly searchInputRef: RefObject<HTMLInputElement | null>;
   readonly recentWords: readonly string[];
   readonly recentAdditions: readonly string[];
-  readonly instructionWord?: string | undefined;
-  readonly importWord?: string | undefined;
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   readonly onQueryChange: (query: string) => void;
   readonly onClear: () => void;
   readonly onEditSearch: () => void;
   readonly onSearch: (query: string) => void;
-  readonly onOpenInstruction: (word: string) => void;
-  readonly onCloseInstruction: () => void;
-  readonly onOpenImport: (word: string) => void;
-  readonly onCloseImport: () => void;
 }
 
 export function VocabularyLookupView({
-  importWord,
-  instructionWord,
   onClear,
-  onCloseImport,
-  onCloseInstruction,
   onEditSearch,
   onQueryChange,
   onSearch,
@@ -177,18 +165,6 @@ export function VocabularyLookupView({
           title="Local vocabulary search failed"
         />
       ) : null}
-
-      {instructionWord === undefined ? null : (
-        <AiInstructionDialog onClose={onCloseInstruction} open targetWord={instructionWord} />
-      )}
-      {importWord === undefined ? null : (
-        <PasteGeneratedJsonDialog
-          expectedWord={importWord}
-          onClose={onCloseImport}
-          onOpenSavedEntry={onSearch}
-          open
-        />
-      )}
 
       {state.kind === "initial" || state.kind === "typing" ? (
         <div className="vocabulary-dashboard">
