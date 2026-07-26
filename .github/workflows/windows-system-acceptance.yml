@@ -43,6 +43,9 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Install pinned WinApp CLI
+        run: npm install --no-save --package-lock=false @microsoft/winappcli@0.3.1
+
       - name: Validate Windows acceptance script syntax
         shell: powershell
         run: |
