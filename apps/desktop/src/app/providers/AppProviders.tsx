@@ -1,6 +1,7 @@
 import type { PropsWithChildren } from "react";
 
 import { ActivityProvider } from "./ActivityProvider";
+import { AssistantProvider } from "./AssistantProvider";
 import { BackupProvider } from "./BackupProvider";
 import { ClipboardProvider } from "./ClipboardProvider";
 import { FileTransferProvider } from "./FileTransferProvider";
@@ -24,7 +25,9 @@ export function AppProviders({ children }: PropsWithChildren) {
                   <VocabularyRepositoryProvider>
                     <VocabularyMetadataProvider>
                       <BackupProvider>
-                        <InstructionPreferencesProvider>{children}</InstructionPreferencesProvider>
+                        <InstructionPreferencesProvider>
+                          <AssistantProvider>{children}</AssistantProvider>
+                        </InstructionPreferencesProvider>
                       </BackupProvider>
                     </VocabularyMetadataProvider>
                   </VocabularyRepositoryProvider>
