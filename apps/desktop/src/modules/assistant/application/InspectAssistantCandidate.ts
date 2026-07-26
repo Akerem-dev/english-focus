@@ -12,7 +12,7 @@ import {
   type VocabularyPersistencePlan
 } from "../../import-export/application";
 
-export type AssistantCandidateReview =
+type AssistantCandidateReview =
   | {
       readonly kind: "ready";
       readonly entry: VocabularyEntry;
