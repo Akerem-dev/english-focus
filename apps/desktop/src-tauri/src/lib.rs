@@ -20,7 +20,6 @@ pub fn run() {
             commands::assistant::assistant_save_api_key,
             commands::assistant::assistant_clear_api_key,
             commands::assistant::assistant_generate_vocabulary,
-            commands::assistant_generation::assistant_generate_vocabulary_v2,
             commands::contract_commands::list_activity,
             commands::contract_commands::record_activity,
             commands::activity::clear_activity,
