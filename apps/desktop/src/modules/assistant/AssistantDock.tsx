@@ -1,12 +1,17 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useToast, useVocabularyRepository } from "../../app/providers";
+import {
+  useAssistant,
+  useInstructionPreferences,
+  useToast,
+  useVocabularyRepository
+} from "../../app/providers";
 import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
 import type { VocabularyPersistencePlan } from "../import-export/application";
-import { inspectAssistantCandidate, prepareAssistantWord } from "./application";
+import { inspectAssistantCandidate } from "./application";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
 import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import {
@@ -32,20 +37,20 @@ const INITIAL_MESSAGES: readonly AssistantMessage[] = Object.freeze([
   {
     id: 1,
     author: "assistant",
-    text: "Tell me the English word you want to add. Nothing is saved until you review it."
+    text: "Type one English word. I will prepare it for review before anything is saved."
   }
 ]);
 
 const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.freeze({
   ready: "Add a word to your library",
-  thinking: "Preparing a review",
+  thinking: "Preparing a reliable entry",
   success: "Saved to your library",
-  confused: "Check the word and try again",
+  confused: "This needs your attention",
   sleeping: "Resting nearby"
 });
 
-const MOCK_PREPARATION_DELAY_MS = 1200;
-const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
+const HEADWORD_PATTERN =
+  /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
@@ -53,6 +58,21 @@ function supportsAssistant(pathname: string): boolean {
 
 function isPlausibleHeadword(value: string): boolean {
   return HEADWORD_PATTERN.test(value);
+}
+
+function appendReply(
+  current: readonly AssistantMessage[],
+  id: number,
+  text: string
+): readonly AssistantMessage[] {
+  return Object.freeze([
+    ...current.slice(-2),
+    {
+      id,
+      author: "assistant" as const,
+      text
+    }
+  ]);
 }
 
 function userFacingSaveError(cause: unknown): string {
@@ -63,15 +83,33 @@ function userFacingSaveError(cause: unknown): string {
   return "This word could not be saved. Please try again.";
 }
 
+function userFacingPreparationError(cause: unknown): string {
+  const message = cause instanceof Error ? cause.message : String(cause);
+
+  if (message.includes("usage limit") || message.includes("quota")) {
+    return "The Gemini usage limit was reached. Try again after the quota resets.";
+  }
+  if (message.includes("API key was rejected")) {
+    return "The saved API key was rejected. Replace it in Settings.";
+  }
+  if (message.includes("could not be reached") || message.includes("timed out")) {
+    return "The word helper could not reach Gemini. Check your connection and try again.";
+  }
+
+  return "I could not prepare a reliable entry for this word. Please try again.";
+}
+
 export function AssistantDock() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { connection, prepareWord } = useAssistant();
+  const { preferences } = useInstructionPreferences();
   const { contentSource, saveEntry } = useVocabularyRepository();
   const { showToast } = useToast();
   const titleId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const attentionTimerRef = useRef<number | undefined>(undefined);
-  const responseTimerRef = useRef<number | undefined>(undefined);
   const preparationSequenceRef = useRef(0);
   const [open, setOpen] = useState(false);
   const [attention, setAttention] = useState(false);
@@ -126,6 +164,23 @@ export function AssistantDock() {
   }, [open]);
 
   useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      const viewport = messagesRef.current;
+      if (viewport !== null) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [messages, open, preview]);
+
+  useEffect(() => {
     function handleAssistantRequest(event: Event) {
       const detail = (event as CustomEvent<AssistantRequestDetail>).detail;
 
@@ -134,13 +189,13 @@ export function AssistantDock() {
         setPreview(undefined);
         setSavePlan(undefined);
         setSaveError(undefined);
+        setMessages(INITIAL_MESSAGES);
       }
 
       preparationSequenceRef.current += 1;
       setMascotState("ready");
       setAttention(false);
       window.clearTimeout(attentionTimerRef.current);
-      window.clearTimeout(responseTimerRef.current);
 
       window.requestAnimationFrame(() => {
         setAttention(true);
@@ -160,7 +215,6 @@ export function AssistantDock() {
     return () => {
       window.removeEventListener(ASSISTANT_REQUEST_EVENT, handleAssistantRequest);
       window.clearTimeout(attentionTimerRef.current);
-      window.clearTimeout(responseTimerRef.current);
       preparationSequenceRef.current += 1;
     };
   }, []);
@@ -183,6 +237,7 @@ export function AssistantDock() {
 
   function focusWordInput() {
     clearReview();
+    setMessages(INITIAL_MESSAGES);
     openAssistant();
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -195,9 +250,9 @@ export function AssistantDock() {
     }
 
     preparationSequenceRef.current += 1;
-    window.clearTimeout(responseTimerRef.current);
     setInput(preview.word);
     clearReview();
+    setMessages(INITIAL_MESSAGES);
     setMascotState("ready");
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -229,84 +284,92 @@ export function AssistantDock() {
 
       const nextPreview = createAssistantWordPreview(word, existingEntry, "existing");
       setPreview(nextPreview);
-      setMessages((current) => [
-        ...current,
-        {
-          id: messageId + 1,
-          author: "assistant",
-          text: `I found “${nextPreview.word}” in your local vocabulary. Review it below.`
-        }
-      ]);
+      setMessages((current) =>
+        appendReply(
+          current,
+          messageId + 1,
+          `I found “${nextPreview.word}” in your local vocabulary.`
+        )
+      );
       setMascotState("ready");
       return;
     }
 
-    const preparation = await prepareAssistantWord(word);
+    try {
+      const preparation = await prepareWord(word, preferences);
 
-    if (sequence !== preparationSequenceRef.current) {
-      return;
-    }
+      if (sequence !== preparationSequenceRef.current) {
+        return;
+      }
 
-    if (preparation.kind === "provider-unavailable") {
-      const nextPreview = createAssistantWordPreview(word);
+      if (preparation.kind === "provider-unavailable") {
+        const text =
+          preparation.reason === "desktop-required"
+            ? "Open the English Focus desktop app to prepare missing words. Browser preview can still open local entries."
+            : "Connect your Gemini API key in Settings before preparing a missing word.";
+        setPreview(undefined);
+        setSavePlan(undefined);
+        setMascotState("confused");
+        setMessages((current) => appendReply(current, messageId + 1, text));
+        return;
+      }
+
+      const review = inspectAssistantCandidate(preparation.value, word, contentSource);
+
+      if (review.kind === "invalid") {
+        setPreview(undefined);
+        setSavePlan(undefined);
+        setMascotState("confused");
+        setMessages((current) =>
+          appendReply(
+            current,
+            messageId + 1,
+            `I could not prepare a reliable entry for “${word}”. Please try again.`
+          )
+        );
+        return;
+      }
+
+      if (review.kind === "existing") {
+        const nextPreview = createAssistantWordPreview(word, review.entry, "existing");
+        setPreview(nextPreview);
+        setSavePlan(undefined);
+        setMessages((current) =>
+          appendReply(current, messageId + 1, `“${nextPreview.word}” is already available locally.`)
+        );
+        setMascotState("ready");
+        return;
+      }
+
+      const nextPreview = createAssistantWordPreview(word, review.entry, "ready");
       setPreview(nextPreview);
-      setMessages((current) => [
-        ...current,
-        {
-          id: messageId + 1,
-          author: "assistant",
-          text: `The review space for “${word}” is ready. Word preparation will be connected next.`
-        }
-      ]);
+      setSavePlan(review.plan);
+      setMessages((current) =>
+        appendReply(
+          current,
+          messageId + 1,
+          `“${nextPreview.word}” is ready. Check it before adding it.`
+        )
+      );
       setMascotState("ready");
-      return;
-    }
+    } catch (cause) {
+      if (sequence !== preparationSequenceRef.current) {
+        return;
+      }
 
-    const review = inspectAssistantCandidate(preparation.value, word, contentSource);
-
-    if (review.kind === "invalid") {
+      const message = userFacingPreparationError(cause);
       setPreview(undefined);
       setSavePlan(undefined);
       setMascotState("confused");
-      setMessages((current) => [
-        ...current,
-        {
-          id: messageId + 1,
-          author: "assistant",
-          text: `I could not prepare a reliable entry for “${word}”. Please try again.`
-        }
-      ]);
-      return;
+      setMessages((current) => appendReply(current, messageId + 1, message));
+      showToast({
+        title: "Word not prepared",
+        message,
+        tone: "error",
+        durationMs: 8_000,
+        dedupeKey: "assistant-vocabulary-generation"
+      });
     }
-
-    if (review.kind === "existing") {
-      const nextPreview = createAssistantWordPreview(word, review.entry, "existing");
-      setPreview(nextPreview);
-      setSavePlan(undefined);
-      setMessages((current) => [
-        ...current,
-        {
-          id: messageId + 1,
-          author: "assistant",
-          text: `“${nextPreview.word}” is already available locally. Review it below.`
-        }
-      ]);
-      setMascotState("ready");
-      return;
-    }
-
-    const nextPreview = createAssistantWordPreview(word, review.entry, "ready");
-    setPreview(nextPreview);
-    setSavePlan(review.plan);
-    setMessages((current) => [
-      ...current,
-      {
-        id: messageId + 1,
-        author: "assistant",
-        text: `“${nextPreview.word}” is ready. Check the meaning and example before adding it.`
-      }
-    ]);
-    setMascotState("ready");
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -323,8 +386,7 @@ export function AssistantDock() {
     if (!isPlausibleHeadword(word)) {
       clearReview();
       setMascotState("confused");
-      setMessages((current) => [
-        ...current,
+      setMessages([
         {
           id: messageId,
           author: "assistant",
@@ -337,15 +399,11 @@ export function AssistantDock() {
 
     preparationSequenceRef.current += 1;
     const sequence = preparationSequenceRef.current;
-    window.clearTimeout(responseTimerRef.current);
     clearReview();
     setMascotState("thinking");
-    setMessages((current) => [...current, { id: messageId, author: "user", text: word }]);
+    setMessages([{ id: messageId, author: "user", text: word }]);
     setInput("");
-
-    responseTimerRef.current = window.setTimeout(() => {
-      void finishPreparation(word, messageId, sequence);
-    }, MOCK_PREPARATION_DELAY_MS);
+    void finishPreparation(word, messageId, sequence);
   }
 
   async function addPreviewToLibrary(): Promise<void> {
@@ -366,14 +424,9 @@ export function AssistantDock() {
       setPreview(savedPreview);
       setSavePlan(undefined);
       setMascotState("success");
-      setMessages((current) => [
-        ...current,
-        {
-          id: Date.now(),
-          author: "assistant",
-          text: `I added “${record.entry.word}” to your library.`
-        }
-      ]);
+      setMessages((current) =>
+        appendReply(current, Date.now(), `I added “${record.entry.word}” to your library.`)
+      );
       showToast({
         title: "Word added",
         message: `“${record.entry.word}” is now in your local library.`,
@@ -422,7 +475,12 @@ export function AssistantDock() {
             />
           </header>
 
-          <div aria-live="polite" className="assistant-messages">
+          <div
+            aria-live="polite"
+            className="assistant-messages"
+            data-has-preview={preview !== undefined || undefined}
+            ref={messagesRef}
+          >
             {messages.map((message) => (
               <div className="assistant-message" data-author={message.author} key={message.id}>
                 <p>{message.text}</p>
@@ -444,18 +502,31 @@ export function AssistantDock() {
             <div className="assistant-shortcuts" aria-label="Word helper suggestions">
               <button onClick={focusWordInput} type="button">
                 <AppIcon name="book-open" size={18} />
-                <span>Add a new word</span>
+                <span>Prepare another word</span>
               </button>
-              <button
-                onClick={() => {
-                  navigate(ROUTE_PATHS.library);
-                  setOpen(false);
-                }}
-                type="button"
-              >
-                <AppIcon name="books" size={18} />
-                <span>Open recent words</span>
-              </button>
+              {!connection.configured ? (
+                <button
+                  onClick={() => {
+                    navigate(ROUTE_PATHS.settings);
+                    setOpen(false);
+                  }}
+                  type="button"
+                >
+                  <AppIcon name="settings" size={18} />
+                  <span>Open connection settings</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    navigate(ROUTE_PATHS.library);
+                    setOpen(false);
+                  }}
+                  type="button"
+                >
+                  <AppIcon name="books" size={18} />
+                  <span>Open recent words</span>
+                </button>
+              )}
             </div>
           ) : null}
 
@@ -487,7 +558,7 @@ export function AssistantDock() {
               type="submit"
               variant="primary"
             >
-              Continue
+              Prepare
             </Button>
           </form>
         </section>
