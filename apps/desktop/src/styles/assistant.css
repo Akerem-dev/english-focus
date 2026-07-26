@@ -84,12 +84,28 @@
 
 .assistant-launcher__frame,
 .assistant-launcher__mascot,
+.assistant-launcher__sleep-z,
 .assistant-launcher__wake-rays {
   position: absolute;
   display: block;
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+}
+
+.assistant-launcher__sleep-z {
+  top: -1%;
+  left: 56%;
+  z-index: 3;
+  width: 31%;
+  height: 31%;
+  opacity: 0.76;
+  animation: assistant-sleep-z 3.4s ease-in-out infinite;
+  transition: opacity var(--duration-fast) var(--easing-standard);
+}
+
+.assistant-launcher[data-state="awake"] .assistant-launcher__sleep-z {
+  opacity: 0;
 }
 
 .assistant-launcher__wake-rays {
@@ -124,15 +140,26 @@
 }
 
 .assistant-launcher__mascot {
-  top: 11.5%;
-  left: 20.5%;
   z-index: 2;
-  width: 59%;
-  height: 67%;
   transform-origin: center;
+  animation: assistant-mascot-enter 180ms var(--easing-standard) both;
   transition:
     transform var(--duration-normal) var(--easing-standard),
     filter var(--duration-fast) var(--easing-standard);
+}
+
+.assistant-launcher[data-state="sleeping"] .assistant-launcher__mascot {
+  top: 18%;
+  left: 14%;
+  width: 66%;
+  height: 61%;
+}
+
+.assistant-launcher[data-state="awake"] .assistant-launcher__mascot {
+  top: 9%;
+  left: 21%;
+  width: 58%;
+  height: 69%;
 }
 
 .assistant-launcher:hover .assistant-launcher__mascot {
@@ -177,6 +204,7 @@
   object-fit: contain;
   transform-origin: center;
   user-select: none;
+  animation: assistant-mascot-enter 180ms var(--easing-standard) both;
 }
 
 .assistant-panel__mascot--ready {
@@ -359,6 +387,31 @@
   color: var(--color-text-muted);
 }
 
+@keyframes assistant-mascot-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes assistant-sleep-z {
+  0%,
+  100% {
+    opacity: 0.48;
+    transform: translateY(0) scale(0.96);
+  }
+
+  50% {
+    opacity: 0.82;
+    transform: translateY(-0.2rem) scale(1.02);
+  }
+}
+
 @keyframes assistant-launcher-wake {
   0% {
     transform: translateY(0) rotate(0deg) scale(1);
@@ -467,8 +520,10 @@
   .assistant-launcher,
   .assistant-launcher__frame,
   .assistant-launcher__mascot,
+  .assistant-launcher__sleep-z,
   .assistant-launcher__glow::before,
   .assistant-launcher__wake-rays,
+  .assistant-panel__mascot,
   .assistant-panel__mascot-stage {
     animation: none !important;
     transition: none;
