@@ -110,7 +110,10 @@ export function AssistantConnectionSettings() {
         </span>
         <div>
           <h3 id="assistant-connection-title">Word helper connection</h3>
-          <p>Save your own Gemini API key to prepare missing vocabulary inside English Focus.</p>
+          <p>
+            Save your own Gemini API key. English Focus uses the fast model first and retries with
+            the quality model only when necessary.
+          </p>
         </div>
       </header>
 
