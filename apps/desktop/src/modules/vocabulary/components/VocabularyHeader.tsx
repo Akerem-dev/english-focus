@@ -1,3 +1,4 @@
+import { useEffect, useId, useRef, useState } from "react";
 import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
 import { Button, CefrBadge, StatusBadge, TagChip } from "../../../components";
@@ -26,6 +27,48 @@ export function VocabularyHeader({
   onImportReplacement
 }: VocabularyHeaderProps) {
   const presentation = presentVocabularyEntry(entry);
+  const advancedMenuId = useId();
+  const advancedMenuRef = useRef<HTMLDivElement>(null);
+  const advancedTriggerRef = useRef<HTMLButtonElement>(null);
+  const [advancedMenuOpen, setAdvancedMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!advancedMenuOpen) {
+      return;
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (
+        event.target instanceof Node &&
+        !advancedMenuRef.current?.contains(event.target) &&
+        !advancedTriggerRef.current?.contains(event.target)
+      ) {
+        setAdvancedMenuOpen(false);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      setAdvancedMenuOpen(false);
+      advancedTriggerRef.current?.focus();
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [advancedMenuOpen]);
+
+  function runAdvancedAction(action: () => void) {
+    setAdvancedMenuOpen(false);
+    action();
+  }
 
   return (
     <header className="vocabulary-detail-header">
@@ -58,22 +101,52 @@ export function VocabularyHeader({
             >
               {metadata?.favorite === true ? "Favorited" : "Personal details"}
             </Button>
-            <Button
-              leadingIcon={<AppIcon name="download" size={16} />}
-              onClick={onExport}
-              size="small"
-              variant="secondary"
-            >
-              Export JSON
-            </Button>
-            <Button
-              onClick={onImportReplacement}
-              size="small"
-              title="Advanced JSON replacement"
-              variant="ghost"
-            >
-              Import JSON
-            </Button>
+            <div className="vocabulary-advanced-menu">
+              <Button
+                aria-controls={advancedMenuId}
+                aria-expanded={advancedMenuOpen}
+                aria-haspopup="menu"
+                leadingIcon={<AppIcon name="chevron-down" size={16} />}
+                onClick={() => setAdvancedMenuOpen((current) => !current)}
+                ref={advancedTriggerRef}
+                size="small"
+                title="Advanced entry tools"
+                variant="ghost"
+              >
+                Advanced
+              </Button>
+              <div
+                className="vocabulary-advanced-menu__surface"
+                data-open={advancedMenuOpen || undefined}
+                id={advancedMenuId}
+                ref={advancedMenuRef}
+                role="menu"
+              >
+                <p className="vocabulary-advanced-menu__eyebrow">Advanced JSON tools</p>
+                <button
+                  onClick={() => runAdvancedAction(onExport)}
+                  role="menuitem"
+                  type="button"
+                >
+                  <AppIcon name="download" size={17} />
+                  <span>
+                    <strong>Export entry JSON</strong>
+                    <small>Save this complete entry as a local file.</small>
+                  </span>
+                </button>
+                <button
+                  onClick={() => runAdvancedAction(onImportReplacement)}
+                  role="menuitem"
+                  type="button"
+                >
+                  <AppIcon name="upload" size={17} />
+                  <span>
+                    <strong>Replace from JSON</strong>
+                    <small>Validate an externally prepared replacement before saving.</small>
+                  </span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
