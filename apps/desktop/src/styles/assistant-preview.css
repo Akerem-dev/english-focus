@@ -19,7 +19,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-4);
+  padding: var(--space-3);
   border-bottom: var(--border-width-hairline) solid var(--color-border);
 }
 
@@ -40,7 +40,7 @@
   margin: 0;
   color: var(--color-text);
   font-family: var(--font-family-display);
-  font-size: var(--font-size-5);
+  font-size: var(--font-size-4);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-tight);
 }
@@ -54,14 +54,24 @@
 
 .assistant-preview__content {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .assistant-preview__content section {
-  padding: var(--space-3) var(--space-4);
+  min-width: 0;
+  padding: var(--space-3);
+}
+
+.assistant-preview__content section:first-child {
+  grid-column: 1 / -1;
 }
 
 .assistant-preview__content section + section {
   border-top: var(--border-width-hairline) solid var(--color-border);
+}
+
+.assistant-preview__content section:nth-child(3) {
+  border-left: var(--border-width-hairline) solid var(--color-border);
 }
 
 .assistant-preview__content h4 {
@@ -76,8 +86,9 @@
 .assistant-preview__content p {
   margin: 0;
   color: var(--color-text-secondary);
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-1);
   line-height: var(--line-height-normal);
+  overflow-wrap: anywhere;
 }
 
 .assistant-preview__content p[data-empty="true"] {
@@ -88,7 +99,7 @@
 .assistant-preview__translation {
   margin-top: var(--space-1) !important;
   color: var(--color-text-muted) !important;
-  font-size: var(--font-size-1) !important;
+  font-size: var(--font-size-0) !important;
 }
 
 .assistant-preview__footer {
@@ -96,7 +107,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   border-top: var(--border-width-hairline) solid var(--color-border);
   background: var(--color-surface-muted);
 }
@@ -108,7 +119,7 @@
 .assistant-preview__status p {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: var(--font-size-1);
+  font-size: var(--font-size-0);
 }
 
 .assistant-preview__status p + p {
@@ -127,6 +138,18 @@
 }
 
 @media (max-width: 36rem) {
+  .assistant-preview__content {
+    grid-template-columns: 1fr;
+  }
+
+  .assistant-preview__content section:first-child {
+    grid-column: auto;
+  }
+
+  .assistant-preview__content section:nth-child(3) {
+    border-left: 0;
+  }
+
   .assistant-preview__header,
   .assistant-preview__footer {
     align-items: stretch;
