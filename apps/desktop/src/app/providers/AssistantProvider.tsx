@@ -4,7 +4,8 @@ import type { InstructionPreferences } from "@platform/domain";
 import {
   ASSISTANT_MODEL,
   TauriAssistantRepository,
-  type AssistantConnectionStatus
+  type AssistantConnectionStatus,
+  type AssistantPreparationStrategy
 } from "../../infrastructure/assistant/TauriAssistantRepository";
 import { AssistantContext, type AssistantConnectionLoadStatus } from "./AssistantContext";
 
@@ -67,8 +68,11 @@ export function AssistantProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   const prepareWord = useCallback(
-    (word: string, preferences: InstructionPreferences) =>
-      repository.prepareWord(word, preferences),
+    (
+      word: string,
+      preferences: InstructionPreferences,
+      strategy?: AssistantPreparationStrategy
+    ) => repository.prepareWord(word, preferences, strategy),
     [repository]
   );
 
