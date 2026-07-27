@@ -140,10 +140,7 @@ fn sanitize_schema(value: &mut Value) {
                 fields.remove(unsupported);
             }
 
-            if let Some(properties) = fields
-                .get_mut("properties")
-                .and_then(Value::as_object_mut)
-            {
+            if let Some(properties) = fields.get_mut("properties").and_then(Value::as_object_mut) {
                 for property_schema in properties.values_mut() {
                     sanitize_schema(property_schema);
                 }
