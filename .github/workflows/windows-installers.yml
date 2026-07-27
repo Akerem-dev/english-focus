@@ -30,7 +30,7 @@ jobs:
       - name: Verify and collect installer artifacts
         run: node scripts/check-release-artifacts.mjs --collect
       - name: Upload Windows installers
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: english-focus-unsigned-test-installers
           path: release-artifacts/windows/**
