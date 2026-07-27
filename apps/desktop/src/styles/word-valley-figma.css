@@ -1,44 +1,77 @@
-/* Figma-aligned Wordbook home composition.
-   This file intentionally loads after word-valley.css so the illustrated
-   home screen can evolve without changing the stable Library/Settings UI. */
+/*
+ * Word Valley — Wordbook home
+ *
+ * Figma reference frame: 1920 × 1080.
+ * Every illustrated layer below uses the exact coordinates supplied in Figma.
+ * Only the user-provided Word Valley assets are used on this screen.
+ */
 
 .application-frame:has(.route-page--vocabulary-home) {
-  background-color: #f8f0dd;
+  --wv-sidebar-width: 12.083333vw; /* 232 / 1920 */
+
+  grid-template-columns: var(--wv-sidebar-width) minmax(0, 1fr);
+  overflow: hidden;
+  background-color: #fff8e8;
   background-image: url("../assets/backgrounds/wordbook-home-background.png");
-  background-attachment: fixed;
-  background-position: center center;
+  background-position: 0 0;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100vw 100vh;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Sidebar artwork — Figma: x -101, y -167, w 469, h 1394                  */
+/* -------------------------------------------------------------------------- */
 
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar {
+  position: relative;
   z-index: calc(var(--layer-sticky) + 1);
-  overflow: hidden;
-  border-right: 0;
-  background-color: transparent;
-  background-image: url("../assets/shell/wordbook-sidebar-frame.png");
-  background-position: left top;
-  background-repeat: no-repeat;
-  background-size: 162% 100%;
-  box-shadow: 0.45rem 0 1.5rem rgb(70 51 26 / 7%);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  width: 100%;
+  height: 100vh;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
 }
 
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar::before {
+  position: absolute;
+  top: -15.462963vh;
+  left: -5.260417vw;
+  z-index: 0;
+  width: 24.427083vw;
+  height: 129.074074vh;
+  background-image: url("../assets/shell/wordbook-sidebar-frame.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  content: "";
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Logo lockup — Figma: x 5, y 10, w 246, h 164 */
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand {
-  min-height: 9.6rem;
+  position: absolute;
+  top: 0.925926vh;
+  left: 0.260417vw;
+  z-index: 2;
+  display: block;
+  width: 12.8125vw;
+  height: 15.185185vh;
+  min-height: 0;
   margin: 0;
   padding: 0;
   border: 0;
   border-radius: 0;
   background-color: transparent;
   background-image: url("../assets/brand/word-valley-logo-lockup.png");
-  background-position: center -0.45rem;
+  background-position: 0 0;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 100% 100%;
   box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  text-decoration: none;
+  transition: filter var(--duration-fast) var(--easing-standard);
 }
 
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand:hover {
@@ -46,86 +79,97 @@
   filter: brightness(1.025);
 }
 
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: -0.25rem;
+}
+
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand-name,
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand-mascot {
+  visibility: hidden;
   opacity: 0;
   pointer-events: none;
 }
 
+/* Navigation remains real HTML, positioned inside the empty illustrated frame. */
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__nav {
-  gap: 0.32rem;
-  padding: 0 0.85rem;
+  position: absolute;
+  top: 16.388889vh;
+  right: 1.25vw;
+  left: 0.625vw;
+  z-index: 2;
+  display: grid;
+  gap: 0.555556vh;
+  padding: 0;
 }
 
 .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
-  min-height: 3.25rem;
+  min-height: 4.814815vh;
+  gap: 0.75rem;
+  padding: 0 0.833333vw;
   border: 1px solid transparent;
-  border-radius: 0.85rem;
+  border-radius: 0.75rem;
   background: transparent;
-  color: color-mix(in srgb, var(--color-text-secondary) 92%, #6f694d);
+  color: #5e594d;
+  font-size: clamp(0.72rem, 0.78vw, 0.95rem);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item::before {
+  top: 0.55rem;
+  bottom: 0.55rem;
+  left: -0.625vw;
+}
+
 .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover {
-  border-color: rgb(137 91 73 / 12%);
-  background: rgb(255 249 237 / 60%);
+  border-color: rgb(137 91 73 / 13%);
+  background: rgb(255 249 237 / 54%);
+  color: #433f36;
 }
 
 .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active {
-  border-color: rgb(148 62 66 / 22%);
-  background: linear-gradient(180deg, rgb(255 244 237 / 88%), rgb(249 231 222 / 80%));
+  border-color: rgb(148 62 66 / 21%);
+  background: linear-gradient(180deg, rgb(255 246 238 / 88%), rgb(249 229 222 / 78%));
   color: #8f2831;
   box-shadow:
     inset 0 0.0625rem 0 rgb(255 255 255 / 82%),
-    0 0.28rem 0.7rem rgb(95 50 43 / 8%);
+    0 0.24rem 0.65rem rgb(95 50 43 / 7%);
 }
 
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__footer {
-  margin: auto 0.85rem 0.8rem;
-  padding: 1rem 0.9rem;
-  border: 1px solid rgb(124 91 62 / 12%);
-  border-radius: 0.95rem;
-  background: rgb(255 249 237 / 42%);
+  position: absolute;
+  right: 1.25vw;
+  bottom: 2.037037vh;
+  left: 0.625vw;
+  z-index: 2;
+  display: grid;
+  gap: 0.22rem;
+  margin: 0;
+  padding: 0.75rem 0.8rem;
+  border: 1px solid rgb(124 91 62 / 11%);
+  border-radius: 0.85rem;
+  background: rgb(255 249 237 / 35%);
+  color: #756d60;
+  font-size: clamp(0.64rem, 0.66vw, 0.78rem);
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
-.application-main:has(.route-page--vocabulary-home) .app-topbar {
-  z-index: calc(var(--layer-sticky) + 2);
-  min-height: 4.6rem;
-  margin: 0.45rem 0.7rem 0 0.2rem;
-  padding: 0 1.4rem;
-  border: 1px solid rgb(143 98 70 / 15%);
-  border-radius: 0.95rem;
-  background: linear-gradient(180deg, rgb(255 251 241 / 94%), rgb(252 241 222 / 91%));
-  box-shadow:
-    inset 0 0.0625rem 0 rgb(255 255 255 / 90%),
-    0 0.35rem 1rem rgb(67 47 28 / 7%);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar__runtime {
+  margin-bottom: 0.38rem;
 }
 
-.application-main:has(.route-page--vocabulary-home) .app-topbar__route {
-  color: #8f2630;
-  font-family: var(--font-family-display);
-  font-size: clamp(1.35rem, 1.55vw, 1.7rem);
-  font-weight: var(--font-weight-regular);
-  letter-spacing: -0.025em;
-  text-shadow: 0 0.08rem 0.18rem rgb(255 255 255 / 58%);
-}
+/* -------------------------------------------------------------------------- */
+/* Full-height right canvas                                                    */
+/* -------------------------------------------------------------------------- */
 
-.application-main:has(.route-page--vocabulary-home) .app-topbar__actions .button,
-.application-main:has(.route-page--vocabulary-home) .app-topbar__keycap {
-  border-color: rgb(142 76 68 / 21%);
-  background: rgb(255 249 240 / 62%);
-  color: #7f2930;
-  box-shadow: inset 0 0.0625rem 0 rgb(255 255 255 / 72%);
-}
-
+.application-frame:has(.route-page--vocabulary-home) .application-main,
+.application-main:has(.route-page--vocabulary-home),
 .application-main:has(.route-page--vocabulary-home) .app-content {
-  position: relative;
+  min-width: 0;
+  height: 100vh;
   overflow: hidden;
   background: transparent;
 }
@@ -135,94 +179,113 @@
   display: block;
   width: 100%;
   max-width: none;
-  min-height: 100%;
+  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background: transparent;
 }
+
+/* -------------------------------------------------------------------------- */
+/* Search artwork — Figma: x 555, y -64, w 809, h 539                        */
+/* -------------------------------------------------------------------------- */
 
 .route-page--vocabulary-home .vocabulary-hero {
   position: absolute;
-  top: 0;
-  left: 50%;
+  inset: 0;
   z-index: 3;
   display: block;
-  width: min(57rem, 72%);
-  height: 18rem;
+  width: 100%;
+  height: 100%;
   padding: 0;
   text-align: center;
-  transform: translateX(-50%);
 }
 
 .route-page--vocabulary-home .vocabulary-hero h1 {
   position: absolute;
-  top: 0;
-  left: 50%;
-  width: min(50.6rem, 88%);
-  height: 9.2rem;
+  top: -5.925926vh;
+  left: calc(28.90625vw - var(--wv-sidebar-width));
+  width: 42.135417vw;
+  height: 49.907407vh;
   margin: 0;
   overflow: hidden;
   background-image: url("../assets/wordbook/search-wordmark.png");
-  background-position: center -7.75rem;
+  background-position: 0 0;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 100% 100%;
   color: transparent;
   font-size: 0;
+  line-height: 0;
   text-shadow: none;
-  transform: translateX(-50%);
 }
 
 .route-page--vocabulary-home .vocabulary-hero h1::after {
   display: none;
 }
 
+/* Functional copy and controls placed in the calm area below the wordmark. */
 .route-page--vocabulary-home .vocabulary-hero__description {
   position: absolute;
-  top: 7.35rem;
-  right: 0;
-  left: 0;
+  top: 27.407407vh;
+  left: calc(50vw - var(--wv-sidebar-width));
+  width: min(34rem, 36vw);
   max-width: none;
-  margin: 0 auto;
-  color: #706a5f;
-  font-size: clamp(0.78rem, 0.82vw, 0.95rem);
-  line-height: 1.45;
+  margin: 0;
+  color: #6f685c;
+  font-size: clamp(0.68rem, 0.7vw, 0.86rem);
+  line-height: 1.4;
   text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 78%);
+  transform: translateX(-50%);
 }
 
 .route-page--vocabulary-home .vocabulary-search {
   position: absolute;
-  top: 9.45rem;
-  left: 50%;
+  top: 30.555556vh;
+  left: calc(50vw - var(--wv-sidebar-width));
   display: grid;
-  width: min(50rem, 92%);
+  width: min(47rem, 40.104167vw);
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.75rem;
+  gap: 0.625vw;
   margin: 0;
   transform: translateX(-50%);
 }
 
 .route-page--vocabulary-home .vocabulary-search .field__input {
-  min-height: 3.35rem;
-  border: 1px solid rgb(143 82 69 / 30%);
-  border-radius: 1rem;
+  min-height: 4.814815vh;
+  padding-inline: 1rem;
+  border: 1px solid rgb(143 82 69 / 29%);
+  border-radius: 0.85rem;
   background: rgb(255 251 241 / 88%);
   box-shadow:
-    inset 0 0.0625rem 0 rgb(255 255 255 / 90%),
-    0 0.35rem 0.8rem rgb(82 53 34 / 8%);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+    inset 0 0.0625rem 0 rgb(255 255 255 / 92%),
+    0 0.28rem 0.72rem rgb(82 53 34 / 8%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input:hover:not(:disabled) {
+  border-color: rgb(143 82 69 / 42%);
+  background: rgb(255 252 244 / 94%);
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input:focus-visible {
+  background: rgb(255 253 247 / 97%);
+  box-shadow:
+    0 0 0 0.16rem rgb(150 67 72 / 14%),
+    0 0.3rem 0.75rem rgb(82 53 34 / 9%);
 }
 
 .route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] {
-  min-width: 7.25rem;
-  min-height: 3.35rem;
-  border: 1px solid rgb(148 62 66 / 30%);
-  border-radius: 1rem;
-  background: linear-gradient(180deg, #fae3dd, #f2cbc7);
+  min-width: 6.25vw;
+  min-height: 4.814815vh;
+  border: 1px solid rgb(148 62 66 / 29%);
+  border-radius: 0.85rem;
+  background: linear-gradient(180deg, #fae4dd, #f1c9c5);
   color: #8c2730;
   box-shadow:
     inset 0 0.0625rem 0 rgb(255 255 255 / 78%),
-    0 0.35rem 0.8rem rgb(117 50 50 / 10%);
+    0 0.28rem 0.72rem rgb(117 50 50 / 10%);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -230,79 +293,148 @@
 .route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled) {
   background: linear-gradient(180deg, #f7d8d2, #edbbb8);
   color: #751d27;
+  transform: translateY(-0.0625rem);
 }
 
 .route-page--vocabulary-home .vocabulary-hero__hint {
   position: absolute;
-  top: 13.45rem;
-  right: 0;
-  left: 0;
+  top: 36.296296vh;
+  left: calc(50vw - var(--wv-sidebar-width));
+  width: min(34rem, 36vw);
   margin: 0;
   color: #777064;
-  font-size: clamp(0.7rem, 0.72vw, 0.83rem);
+  font-size: clamp(0.62rem, 0.64vw, 0.76rem);
   text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 82%);
-}
-
-.route-page--vocabulary-home .vocabulary-dashboard {
-  position: absolute;
-  top: 20.4rem;
-  left: 50%;
-  z-index: 2;
-  display: grid;
-  width: min(70rem, 69%);
-  height: 22.5rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.75rem;
   transform: translateX(-50%);
 }
 
+/* -------------------------------------------------------------------------- */
+/* Book layers                                                                */
+/* Green book: x 456, y 420, w 540, h 360                                    */
+/* Rose book:  x 850, y 283, w 712, h 647                                    */
+/* -------------------------------------------------------------------------- */
+
+.route-page--vocabulary-home .vocabulary-dashboard {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: none;
+}
+
 .route-page--vocabulary-home .word-list-card {
-  position: relative;
-  isolation: isolate;
+  position: absolute;
   overflow: visible;
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  isolation: isolate;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
+.route-page--vocabulary-home .word-list-card:first-child {
+  top: 38.888889vh;
+  left: calc(23.75vw - var(--wv-sidebar-width));
+  width: 28.125vw;
+  height: 33.333333vh;
+}
+
+.route-page--vocabulary-home .word-list-card:nth-child(2) {
+  top: 26.203704vh;
+  left: calc(44.270833vw - var(--wv-sidebar-width));
+  width: 37.083333vw;
+  height: 59.907407vh;
+}
+
 .route-page--vocabulary-home .word-list-card::before {
   position: absolute;
+  inset: 0;
   z-index: -1;
-  background-position: center;
+  background-position: 0 0;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   content: "";
   pointer-events: none;
+  user-select: none;
 }
 
 .route-page--vocabulary-home .word-list-card:first-child::before {
-  inset: -1% -6%;
   background-image: url("../assets/wordbook/recent-searches-book-panel.png");
 }
 
 .route-page--vocabulary-home .word-list-card:nth-child(2)::before {
-  inset: -27% -16.5%;
   background-image: url("../assets/wordbook/recent-additions-book-panel.png");
 }
 
-.route-page--vocabulary-home .word-list-card__header {
-  position: relative;
+/* Green book content sits inside its visible page area. */
+.route-page--vocabulary-home .word-list-card:first-child .word-list-card__header {
+  position: absolute;
+  top: 7.5%;
+  right: 11.5%;
+  left: 11.5%;
   z-index: 1;
-  min-height: 5.8rem;
-  align-items: end;
-  padding: 2.9rem 3.15rem 0.65rem;
-  border-bottom: 1px solid rgb(111 91 54 / 14%);
+  min-height: 18%;
+  padding: 0.35rem 0.65rem 0.45rem;
+  border-bottom: 1px solid rgb(101 107 71 / 15%);
   background: transparent;
+}
+
+.route-page--vocabulary-home .word-list-card:first-child .word-list-card__rows {
+  position: absolute;
+  top: 27%;
+  right: 12.5%;
+  bottom: 9%;
+  left: 12.5%;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Rose book asset contains transparent padding; values match its visible pages. */
+.route-page--vocabulary-home .word-list-card:nth-child(2) .word-list-card__header {
+  position: absolute;
+  top: 22.2%;
+  right: 22%;
+  left: 22%;
+  z-index: 1;
+  min-height: 12.5%;
+  padding: 0.35rem 0.55rem 0.45rem;
+  border-bottom: 1px solid rgb(152 78 78 / 14%);
+  background: transparent;
+}
+
+.route-page--vocabulary-home .word-list-card:nth-child(2) .word-list-card__rows {
+  position: absolute;
+  top: 35%;
+  right: 22.5%;
+  bottom: 21.5%;
+  left: 22.5%;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  overflow: hidden;
+  padding: 0;
+}
+
+.route-page--vocabulary-home .word-list-card__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.7rem;
 }
 
 .route-page--vocabulary-home .word-list-card__header h2 {
   color: #4f5034;
   font-family: var(--font-family-display);
-  font-size: clamp(1.05rem, 1.15vw, 1.35rem);
+  font-size: clamp(0.88rem, 0.95vw, 1.15rem);
   font-weight: var(--font-weight-regular);
+  line-height: 1.1;
 }
 
 .route-page--vocabulary-home .word-list-card:nth-child(2) .word-list-card__header h2 {
@@ -310,37 +442,32 @@
 }
 
 .route-page--vocabulary-home .word-list-card__header span {
-  padding-bottom: 0.18rem;
+  padding-bottom: 0.1rem;
   color: #81786b;
-  font-size: 0.65rem;
-}
-
-.route-page--vocabulary-home .word-list-card__rows {
-  position: relative;
-  z-index: 1;
-  padding: 0 3.1rem 2.85rem;
+  font-size: clamp(0.5rem, 0.5vw, 0.62rem);
+  letter-spacing: 0.08em;
 }
 
 .route-page--vocabulary-home .word-list-card__empty {
-  padding: 1rem 0;
+  padding: 0.75rem 0.3rem;
   color: #756e61;
-  font-size: 0.78rem;
+  font-size: clamp(0.62rem, 0.66vw, 0.78rem);
 }
 
 .route-page--vocabulary-home .word-list-row {
-  min-height: 2.75rem;
-  padding: 0;
+  min-height: clamp(2rem, 4.15vh, 2.8rem);
+  padding: 0 0.3rem;
   border-bottom: 1px solid rgb(111 91 54 / 10%);
   background: transparent;
 }
 
 .route-page--vocabulary-home .word-list-row:hover {
-  background: rgb(255 255 255 / 28%);
+  background: rgb(255 255 255 / 25%);
 }
 
 .route-page--vocabulary-home .word-list-row__word {
-  gap: 0.65rem;
-  font-size: clamp(0.74rem, 0.78vw, 0.9rem);
+  gap: 0.5rem;
+  font-size: clamp(0.62rem, 0.68vw, 0.82rem);
 }
 
 .route-page--vocabulary-home .word-list-card:first-child .word-list-row__word svg {
@@ -353,110 +480,20 @@
 
 .route-page--vocabulary-home .word-list-row__meta {
   color: #887e70;
-  font-size: 0.65rem;
+  font-size: clamp(0.48rem, 0.52vw, 0.62rem);
 }
 
-.application-frame:has(.route-page--vocabulary-home) .assistant-dock {
-  right: 0;
-  bottom: 0;
-}
-
-.application-frame:has(.route-page--vocabulary-home) .assistant-launcher {
-  width: clamp(16rem, 19vw, 22.8rem);
-  height: clamp(10.65rem, 12.7vw, 15.2rem);
-  filter: drop-shadow(0 0.75rem 1.25rem rgb(58 39 24 / 12%));
-}
-
-.application-frame:has(.route-page--vocabulary-home)
-  .assistant-launcher[data-state="sleeping"]
-  .assistant-launcher__mascot {
-  top: 10%;
-  left: 14%;
-  width: 71%;
-  height: 70%;
-}
-
-.application-frame:has(.route-page--vocabulary-home) .assistant-launcher__sleep-z {
-  top: -19%;
-  left: 49%;
-  width: 48%;
-  height: 48%;
-}
-
-@media (max-height: 52rem) {
-  .route-page--vocabulary-home .vocabulary-dashboard {
-    top: 18.2rem;
-    height: 19.5rem;
-  }
-
-  .route-page--vocabulary-home .word-list-card__header {
-    min-height: 5rem;
-    padding-top: 2.35rem;
-  }
-
-  .route-page--vocabulary-home .word-list-row {
-    min-height: 2.35rem;
-  }
-}
-
-@media (max-width: 80rem) {
-  .route-page--vocabulary-home .vocabulary-hero {
-    width: min(52rem, 82%);
-  }
-
-  .route-page--vocabulary-home .vocabulary-dashboard {
-    width: min(62rem, 76%);
-    gap: 1rem;
-  }
-
-  .route-page--vocabulary-home .word-list-card__header {
-    padding-right: 2.55rem;
-    padding-left: 2.55rem;
-  }
-
-  .route-page--vocabulary-home .word-list-card__rows {
-    padding-right: 2.5rem;
-    padding-left: 2.5rem;
-  }
-}
-
+/* Keep the authored 16:9 composition intact on very narrow previews. */
 @media (max-width: 60rem) {
-  .application-frame:has(.route-page--vocabulary-home) .app-sidebar {
-    background-image: none;
-    background-color: rgb(252 245 229 / 92%);
+  .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item__label,
+  .application-frame:has(.route-page--vocabulary-home) .app-sidebar__runtime-copy,
+  .application-frame:has(.route-page--vocabulary-home) .app-sidebar__footer-title,
+  .application-frame:has(.route-page--vocabulary-home) .app-sidebar__language {
+    display: none;
   }
 
-  .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand {
-    min-height: 6rem;
-    background-image: none;
-  }
-
-  .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand-mascot {
-    opacity: 1;
-  }
-
-  .route-page--vocabulary-home .vocabulary-hero {
-    width: 92%;
-  }
-
-  .route-page--vocabulary-home .vocabulary-dashboard {
-    width: 90%;
-  }
-}
-
-@media (max-width: 52rem) {
-  .application-main:has(.route-page--vocabulary-home) .app-content {
-    overflow: auto;
-  }
-
-  .route-page--vocabulary-home {
-    min-height: 64rem;
-    overflow: visible;
-  }
-
-  .route-page--vocabulary-home .vocabulary-dashboard {
-    top: 18rem;
-    height: auto;
-    grid-template-columns: 1fr;
+  .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
+    justify-content: center;
+    padding: 0;
   }
 }
