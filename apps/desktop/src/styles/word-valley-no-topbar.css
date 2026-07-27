@@ -1,15 +1,21 @@
-/* The illustrated Wordbook home owns the full right-hand canvas.
-   Other routes keep the standard application top bar. */
+/*
+ * The Figma-authored Wordbook home has no top bar.
+ * Library, Settings and every non-home state keep the standard application bar.
+ */
 
+.application-frame:has(.route-page--vocabulary-home) .application-main,
 .application-main:has(.route-page--vocabulary-home) {
   grid-template-rows: minmax(0, 1fr);
+  height: 100vh;
 }
 
 .application-main:has(.route-page--vocabulary-home) .app-topbar {
-  display: none;
+  display: none !important;
 }
 
 .application-main:has(.route-page--vocabulary-home) .app-content {
   grid-row: 1;
   height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
 }
