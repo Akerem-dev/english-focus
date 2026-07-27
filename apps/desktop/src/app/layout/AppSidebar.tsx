@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import wordValleyIcon from "../../assets/brand/word-valley-icon-source.png";
 import { SidebarNavItem } from "../../components/navigation";
-import { AppIcon, EnglishFocusMark } from "../../design-system";
+import { AppIcon } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
 import { APP_ROUTES } from "../router/routes";
 import { ROUTE_PATHS } from "../router/routeIds";
@@ -43,17 +44,17 @@ export function AppSidebar() {
   return (
     <aside className="app-sidebar">
       <Link
-        aria-label="English Focus vocabulary home"
+        aria-label="Word Valley vocabulary home"
         className="app-sidebar__brand"
         onClick={() => {
           dispatchAppCommand("open-vocabulary-home");
         }}
         to={ROUTE_PATHS.vocabulary}
       >
-        <EnglishFocusMark className="app-sidebar__mark" label="English Focus" size={56} />
+        <img alt="" className="app-sidebar__mark app-sidebar__brand-image" src={wordValleyIcon} />
         <span className="app-sidebar__brand-name" aria-hidden="true">
-          <span>English</span>
-          <span>Focus</span>
+          <span>Word</span>
+          <span>Valley</span>
         </span>
       </Link>
 
