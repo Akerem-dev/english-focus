@@ -75,6 +75,7 @@ export function VocabularyLookupView({
 }: VocabularyLookupViewProps) {
   const missingWord =
     state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
+  const isHomeState = state.kind === "initial" || state.kind === "typing";
 
   useEffect(() => {
     if (missingWord === undefined) {
@@ -88,7 +89,9 @@ export function VocabularyLookupView({
   }, [missingWord]);
 
   return (
-    <div className="route-page route-page--vocabulary">
+    <div
+      className={`route-page route-page--vocabulary${isHomeState ? " route-page--vocabulary-home" : ""}`}
+    >
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
         <h1 id="vocabulary-heading">Search</h1>
         <p className="vocabulary-hero__description">
@@ -162,7 +165,7 @@ export function VocabularyLookupView({
         />
       ) : null}
 
-      {state.kind === "initial" || state.kind === "typing" ? (
+      {isHomeState ? (
         <div className="vocabulary-dashboard">
           <WordListCard
             emptyMessage="Words you open will appear here."
