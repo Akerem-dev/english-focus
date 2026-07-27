@@ -3,6 +3,7 @@ import type { InstructionPreferences } from "@platform/domain";
 
 import type {
   AssistantConnectionStatus,
+  AssistantPreparationStrategy,
   AssistantWordPreparationResult
 } from "../../infrastructure/assistant/TauriAssistantRepository";
 
@@ -17,7 +18,8 @@ export interface AssistantContextValue {
   readonly clearApiKey: () => Promise<void>;
   readonly prepareWord: (
     word: string,
-    preferences: InstructionPreferences
+    preferences: InstructionPreferences,
+    strategy?: AssistantPreparationStrategy
   ) => Promise<AssistantWordPreparationResult>;
 }
 
