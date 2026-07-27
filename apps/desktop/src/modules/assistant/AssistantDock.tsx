@@ -10,6 +10,7 @@ import {
 import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
+import { ASSISTANT_PRIMARY_MODEL } from "../../infrastructure/assistant/TauriAssistantRepository";
 import type { VocabularyPersistencePlan } from "../import-export/application";
 import { inspectAssistantCandidate } from "./application";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
@@ -364,7 +365,7 @@ export function AssistantDock() {
     }
 
     try {
-      const preparation = await prepareWord(word, preferences);
+      let preparation = await prepareWord(word, preferences);
 
       if (sequence !== preparationSequenceRef.current) {
         return;
@@ -384,7 +385,34 @@ export function AssistantDock() {
         return;
       }
 
-      const review = inspectAssistantCandidate(preparation.value, word, contentSource);
+      let review = inspectAssistantCandidate(preparation.value, word, contentSource);
+
+      if (review.kind === "invalid" && preparation.model === ASSISTANT_PRIMARY_MODEL) {
+        setMessages((current) =>
+          appendReply(current, messageId + 1, "I am checking this word once more before review.")
+        );
+        preparation = await prepareWord(word, preferences, "quality");
+
+        if (sequence !== preparationSequenceRef.current) {
+          return;
+        }
+
+        if (preparation.kind === "provider-unavailable") {
+          const text =
+            preparation.reason === "desktop-required"
+              ? "Open the English Focus desktop app to prepare missing words."
+              : "Save a Gemini API key in Settings before preparing a missing word.";
+          setPreview(undefined);
+          setSavePlan(undefined);
+          setNeedsConnectionSettings(preparation.reason === "not-configured");
+          setMascotState("confused");
+          setMessages((current) => appendReply(current, messageId + 2, text));
+          restoreWordForRetry(word);
+          return;
+        }
+
+        review = inspectAssistantCandidate(preparation.value, word, contentSource);
+      }
 
       if (review.kind === "invalid") {
         setPreview(undefined);
@@ -394,7 +422,7 @@ export function AssistantDock() {
         setMessages((current) =>
           appendReply(
             current,
-            messageId + 1,
+            messageId + 2,
             `The entry prepared for “${word}” did not pass the app checks. Please try again.`
           )
         );
@@ -408,7 +436,7 @@ export function AssistantDock() {
         setSavePlan(undefined);
         setNeedsConnectionSettings(false);
         setMessages((current) =>
-          appendReply(current, messageId + 1, `“${nextPreview.word}” is already available locally.`)
+          appendReply(current, messageId + 2, `“${nextPreview.word}” is already available locally.`)
         );
         setMascotState("ready");
         return;
@@ -421,7 +449,7 @@ export function AssistantDock() {
       setMessages((current) =>
         appendReply(
           current,
-          messageId + 1,
+          messageId + 2,
           `“${nextPreview.word}” is ready. Check it before adding it.`
         )
       );
@@ -436,7 +464,7 @@ export function AssistantDock() {
       setSavePlan(undefined);
       setNeedsConnectionSettings(presentation.needsConnectionSettings);
       setMascotState("confused");
-      setMessages((current) => appendReply(current, messageId + 1, presentation.message));
+      setMessages((current) => appendReply(current, messageId + 2, presentation.message));
       restoreWordForRetry(word);
       showToast({
         title: "Word not prepared",
