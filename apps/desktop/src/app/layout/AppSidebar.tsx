@@ -11,16 +11,16 @@ import { connectToRuntime, type RuntimeConnection } from "../runtime/runtimeBrid
 
 function runtimeLabel(connection: RuntimeConnection | undefined) {
   if (connection === undefined) {
-    return "Checking local runtime";
+    return "Getting Word Valley ready";
   }
 
   switch (connection.kind) {
     case "native":
-      return "Local runtime connected";
+      return "Ready on this device";
     case "browser":
-      return "Browser preview";
+      return "Preview mode";
     case "error":
-      return "Runtime unavailable";
+      return "Offline features unavailable";
   }
 }
 
@@ -75,7 +75,7 @@ export function AppSidebar() {
           <span aria-hidden="true" className="app-sidebar__runtime-dot" />
           <span className="app-sidebar__runtime-copy">{runtimeLabel(runtime)}</span>
         </span>
-        <span className="app-sidebar__footer-title">Local Library</span>
+        <span className="app-sidebar__footer-title">Your Wordbook</span>
         <span className="app-sidebar__language">EN → TR</span>
       </div>
     </aside>
