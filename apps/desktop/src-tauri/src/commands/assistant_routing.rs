@@ -140,8 +140,19 @@ fn sanitize_schema(value: &mut Value) {
                 fields.remove(unsupported);
             }
 
-            for child in fields.values_mut() {
-                sanitize_schema(child);
+            if let Some(properties) = fields
+                .get_mut("properties")
+                .and_then(Value::as_object_mut)
+            {
+                for property_schema in properties.values_mut() {
+                    sanitize_schema(property_schema);
+                }
+            }
+
+            for (keyword, child) in fields.iter_mut() {
+                if keyword != "properties" {
+                    sanitize_schema(child);
+                }
             }
         }
         _ => {}
