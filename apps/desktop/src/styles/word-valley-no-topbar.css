@@ -1,0 +1,15 @@
+/* The illustrated Wordbook home owns the full right-hand canvas.
+   Other routes keep the standard application top bar. */
+
+.application-main:has(.route-page--vocabulary-home) {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.application-main:has(.route-page--vocabulary-home) .app-topbar {
+  display: none;
+}
+
+.application-main:has(.route-page--vocabulary-home) .app-content {
+  grid-row: 1;
+  height: 100vh;
+}
