@@ -46,11 +46,11 @@
 }
 
 .assistant-panel__mascot--ready {
-  top: -1.35rem;
-  left: -1.8rem;
-  width: 10.2rem;
-  height: 10.2rem;
-  clip-path: inset(0 0 0 29%);
+  top: -3.7rem;
+  left: -4.5rem;
+  width: 13rem;
+  height: 15rem;
+  clip-path: inset(0 0 0 10%);
 }
 
 .assistant-panel__mascot--thinking {
@@ -68,10 +68,10 @@
 }
 
 .assistant-panel__mascot--confused {
-  top: -2rem;
-  left: -2.65rem;
-  width: 10.8rem;
-  height: 10.8rem;
+  top: -2.95rem;
+  left: -3.9rem;
+  width: 13.6rem;
+  height: 13.6rem;
 }
 
 .assistant-panel__mascot--sleeping {
@@ -200,16 +200,23 @@
 }
 
 .assistant-launcher[data-state="awake"] .assistant-launcher__mascot {
+<<<<<<< Updated upstream
   top: -10%;
   left: -0.25rem;
   width: 118%;
   height: 118%;
   clip-path: inset(0 0 0 31%);
+=======
+  top: -15%;
+  left: 5%;
+  width: 135%;
+  height: 135%;
+  clip-path: inset(0 0 0 22%);
+>>>>>>> Stashed changes
 }
-
 .assistant-launcher[data-state="sleeping"] .assistant-launcher__mascot {
-  top: -3%;
-  left: 4%;
+  top: -12%;
+  left: -1%;
   width: 108%;
   height: 105%;
   clip-path: inset(0 0 0 24%);
