@@ -14,7 +14,7 @@ describe("release hardening helpers", () => {
   });
 
   it("uses clear route-aware document titles", () => {
-    expect(getDocumentTitle("Vocabulary")).toBe("Vocabulary — English Focus");
-    expect(getDocumentTitle("Settings")).toBe("Settings — English Focus");
+    expect(getDocumentTitle("Vocabulary")).toBe("Vocabulary — Word Valley");
+    expect(getDocumentTitle("Settings")).toBe("Settings — Word Valley");
   });
 });
