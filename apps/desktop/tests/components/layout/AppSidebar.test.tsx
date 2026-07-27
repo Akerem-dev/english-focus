@@ -12,10 +12,10 @@ describe("AppSidebar", () => {
       </MemoryRouter>
     );
 
-    expect(markup).toContain('aria-label="English Focus vocabulary home"');
+    expect(markup).toContain('aria-label="Word Valley vocabulary home"');
     expect(markup).toContain('class="app-sidebar__brand"');
     expect(markup).toContain('href="/"');
-    expect(markup).toContain("English");
-    expect(markup).toContain("Focus");
+    expect(markup).toContain("Word");
+    expect(markup).toContain("Valley");
   });
 });
