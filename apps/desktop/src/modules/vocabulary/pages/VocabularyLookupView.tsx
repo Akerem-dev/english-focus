@@ -1,5 +1,6 @@
-import { useEffect, type FormEvent, type RefObject } from "react";
+import { useEffect, type CSSProperties, type FormEvent, type RefObject } from "react";
 
+import { wordValleyHomeBackground } from "../../../assets/backgrounds/wordValleyHomeBackground";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { dispatchAssistantRequest } from "../../assistant";
@@ -10,6 +11,10 @@ import {
   VocabularySearchResultsState,
   VocabularySearchingState
 } from "../components";
+
+const wordValleyRouteStyle = {
+  "--word-valley-home-background": `url("${wordValleyHomeBackground}")`
+} as CSSProperties;
 
 interface WordListCardProps {
   readonly title: string;
@@ -88,7 +93,7 @@ export function VocabularyLookupView({
   }, [missingWord]);
 
   return (
-    <div className="route-page route-page--vocabulary">
+    <div className="route-page route-page--vocabulary" style={wordValleyRouteStyle}>
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
         <p className="route-page__eyebrow">Local English vocabulary</p>
         <h1 id="vocabulary-heading">Search your local vocabulary</h1>
