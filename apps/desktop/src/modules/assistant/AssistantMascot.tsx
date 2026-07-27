@@ -44,7 +44,11 @@ function getPanelVisual(state: AssistantMascotState): MascotVisual {
         effectClassName: "assistant-panel__state-effect--sleeping"
       };
     case "ready":
-      return { mascot: mascotReady };
+      return {
+        mascot: mascotReady,
+        effect: effectWakeRays,
+        effectClassName: "assistant-panel__state-effect--ready"
+      };
   }
 }
 
