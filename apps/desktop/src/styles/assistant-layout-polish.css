@@ -13,8 +13,8 @@
 }
 
 .assistant-panel__header {
-  min-height: 7rem;
-  grid-template-columns: 6.25rem minmax(0, 1fr) auto;
+  min-height: 7.4rem;
+  grid-template-columns: 7.25rem minmax(0, 1fr) auto;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   transition:
@@ -37,8 +37,8 @@
 }
 
 .assistant-panel__mascot-stage {
-  width: 6.25rem;
-  height: 6.25rem;
+  width: 7.25rem;
+  height: 7.25rem;
 }
 
 .assistant-panel__mascot {
@@ -46,50 +46,54 @@
 }
 
 .assistant-panel__mascot--ready {
-  top: -0.7rem;
-  left: -1.75rem;
-  width: 8.4rem;
-  height: 8.4rem;
-  clip-path: inset(0 0 0 34%);
+  top: -1.35rem;
+  left: -1.8rem;
+  width: 10.2rem;
+  height: 10.2rem;
+  clip-path: inset(0 0 0 29%);
 }
 
 .assistant-panel__mascot--thinking {
-  top: -0.65rem;
-  left: -1rem;
-  width: 7.9rem;
-  height: 7.9rem;
+  top: -1.2rem;
+  left: -1.2rem;
+  width: 9.35rem;
+  height: 9.35rem;
 }
 
 .assistant-panel__mascot--success {
-  top: -1.65rem;
-  left: -2.3rem;
-  width: 9.75rem;
-  height: 9.75rem;
+  top: -1.9rem;
+  left: -2.35rem;
+  width: 10.35rem;
+  height: 10.35rem;
 }
 
 .assistant-panel__mascot--confused {
-  top: -1.9rem;
-  left: -2.85rem;
-  width: 10.5rem;
-  height: 10.5rem;
+  top: -2rem;
+  left: -2.65rem;
+  width: 10.8rem;
+  height: 10.8rem;
 }
 
 .assistant-panel__mascot--sleeping {
-  top: -0.9rem;
-  left: -1.7rem;
-  width: 8.25rem;
-  height: 8.25rem;
-  clip-path: inset(0 0 0 27%);
+  top: -1.25rem;
+  left: -1.65rem;
+  width: 9.55rem;
+  height: 9.55rem;
+  clip-path: inset(0 0 0 24%);
+}
+
+.assistant-panel__state-effect--ready {
+  right: -0.35rem;
 }
 
 .assistant-panel__state-effect--thinking,
 .assistant-panel__state-effect--confused,
 .assistant-panel__state-effect--sleeping {
-  right: -0.1rem;
+  right: -0.45rem;
 }
 
 .assistant-panel__state-effect--success {
-  right: -0.35rem;
+  right: -0.65rem;
 }
 
 .assistant-panel__heading h2 {
@@ -180,20 +184,35 @@
   background: color-mix(in srgb, var(--color-surface-muted) 56%, var(--color-surface));
 }
 
+.assistant-launcher__sleep-z {
+  top: -10%;
+  left: 66%;
+  width: 35%;
+  height: 35%;
+}
+
+.assistant-launcher__wake-rays {
+  top: -12%;
+  left: 43%;
+  width: 58%;
+  height: 54%;
+  transform-origin: 55% 75%;
+}
+
 .assistant-launcher[data-state="awake"] .assistant-launcher__mascot {
-  top: 2%;
-  left: 3%;
-  width: 90%;
-  height: 90%;
-  clip-path: inset(0 0 0 34%);
+  top: -8%;
+  left: 0;
+  width: 112%;
+  height: 112%;
+  clip-path: inset(0 0 0 31%);
 }
 
 .assistant-launcher[data-state="sleeping"] .assistant-launcher__mascot {
-  top: 8%;
-  left: 2%;
-  width: 88%;
-  height: 82%;
-  clip-path: inset(0 0 0 27%);
+  top: -3%;
+  left: 4%;
+  width: 108%;
+  height: 105%;
+  clip-path: inset(0 0 0 24%);
 }
 
 @keyframes assistant-panel-enter {
@@ -228,14 +247,14 @@
   }
 
   .assistant-panel__header {
-    min-height: 6.25rem;
-    grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+    min-height: 6.75rem;
+    grid-template-columns: 6rem minmax(0, 1fr) auto;
   }
 
   .assistant-panel__mascot-stage {
-    width: 5.5rem;
-    height: 5.5rem;
-    transform: scale(0.88);
+    width: 6rem;
+    height: 6rem;
+    transform: scale(0.9);
     transform-origin: left center;
   }
 
