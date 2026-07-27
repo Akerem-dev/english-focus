@@ -200,10 +200,10 @@
 }
 
 .assistant-launcher[data-state="awake"] .assistant-launcher__mascot {
-  top: -8%;
-  left: 0;
-  width: 112%;
-  height: 112%;
+  top: -10%;
+  left: -0.25rem;
+  width: 118%;
+  height: 118%;
   clip-path: inset(0 0 0 31%);
 }
 
