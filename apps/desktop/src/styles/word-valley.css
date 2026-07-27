@@ -1,3 +1,16 @@
+.app-sidebar {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-sidebar) 74%, transparent),
+      color-mix(in srgb, var(--color-sidebar) 84%, transparent)
+    ),
+    url("../assets/backgrounds/word-valley-sidebar-background.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .app-sidebar__brand {
   justify-content: center;
   gap: 0.65rem;
@@ -60,6 +73,25 @@
       color-mix(in srgb, var(--color-background) 97%, var(--color-surface)) 0%,
       color-mix(in srgb, var(--color-background) 94%, var(--color-success-soft)) 100%
     );
+}
+
+.application-main:has(.route-page--vocabulary-home) .app-content {
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      color-mix(in srgb, var(--color-surface) 72%, transparent) 0%,
+      color-mix(in srgb, var(--color-surface) 56%, transparent) 27%,
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 28%, transparent),
+      color-mix(in srgb, var(--color-background) 42%, transparent)
+    ),
+    url("../assets/backgrounds/word-valley-wordbook-background.png");
+  background-position: center, center, center center;
+  background-repeat: no-repeat;
+  background-size: auto, auto, cover;
 }
 
 .route-page--vocabulary {
@@ -200,6 +232,19 @@
   background: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent-soft));
 }
 
+html[data-theme="dark"] .app-sidebar {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-sidebar) 88%, transparent),
+      color-mix(in srgb, var(--color-sidebar) 94%, transparent)
+    ),
+    url("../assets/backgrounds/word-valley-sidebar-background.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 html[data-theme="dark"] .application-main:has(.route-page--vocabulary) .app-content {
   background:
     radial-gradient(
@@ -213,6 +258,24 @@ html[data-theme="dark"] .application-main:has(.route-page--vocabulary) .app-cont
       transparent 26rem
     ),
     var(--color-background);
+}
+
+html[data-theme="dark"] .application-main:has(.route-page--vocabulary-home) .app-content {
+  background:
+    radial-gradient(
+      ellipse at 50% 30%,
+      color-mix(in srgb, var(--color-background) 54%, transparent),
+      color-mix(in srgb, var(--color-background) 76%, transparent) 58%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 76%, transparent),
+      color-mix(in srgb, var(--color-background) 88%, transparent)
+    ),
+    url("../assets/backgrounds/word-valley-wordbook-background.png");
+  background-position: center, center, center center;
+  background-repeat: no-repeat;
+  background-size: auto, auto, cover;
 }
 
 @media (max-width: 60rem) {
