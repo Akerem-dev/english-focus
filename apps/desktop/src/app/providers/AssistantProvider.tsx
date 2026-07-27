@@ -68,11 +68,8 @@ export function AssistantProvider({ children }: PropsWithChildren) {
   }, [repository]);
 
   const prepareWord = useCallback(
-    (
-      word: string,
-      preferences: InstructionPreferences,
-      strategy?: AssistantPreparationStrategy
-    ) => repository.prepareWord(word, preferences, strategy),
+    (word: string, preferences: InstructionPreferences, strategy?: AssistantPreparationStrategy) =>
+      repository.prepareWord(word, preferences, strategy),
     [repository]
   );
 
