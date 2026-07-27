@@ -1,6 +1,5 @@
-import { useEffect, type CSSProperties, type FormEvent, type RefObject } from "react";
+import { useEffect, type FormEvent, type RefObject } from "react";
 
-import { wordValleyHomeBackground } from "../../../assets/backgrounds/wordValleyHomeBackground";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
 import { dispatchAssistantRequest } from "../../assistant";
@@ -11,10 +10,6 @@ import {
   VocabularySearchResultsState,
   VocabularySearchingState
 } from "../components";
-
-const wordValleyRouteStyle = {
-  "--word-valley-home-background": `url("${wordValleyHomeBackground}")`
-} as CSSProperties;
 
 interface WordListCardProps {
   readonly title: string;
@@ -93,31 +88,29 @@ export function VocabularyLookupView({
   }, [missingWord]);
 
   return (
-    <div className="route-page route-page--vocabulary" style={wordValleyRouteStyle}>
+    <div className="route-page route-page--vocabulary">
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
-        <p className="route-page__eyebrow">Local English vocabulary</p>
-        <h1 id="vocabulary-heading">Search your local vocabulary</h1>
+        <h1 id="vocabulary-heading">Search</h1>
         <p className="vocabulary-hero__description">
-          Open an exact English word or search Turkish translations, English definitions, word
-          forms, personal tags, and notes—all stored on this device.
+          Find an English word, meaning, translation, tag, or note.
         </p>
         <form
-          aria-label="Vocabulary search"
+          aria-label="Wordbook search"
           className="vocabulary-search"
           onSubmit={onSubmit}
           role="search"
         >
           <SearchInput
             ref={searchInputRef}
-            aria-label="Search vocabulary"
-            label="Search vocabulary"
+            aria-label="Search your wordbook"
+            label="Search your wordbook"
             onChange={(event) => onQueryChange(event.currentTarget.value)}
             onClear={onClear}
-            placeholder="Word, translation, definition, tag, or note"
+            placeholder="Type a word, meaning, translation, tag, or note"
             value={query}
           />
           <Button
-            aria-label="Search vocabulary"
+            aria-label="Search your wordbook"
             className="vocabulary-search__button"
             isLoading={state.kind === "searching"}
             leadingIcon={<AppIcon name="search" size={18} />}
@@ -128,9 +121,7 @@ export function VocabularyLookupView({
             Search
           </Button>
         </form>
-        <p className="vocabulary-hero__hint">
-          Exact words open immediately. Prefix and full-text matching runs entirely on this device.
-        </p>
+        <p className="vocabulary-hero__hint">Your wordbook stays on this device.</p>
       </section>
 
       {state.kind === "searching" ? <VocabularySearchingState query={state.query} /> : null}
@@ -167,7 +158,7 @@ export function VocabularyLookupView({
             </Button>
           }
           description={state.message}
-          title="Local vocabulary search failed"
+          title="Wordbook search failed"
         />
       ) : null}
 
@@ -181,8 +172,8 @@ export function VocabularyLookupView({
             words={recentWords}
           />
           <WordListCard
-            emptyMessage="Imported and user-created entries will appear here."
-            eyebrow="Added locally"
+            emptyMessage="Words you add will appear here."
+            eyebrow="Added"
             onOpenWord={onSearch}
             title="Recent additions"
             words={recentAdditions}
