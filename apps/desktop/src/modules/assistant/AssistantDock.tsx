@@ -10,7 +10,6 @@ import {
 import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
-import { ASSISTANT_PRIMARY_MODEL } from "../../infrastructure/assistant/TauriAssistantRepository";
 import type { VocabularyPersistencePlan } from "../import-export/application";
 import { inspectAssistantCandidate } from "./application";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
@@ -55,6 +54,7 @@ const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
   sleeping: "Resting nearby"
 });
 
+const PRIMARY_ASSISTANT_MODEL = "gemini-3.5-flash-lite";
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
 function supportsAssistant(pathname: string): boolean {
@@ -387,7 +387,7 @@ export function AssistantDock() {
 
       let review = inspectAssistantCandidate(preparation.value, word, contentSource);
 
-      if (review.kind === "invalid" && preparation.model === ASSISTANT_PRIMARY_MODEL) {
+      if (review.kind === "invalid" && preparation.model === PRIMARY_ASSISTANT_MODEL) {
         setMessages((current) =>
           appendReply(current, messageId + 1, "I am checking this word once more before review.")
         );
