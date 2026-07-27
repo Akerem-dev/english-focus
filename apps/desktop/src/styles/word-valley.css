@@ -25,7 +25,7 @@
       color-mix(in srgb, var(--color-background) 20%, transparent) 58%,
       color-mix(in srgb, var(--color-background) 28%, transparent) 100%
     ),
-    url("../assets/backgrounds/word-valley-home-background.webp");
+    var(--word-valley-home-background, none);
   background-position: center, center bottom;
   background-repeat: no-repeat;
   background-size: cover;
@@ -62,7 +62,7 @@ html[data-theme="dark"] .route-page--vocabulary::before {
       color-mix(in srgb, var(--color-background) 68%, transparent) 0%,
       color-mix(in srgb, var(--color-background) 76%, transparent) 100%
     ),
-    url("../assets/backgrounds/word-valley-home-background.webp");
+    var(--word-valley-home-background, none);
   filter: brightness(0.72) saturate(0.72);
   opacity: 0.58;
 }
