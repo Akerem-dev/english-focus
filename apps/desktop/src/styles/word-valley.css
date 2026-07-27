@@ -1,0 +1,86 @@
+.app-sidebar__brand-image {
+  width: 3.5rem;
+  height: 3.5rem;
+  object-fit: cover;
+  object-position: center;
+  filter: drop-shadow(0 0.3rem 0.65rem rgb(61 47 34 / 16%));
+}
+
+.route-page--vocabulary {
+  position: relative;
+  isolation: isolate;
+}
+
+.route-page--vocabulary::before {
+  position: fixed;
+  top: 4.75rem;
+  right: 0;
+  bottom: 0;
+  left: var(--sidebar-width);
+  z-index: 0;
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 12%, transparent) 0%,
+      color-mix(in srgb, var(--color-background) 20%, transparent) 58%,
+      color-mix(in srgb, var(--color-background) 28%, transparent) 100%
+    ),
+    url("../assets/backgrounds/word-valley-home-background.webp");
+  background-position: center, center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  content: "";
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.route-page--vocabulary > * {
+  position: relative;
+  z-index: 1;
+}
+
+.route-page--vocabulary .vocabulary-hero {
+  border-radius: var(--radius-extra-large);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--color-background) 48%, transparent) 0%,
+    color-mix(in srgb, var(--color-background) 22%, transparent) 55%,
+    transparent 76%
+  );
+}
+
+.route-page--vocabulary .word-list-card,
+.route-page--vocabulary .vocabulary-result-state {
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  backdrop-filter: blur(0.75rem);
+}
+
+html[data-theme="dark"] .route-page--vocabulary::before {
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 68%, transparent) 0%,
+      color-mix(in srgb, var(--color-background) 76%, transparent) 100%
+    ),
+    url("../assets/backgrounds/word-valley-home-background.webp");
+  filter: brightness(0.72) saturate(0.72);
+  opacity: 0.58;
+}
+
+@media (max-width: 60rem) {
+  .route-page--vocabulary::before {
+    left: var(--sidebar-width-collapsed);
+  }
+
+  .app-sidebar__brand-image {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 52rem) {
+  .route-page--vocabulary::before {
+    background-position: center, 48% bottom;
+    opacity: 0.58;
+  }
+}
