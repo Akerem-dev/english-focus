@@ -1,8 +1,12 @@
 use keyring::{Entry, Error as KeyringError};
 use serde::Serialize;
 
-use super::assistant_routing::{
-    generate_vocabulary_candidate, AssistantRoutingCandidateResponse, AssistantRoutingPreferences,
+use super::{
+    assistant_generation,
+    assistant_routing::{
+        generate_vocabulary_candidate, AssistantRoutingCandidateResponse,
+        AssistantRoutingPreferences,
+    },
 };
 
 const ASSISTANT_MODEL: &str = "Automatic · Gemini 3.5 Flash-Lite → 3.6 Flash";
@@ -70,10 +74,35 @@ pub fn assistant_clear_api_key() -> Result<AssistantStatus, String> {
     }
 }
 
+async fn generate_quality_candidate(
+    word: String,
+    preferences: AssistantRoutingPreferences,
+) -> Result<AssistantRoutingCandidateResponse, String> {
+    let quality_preferences =
+        serde_json::from_value(serde_json::to_value(preferences).map_err(|error| {
+            format!("The word helper preferences could not be prepared: {error}")
+        })?)
+        .map_err(|error| format!("The word helper preferences are invalid: {error}"))?;
+    let response =
+        assistant_generation::generate_vocabulary_candidate(word, quality_preferences).await?;
+
+    serde_json::from_value(
+        serde_json::to_value(response).map_err(|error| {
+            format!("The quality-model response could not be prepared: {error}")
+        })?,
+    )
+    .map_err(|error| format!("The quality-model response is invalid: {error}"))
+}
+
 #[tauri::command]
 pub async fn assistant_generate_vocabulary(
     word: String,
     preferences: AssistantRoutingPreferences,
+    quality_only: Option<bool>,
 ) -> Result<AssistantRoutingCandidateResponse, String> {
+    if quality_only.unwrap_or(false) {
+        return generate_quality_candidate(word, preferences).await;
+    }
+
     generate_vocabulary_candidate(word, preferences).await
 }
