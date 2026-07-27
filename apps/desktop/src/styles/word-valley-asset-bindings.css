@@ -1,0 +1,15 @@
+/* Bind the Figma-exported launcher artwork without changing assistant behavior. */
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher__frame {
+  content: url("../assets/assistant/assistant-launcher-frame.png");
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-launcher[data-state="sleeping"]
+  .assistant-launcher__mascot {
+  content: url("../assets/assistant/mascot-sleeping.png");
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher__sleep-z {
+  content: url("../assets/assistant/effect-sleep-z.png");
+}
