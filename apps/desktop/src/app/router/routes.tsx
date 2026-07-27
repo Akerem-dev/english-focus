@@ -41,10 +41,10 @@ export const APP_ROUTES = [
   {
     id: "vocabulary",
     path: ROUTE_PATHS.vocabulary,
-    label: "Vocabulary",
-    title: "Vocabulary",
+    label: "Wordbook",
+    title: "Wordbook",
     icon: "book-open",
-    element: createRouteElement("Vocabulary", <VocabularyPage />)
+    element: createRouteElement("Wordbook", <VocabularyPage />)
   },
   {
     id: "library",
