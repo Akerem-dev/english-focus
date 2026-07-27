@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import wordValleyIcon from "../../assets/brand/word-valley-icon-source.png";
+import wordValleyBrandMascot from "../../assets/brand/word-valley-brand-mascot.png";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
@@ -44,18 +44,18 @@ export function AppSidebar() {
   return (
     <aside className="app-sidebar">
       <Link
-        aria-label="Word Valley vocabulary home"
+        aria-label="Word Valley wordbook home"
         className="app-sidebar__brand"
         onClick={() => {
           dispatchAppCommand("open-vocabulary-home");
         }}
         to={ROUTE_PATHS.vocabulary}
       >
-        <img alt="" className="app-sidebar__mark app-sidebar__brand-image" src={wordValleyIcon} />
         <span className="app-sidebar__brand-name" aria-hidden="true">
           <span>Word</span>
           <span>Valley</span>
         </span>
+        <img alt="" className="app-sidebar__brand-mascot" src={wordValleyBrandMascot} />
       </Link>
 
       <nav aria-label="Primary navigation" className="app-sidebar__nav">
