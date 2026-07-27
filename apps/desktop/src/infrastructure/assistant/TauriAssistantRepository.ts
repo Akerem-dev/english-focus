@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import type { InstructionPreferences } from "@platform/domain";
 
 export const ASSISTANT_MODEL = "Automatic · Gemini 3.5 Flash-Lite → 3.6 Flash";
+export const ASSISTANT_PRIMARY_MODEL = "gemini-3.5-flash-lite";
 
 export interface AssistantConnectionStatus {
   readonly runtime: "browser" | "desktop";
@@ -9,8 +10,14 @@ export interface AssistantConnectionStatus {
   readonly model: string;
 }
 
+export type AssistantPreparationStrategy = "automatic" | "quality";
+
 export type AssistantWordPreparationResult =
-  | { readonly kind: "candidate"; readonly value: unknown }
+  | {
+      readonly kind: "candidate";
+      readonly value: unknown;
+      readonly model: string;
+    }
   | {
       readonly kind: "provider-unavailable";
       readonly reason: "desktop-required" | "not-configured";
@@ -23,6 +30,7 @@ interface AssistantStatusPayload {
 
 interface AssistantCandidatePayload {
   readonly value: unknown;
+  readonly model: unknown;
 }
 
 function isTauriRuntime(): boolean {
@@ -59,12 +67,25 @@ function parseStatus(payload: unknown): AssistantConnectionStatus {
   });
 }
 
-function parseCandidate(payload: unknown): unknown {
-  if (typeof payload !== "object" || payload === null || !("value" in payload)) {
+function parseCandidate(payload: unknown): Readonly<{ value: unknown; model: string }> {
+  if (
+    typeof payload !== "object" ||
+    payload === null ||
+    !("value" in payload) ||
+    !("model" in payload)
+  ) {
     throw new Error("The prepared vocabulary response is incomplete.");
   }
 
-  return (payload as AssistantCandidatePayload).value;
+  const candidate = payload as AssistantCandidatePayload;
+  if (typeof candidate.model !== "string" || candidate.model.length === 0) {
+    throw new Error("The prepared vocabulary response has no model information.");
+  }
+
+  return Object.freeze({
+    value: candidate.value,
+    model: candidate.model
+  });
 }
 
 export class TauriAssistantRepository {
@@ -102,7 +123,8 @@ export class TauriAssistantRepository {
 
   async prepareWord(
     word: string,
-    preferences: InstructionPreferences
+    preferences: InstructionPreferences,
+    strategy: AssistantPreparationStrategy = "automatic"
   ): Promise<AssistantWordPreparationResult> {
     if (!isTauriRuntime()) {
       return Object.freeze({
@@ -112,14 +134,18 @@ export class TauriAssistantRepository {
     }
 
     try {
-      const payload = await invoke<unknown>("assistant_generate_vocabulary", {
-        word,
-        preferences
-      });
+      const payload = parseCandidate(
+        await invoke<unknown>("assistant_generate_vocabulary", {
+          word,
+          preferences,
+          qualityOnly: strategy === "quality"
+        })
+      );
 
       return Object.freeze({
         kind: "candidate" as const,
-        value: parseCandidate(payload)
+        value: payload.value,
+        model: payload.model
       });
     } catch (cause) {
       const message = errorText(cause);
