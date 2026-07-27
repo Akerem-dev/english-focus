@@ -12,6 +12,7 @@ import {
   type SettingsCategoryId
 } from "../application";
 import {
+  AssistantConnectionSettings,
   BackupSettingsSection,
   CoreContentSection,
   InstructionSettingsSection,
@@ -221,6 +222,7 @@ export function SettingsPage() {
                   value="First 3"
                 />
                 <InstructionSettingsSection disabled={isBusy} />
+                <AssistantConnectionSettings />
               </SettingsPreferenceList>
             </div>
           ) : null}

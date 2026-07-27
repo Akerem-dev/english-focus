@@ -1,0 +1,1 @@
+export { inspectAssistantCandidate } from "./InspectAssistantCandidate";

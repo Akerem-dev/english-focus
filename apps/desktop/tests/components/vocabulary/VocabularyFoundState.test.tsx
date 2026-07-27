@@ -39,12 +39,15 @@ describe("VocabularyFoundState", () => {
     expect(markup).toContain("← Back to Library");
   });
 
-  it("makes direct editing primary while keeping JSON import advanced", () => {
+  it("makes direct editing primary while keeping JSON tools advanced", () => {
     expect(markup).toContain("maintain");
     expect(markup).toContain("Edit entry");
-    expect(markup).toContain("Import JSON");
-    expect(markup).toContain('title="Advanced JSON replacement"');
-    expect(markup).not.toContain("Import replacement JSON");
+    expect(markup).toContain("Advanced");
+    expect(markup).toContain("Advanced JSON tools");
+    expect(markup).toContain("Export entry JSON");
+    expect(markup).toContain("Replace from JSON");
+    expect(markup).not.toContain(">Export JSON<");
+    expect(markup).not.toContain(">Import JSON<");
   });
 
   it("renders essential vocabulary identity without review or learning-status chips", () => {

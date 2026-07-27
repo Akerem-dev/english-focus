@@ -16,7 +16,7 @@ export function ImportSourceDialog({
 }: ImportSourceDialogProps) {
   return (
     <Modal
-      description="Choose whether this local JSON file contains one vocabulary entry or a complete English Focus vocabulary pack."
+      description="Import a complete English Focus pack, or use the advanced JSON fallback for one externally prepared entry."
       footer={
         <Button onClick={onClose} variant="ghost">
           Cancel
@@ -27,23 +27,28 @@ export function ImportSourceDialog({
       title="Import vocabulary"
     >
       <div className="import-source-grid">
-        <button className="import-source-card" onClick={onSelectSingleEntry} type="button">
-          <span aria-hidden="true">
-            <AppIcon name="book-open" size={26} />
-          </span>
-          <strong>One vocabulary entry</strong>
-          <small>
-            Import one versioned vocabulary object through the full validation workflow.
-          </small>
-        </button>
         <button className="import-source-card" onClick={onSelectPack} type="button">
           <span aria-hidden="true">
             <AppIcon name="books" size={26} />
           </span>
           <strong>Vocabulary pack</strong>
           <small>
-            Analyze, review, and import multiple saved entries with explicit error and duplicate
-            rules.
+            Recommended for complete English Focus packs. Review multiple entries, errors, and
+            duplicates before saving.
+          </small>
+        </button>
+        <button
+          className="import-source-card import-source-card--advanced"
+          onClick={onSelectSingleEntry}
+          type="button"
+        >
+          <span aria-hidden="true">
+            <AppIcon name="book-open" size={26} />
+          </span>
+          <strong>Advanced JSON entry</strong>
+          <small>
+            Fallback for one entry prepared outside the app. The file still passes the full local
+            validation workflow.
           </small>
         </button>
       </div>

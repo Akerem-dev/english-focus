@@ -16,6 +16,10 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::runtime::runtime_info,
+            commands::assistant::assistant_get_status,
+            commands::assistant::assistant_save_api_key,
+            commands::assistant::assistant_clear_api_key,
+            commands::assistant::assistant_generate_vocabulary,
             commands::contract_commands::list_activity,
             commands::contract_commands::record_activity,
             commands::activity::clear_activity,

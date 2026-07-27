@@ -1,3 +1,4 @@
+export { AssistantConnectionSettings } from "./AssistantConnectionSettings";
 export { InstructionSettingsSection } from "./InstructionSettingsSection";
 
 export { BackupSettingsSection } from "./BackupSettingsSection";

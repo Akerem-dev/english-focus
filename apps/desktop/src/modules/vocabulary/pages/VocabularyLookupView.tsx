@@ -1,9 +1,8 @@
-import type { FormEvent, RefObject } from "react";
+import { useEffect, type FormEvent, type RefObject } from "react";
 
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { AiInstructionDialog } from "../../instruction";
-import { PasteGeneratedJsonDialog } from "../../import-export";
+import { dispatchAssistantRequest } from "../../assistant";
 import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
@@ -55,28 +54,16 @@ interface VocabularyLookupViewProps {
   readonly searchInputRef: RefObject<HTMLInputElement | null>;
   readonly recentWords: readonly string[];
   readonly recentAdditions: readonly string[];
-  readonly instructionWord?: string | undefined;
-  readonly importWord?: string | undefined;
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   readonly onQueryChange: (query: string) => void;
   readonly onClear: () => void;
   readonly onEditSearch: () => void;
   readonly onSearch: (query: string) => void;
-  readonly onOpenInstruction: (word: string) => void;
-  readonly onCloseInstruction: () => void;
-  readonly onOpenImport: (word: string) => void;
-  readonly onCloseImport: () => void;
 }
 
 export function VocabularyLookupView({
-  importWord,
-  instructionWord,
   onClear,
-  onCloseImport,
-  onCloseInstruction,
   onEditSearch,
-  onOpenImport,
-  onOpenInstruction,
   onQueryChange,
   onSearch,
   onSubmit,
@@ -86,6 +73,20 @@ export function VocabularyLookupView({
   searchInputRef,
   state
 }: VocabularyLookupViewProps) {
+  const missingWord =
+    state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
+
+  useEffect(() => {
+    if (missingWord === undefined) {
+      return;
+    }
+
+    dispatchAssistantRequest({
+      kind: "wake",
+      word: missingWord
+    });
+  }, [missingWord]);
+
   return (
     <div className="route-page route-page--vocabulary">
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
@@ -143,8 +144,12 @@ export function VocabularyLookupView({
           canCreateEntry={state.canCreateEntry}
           normalizedQuery={state.normalizedQuery}
           onEditSearch={onEditSearch}
-          onOpenInstruction={() => onOpenInstruction(state.normalizedQuery)}
-          onOpenPasteGeneratedJson={() => onOpenImport(state.normalizedQuery)}
+          onOpenAssistant={() => {
+            dispatchAssistantRequest({
+              kind: "open",
+              word: state.normalizedQuery
+            });
+          }}
           onSelectSuggestion={onSearch}
           suggestions={state.suggestions}
         />
@@ -160,18 +165,6 @@ export function VocabularyLookupView({
           title="Local vocabulary search failed"
         />
       ) : null}
-
-      {instructionWord === undefined ? null : (
-        <AiInstructionDialog onClose={onCloseInstruction} open targetWord={instructionWord} />
-      )}
-      {importWord === undefined ? null : (
-        <PasteGeneratedJsonDialog
-          expectedWord={importWord}
-          onClose={onCloseImport}
-          onOpenSavedEntry={onSearch}
-          open
-        />
-      )}
 
       {state.kind === "initial" || state.kind === "typing" ? (
         <div className="vocabulary-dashboard">

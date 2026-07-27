@@ -5,7 +5,8 @@ import { expect, searchVocabulary, test } from "./app.fixture";
 
 test("replacement JSON preserves the explicit duplicate-review boundary", async ({ page }) => {
   await searchVocabulary(page, "maintain");
-  await page.getByRole("button", { name: "Import JSON" }).click();
+  await page.getByRole("button", { name: "Advanced" }).click();
+  await page.getByRole("menuitem", { name: /Replace from JSON/ }).click();
   await page
     .getByLabel("Generated vocabulary JSON")
     .fill(

@@ -6,8 +6,7 @@ export interface VocabularyNotFoundStateProps {
   readonly normalizedQuery: string;
   readonly canCreateEntry: boolean;
   readonly onEditSearch: () => void;
-  readonly onOpenInstruction: () => void;
-  readonly onOpenPasteGeneratedJson: () => void;
+  readonly onOpenAssistant: () => void;
   readonly onSelectSuggestion: (word: string) => void;
   readonly suggestions: readonly string[];
 }
@@ -16,8 +15,7 @@ export function VocabularyNotFoundState({
   canCreateEntry,
   normalizedQuery,
   onEditSearch,
-  onOpenInstruction,
-  onOpenPasteGeneratedJson,
+  onOpenAssistant,
   onSelectSuggestion,
   suggestions
 }: VocabularyNotFoundStateProps) {
@@ -30,8 +28,8 @@ export function VocabularyNotFoundState({
         <p className="route-page__eyebrow">No local match</p>
         <h2 id="not-found-title">“{normalizedQuery}” was not found</h2>
         <p>
-          No exact word, form, prefix, translation, definition, personal tag, or note matched this
-          search.
+          This word is not in your local collection yet. You can edit the search, try a suggestion,
+          or let the word helper prepare it for review.
         </p>
 
         <SearchSuggestions suggestions={suggestions} onSelect={onSelectSuggestion} />
@@ -41,26 +39,15 @@ export function VocabularyNotFoundState({
             Edit search
           </Button>
           {canCreateEntry ? (
-            <>
-              <Button
-                leadingIcon={<AppIcon name="copy" size={17} />}
-                onClick={onOpenInstruction}
-                variant="primary"
-              >
-                Copy AI instruction
-              </Button>
-              <Button onClick={onOpenPasteGeneratedJson} variant="secondary">
-                Paste generated JSON
-              </Button>
-            </>
+            <Button
+              leadingIcon={<AppIcon name="book-open" size={17} />}
+              onClick={onOpenAssistant}
+              variant="primary"
+            >
+              Prepare this word
+            </Button>
           ) : null}
         </div>
-        {canCreateEntry ? (
-          <small>
-            The instruction and pasted JSON remain local. Syntax, schema, semantic, quality, and
-            explicit preview gates run before any later save.
-          </small>
-        ) : null}
       </div>
     </section>
   );
