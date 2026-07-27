@@ -33,7 +33,7 @@ describe("application routes", () => {
 
     expect(markup).toContain("Loading Wordbook");
     expect(markup).toContain("Primary navigation");
-    expect(markup).toContain("Local Library");
+    expect(markup).toContain("Your Wordbook");
     expect(markup).toContain('href="#main-content"');
   });
 
