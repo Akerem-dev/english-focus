@@ -11,6 +11,15 @@
   user-select: none;
 }
 
+.assistant-panel__state-effect--ready {
+  top: -0.3rem;
+  right: -0.15rem;
+  width: 3.75rem;
+  height: 3.75rem;
+  opacity: 0.72;
+  animation: assistant-ready-effect 2.4s ease-in-out infinite;
+}
+
 .assistant-panel__state-effect--thinking {
   top: -0.55rem;
   right: -0.45rem;
@@ -36,11 +45,24 @@
 }
 
 .assistant-panel__state-effect--sleeping {
-  top: -0.3rem;
-  right: -0.2rem;
-  width: 3.2rem;
-  height: 3.2rem;
+  top: -0.55rem;
+  right: -0.35rem;
+  width: 3.65rem;
+  height: 3.65rem;
   animation: assistant-sleep-z 3.4s ease-in-out infinite;
+}
+
+@keyframes assistant-ready-effect {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateY(0.08rem) scale(0.94) rotate(-2deg);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: translateY(-0.08rem) scale(1.02) rotate(1deg);
+  }
 }
 
 @keyframes assistant-thinking-effect {
