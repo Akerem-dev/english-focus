@@ -200,20 +200,13 @@
 }
 
 .assistant-launcher[data-state="awake"] .assistant-launcher__mascot {
-<<<<<<< Updated upstream
   top: -10%;
   left: -0.25rem;
   width: 118%;
   height: 118%;
   clip-path: inset(0 0 0 31%);
-=======
-  top: -15%;
-  left: 5%;
-  width: 135%;
-  height: 135%;
-  clip-path: inset(0 0 0 22%);
->>>>>>> Stashed changes
 }
+
 .assistant-launcher[data-state="sleeping"] .assistant-launcher__mascot {
   top: -12%;
   left: -1%;
