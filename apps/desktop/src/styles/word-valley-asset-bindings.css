@@ -1,15 +1,101 @@
-/* Bind the Figma-exported launcher artwork without changing assistant behavior. */
+/*
+ * Closed assistant launcher — exact Figma layers.
+ * Frame:  x 1555, y 837, w 365, h 243
+ * Mascot: x 1608, y 808, w 259, h 259
+ * Sleep Z: x 1722, y 753, w 198, h 198
+ */
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock:not([data-open]) {
+  position: fixed;
+  top: 77.5vh;
+  right: auto;
+  bottom: auto;
+  left: 80.989583vw;
+  width: 19.010417vw;
+  height: 22.5vh;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] {
+  top: auto;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  left: auto;
+  width: auto;
+  height: auto;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  filter: none;
+  animation: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher:hover {
+  filter: none;
+  transform: scale(1.01);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher:active {
+  transform: scale(0.995);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher[data-attention="true"] {
+  animation: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher__glow,
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher__wake-rays {
+  display: none;
+}
 
 .application-frame:has(.route-page--vocabulary-home) .assistant-launcher__frame {
+  inset: 0;
+  width: 100%;
+  height: 100%;
   content: url("../assets/assistant/assistant-launcher-frame.png");
+  filter: none;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher:hover .assistant-launcher__frame {
+  filter: none;
+  transform: none;
+}
+
+/* Relative to the 365 × 243 launcher frame: left 53, top -29, w 259, h 259. */
+.application-frame:has(.route-page--vocabulary-home) .assistant-launcher .assistant-launcher__mascot,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-launcher[data-state="sleeping"]
+  .assistant-launcher__mascot,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-launcher[data-state="awake"]
+  .assistant-launcher__mascot {
+  top: -11.934156%;
+  left: 14.520548%;
+  width: 70.958904%;
+  height: 106.584362%;
+  content: url("../assets/assistant/mascot-sleeping.png");
+  filter: none;
+  transform: none;
+  animation: none;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
-  .assistant-launcher[data-state="sleeping"]
+  .assistant-launcher:hover
   .assistant-launcher__mascot {
-  content: url("../assets/assistant/mascot-sleeping.png");
+  filter: none;
+  transform: none;
 }
 
+/* Relative to the 365 × 243 launcher frame: left 167, top -84, w 198, h 198. */
 .application-frame:has(.route-page--vocabulary-home) .assistant-launcher__sleep-z {
+  top: -34.567901%;
+  left: 45.753425%;
+  width: 54.246575%;
+  height: 81.481481%;
   content: url("../assets/assistant/effect-sleep-z.png");
+  opacity: 1 !important;
+  animation: assistant-sleep-z 3.4s ease-in-out infinite;
 }
