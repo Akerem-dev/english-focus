@@ -61,17 +61,17 @@ export function createAssistantWordPreview(
 }
 
 const EYEBROW_BY_STATE: Readonly<Record<AssistantWordPreviewState, string>> = Object.freeze({
-  waiting: "Review",
-  existing: "Local entry",
-  ready: "Ready to add",
-  saved: "Added"
+  waiting: "Preparing preview",
+  existing: "Already in your Wordbook",
+  ready: "Ready for your Wordbook",
+  saved: "Added to your Wordbook"
 });
 
 const FOOTER_BY_STATE: Readonly<Record<AssistantWordPreviewState, string>> = Object.freeze({
-  waiting: "Nothing has been saved.",
-  existing: "Already available locally.",
-  ready: "Review the details, then add the word.",
-  saved: "Saved to your local library."
+  waiting: "Nothing has been saved yet.",
+  existing: "This word is already available in your Wordbook.",
+  ready: "Review the details, then add the word to your Wordbook.",
+  saved: "Saved to your local Wordbook."
 });
 
 interface AssistantWordPreviewProps {
@@ -165,7 +165,7 @@ export function AssistantWordPreview({
           )}
           {canOpen ? (
             <Button disabled={isSaving} onClick={onOpenExisting} size="small" variant="secondary">
-              View word
+              Open in Wordbook
             </Button>
           ) : null}
           {canAdd ? (
@@ -176,7 +176,7 @@ export function AssistantWordPreview({
               size="small"
               variant="primary"
             >
-              Add to Library
+              Add to Wordbook
             </Button>
           ) : null}
         </div>
