@@ -1,0 +1,254 @@
+/*
+ * Word Valley illustrated controls.
+ *
+ * Loads after every earlier Word Valley stylesheet. It binds the three
+ * user-supplied PNG assets to the existing interactive React controls without
+ * replacing their text, icons, focus behavior or click handlers.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Sidebar navigation                                                         */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
+  position: relative;
+  isolation: isolate;
+  min-height: 3.3rem;
+  gap: 0.72rem;
+  padding: 0 1rem 0 0.74rem;
+  overflow: visible;
+  border: 0 !important;
+  border-radius: 0.9rem;
+  background: transparent !important;
+  color: #584433;
+  box-shadow: none !important;
+  font-family: var(--font-family-display);
+  font-size: clamp(0.88rem, 0.82vw, 1rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.006em;
+  text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 72%);
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item::before {
+  display: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item::after {
+  position: absolute;
+  inset: -0.12rem -0.18rem;
+  z-index: 0;
+  border-radius: inherit;
+  background-image: url("../assets/shell/sidebar-nav-button-active.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  content: "";
+  opacity: 0.58;
+  pointer-events: none;
+  image-rendering: auto;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease,
+    filter 150ms ease;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item > * {
+  position: relative;
+  z-index: 1;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item__icon {
+  width: 2rem;
+  height: 2rem;
+  border: 0 !important;
+  border-radius: 50%;
+  background: transparent !important;
+  color: #75663f;
+  box-shadow: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item__label {
+  line-height: 1;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover {
+  background: transparent !important;
+  color: #4f5638;
+  box-shadow: none !important;
+  transform: translateX(0.08rem);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover::after {
+  opacity: 0.78;
+  filter: saturate(0.9) brightness(1.025);
+  transform: scale(1.012);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover .sidebar-nav-item__icon {
+  background: transparent !important;
+  color: #617143;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active {
+  background: transparent !important;
+  color: #7f302f;
+  box-shadow: none !important;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active::after {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active .sidebar-nav-item__icon {
+  background: transparent !important;
+  color: #8e3e39;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:focus-visible {
+  outline: 0.14rem solid rgb(143 81 69 / 48%);
+  outline-offset: 0.08rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Search field                                                               */
+/* -------------------------------------------------------------------------- */
+
+.route-page--vocabulary-home .vocabulary-search .field__control {
+  position: relative;
+  isolation: isolate;
+  min-height: 3.2rem;
+  overflow: visible;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input {
+  position: relative;
+  z-index: 1;
+  min-height: 3.2rem;
+  padding-right: 3rem !important;
+  padding-left: 3.15rem !important;
+  border: 0 !important;
+  border-radius: 1rem;
+  background-color: transparent !important;
+  background-image: url("../assets/wordbook/wordbook-search-field.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  color: #5a4939;
+  box-shadow: none !important;
+  font-family: var(--font-family-ui);
+  font-size: clamp(0.82rem, 0.76vw, 0.94rem);
+  image-rendering: auto;
+  transition:
+    filter 150ms ease,
+    transform 150ms ease;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input::placeholder {
+  color: rgb(91 72 57 / 76%);
+  opacity: 1;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input:hover:not(:disabled) {
+  background-color: transparent !important;
+  filter: brightness(1.018);
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input:focus-visible {
+  outline: 0.13rem solid rgb(160 95 78 / 38%);
+  outline-offset: 0.08rem;
+  background-color: transparent !important;
+  box-shadow: 0 0 0 0.25rem rgb(255 247 226 / 30%) !important;
+  filter: brightness(1.025);
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__leading-icon,
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action {
+  z-index: 2;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__leading-icon {
+  left: 1.12rem;
+  color: #925a4f;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Search button                                                              */
+/* -------------------------------------------------------------------------- */
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"] {
+  min-width: 7.2rem;
+  min-height: 3.2rem;
+  gap: 0.48rem;
+  padding: 0 1.24rem;
+  overflow: hidden;
+  border: 0 !important;
+  border-radius: 1rem;
+  background-color: transparent !important;
+  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  color: #fff8e9;
+  box-shadow: none !important;
+  font-family: var(--font-family-display);
+  font-size: clamp(0.9rem, 0.82vw, 1rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.012em;
+  text-shadow:
+    0 0.0625rem 0 rgb(93 42 38 / 40%),
+    0 0.16rem 0.3rem rgb(93 42 38 / 18%);
+  image-rendering: auto;
+  transition:
+    filter 150ms ease,
+    transform 150ms ease;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]::after {
+  display: none !important;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"] svg {
+  color: #fff4df;
+  filter: none;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled) {
+  border: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  box-shadow: none !important;
+  filter: brightness(1.045) saturate(1.025);
+  transform: translateY(-0.08rem);
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:active:not(:disabled) {
+  box-shadow: none !important;
+  filter: brightness(0.97);
+  transform: translateY(0.02rem) scale(0.985);
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:focus-visible {
+  outline: 0.14rem solid rgb(255 249 228 / 92%);
+  outline-offset: 0.1rem;
+  box-shadow: 0 0 0 0.28rem rgb(143 72 65 / 30%) !important;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:disabled {
+  opacity: 0.66;
+  filter: saturate(0.72);
+}
