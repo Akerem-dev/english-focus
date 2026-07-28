@@ -75,8 +75,9 @@ fn missing_word_error(word: &str, suggestions: &[String]) -> String {
 }
 
 fn dictionary_url(word: &str) -> Result<Url, String> {
-    let mut url = Url::parse(FREE_DICTIONARY_BASE_URL)
-        .map_err(|error| format!("assistant_dictionary_unavailable: Invalid dictionary URL: {error}"))?;
+    let mut url = Url::parse(FREE_DICTIONARY_BASE_URL).map_err(|error| {
+        format!("assistant_dictionary_unavailable: Invalid dictionary URL: {error}")
+    })?;
 
     url.path_segments_mut()
         .map_err(|_| "assistant_dictionary_unavailable: Invalid dictionary URL.".to_string())?
@@ -91,7 +92,9 @@ async fn free_dictionary_contains(client: &Client, word: &str) -> Result<bool, S
         .send()
         .await
         .map_err(|error| {
-            format!("assistant_dictionary_unavailable: Free Dictionary could not be reached: {error}")
+            format!(
+                "assistant_dictionary_unavailable: Free Dictionary could not be reached: {error}"
+            )
         })?;
 
     match response.status() {
@@ -104,8 +107,9 @@ async fn free_dictionary_contains(client: &Client, word: &str) -> Result<bool, S
 }
 
 async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>, String> {
-    let mut url = Url::parse(DATAMUSE_WORDS_URL)
-        .map_err(|error| format!("assistant_dictionary_unavailable: Invalid Datamuse URL: {error}"))?;
+    let mut url = Url::parse(DATAMUSE_WORDS_URL).map_err(|error| {
+        format!("assistant_dictionary_unavailable: Invalid Datamuse URL: {error}")
+    })?;
 
     url.query_pairs_mut()
         .append_pair("sp", word)
