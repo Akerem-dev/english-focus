@@ -59,13 +59,17 @@
   transform: none;
 }
 
-.application-frame:has(.route-page--vocabulary-home) .assistant-launcher:hover .assistant-launcher__frame {
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-launcher:hover
+  .assistant-launcher__frame {
   filter: none;
   transform: none;
 }
 
 /* Relative to the 365 × 243 launcher frame: left 53, top -29, w 259, h 259. */
-.application-frame:has(.route-page--vocabulary-home) .assistant-launcher .assistant-launcher__mascot,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-launcher
+  .assistant-launcher__mascot,
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-launcher[data-state="sleeping"]
   .assistant-launcher__mascot,

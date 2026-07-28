@@ -7,7 +7,7 @@
  */
 
 .application-frame:has(.route-page--vocabulary-home) {
-  --wv-sidebar-width: 12.083333vw; /* 232 / 1920 */
+  --wv-sidebar-width: 16vw;
 
   grid-template-columns: var(--wv-sidebar-width) minmax(0, 1fr);
   overflow: hidden;
@@ -28,19 +28,29 @@
   width: 100%;
   height: 100vh;
   overflow: visible;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+
+  border: 0 !important;
+  border-right: 0 !important;
+
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+
+  box-shadow: none !important;
+
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
   isolation: isolate;
 }
 
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar::before {
   position: absolute;
-  top: -15.462963vh;
-  left: -5.260417vw;
+  top: 0;
+  left: 0;
   z-index: 0;
-  width: 24.427083vw;
-  height: 129.074074vh;
+  width: 21vw;
+  height: 100vh;
   background-image: url("../assets/shell/wordbook-sidebar-frame.png");
   background-position: 0 0;
   background-repeat: no-repeat;
@@ -53,25 +63,36 @@
 /* Logo lockup — Figma: x 5, y 10, w 246, h 164 */
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand {
   position: absolute;
-  top: 0.925926vh;
-  left: 0.260417vw;
+
+  top: 1vh;
+  left: 0.9vw;
+
   z-index: 2;
   display: block;
+
   width: 12.8125vw;
   height: 15.185185vh;
+
   min-height: 0;
   margin: 0;
   padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  background-image: url("../assets/brand/word-valley-logo-lockup.png");
-  background-position: 0 0;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  box-shadow: none;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  /* Logo görselini koru */
+  background-image: url("../assets/brand/word-valley-logo-lockup.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+
+  /* Arkadaki eski paneli temizle */
+  background-color: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
   text-decoration: none;
-  transition: filter var(--duration-fast) var(--easing-standard);
 }
 
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand:hover {
@@ -290,7 +311,8 @@
   -webkit-backdrop-filter: none;
 }
 
-.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled) {
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled) {
   background: linear-gradient(180deg, #f7d8d2, #edbbb8);
   color: #751d27;
   transform: translateY(-0.0625rem);
@@ -337,17 +359,18 @@
 }
 
 .route-page--vocabulary-home .word-list-card:first-child {
-  top: 38.888889vh;
-  left: calc(23.75vw - var(--wv-sidebar-width));
-  width: 28.125vw;
-  height: 33.333333vh;
+  top: 31vh;
+  left: calc(22vw - var(--wv-sidebar-width));
+  width: 30vw;
+  height: 45.333333vh;
 }
 
 .route-page--vocabulary-home .word-list-card:nth-child(2) {
-  top: 26.203704vh;
-  left: calc(44.270833vw - var(--wv-sidebar-width));
-  width: 37.083333vw;
-  height: 59.907407vh;
+  position: absolute;
+  top: 14vh; /* 283 / 1080 */
+  left: calc(44.270833vw - var(--wv-sidebar-width)); /* 850 / 1920 */
+  width: 40vw; /* 712 / 1920 */
+  height: 80.907407vh; /* 647 / 1080 */
 }
 
 .route-page--vocabulary-home .word-list-card::before {
@@ -367,15 +390,19 @@
 }
 
 .route-page--vocabulary-home .word-list-card:nth-child(2)::before {
+  inset: 0;
   background-image: url("../assets/wordbook/recent-additions-book-panel.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 /* Green book content sits inside its visible page area. */
 .route-page--vocabulary-home .word-list-card:first-child .word-list-card__header {
   position: absolute;
-  top: 7.5%;
-  right: 11.5%;
-  left: 11.5%;
+  top: 11.5%;
+  right: 15.5%;
+  left: 17.5%;
   z-index: 1;
   min-height: 18%;
   padding: 0.35rem 0.65rem 0.45rem;
@@ -385,10 +412,10 @@
 
 .route-page--vocabulary-home .word-list-card:first-child .word-list-card__rows {
   position: absolute;
-  top: 27%;
+  top: 30%;
   right: 12.5%;
   bottom: 9%;
-  left: 12.5%;
+  left: 14.5%;
   z-index: 1;
   display: grid;
   align-content: start;
@@ -399,9 +426,9 @@
 /* Rose book asset contains transparent padding; values match its visible pages. */
 .route-page--vocabulary-home .word-list-card:nth-child(2) .word-list-card__header {
   position: absolute;
-  top: 22.2%;
-  right: 22%;
-  left: 22%;
+  top: 25.2%;
+  right: 20%;
+  left: 25.5%;
   z-index: 1;
   min-height: 12.5%;
   padding: 0.35rem 0.55rem 0.45rem;
@@ -411,10 +438,10 @@
 
 .route-page--vocabulary-home .word-list-card:nth-child(2) .word-list-card__rows {
   position: absolute;
-  top: 35%;
+  top: 38%;
   right: 22.5%;
   bottom: 21.5%;
-  left: 22.5%;
+  left: 22.6%;
   z-index: 1;
   display: grid;
   align-content: start;
@@ -496,4 +523,30 @@
     justify-content: center;
     padding: 0;
   }
+}
+/* Kitap satırlarının altındaki çizgileri kaldır */
+.route-page--vocabulary-home .word-list-row {
+  border-bottom: 0 !important;
+}
+
+/* RECENT ve ADDED yazılarını kaldır */
+.route-page--vocabulary-home .word-list-card__header > span {
+  display: none !important;
+}
+
+/* Open entry açıklamalarını kaldır */
+.route-page--vocabulary-home .word-list-row__meta {
+  display: none !important;
+}
+/* Recent searches ve Recent additions başlıklarının altındaki çizgiyi kaldır */
+.route-page--vocabulary.route-page--vocabulary-home .word-list-card__header,
+.route-page--vocabulary.route-page--vocabulary-home
+  .word-list-card:first-child
+  .word-list-card__header,
+.route-page--vocabulary.route-page--vocabulary-home
+  .word-list-card:nth-child(2)
+  .word-list-card__header {
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
 }
