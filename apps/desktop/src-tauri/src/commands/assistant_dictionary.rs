@@ -197,8 +197,8 @@ fn levenshtein_distance(left: &str, right: &str) -> usize {
         for (right_index, right_character) in right_chars.iter().enumerate() {
             let insertion = current[right_index] + 1;
             let deletion = previous[right_index + 1] + 1;
-            let substitution = previous[right_index]
-                + usize::from(left_character != *right_character);
+            let substitution =
+                previous[right_index] + usize::from(left_character != *right_character);
             current.push(insertion.min(deletion).min(substitution));
         }
 
