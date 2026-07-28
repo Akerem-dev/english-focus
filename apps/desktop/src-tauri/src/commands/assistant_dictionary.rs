@@ -323,10 +323,7 @@ async fn datamuse_lookup(client: &Client, word: &str) -> Result<Vec<DatamuseCand
         })
 }
 
-fn datamuse_candidates(
-    candidates: &[DatamuseCandidate],
-    word: &str,
-) -> Vec<String> {
+fn datamuse_candidates(candidates: &[DatamuseCandidate], word: &str) -> Vec<String> {
     let maximum_distance = maximum_suggestion_distance(word);
     let mut unique = Vec::new();
 
