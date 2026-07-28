@@ -6,7 +6,6 @@ use reqwest::{Client, StatusCode, Url};
 use serde::Deserialize;
 
 const FREE_DICTIONARY_BASE_URL: &str = "https://api.dictionaryapi.dev/api/v2/entries/en/";
-const WIKTIONARY_API_URL: &str = "https://en.wiktionary.org/w/api.php";
 const DATAMUSE_WORDS_URL: &str = "https://api.datamuse.com/words";
 const CACHE_LIMIT: usize = 2_000;
 
@@ -17,18 +16,28 @@ enum CachedValidation {
 }
 
 #[derive(Debug, Deserialize)]
+struct FreeDictionaryEntry {
+    word: String,
+    #[serde(default)]
+    meanings: Vec<FreeDictionaryMeaning>,
+}
+
+#[derive(Debug, Deserialize)]
+struct FreeDictionaryMeaning {
+    #[serde(default)]
+    definitions: Vec<FreeDictionaryDefinition>,
+}
+
+#[derive(Debug, Deserialize)]
+struct FreeDictionaryDefinition {
+    definition: String,
+}
+
+#[derive(Debug, Deserialize)]
 struct DatamuseCandidate {
     word: String,
-}
-
-#[derive(Debug, Deserialize)]
-struct WiktionaryParseResponse {
-    parse: Option<WiktionaryParse>,
-}
-
-#[derive(Debug, Deserialize)]
-struct WiktionaryParse {
-    wikitext: String,
+    #[serde(default)]
+    defs: Vec<String>,
 }
 
 static VALIDATION_CACHE: OnceLock<Mutex<HashMap<String, CachedValidation>>> = OnceLock::new();
@@ -85,14 +94,48 @@ fn missing_word_error(word: &str, suggestions: &[String]) -> String {
     format!("assistant_word_not_found|{word}|{compact_suggestions}")
 }
 
-fn has_english_section(wikitext: &str) -> bool {
-    wikitext.lines().any(|line| {
-        line.trim()
-            .chars()
-            .filter(|character| !character.is_whitespace())
-            .collect::<String>()
-            .eq_ignore_ascii_case("==English==")
-    })
+fn definition_is_primary_lemma(definition: &str) -> bool {
+    let normalized = definition.trim().to_ascii_lowercase();
+
+    if normalized.is_empty() {
+        return false;
+    }
+
+    const NON_LEMMA_MARKERS: &[&str] = &[
+        "plural of ",
+        "singular of ",
+        "simple past tense",
+        "past participle of ",
+        "present participle of ",
+        "third-person singular",
+        "comparative form of ",
+        "superlative form of ",
+        "alternative form of ",
+        "alternative spelling of ",
+        "obsolete spelling of ",
+        "nonstandard spelling of ",
+        "pronunciation spelling of ",
+        "eye dialect spelling of ",
+        "abbreviation of ",
+        "acronym of ",
+        "initialism of ",
+        "symbol for ",
+        "contraction of ",
+    ];
+
+    !NON_LEMMA_MARKERS
+        .iter()
+        .any(|marker| normalized.contains(marker))
+}
+
+fn entry_has_primary_definition(entry: &FreeDictionaryEntry, expected_word: &str) -> bool {
+    entry.word.trim().eq_ignore_ascii_case(expected_word)
+        && entry.meanings.iter().any(|meaning| {
+            meaning
+                .definitions
+                .iter()
+                .any(|definition| definition_is_primary_lemma(&definition.definition))
+        })
 }
 
 fn dictionary_url(word: &str) -> Result<Url, String> {
@@ -107,7 +150,10 @@ fn dictionary_url(word: &str) -> Result<Url, String> {
     Ok(url)
 }
 
-async fn free_dictionary_contains(client: &Client, word: &str) -> Result<bool, String> {
+async fn free_dictionary_contains_primary_lemma(
+    client: &Client,
+    word: &str,
+) -> Result<bool, String> {
     let response = client
         .get(dictionary_url(word)?)
         .send()
@@ -119,7 +165,20 @@ async fn free_dictionary_contains(client: &Client, word: &str) -> Result<bool, S
         })?;
 
     match response.status() {
-        status if status.is_success() => Ok(true),
+        status if status.is_success() => {
+            let entries = response
+                .json::<Vec<FreeDictionaryEntry>>()
+                .await
+                .map_err(|error| {
+                    format!(
+                        "assistant_dictionary_unavailable: Free Dictionary returned invalid data: {error}"
+                    )
+                })?;
+
+            Ok(entries
+                .iter()
+                .any(|entry| entry_has_primary_definition(entry, word)))
+        }
         StatusCode::NOT_FOUND => Ok(false),
         status => Err(format!(
             "assistant_dictionary_unavailable: Free Dictionary returned {status}."
@@ -127,40 +186,34 @@ async fn free_dictionary_contains(client: &Client, word: &str) -> Result<bool, S
     }
 }
 
-async fn wiktionary_contains_english(client: &Client, word: &str) -> Result<bool, String> {
-    let mut url = Url::parse(WIKTIONARY_API_URL).map_err(|error| {
-        format!("assistant_dictionary_unavailable: Invalid Wiktionary URL: {error}")
-    })?;
+fn levenshtein_distance(left: &str, right: &str) -> usize {
+    let right_chars = right.chars().collect::<Vec<_>>();
+    let mut previous = (0..=right_chars.len()).collect::<Vec<_>>();
 
-    url.query_pairs_mut()
-        .append_pair("action", "parse")
-        .append_pair("page", word)
-        .append_pair("prop", "wikitext")
-        .append_pair("redirects", "1")
-        .append_pair("format", "json")
-        .append_pair("formatversion", "2");
+    for (left_index, left_character) in left.chars().enumerate() {
+        let mut current = Vec::with_capacity(right_chars.len() + 1);
+        current.push(left_index + 1);
 
-    let response = client.get(url).send().await.map_err(|error| {
-        format!("assistant_dictionary_unavailable: Wiktionary could not be reached: {error}")
-    })?;
+        for (right_index, right_character) in right_chars.iter().enumerate() {
+            let insertion = current[right_index] + 1;
+            let deletion = previous[right_index + 1] + 1;
+            let substitution = previous[right_index]
+                + usize::from(left_character != *right_character);
+            current.push(insertion.min(deletion).min(substitution));
+        }
 
-    if !response.status().is_success() {
-        return Err(format!(
-            "assistant_dictionary_unavailable: Wiktionary returned {}.",
-            response.status()
-        ));
+        previous = current;
     }
 
-    let payload = response
-        .json::<WiktionaryParseResponse>()
-        .await
-        .map_err(|error| {
-            format!("assistant_dictionary_unavailable: Wiktionary returned invalid data: {error}")
-        })?;
+    previous[right_chars.len()]
+}
 
-    Ok(payload
-        .parse
-        .is_some_and(|page| has_english_section(&page.wikitext)))
+fn maximum_suggestion_distance(word: &str) -> usize {
+    match word.chars().count() {
+        0..=4 => 1,
+        5..=7 => 2,
+        _ => 3,
+    }
 }
 
 async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>, String> {
@@ -170,7 +223,8 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
 
     url.query_pairs_mut()
         .append_pair("sp", word)
-        .append_pair("max", "8");
+        .append_pair("md", "d")
+        .append_pair("max", "12");
 
     let response = client.get(url).send().await.map_err(|error| {
         format!("assistant_dictionary_unavailable: Datamuse could not be reached: {error}")
@@ -190,7 +244,9 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
             format!("assistant_dictionary_unavailable: Datamuse returned invalid data: {error}")
         })?;
 
+    let maximum_distance = maximum_suggestion_distance(word);
     let mut unique = Vec::new();
+
     for candidate in candidates {
         let normalized = candidate
             .word
@@ -201,8 +257,19 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
             .join(" ")
             .to_ascii_lowercase();
 
-        if !normalized.is_empty() && normalized != word && !unique.contains(&normalized) {
-            unique.push(normalized);
+        if normalized.is_empty()
+            || normalized == word
+            || candidate.defs.is_empty()
+            || levenshtein_distance(word, &normalized) > maximum_distance
+            || unique.contains(&normalized)
+        {
+            continue;
+        }
+
+        unique.push(normalized);
+
+        if unique.len() == 5 {
+            break;
         }
     }
 
@@ -229,45 +296,29 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
             format!("assistant_dictionary_unavailable: Dictionary client could not start: {error}")
         })?;
 
-    let free_dictionary_result = free_dictionary_contains(&client, &normalized).await;
-    if matches!(free_dictionary_result, Ok(true)) {
+    if free_dictionary_contains_primary_lemma(&client, &normalized).await? {
         remember_validation(normalized, CachedValidation::Found);
         return Ok(());
     }
 
-    let wiktionary_result = wiktionary_contains_english(&client, &normalized).await;
-    if matches!(wiktionary_result, Ok(true)) {
-        remember_validation(normalized, CachedValidation::Found);
-        return Ok(());
-    }
+    let suggestions = datamuse_candidates(&client, &normalized)
+        .await
+        .unwrap_or_default();
 
-    match (&free_dictionary_result, &wiktionary_result) {
-        (Ok(false), Ok(false)) => {
-            let suggestions = datamuse_candidates(&client, &normalized)
-                .await
-                .unwrap_or_default()
-                .into_iter()
-                .take(5)
-                .collect::<Vec<_>>();
+    remember_validation(
+        normalized.clone(),
+        CachedValidation::Missing(suggestions.clone()),
+    );
 
-            remember_validation(
-                normalized.clone(),
-                CachedValidation::Missing(suggestions.clone()),
-            );
-
-            Err(missing_word_error(&normalized, &suggestions))
-        }
-        (Err(free_dictionary_error), Err(wiktionary_error)) => Err(format!(
-            "assistant_dictionary_unavailable: Both authoritative dictionary checks failed. {free_dictionary_error} {wiktionary_error}"
-        )),
-        (Err(error), Ok(false)) | (Ok(false), Err(error)) => Err(error.clone()),
-        (Ok(true), _) | (_, Ok(true)) => Ok(()),
-    }
+    Err(missing_word_error(&normalized, &suggestions))
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{has_english_section, missing_word_error, normalize_headword};
+    use super::{
+        definition_is_primary_lemma, levenshtein_distance, maximum_suggestion_distance,
+        missing_word_error, normalize_headword,
+    };
 
     #[test]
     fn normalizes_supported_headwords() {
@@ -277,13 +328,28 @@ mod tests {
     }
 
     #[test]
-    fn detects_only_english_wiktionary_sections() {
-        assert!(has_english_section("==English==\n===Noun==="));
-        assert!(has_english_section("== English ==\n=== Verb ==="));
-        assert!(!has_english_section("==German==\n===Noun==="));
-        assert!(!has_english_section(
-            "This text mentions English without a section."
+    fn accepts_direct_definitions_and_rejects_non_lemma_definitions() {
+        assert!(definition_is_primary_lemma(
+            "To assign something for a particular purpose."
         ));
+        assert!(!definition_is_primary_lemma("plural of da"));
+        assert!(!definition_is_primary_lemma(
+            "Pronunciation spelling of that's."
+        ));
+        assert!(!definition_is_primary_lemma(
+            "Simple past tense and past participle of allocate."
+        ));
+        assert!(!definition_is_primary_lemma(
+            "Initialism of data acquisition system."
+        ));
+    }
+
+    #[test]
+    fn limits_suggestions_to_nearby_spellings() {
+        assert_eq!(levenshtein_distance("composive", "compulsive"), 2);
+        assert_eq!(levenshtein_distance("das", "dad"), 1);
+        assert_eq!(maximum_suggestion_distance("das"), 1);
+        assert_eq!(maximum_suggestion_distance("composive"), 3);
     }
 
     #[test]
