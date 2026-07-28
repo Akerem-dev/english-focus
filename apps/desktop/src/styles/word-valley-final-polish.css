@@ -121,6 +121,52 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* Book page flow and hover highlight sizing                                  */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * These values are the controls for the light area shown behind a word:
+ *   --wv-row-highlight-width  = horizontal size of the glow
+ *   --wv-row-highlight-height = vertical size of the glow
+ *   --wv-row-highlight-radius = corner roundness of the glow
+ *
+ * Six entries fill the left page. Entry 7 starts at the top of the right page.
+ */
+.route-page--vocabulary-home .word-list-card {
+  --wv-row-highlight-width: 90%;
+  --wv-row-highlight-height: 2.2rem;
+  --wv-row-highlight-radius: 0.62rem;
+  --wv-book-page-gap: 9%;
+}
+
+.route-page--vocabulary-home .word-list-card__rows {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(6, var(--wv-row-highlight-height));
+  grid-auto-flow: column;
+  column-gap: var(--wv-book-page-gap);
+  row-gap: 0.12rem;
+  align-content: start;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  width: var(--wv-row-highlight-width);
+  min-width: 0;
+  min-height: var(--wv-row-highlight-height);
+  height: var(--wv-row-highlight-height);
+  justify-self: center;
+  padding: 0 0.55rem;
+  border-radius: var(--wv-row-highlight-radius);
+}
+
+.route-page--vocabulary-home .word-list-row__word {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------- */
 /* Sidebar — shared application palette                                       */
 /* -------------------------------------------------------------------------- */
 
