@@ -1,48 +1,84 @@
 /*
  * Word Valley assistant controls — final adjustment layer.
  *
- * This file intentionally loads after word-valley-assistant-open.css.
- * Change only the variables below to move or resize each element independently.
+ * This file loads after word-valley-assistant-open.css.
+ * Change only the variables in the first block to move or resize elements.
+ *
+ * Position rules:
+ *   X: positive = right, negative = left
+ *   Y: positive = down, negative = up
  */
 
 .application-frame:has(.route-page--vocabulary-home) {
-  /* ---------------------------------------------------------------------- */
-  /* AI PANEL SEARCH FIELD                                                  */
-  /* ---------------------------------------------------------------------- */
+  /* ====================================================================== */
+  /* AI SEARCH FIELD                                                        */
+  /* ====================================================================== */
 
-  /* Horizontal size of the input only. */
   --wv-ai-search-field-width: calc(100% - 7.75rem);
-
-  /* Vertical size of the input only. */
   --wv-ai-search-field-height: 2.9rem;
-
-  /* +X right, -X left; +Y down, -Y up. */
   --wv-ai-search-field-x: 0rem;
   --wv-ai-search-field-y: 0rem;
 
-  /* ---------------------------------------------------------------------- */
-  /* AI PANEL SEARCH BUTTON                                                 */
-  /* ---------------------------------------------------------------------- */
+  /* ====================================================================== */
+  /* AI SEARCH BUTTON                                                       */
+  /* ====================================================================== */
 
-  /* Button size, independent from the input. */
   --wv-ai-search-button-width: 7.2rem;
   --wv-ai-search-button-height: 2.9rem;
-
-  /* +X right, -X left; +Y down, -Y up. */
   --wv-ai-search-button-x: 0rem;
   --wv-ai-search-button-y: 0rem;
 
-  /* ---------------------------------------------------------------------- */
-  /* WORD FOUND / SUCCESS MASCOT                                            */
-  /* ---------------------------------------------------------------------- */
+  /* ====================================================================== */
+  /* READY MASCOT — panel first opens                                       */
+  /* ====================================================================== */
 
-  /* Mascot position and dimensions after the word is found. */
+  --wv-assistant-ready-x: -8.8%;
+  --wv-assistant-ready-y: -7%;
+  --wv-assistant-ready-width: 57.3%;
+  --wv-assistant-ready-height: auto;
+
+  --wv-assistant-ready-effect-x: 60.4%;
+  --wv-assistant-ready-effect-y: 16.5%;
+  --wv-assistant-ready-effect-width: 22.7%;
+  --wv-assistant-ready-effect-height: 22.7%;
+
+  /* ====================================================================== */
+  /* THINKING MASCOT — searching                                            */
+  /* ====================================================================== */
+
+  --wv-assistant-thinking-x: -5.7%;
+  --wv-assistant-thinking-y: -2.5%;
+  --wv-assistant-thinking-width: 51.5%;
+  --wv-assistant-thinking-height: auto;
+
+  --wv-assistant-thinking-effect-x: 60%;
+  --wv-assistant-thinking-effect-y: 27%;
+  --wv-assistant-thinking-effect-width: 20%;
+  --wv-assistant-thinking-effect-height: 20%;
+
+  /* ====================================================================== */
+  /* CONFUSED MASCOT — invalid/not-found/error                              */
+  /* ====================================================================== */
+
+  --wv-assistant-confused-x: -6.2%;
+  --wv-assistant-confused-y: -7%;
+  --wv-assistant-confused-width: 57.3%;
+  --wv-assistant-confused-height: auto;
+
+  --wv-assistant-confused-effect-x: 56%;
+  --wv-assistant-confused-effect-y: 24%;
+  --wv-assistant-confused-effect-width: 21%;
+  --wv-assistant-confused-effect-height: 21%;
+
+  /* ====================================================================== */
+  /* SUCCESS MASCOT — valid word found                                      */
+  /* ====================================================================== */
+
   --wv-assistant-success-x: -4.8%;
   --wv-assistant-success-y: -4%;
   --wv-assistant-success-width: 53%;
   --wv-assistant-success-height: 53%;
 
-  /* Success effect position and dimensions, independent from the mascot. */
   --wv-assistant-success-effect-x: 59%;
   --wv-assistant-success-effect-y: 18%;
   --wv-assistant-success-effect-width: 23%;
@@ -64,7 +100,7 @@
 }
 
 /* ========================================================================== */
-/* SEARCH FIELD — INDEPENDENT WIDTH, HEIGHT AND POSITION                      */
+/* SEARCH FIELD                                                              */
 /* ========================================================================== */
 
 .application-frame:has(.route-page--vocabulary-home)
@@ -85,7 +121,7 @@
 }
 
 /* ========================================================================== */
-/* SEARCH BUTTON — ALWAYS VISIBLE + INDEPENDENT CONTROLS                      */
+/* SEARCH BUTTON                                                             */
 /* ========================================================================== */
 
 .application-frame:has(.route-page--vocabulary-home)
@@ -123,7 +159,6 @@
   filter: none !important;
 }
 
-/* Disabled means unavailable, not invisible. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-composer .button:disabled {
@@ -155,7 +190,79 @@
 }
 
 /* ========================================================================== */
-/* WORD FOUND / SUCCESS MASCOT AND EFFECT                                    */
+/* READY STATE                                                               */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="ready"] {
+  top: var(--wv-assistant-ready-y) !important;
+  left: var(--wv-assistant-ready-x) !important;
+  width: var(--wv-assistant-ready-width) !important;
+  height: var(--wv-assistant-ready-height) !important;
+  aspect-ratio: auto !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--ready {
+  top: var(--wv-assistant-ready-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-ready-effect-x) !important;
+  width: var(--wv-assistant-ready-effect-width) !important;
+  height: var(--wv-assistant-ready-effect-height) !important;
+}
+
+/* ========================================================================== */
+/* THINKING STATE                                                            */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="thinking"] {
+  top: var(--wv-assistant-thinking-y) !important;
+  left: var(--wv-assistant-thinking-x) !important;
+  width: var(--wv-assistant-thinking-width) !important;
+  height: var(--wv-assistant-thinking-height) !important;
+  aspect-ratio: auto !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--thinking {
+  top: var(--wv-assistant-thinking-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-thinking-effect-x) !important;
+  width: var(--wv-assistant-thinking-effect-width) !important;
+  height: var(--wv-assistant-thinking-effect-height) !important;
+}
+
+/* ========================================================================== */
+/* CONFUSED STATE                                                            */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="confused"] {
+  top: var(--wv-assistant-confused-y) !important;
+  left: var(--wv-assistant-confused-x) !important;
+  width: var(--wv-assistant-confused-width) !important;
+  height: var(--wv-assistant-confused-height) !important;
+  aspect-ratio: auto !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--confused {
+  top: var(--wv-assistant-confused-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-confused-effect-x) !important;
+  width: var(--wv-assistant-confused-effect-width) !important;
+  height: var(--wv-assistant-confused-effect-height) !important;
+}
+
+/* ========================================================================== */
+/* SUCCESS STATE                                                             */
 /* ========================================================================== */
 
 .application-frame:has(.route-page--vocabulary-home)
