@@ -274,7 +274,8 @@ fn datamuse_candidate_is_standard(
         .as_deref()
         .map(normalize_lookup_word)
         .is_none_or(|headword| headword == expected_word);
-    let has_dictionary_evidence = free_dictionary_match || datamuse_has_standard_definition(candidate);
+    let has_dictionary_evidence =
+        free_dictionary_match || datamuse_has_standard_definition(candidate);
 
     normalized_candidate == expected_word
         && headword_matches
@@ -284,7 +285,7 @@ fn datamuse_candidate_is_standard(
             .is_some_and(|frequency| frequency >= minimum_frequency)
 }
 
-fn datamuse_exact_url(word: &str) -> Result<Url, String> {
+fn datamuse_lookup_url(word: &str) -> Result<Url, String> {
     let mut url = Url::parse(DATAMUSE_WORDS_URL).map_err(|error| {
         format!("assistant_dictionary_unavailable: Invalid Datamuse URL: {error}")
     })?;
@@ -293,17 +294,14 @@ fn datamuse_exact_url(word: &str) -> Result<Url, String> {
         .append_pair("sp", word)
         .append_pair("qe", "sp")
         .append_pair("md", "dfp")
-        .append_pair("max", "1");
+        .append_pair("max", "20");
 
     Ok(url)
 }
 
-async fn datamuse_exact_candidate(
-    client: &Client,
-    word: &str,
-) -> Result<Option<DatamuseCandidate>, String> {
+async fn datamuse_lookup(client: &Client, word: &str) -> Result<Vec<DatamuseCandidate>, String> {
     let response = client
-        .get(datamuse_exact_url(word)?)
+        .get(datamuse_lookup_url(word)?)
         .send()
         .await
         .map_err(|error| {
@@ -317,46 +315,18 @@ async fn datamuse_exact_candidate(
         ));
     }
 
-    let candidates = response
+    response
         .json::<Vec<DatamuseCandidate>>()
         .await
         .map_err(|error| {
             format!("assistant_dictionary_unavailable: Datamuse returned invalid data: {error}")
-        })?;
-
-    Ok(candidates
-        .into_iter()
-        .find(|candidate| normalize_lookup_word(&candidate.word) == word))
+        })
 }
 
-async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>, String> {
-    let mut url = Url::parse(DATAMUSE_WORDS_URL).map_err(|error| {
-        format!("assistant_dictionary_unavailable: Invalid Datamuse URL: {error}")
-    })?;
-
-    url.query_pairs_mut()
-        .append_pair("sp", word)
-        .append_pair("md", "dfp")
-        .append_pair("max", "20");
-
-    let response = client.get(url).send().await.map_err(|error| {
-        format!("assistant_dictionary_unavailable: Datamuse could not be reached: {error}")
-    })?;
-
-    if !response.status().is_success() {
-        return Err(format!(
-            "assistant_dictionary_unavailable: Datamuse returned {}.",
-            response.status()
-        ));
-    }
-
-    let candidates = response
-        .json::<Vec<DatamuseCandidate>>()
-        .await
-        .map_err(|error| {
-            format!("assistant_dictionary_unavailable: Datamuse returned invalid data: {error}")
-        })?;
-
+fn datamuse_candidates(
+    candidates: &[DatamuseCandidate],
+    word: &str,
+) -> Vec<String> {
     let maximum_distance = maximum_suggestion_distance(word);
     let mut unique = Vec::new();
 
@@ -368,7 +338,7 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
             || candidate.def_headword.is_some()
             || levenshtein_distance(word, &normalized) > maximum_distance
             || !datamuse_candidate_is_standard(
-                &candidate,
+                candidate,
                 &normalized,
                 SUGGESTION_MIN_FREQUENCY_PER_MILLION,
                 false,
@@ -385,7 +355,7 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
         }
     }
 
-    Ok(unique)
+    unique
 }
 
 pub async fn validate_headword(word: &str) -> Result<(), String> {
@@ -408,9 +378,12 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
             format!("assistant_dictionary_unavailable: Dictionary client could not start: {error}")
         })?;
 
-    let exact_candidate = datamuse_exact_candidate(&client, &normalized).await?;
+    let datamuse_results = datamuse_lookup(&client, &normalized).await?;
+    let exact_candidate = datamuse_results
+        .iter()
+        .find(|candidate| normalize_lookup_word(&candidate.word) == normalized);
 
-    if let Some(candidate) = exact_candidate.as_ref() {
+    if let Some(candidate) = exact_candidate {
         if datamuse_candidate_is_standard(
             candidate,
             &normalized,
@@ -441,9 +414,7 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
         }
     }
 
-    let suggestions = datamuse_candidates(&client, &normalized)
-        .await
-        .unwrap_or_default();
+    let suggestions = datamuse_candidates(&datamuse_results, &normalized);
 
     remember_validation(
         normalized.clone(),
