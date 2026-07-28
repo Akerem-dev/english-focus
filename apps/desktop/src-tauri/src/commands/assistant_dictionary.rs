@@ -281,7 +281,9 @@ mod tests {
         assert!(has_english_section("==English==\n===Noun==="));
         assert!(has_english_section("== English ==\n=== Verb ==="));
         assert!(!has_english_section("==German==\n===Noun==="));
-        assert!(!has_english_section("This text mentions English without a section."));
+        assert!(!has_english_section(
+            "This text mentions English without a section."
+        ));
     }
 
     #[test]
