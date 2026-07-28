@@ -8,6 +8,9 @@ use serde::Deserialize;
 const FREE_DICTIONARY_BASE_URL: &str = "https://api.dictionaryapi.dev/api/v2/entries/en/";
 const DATAMUSE_WORDS_URL: &str = "https://api.datamuse.com/words";
 const CACHE_LIMIT: usize = 2_000;
+const REQUEST_TIMEOUT_SECONDS: u64 = 4;
+const STANDARD_MIN_FREQUENCY_PER_MILLION: f64 = 0.02;
+const SUGGESTION_MIN_FREQUENCY_PER_MILLION: f64 = 0.05;
 
 #[derive(Clone)]
 enum CachedValidation {
@@ -38,6 +41,10 @@ struct DatamuseCandidate {
     word: String,
     #[serde(default)]
     defs: Vec<String>,
+    #[serde(default)]
+    tags: Vec<String>,
+    #[serde(default, rename = "defHeadword")]
+    def_headword: Option<String>,
 }
 
 static VALIDATION_CACHE: OnceLock<Mutex<HashMap<String, CachedValidation>>> = OnceLock::new();
@@ -46,14 +53,17 @@ fn cache() -> &'static Mutex<HashMap<String, CachedValidation>> {
     VALIDATION_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
-fn normalize_headword(word: &str) -> Result<String, String> {
-    let normalized = word
-        .trim()
+fn normalize_lookup_word(word: &str) -> String {
+    word.trim()
         .replace('’', "'")
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ")
-        .to_ascii_lowercase();
+        .to_ascii_lowercase()
+}
+
+fn normalize_headword(word: &str) -> Result<String, String> {
+    let normalized = normalize_lookup_word(word);
 
     if normalized.is_empty()
         || normalized.len() > 80
@@ -94,7 +104,7 @@ fn missing_word_error(word: &str, suggestions: &[String]) -> String {
     format!("assistant_word_not_found|{word}|{compact_suggestions}")
 }
 
-fn definition_is_primary_lemma(definition: &str) -> bool {
+fn definition_is_standard_headword(definition: &str) -> bool {
     let normalized = definition.trim().to_ascii_lowercase();
 
     if normalized.is_empty() {
@@ -123,18 +133,33 @@ fn definition_is_primary_lemma(definition: &str) -> bool {
         "contraction of ",
     ];
 
+    const NON_STANDARD_LABELS: &[&str] = &[
+        "(obsolete)",
+        "(archaic)",
+        "(rare)",
+        "(dialectal)",
+        "(nonstandard)",
+        "(historical)",
+        "obsolete:",
+        "archaic:",
+        "rare:",
+        "dialectal:",
+        "nonstandard:",
+    ];
+
     !NON_LEMMA_MARKERS
         .iter()
+        .chain(NON_STANDARD_LABELS.iter())
         .any(|marker| normalized.contains(marker))
 }
 
-fn entry_has_primary_definition(entry: &FreeDictionaryEntry, expected_word: &str) -> bool {
-    entry.word.trim().eq_ignore_ascii_case(expected_word)
+fn entry_has_standard_definition(entry: &FreeDictionaryEntry, expected_word: &str) -> bool {
+    normalize_lookup_word(&entry.word) == expected_word
         && entry.meanings.iter().any(|meaning| {
             meaning
                 .definitions
                 .iter()
-                .any(|definition| definition_is_primary_lemma(&definition.definition))
+                .any(|definition| definition_is_standard_headword(&definition.definition))
         })
 }
 
@@ -150,7 +175,7 @@ fn dictionary_url(word: &str) -> Result<Url, String> {
     Ok(url)
 }
 
-async fn free_dictionary_contains_primary_lemma(
+async fn free_dictionary_contains_standard_word(
     client: &Client,
     word: &str,
 ) -> Result<bool, String> {
@@ -177,7 +202,7 @@ async fn free_dictionary_contains_primary_lemma(
 
             Ok(entries
                 .iter()
-                .any(|entry| entry_has_primary_definition(entry, word)))
+                .any(|entry| entry_has_standard_definition(entry, word)))
         }
         StatusCode::NOT_FOUND => Ok(false),
         status => Err(format!(
@@ -216,6 +241,94 @@ fn maximum_suggestion_distance(word: &str) -> usize {
     }
 }
 
+fn datamuse_frequency_per_million(candidate: &DatamuseCandidate) -> Option<f64> {
+    candidate.tags.iter().find_map(|tag| {
+        tag.strip_prefix("f:")
+            .and_then(|value| value.parse::<f64>().ok())
+    })
+}
+
+fn datamuse_has_standard_part_of_speech(candidate: &DatamuseCandidate) -> bool {
+    candidate
+        .tags
+        .iter()
+        .any(|tag| matches!(tag.as_str(), "n" | "v" | "adj" | "adv"))
+}
+
+fn datamuse_has_standard_definition(candidate: &DatamuseCandidate) -> bool {
+    candidate
+        .defs
+        .iter()
+        .any(|definition| definition_is_standard_headword(definition))
+}
+
+fn datamuse_candidate_is_standard(
+    candidate: &DatamuseCandidate,
+    expected_word: &str,
+    minimum_frequency: f64,
+    free_dictionary_match: bool,
+) -> bool {
+    let normalized_candidate = normalize_lookup_word(&candidate.word);
+    let headword_matches = candidate
+        .def_headword
+        .as_deref()
+        .map(normalize_lookup_word)
+        .is_none_or(|headword| headword == expected_word);
+    let has_dictionary_evidence = free_dictionary_match || datamuse_has_standard_definition(candidate);
+
+    normalized_candidate == expected_word
+        && headword_matches
+        && has_dictionary_evidence
+        && datamuse_has_standard_part_of_speech(candidate)
+        && datamuse_frequency_per_million(candidate)
+            .is_some_and(|frequency| frequency >= minimum_frequency)
+}
+
+fn datamuse_exact_url(word: &str) -> Result<Url, String> {
+    let mut url = Url::parse(DATAMUSE_WORDS_URL).map_err(|error| {
+        format!("assistant_dictionary_unavailable: Invalid Datamuse URL: {error}")
+    })?;
+
+    url.query_pairs_mut()
+        .append_pair("sp", word)
+        .append_pair("qe", "sp")
+        .append_pair("md", "dfp")
+        .append_pair("max", "1");
+
+    Ok(url)
+}
+
+async fn datamuse_exact_candidate(
+    client: &Client,
+    word: &str,
+) -> Result<Option<DatamuseCandidate>, String> {
+    let response = client
+        .get(datamuse_exact_url(word)?)
+        .send()
+        .await
+        .map_err(|error| {
+            format!("assistant_dictionary_unavailable: Datamuse could not be reached: {error}")
+        })?;
+
+    if !response.status().is_success() {
+        return Err(format!(
+            "assistant_dictionary_unavailable: Datamuse returned {}.",
+            response.status()
+        ));
+    }
+
+    let candidates = response
+        .json::<Vec<DatamuseCandidate>>()
+        .await
+        .map_err(|error| {
+            format!("assistant_dictionary_unavailable: Datamuse returned invalid data: {error}")
+        })?;
+
+    Ok(candidates
+        .into_iter()
+        .find(|candidate| normalize_lookup_word(&candidate.word) == word))
+}
+
 async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>, String> {
     let mut url = Url::parse(DATAMUSE_WORDS_URL).map_err(|error| {
         format!("assistant_dictionary_unavailable: Invalid Datamuse URL: {error}")
@@ -223,8 +336,8 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
 
     url.query_pairs_mut()
         .append_pair("sp", word)
-        .append_pair("md", "d")
-        .append_pair("max", "12");
+        .append_pair("md", "dfp")
+        .append_pair("max", "20");
 
     let response = client.get(url).send().await.map_err(|error| {
         format!("assistant_dictionary_unavailable: Datamuse could not be reached: {error}")
@@ -248,19 +361,18 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
     let mut unique = Vec::new();
 
     for candidate in candidates {
-        let normalized = candidate
-            .word
-            .trim()
-            .replace('’', "'")
-            .split_whitespace()
-            .collect::<Vec<_>>()
-            .join(" ")
-            .to_ascii_lowercase();
+        let normalized = normalize_lookup_word(&candidate.word);
 
         if normalized.is_empty()
             || normalized == word
-            || candidate.defs.is_empty()
+            || candidate.def_headword.is_some()
             || levenshtein_distance(word, &normalized) > maximum_distance
+            || !datamuse_candidate_is_standard(
+                &candidate,
+                &normalized,
+                SUGGESTION_MIN_FREQUENCY_PER_MILLION,
+                false,
+            )
             || unique.contains(&normalized)
         {
             continue;
@@ -289,16 +401,44 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
     }
 
     let client = Client::builder()
-        .timeout(Duration::from_secs(8))
+        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SECONDS))
         .user_agent("English-Focus/1.0 dictionary-validation")
         .build()
         .map_err(|error| {
             format!("assistant_dictionary_unavailable: Dictionary client could not start: {error}")
         })?;
 
-    if free_dictionary_contains_primary_lemma(&client, &normalized).await? {
-        remember_validation(normalized, CachedValidation::Found);
-        return Ok(());
+    let exact_candidate = datamuse_exact_candidate(&client, &normalized).await?;
+
+    if let Some(candidate) = exact_candidate.as_ref() {
+        if datamuse_candidate_is_standard(
+            candidate,
+            &normalized,
+            STANDARD_MIN_FREQUENCY_PER_MILLION,
+            false,
+        ) {
+            remember_validation(normalized, CachedValidation::Found);
+            return Ok(());
+        }
+
+        let has_standard_usage = normalize_lookup_word(&candidate.word) == normalized
+            && candidate
+                .def_headword
+                .as_deref()
+                .map(normalize_lookup_word)
+                .is_none_or(|headword| headword == normalized)
+            && datamuse_has_standard_part_of_speech(candidate)
+            && datamuse_frequency_per_million(candidate)
+                .is_some_and(|frequency| frequency >= STANDARD_MIN_FREQUENCY_PER_MILLION);
+
+        if has_standard_usage
+            && free_dictionary_contains_standard_word(&client, &normalized)
+                .await
+                .unwrap_or(false)
+        {
+            remember_validation(normalized, CachedValidation::Found);
+            return Ok(());
+        }
     }
 
     let suggestions = datamuse_candidates(&client, &normalized)
@@ -316,9 +456,19 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        definition_is_primary_lemma, levenshtein_distance, maximum_suggestion_distance,
-        missing_word_error, normalize_headword,
+        datamuse_candidate_is_standard, definition_is_standard_headword, levenshtein_distance,
+        maximum_suggestion_distance, missing_word_error, normalize_headword, DatamuseCandidate,
+        STANDARD_MIN_FREQUENCY_PER_MILLION,
     };
+
+    fn datamuse_candidate(word: &str, definition: &str, frequency: f64) -> DatamuseCandidate {
+        DatamuseCandidate {
+            word: word.to_string(),
+            defs: vec![definition.to_string()],
+            tags: vec!["adj".to_string(), format!("f:{frequency}")],
+            def_headword: None,
+        }
+    }
 
     #[test]
     fn normalizes_supported_headwords() {
@@ -328,28 +478,58 @@ mod tests {
     }
 
     #[test]
-    fn accepts_direct_definitions_and_rejects_non_lemma_definitions() {
-        assert!(definition_is_primary_lemma(
+    fn accepts_current_definitions_and_rejects_nonstandard_entries() {
+        assert!(definition_is_standard_headword(
             "To assign something for a particular purpose."
         ));
-        assert!(!definition_is_primary_lemma("plural of da"));
-        assert!(!definition_is_primary_lemma(
+        assert!(!definition_is_standard_headword("plural of da"));
+        assert!(!definition_is_standard_headword(
             "Pronunciation spelling of that's."
         ));
-        assert!(!definition_is_primary_lemma(
+        assert!(!definition_is_standard_headword(
             "Simple past tense and past participle of allocate."
         ));
-        assert!(!definition_is_primary_lemma(
-            "Initialism of data acquisition system."
+        assert!(!definition_is_standard_headword(
+            "(obsolete) Compulsory; employing force or constraint."
+        ));
+    }
+
+    #[test]
+    fn requires_frequency_for_standard_learner_words() {
+        let compulsive = datamuse_candidate("compulsive", "Driven by compulsion.", 1.2);
+        let obscure = datamuse_candidate("zibar", "A type of sand dune.", 0.001);
+        let obsolete = datamuse_candidate(
+            "compulsative",
+            "(obsolete) Compulsory; employing force or constraint.",
+            0.001,
+        );
+
+        assert!(datamuse_candidate_is_standard(
+            &compulsive,
+            "compulsive",
+            STANDARD_MIN_FREQUENCY_PER_MILLION,
+            true,
+        ));
+        assert!(!datamuse_candidate_is_standard(
+            &obscure,
+            "zibar",
+            STANDARD_MIN_FREQUENCY_PER_MILLION,
+            true,
+        ));
+        assert!(!datamuse_candidate_is_standard(
+            &obsolete,
+            "compulsative",
+            STANDARD_MIN_FREQUENCY_PER_MILLION,
+            true,
         ));
     }
 
     #[test]
     fn limits_suggestions_to_nearby_spellings() {
-        assert_eq!(levenshtein_distance("composive", "compulsive"), 2);
-        assert_eq!(levenshtein_distance("das", "dad"), 1);
-        assert_eq!(maximum_suggestion_distance("das"), 1);
-        assert_eq!(maximum_suggestion_distance("composive"), 3);
+        assert_eq!(levenshtein_distance("compulsative", "compulsive"), 2);
+        assert_eq!(levenshtein_distance("zibab", "zibar"), 1);
+        assert_eq!(maximum_suggestion_distance("zibab"), 2);
+        assert_eq!(maximum_suggestion_distance("compulsative"), 3);
     }
 
     #[test]
