@@ -1,0 +1,179 @@
+/*
+ * Word Valley assistant controls — final adjustment layer.
+ *
+ * This file intentionally loads after word-valley-assistant-open.css.
+ * Change only the variables below to move or resize each element independently.
+ */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  /* ---------------------------------------------------------------------- */
+  /* AI PANEL SEARCH FIELD                                                  */
+  /* ---------------------------------------------------------------------- */
+
+  /* Horizontal size of the input only. */
+  --wv-ai-search-field-width: calc(100% - 7.75rem);
+
+  /* Vertical size of the input only. */
+  --wv-ai-search-field-height: 2.9rem;
+
+  /* +X right, -X left; +Y down, -Y up. */
+  --wv-ai-search-field-x: 0rem;
+  --wv-ai-search-field-y: 0rem;
+
+  /* ---------------------------------------------------------------------- */
+  /* AI PANEL SEARCH BUTTON                                                 */
+  /* ---------------------------------------------------------------------- */
+
+  /* Button size, independent from the input. */
+  --wv-ai-search-button-width: 7.2rem;
+  --wv-ai-search-button-height: 2.9rem;
+
+  /* +X right, -X left; +Y down, -Y up. */
+  --wv-ai-search-button-x: 0rem;
+  --wv-ai-search-button-y: 0rem;
+
+  /* ---------------------------------------------------------------------- */
+  /* WORD FOUND / SUCCESS MASCOT                                            */
+  /* ---------------------------------------------------------------------- */
+
+  /* Mascot position and size after the word is found. */
+  --wv-assistant-success-x: -4.8%;
+  --wv-assistant-success-y: -4%;
+  --wv-assistant-success-size: 53%;
+
+  /* Success effect position and size, independent from the mascot. */
+  --wv-assistant-success-effect-x: 59%;
+  --wv-assistant-success-effect-y: 18%;
+  --wv-assistant-success-effect-size: 23%;
+}
+
+/* ========================================================================== */
+/* COMPOSER LAYOUT                                                            */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer {
+  grid-template-columns:
+    var(--wv-ai-search-field-width)
+    var(--wv-ai-search-button-width) !important;
+  justify-content: start !important;
+  align-items: center !important;
+}
+
+/* ========================================================================== */
+/* SEARCH FIELD — INDEPENDENT WIDTH, HEIGHT AND POSITION                      */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer input {
+  width: var(--wv-ai-search-field-width) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  height: var(--wv-ai-search-field-height) !important;
+  min-height: var(--wv-ai-search-field-height) !important;
+  max-height: var(--wv-ai-search-field-height) !important;
+
+  justify-self: start !important;
+  translate:
+    var(--wv-ai-search-field-x)
+    var(--wv-ai-search-field-y) !important;
+}
+
+/* ========================================================================== */
+/* SEARCH BUTTON — ALWAYS VISIBLE + INDEPENDENT CONTROLS                      */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button:disabled {
+  width: var(--wv-ai-search-button-width) !important;
+  min-width: var(--wv-ai-search-button-width) !important;
+  max-width: var(--wv-ai-search-button-width) !important;
+
+  height: var(--wv-ai-search-button-height) !important;
+  min-height: var(--wv-ai-search-button-height) !important;
+  max-height: var(--wv-ai-search-button-height) !important;
+
+  justify-self: start !important;
+  translate:
+    var(--wv-ai-search-button-x)
+    var(--wv-ai-search-button-y) !important;
+
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  border: 1px solid #bb6c5d !important;
+  background-color: #d77866 !important;
+  background-image:
+    linear-gradient(180deg, #e99a84 0%, #d77866 52%, #c96658 100%) !important;
+  color: #fffaf0 !important;
+
+  box-shadow:
+    0 0.24rem 0.55rem rgb(121 60 49 / 18%),
+    inset 0 0.0625rem 0 rgb(255 255 255 / 30%) !important;
+  filter: none !important;
+}
+
+/* Disabled means unavailable, not invisible. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button:disabled {
+  opacity: 0.72 !important;
+  cursor: not-allowed !important;
+  background-color: #d98c7b !important;
+  background-image:
+    linear-gradient(180deg, #e9aa98 0%, #d98c7b 100%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button:hover:not(:disabled) {
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-color: #dc7d69 !important;
+  background-image:
+    linear-gradient(180deg, #eca18c 0%, #dc7d69 52%, #ce705f 100%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button__label,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button__label::after {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* ========================================================================== */
+/* WORD FOUND / SUCCESS MASCOT AND EFFECT                                    */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="success"] {
+  top: var(--wv-assistant-success-y) !important;
+  left: var(--wv-assistant-success-x) !important;
+  width: var(--wv-assistant-success-size) !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--success {
+  top: var(--wv-assistant-success-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-success-effect-x) !important;
+  width: var(--wv-assistant-success-effect-size) !important;
+  height: var(--wv-assistant-success-effect-size) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
