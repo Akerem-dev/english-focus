@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import wordValleyBrandMascot from "../../assets/brand/word-valley-brand-mascot.png";
@@ -7,40 +6,8 @@ import { AppIcon } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
 import { APP_ROUTES } from "../router/routes";
 import { ROUTE_PATHS } from "../router/routeIds";
-import { connectToRuntime, type RuntimeConnection } from "../runtime/runtimeBridge";
-
-function runtimeLabel(connection: RuntimeConnection | undefined) {
-  if (connection === undefined) {
-    return "Getting Word Valley ready";
-  }
-
-  switch (connection.kind) {
-    case "native":
-      return "Ready on this device";
-    case "browser":
-      return "Preview mode";
-    case "error":
-      return "Offline features unavailable";
-  }
-}
 
 export function AppSidebar() {
-  const [runtime, setRuntime] = useState<RuntimeConnection>();
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    void connectToRuntime().then((connection) => {
-      if (isCurrent) {
-        setRuntime(connection);
-      }
-    });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
-
   return (
     <aside className="app-sidebar">
       <Link
@@ -69,15 +36,6 @@ export function AppSidebar() {
           />
         ))}
       </nav>
-
-      <div className="app-sidebar__footer">
-        <span className="app-sidebar__runtime" data-runtime={runtime?.kind ?? "checking"}>
-          <span aria-hidden="true" className="app-sidebar__runtime-dot" />
-          <span className="app-sidebar__runtime-copy">{runtimeLabel(runtime)}</span>
-        </span>
-        <span className="app-sidebar__footer-title">Your Wordbook</span>
-        <span className="app-sidebar__language">EN → TR</span>
-      </div>
     </aside>
   );
 }
