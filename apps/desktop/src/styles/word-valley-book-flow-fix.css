@@ -1,0 +1,33 @@
+/*
+ * Final correction for the two-page Wordbook lists.
+ *
+ * Keep the original row typography and spacing. Five entries fill the left
+ * page; entry six starts at the top of the right page.
+ */
+
+.route-page--vocabulary-home .word-list-card {
+  --wv-row-highlight-width: 90%;
+  --wv-row-highlight-radius: 0.62rem;
+  --wv-book-page-gap: 9%;
+}
+
+.route-page--vocabulary-home .word-list-card__rows {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(5, max-content) !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  column-gap: var(--wv-book-page-gap) !important;
+  row-gap: 0.12rem !important;
+  align-content: start !important;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  width: var(--wv-row-highlight-width) !important;
+  min-width: 0;
+  min-height: clamp(2rem, 4.15vh, 2.8rem) !important;
+  height: auto !important;
+  justify-self: center;
+  padding: 0 0.3rem !important;
+  border-radius: var(--wv-row-highlight-radius) !important;
+}
