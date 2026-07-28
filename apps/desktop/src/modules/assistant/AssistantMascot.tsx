@@ -1,3 +1,5 @@
+import wordValleyEffectWakeRays from "../../assets/assistant/open/effect-wake-rays.png";
+import wordValleyMascotReady from "../../assets/assistant/open/mascot-ready.png";
 import effectQuestionMark from "./assets/effects/effect-question-mark.png";
 import effectSleepZ from "./assets/effects/effect-sleep-z.png";
 import effectSparkles from "./assets/effects/effect-sparkles.png";
@@ -45,8 +47,8 @@ function getPanelVisual(state: AssistantMascotState): MascotVisual {
       };
     case "ready":
       return {
-        mascot: mascotReady,
-        effect: effectWakeRays,
+        mascot: wordValleyMascotReady,
+        effect: wordValleyEffectWakeRays,
         effectClassName: "assistant-panel__state-effect--ready"
       };
   }
