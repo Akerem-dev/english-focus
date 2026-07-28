@@ -36,15 +36,17 @@
   /* WORD FOUND / SUCCESS MASCOT                                            */
   /* ---------------------------------------------------------------------- */
 
-  /* Mascot position and size after the word is found. */
+  /* Mascot position and dimensions after the word is found. */
   --wv-assistant-success-x: -4.8%;
   --wv-assistant-success-y: -4%;
-  --wv-assistant-success-size: 53%;
+  --wv-assistant-success-width: 53%;
+  --wv-assistant-success-height: 53%;
 
-  /* Success effect position and size, independent from the mascot. */
+  /* Success effect position and dimensions, independent from the mascot. */
   --wv-assistant-success-effect-x: 59%;
   --wv-assistant-success-effect-y: 18%;
-  --wv-assistant-success-effect-size: 23%;
+  --wv-assistant-success-effect-width: 23%;
+  --wv-assistant-success-effect-height: 23%;
 }
 
 /* ========================================================================== */
@@ -161,9 +163,9 @@
   .assistant-panel__mascot-stage[data-state="success"] {
   top: var(--wv-assistant-success-y) !important;
   left: var(--wv-assistant-success-x) !important;
-  width: var(--wv-assistant-success-size) !important;
-  height: auto !important;
-  aspect-ratio: 1 !important;
+  width: var(--wv-assistant-success-width) !important;
+  height: var(--wv-assistant-success-height) !important;
+  aspect-ratio: auto !important;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
@@ -172,8 +174,8 @@
   top: var(--wv-assistant-success-effect-y) !important;
   right: auto !important;
   left: var(--wv-assistant-success-effect-x) !important;
-  width: var(--wv-assistant-success-effect-size) !important;
-  height: var(--wv-assistant-success-effect-size) !important;
+  width: var(--wv-assistant-success-effect-width) !important;
+  height: var(--wv-assistant-success-effect-height) !important;
   opacity: 1 !important;
   filter: none !important;
 }
