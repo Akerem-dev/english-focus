@@ -2,11 +2,8 @@
 
 /*
  * Word Valley — open assistant composition
- *
- * Uses only the normalized assets under:
- * apps/desktop/src/assets/assistant/open/
- *
- * The measurements below are derived from the 1920 × 1080 Figma frame.
+ * Uses only apps/desktop/src/assets/assistant/open/*.
+ * Base measurements come from the 1920 × 1080 Figma frame.
  */
 
 .application-frame:has(.route-page--vocabulary-home) {
@@ -16,8 +13,7 @@
   --wv-assistant-open-width: clamp(18rem, 29.3vw, 35.2rem);
 }
 
-.application-frame:has(.route-page--vocabulary-home)
-  .assistant-dock[data-open] {
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] {
   position: fixed !important;
   top: var(--wv-assistant-open-top) !important;
   right: var(--wv-assistant-open-right) !important;
@@ -41,7 +37,7 @@
   width: 100% !important;
   height: 100% !important;
   max-height: none !important;
-  grid-template-rows: 29% minmax(0, 1fr) auto !important;
+  grid-template-rows: 38% minmax(0, 1fr) auto !important;
 
   overflow: visible !important;
 
@@ -60,27 +56,29 @@
   -webkit-backdrop-filter: none !important;
 }
 
-/* Keep all functional content above the illustrated panel frame. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-panel > * {
+  .assistant-panel__header,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-messages,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-shortcuts,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer {
   position: relative;
   z-index: 2;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Header: mascot + nameplate                                                 */
-/* -------------------------------------------------------------------------- */
-
+/* Header: mascot, wake rays and nameplate. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-panel__header {
-  position: relative !important;
-
   display: block !important;
   min-height: 0 !important;
   height: 100% !important;
-
   padding: 0 !important;
   border: 0 !important;
   background: transparent !important;
@@ -90,7 +88,7 @@
   .assistant-dock[data-open]
   .assistant-panel__mascot-stage {
   position: absolute !important;
-  top: -2.7% !important;
+  top: -7% !important;
   left: -6.2% !important;
 
   width: 57.3% !important;
@@ -106,25 +104,20 @@
   .assistant-panel__mascot {
   position: absolute !important;
   inset: 0 !important;
-
   width: 100% !important;
   height: 100% !important;
-
   object-fit: contain !important;
   filter: none !important;
 }
 
-/* Figma: wake rays are 73 px inside a 322 px mascot stage. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-panel__state-effect--ready {
   top: 16.5% !important;
   right: auto !important;
   left: 62.4% !important;
-
   width: 22.7% !important;
   height: 22.7% !important;
-
   opacity: 1 !important;
   filter: none !important;
 }
@@ -133,11 +126,11 @@
   .assistant-dock[data-open]
   .assistant-panel__heading {
   position: absolute !important;
-  top: 2.9% !important;
+  top: 7.7% !important;
   left: 32.9% !important;
 
   width: 55.5% !important;
-  height: 81% !important;
+  height: 78.5% !important;
   min-width: 0 !important;
 
   display: block !important;
@@ -162,7 +155,6 @@
   filter: none;
 }
 
-/* Replace the old visible heading without changing its accessible id. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-panel__heading h2 {
@@ -196,7 +188,6 @@
   text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 72%);
 }
 
-/* Status remains available to assistive technology but is not in the Figma UI. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-panel__heading p {
@@ -227,16 +218,13 @@
   box-shadow: none !important;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Conversation area                                                         */
-/* -------------------------------------------------------------------------- */
-
+/* Conversation area. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-messages {
   min-height: 0 !important;
   margin: 0 6.3% !important;
-  padding: 0.8rem 0.6rem 0.5rem !important;
+  padding: 0.5rem 0.6rem !important;
 
   gap: 0.65rem !important;
   overflow-y: auto !important;
@@ -246,7 +234,6 @@
   scrollbar-width: thin;
 }
 
-/* Match the empty Figma-ready state while preserving later responses. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-panel[data-state="ready"]
@@ -278,22 +265,16 @@
   background: rgb(248 220 204 / 72%) !important;
 }
 
-/* Figma open state does not show the generic shortcut tiles. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-shortcuts {
   display: none !important;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Bottom composer: cropped source assets, visible area equals click area     */
-/* -------------------------------------------------------------------------- */
-
+/* Bottom composer: visible frame and clickable area are the same size. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-composer {
-  position: relative !important;
-
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) 21.5% !important;
   gap: 1.2% !important;
@@ -362,7 +343,6 @@
   filter: none !important;
 }
 
-/* The Figma button is intentionally textless; accessible text remains in DOM. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-composer .button__label {
@@ -388,7 +368,6 @@
   outline-offset: 0.06rem !important;
 }
 
-/* Keep the panel usable on narrower desktop windows without changing Figma at 1920. */
 @media (max-width: 1180px) {
   .application-frame:has(.route-page--vocabulary-home) {
     --wv-assistant-open-top: 23vh;
