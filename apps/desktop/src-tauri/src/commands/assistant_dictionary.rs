@@ -6,6 +6,7 @@ use reqwest::{Client, StatusCode, Url};
 use serde::Deserialize;
 
 const FREE_DICTIONARY_BASE_URL: &str = "https://api.dictionaryapi.dev/api/v2/entries/en/";
+const WIKTIONARY_API_URL: &str = "https://en.wiktionary.org/w/api.php";
 const DATAMUSE_WORDS_URL: &str = "https://api.datamuse.com/words";
 const CACHE_LIMIT: usize = 2_000;
 
@@ -18,6 +19,16 @@ enum CachedValidation {
 #[derive(Debug, Deserialize)]
 struct DatamuseCandidate {
     word: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct WiktionaryParseResponse {
+    parse: Option<WiktionaryParse>,
+}
+
+#[derive(Debug, Deserialize)]
+struct WiktionaryParse {
+    wikitext: String,
 }
 
 static VALIDATION_CACHE: OnceLock<Mutex<HashMap<String, CachedValidation>>> = OnceLock::new();
@@ -74,6 +85,16 @@ fn missing_word_error(word: &str, suggestions: &[String]) -> String {
     format!("assistant_word_not_found|{word}|{compact_suggestions}")
 }
 
+fn has_english_section(wikitext: &str) -> bool {
+    wikitext.lines().any(|line| {
+        line.trim()
+            .chars()
+            .filter(|character| !character.is_whitespace())
+            .collect::<String>()
+            .eq_ignore_ascii_case("==English==")
+    })
+}
+
 fn dictionary_url(word: &str) -> Result<Url, String> {
     let mut url = Url::parse(FREE_DICTIONARY_BASE_URL).map_err(|error| {
         format!("assistant_dictionary_unavailable: Invalid dictionary URL: {error}")
@@ -104,6 +125,42 @@ async fn free_dictionary_contains(client: &Client, word: &str) -> Result<bool, S
             "assistant_dictionary_unavailable: Free Dictionary returned {status}."
         )),
     }
+}
+
+async fn wiktionary_contains_english(client: &Client, word: &str) -> Result<bool, String> {
+    let mut url = Url::parse(WIKTIONARY_API_URL).map_err(|error| {
+        format!("assistant_dictionary_unavailable: Invalid Wiktionary URL: {error}")
+    })?;
+
+    url.query_pairs_mut()
+        .append_pair("action", "parse")
+        .append_pair("page", word)
+        .append_pair("prop", "wikitext")
+        .append_pair("redirects", "1")
+        .append_pair("format", "json")
+        .append_pair("formatversion", "2");
+
+    let response = client.get(url).send().await.map_err(|error| {
+        format!("assistant_dictionary_unavailable: Wiktionary could not be reached: {error}")
+    })?;
+
+    if !response.status().is_success() {
+        return Err(format!(
+            "assistant_dictionary_unavailable: Wiktionary returned {}.",
+            response.status()
+        ));
+    }
+
+    let payload = response
+        .json::<WiktionaryParseResponse>()
+        .await
+        .map_err(|error| {
+            format!("assistant_dictionary_unavailable: Wiktionary returned invalid data: {error}")
+        })?;
+
+    Ok(payload
+        .parse
+        .is_some_and(|page| has_english_section(&page.wikitext)))
 }
 
 async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>, String> {
@@ -144,7 +201,7 @@ async fn datamuse_candidates(client: &Client, word: &str) -> Result<Vec<String>,
             .join(" ")
             .to_ascii_lowercase();
 
-        if !normalized.is_empty() && !unique.contains(&normalized) {
+        if !normalized.is_empty() && normalized != word && !unique.contains(&normalized) {
             unique.push(normalized);
         }
     }
@@ -172,25 +229,24 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
             format!("assistant_dictionary_unavailable: Dictionary client could not start: {error}")
         })?;
 
-    let dictionary_result = free_dictionary_contains(&client, &normalized).await;
-    if matches!(dictionary_result, Ok(true)) {
+    let free_dictionary_result = free_dictionary_contains(&client, &normalized).await;
+    if matches!(free_dictionary_result, Ok(true)) {
         remember_validation(normalized, CachedValidation::Found);
         return Ok(());
     }
 
-    let datamuse_result = datamuse_candidates(&client, &normalized).await;
-    if let Ok(candidates) = &datamuse_result {
-        if candidates.iter().any(|candidate| candidate == &normalized) {
-            remember_validation(normalized, CachedValidation::Found);
-            return Ok(());
-        }
+    let wiktionary_result = wiktionary_contains_english(&client, &normalized).await;
+    if matches!(wiktionary_result, Ok(true)) {
+        remember_validation(normalized, CachedValidation::Found);
+        return Ok(());
     }
 
-    match (dictionary_result, datamuse_result) {
-        (Ok(false), Ok(candidates)) => {
-            let suggestions = candidates
+    match (&free_dictionary_result, &wiktionary_result) {
+        (Ok(false), Ok(false)) => {
+            let suggestions = datamuse_candidates(&client, &normalized)
+                .await
+                .unwrap_or_default()
                 .into_iter()
-                .filter(|candidate| candidate != &normalized)
                 .take(5)
                 .collect::<Vec<_>>();
 
@@ -201,23 +257,31 @@ pub async fn validate_headword(word: &str) -> Result<(), String> {
 
             Err(missing_word_error(&normalized, &suggestions))
         }
-        (Err(dictionary_error), Err(datamuse_error)) => Err(format!(
-            "assistant_dictionary_unavailable: Both dictionary checks failed. {dictionary_error} {datamuse_error}"
+        (Err(free_dictionary_error), Err(wiktionary_error)) => Err(format!(
+            "assistant_dictionary_unavailable: Both authoritative dictionary checks failed. {free_dictionary_error} {wiktionary_error}"
         )),
-        (Err(error), Ok(_)) | (Ok(false), Err(error)) => Err(error),
-        (Ok(true), _) => Ok(()),
+        (Err(error), Ok(false)) | (Ok(false), Err(error)) => Err(error.clone()),
+        (Ok(true), _) | (_, Ok(true)) => Ok(()),
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{missing_word_error, normalize_headword};
+    use super::{has_english_section, missing_word_error, normalize_headword};
 
     #[test]
     fn normalizes_supported_headwords() {
         assert_eq!(normalize_headword("  Look   up ").unwrap(), "look up");
         assert_eq!(normalize_headword("Mother’s").unwrap(), "mother's");
         assert!(normalize_headword("word!").is_err());
+    }
+
+    #[test]
+    fn detects_only_english_wiktionary_sections() {
+        assert!(has_english_section("==English==\n===Noun==="));
+        assert!(has_english_section("== English ==\n=== Verb ==="));
+        assert!(!has_english_section("==German==\n===Noun==="));
+        assert!(!has_english_section("This text mentions English without a section."));
     }
 
     #[test]
