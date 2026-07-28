@@ -106,14 +106,14 @@ export function VocabularyPage() {
         seen.add(word);
         return true;
       })
-      .slice(0, 4);
+      .slice(0, 12);
   }, [activity, contentSource]);
 
   const recentAdditions = useMemo(
     () =>
       [...storedEntries]
         .sort((left, right) => right.entry.createdAt.localeCompare(left.entry.createdAt))
-        .slice(0, 4)
+        .slice(0, 12)
         .map((record) => record.entry.normalizedWord),
     [storedEntries]
   );
