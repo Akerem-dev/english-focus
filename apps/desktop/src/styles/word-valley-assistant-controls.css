@@ -1,36 +1,27 @@
 /*
- * Word Valley assistant controls — asset-backed final layer.
+ * Word Valley assistant controls — final asset layer.
  *
- * Bu dosya word-valley-assistant-open.css dosyasından sonra yüklenir.
- * Yalnızca ilk değişken bloğunu değiştirerek her öğeyi bağımsız ayarla.
+ * This file loads after word-valley-assistant-open.css.
+ * Change only the variables in the first block.
  *
- * X: pozitif = sağ, negatif = sol
- * Y: pozitif = aşağı, negatif = yukarı
+ * X: positive = right, negative = left
+ * Y: positive = down, negative = up
  */
 
 .application-frame:has(.route-page--vocabulary-home) {
-  /* ====================================================================== */
-  /* AI PANELİ SEARCH BAR                                                   */
-  /* ====================================================================== */
-
+  /* AI ASSISTANT SEARCH FIELD */
   --wv-ai-search-field-width: calc(100% - 7.75rem);
   --wv-ai-search-field-height: 2.9rem;
   --wv-ai-search-field-x: 0rem;
   --wv-ai-search-field-y: 0rem;
 
-  /* ====================================================================== */
-  /* AI PANELİ SEARCH BUTONU                                                */
-  /* ====================================================================== */
-
+  /* AI ASSISTANT SEARCH BUTTON */
   --wv-ai-search-button-width: 7.2rem;
   --wv-ai-search-button-height: 2.9rem;
   --wv-ai-search-button-x: 0rem;
   --wv-ai-search-button-y: 0rem;
 
-  /* ====================================================================== */
-  /* READY — panel ilk açıldığında                                          */
-  /* ====================================================================== */
-
+  /* READY — panel first opens */
   --wv-assistant-ready-x: -6.2%;
   --wv-assistant-ready-y: -2.8%;
   --wv-assistant-ready-width: 57.3%;
@@ -41,10 +32,7 @@
   --wv-assistant-ready-effect-width: 22.7%;
   --wv-assistant-ready-effect-height: 22.7%;
 
-  /* ====================================================================== */
-  /* THINKING — kelime aranırken                                             */
-  /* ====================================================================== */
-
+  /* THINKING — while searching */
   --wv-assistant-thinking-x: -5.7%;
   --wv-assistant-thinking-y: -2.5%;
   --wv-assistant-thinking-width: 51.5%;
@@ -55,10 +43,7 @@
   --wv-assistant-thinking-effect-width: 20%;
   --wv-assistant-thinking-effect-height: 20%;
 
-  /* ====================================================================== */
-  /* CONFUSED — geçersiz kelime veya hata                                   */
-  /* ====================================================================== */
-
+  /* CONFUSED — invalid word or error */
   --wv-assistant-confused-x: -6.2%;
   --wv-assistant-confused-y: -2.8%;
   --wv-assistant-confused-width: 57.3%;
@@ -69,10 +54,7 @@
   --wv-assistant-confused-effect-width: 21%;
   --wv-assistant-confused-effect-height: 21%;
 
-  /* ====================================================================== */
-  /* SUCCESS — kelime Wordbook'a kaydedildiğinde                            */
-  /* ====================================================================== */
-
+  /* SUCCESS — word saved */
   --wv-assistant-success-x: -4.8%;
   --wv-assistant-success-y: -2.8%;
   --wv-assistant-success-width: 53%;
@@ -84,10 +66,7 @@
   --wv-assistant-success-effect-height: 23%;
 }
 
-/* ========================================================================== */
-/* COMPOSER YERLEŞİMİ                                                        */
-/* ========================================================================== */
-
+/* Composer layout */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-composer {
@@ -98,9 +77,10 @@
   align-items: center !important;
 }
 
-/* ========================================================================== */
-/* SEARCH BAR — ZIP'TEKİ GERÇEK PNG ASSET                                   */
-/* ========================================================================== */
+/* -------------------------------------------------------------------------- */
+/* SEARCH FIELD — NEW ASSET                                                   */
+/* apps/desktop/src/assets/assistant/open/assistant-search-field.png           */
+/* -------------------------------------------------------------------------- */
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
@@ -124,14 +104,10 @@
 
   background-color: transparent !important;
   background-image:
-    url("../assets/assistant/open/assistant-chat-input-field.png") !important;
+    url("../assets/assistant/open/assistant-search-field.png") !important;
   background-repeat: no-repeat !important;
 
-  /*
-   * AssetTrim raporundaki içerik kutusu:
-   * 738×294 tuval, içerik x=76 y=91 w=596 h=134.
-   * Bu değerler PNG'nin şeffaf dış alanını CSS içinde kırpar.
-   */
+  /* 738x294 canvas; visible content: x76 y91 w596 h134. */
   background-size: 123.8255% 219.403% !important;
   background-position: 53.5% 56.87% !important;
 
@@ -153,14 +129,15 @@
   border: 0 !important;
   outline: none !important;
   background-image:
-    url("../assets/assistant/open/assistant-chat-input-field.png") !important;
+    url("../assets/assistant/open/assistant-search-field.png") !important;
   box-shadow: 0 0 0.42rem rgb(195 116 96 / 18%) !important;
   filter: none !important;
 }
 
-/* ========================================================================== */
-/* SEARCH BUTONU — ZIP'TEKİ GERÇEK PNG ASSET                                */
-/* ========================================================================== */
+/* -------------------------------------------------------------------------- */
+/* SEARCH BUTTON — NEW ASSET                                                  */
+/* apps/desktop/src/assets/assistant/open/assistant-search-button.png          */
+/* -------------------------------------------------------------------------- */
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
@@ -194,13 +171,10 @@
   border-radius: 0 !important;
   background-color: transparent !important;
   background-image:
-    url("../assets/assistant/open/assistant-chat-send-button.png") !important;
+    url("../assets/assistant/open/assistant-search-button.png") !important;
   background-repeat: no-repeat !important;
 
-  /*
-   * AssetTrim raporundaki içerik kutusu:
-   * 448×480 tuval, içerik x=156 y=280 w=210 h=124.
-   */
+  /* 448x480 canvas; visible content: x156 y280 w210 h124. */
   background-size: 213.3333% 387.0968% !important;
   background-position: 65.55% 78.65% !important;
 
@@ -216,7 +190,7 @@
   font-weight: 700 !important;
 }
 
-/* Eski CSS ile çizilen büyüteci tamamen kaldır. */
+/* Remove the old CSS-drawn magnifier. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-composer .button::before,
@@ -227,6 +201,7 @@
   content: none !important;
 }
 
+/* Keep the accessible Prepare label but display Search visually. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-composer .button__label {
@@ -258,7 +233,7 @@
   opacity: 0.78 !important;
   cursor: not-allowed !important;
   background-image:
-    url("../assets/assistant/open/assistant-chat-send-button.png") !important;
+    url("../assets/assistant/open/assistant-search-button.png") !important;
   filter: saturate(0.82) brightness(1.04) !important;
 }
 
@@ -267,7 +242,7 @@
   .assistant-composer .button:hover:not(:disabled) {
   opacity: 1 !important;
   background-image:
-    url("../assets/assistant/open/assistant-chat-send-button.png") !important;
+    url("../assets/assistant/open/assistant-search-button.png") !important;
   filter: brightness(1.045) saturate(1.025) !important;
   transform: translateY(-0.04rem) !important;
 }
@@ -279,9 +254,9 @@
   outline-offset: -0.12rem !important;
 }
 
-/* ========================================================================== */
-/* MASKOTLAR — SIFIR YÜKSEKLİĞE ÇÖKMESİN                                    */
-/* ========================================================================== */
+/* -------------------------------------------------------------------------- */
+/* MASCOTS AND EFFECTS                                                        */
+/* -------------------------------------------------------------------------- */
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
