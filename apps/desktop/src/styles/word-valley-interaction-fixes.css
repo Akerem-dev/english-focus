@@ -71,3 +71,63 @@
 .route-page--vocabulary-home .word-list-row {
   z-index: 1;
 }
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-word-suggestions {
+  display: grid;
+  gap: 0.42rem;
+  width: 100%;
+  padding: 0.62rem 0.68rem;
+
+  border: 1px solid rgb(184 122 99 / 26%);
+  border-radius: 0.8rem;
+  background: rgb(255 250 236 / 88%);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-word-suggestions > p {
+  margin: 0;
+  color: #7f5548;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-word-suggestions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-word-suggestions button {
+  min-height: 2rem;
+  padding: 0.22rem 0.62rem;
+
+  border: 1px solid rgb(169 105 88 / 38%);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff9e9, #f5e4c8);
+  color: #75483f;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-word-suggestions button:hover,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-word-suggestions button:focus-visible {
+  border-color: rgb(151 83 69 / 58%);
+  background: linear-gradient(180deg, #f8ead0, #edcfaa);
+  color: #60372f;
+  outline: none;
+}
