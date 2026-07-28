@@ -36,6 +36,7 @@ type AssistantMessage = Readonly<{
 type PreparationErrorPresentation = Readonly<{
   message: string;
   needsConnectionSettings: boolean;
+  suggestions: readonly string[];
 }>;
 
 const INITIAL_MESSAGES: readonly AssistantMessage[] = Object.freeze([
@@ -56,6 +57,7 @@ const STATUS_BY_STATE: Readonly<Record<AssistantMascotState, string>> = Object.f
 
 const PRIMARY_ASSISTANT_MODEL = "gemini-3.5-flash-lite";
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
+const WORD_NOT_FOUND_MARKER = "assistant_word_not_found|";
 
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
@@ -88,54 +90,107 @@ function userFacingSaveError(cause: unknown): string {
   return "This word could not be saved. Please try again.";
 }
 
+function parseWordNotFound(message: string): Readonly<{ word: string; suggestions: readonly string[] }> | undefined {
+  const markerIndex = message.indexOf(WORD_NOT_FOUND_MARKER);
+  if (markerIndex < 0) {
+    return undefined;
+  }
+
+  const payload = message.slice(markerIndex + WORD_NOT_FOUND_MARKER.length);
+  const [rawWord = "", rawSuggestions = ""] = payload.split("|");
+  const word = rawWord.trim();
+  const suggestions = Object.freeze(
+    rawSuggestions
+      .split(",")
+      .map((suggestion) => suggestion.trim())
+      .filter((suggestion) => suggestion.length > 0)
+      .slice(0, 5)
+  );
+
+  if (word.length === 0) {
+    return undefined;
+  }
+
+  return Object.freeze({ word, suggestions });
+}
+
 function userFacingPreparationError(cause: unknown): PreparationErrorPresentation {
   const message = cause instanceof Error ? cause.message : String(cause);
+  const notFound = parseWordNotFound(message);
+
+  if (notFound !== undefined) {
+    const suggestionText =
+      notFound.suggestions.length === 0
+        ? "Check the spelling and try again."
+        : `Did you mean ${notFound.suggestions.map((word) => `“${word}”`).join(", ")}?`;
+
+    return {
+      message: `I could not verify “${notFound.word}” as a standard English headword. ${suggestionText}`,
+      needsConnectionSettings: false,
+      suggestions: notFound.suggestions
+    };
+  }
+
+  if (message.includes("assistant_dictionary_unavailable")) {
+    return {
+      message: "The dictionary check is unavailable right now. No AI entry was generated.",
+      needsConnectionSettings: false,
+      suggestions: []
+    };
+  }
 
   if (message.includes("assistant_quota_exhausted") || message.includes("usage limit")) {
     return {
       message: "The daily Gemini limit has been reached. Try again after the quota resets.",
-      needsConnectionSettings: false
+      needsConnectionSettings: false,
+      suggestions: []
     };
   }
 
   if (message.includes("assistant_api_key_rejected") || message.includes("API key was rejected")) {
     return {
       message: "The saved API key was not accepted. Replace it in Settings.",
-      needsConnectionSettings: true
+      needsConnectionSettings: true,
+      suggestions: []
     };
   }
 
   if (message.includes("could not be reached") || message.includes("timed out")) {
     return {
       message: "The word helper could not reach Gemini. Check your connection and try again.",
-      needsConnectionSettings: false
+      needsConnectionSettings: false,
+      suggestions: []
     };
   }
 
   if (message.includes("assistant_request_rejected")) {
     return {
       message: "Gemini could not accept this word request. Please try again.",
-      needsConnectionSettings: false
+      needsConnectionSettings: false,
+      suggestions: []
     };
   }
 
   if (message.includes("assistant_generation_invalid")) {
     return {
       message: "The prepared entry did not pass English Focus checks. Please try again.",
-      needsConnectionSettings: false
+      needsConnectionSettings: false,
+      suggestions: []
     };
   }
 
   if (message.includes("assistant_provider_error")) {
     return {
       message: "Gemini is unavailable right now. Please try again shortly.",
-      needsConnectionSettings: false
+      needsConnectionSettings: false,
+      suggestions: []
     };
   }
 
   return {
     message: "I could not prepare a reliable entry for this word. Please try again.",
-    needsConnectionSettings: false
+    needsConnectionSettings: false,
+    suggestions: []
   };
 }
 
@@ -163,6 +218,7 @@ export function AssistantDock() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | undefined>();
   const [needsConnectionSettings, setNeedsConnectionSettings] = useState(false);
+  const [wordSuggestions, setWordSuggestions] = useState<readonly string[]>([]);
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking" && !isSaving;
   const isBusy = isPreparing || isSaving;
@@ -228,7 +284,7 @@ export function AssistantDock() {
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [messages, open, preview]);
+  }, [messages, open, preview, wordSuggestions]);
 
   useEffect(() => {
     function handleAssistantRequest(event: Event) {
@@ -240,6 +296,7 @@ export function AssistantDock() {
         setSavePlan(undefined);
         setSaveError(undefined);
         setNeedsConnectionSettings(false);
+        setWordSuggestions([]);
         setMessages(INITIAL_MESSAGES);
       }
 
@@ -279,6 +336,7 @@ export function AssistantDock() {
     setSavePlan(undefined);
     setSaveError(undefined);
     setIsSaving(false);
+    setWordSuggestions([]);
   }
 
   function closeAssistant() {
@@ -300,6 +358,25 @@ export function AssistantDock() {
     openAssistant();
     window.requestAnimationFrame(() => {
       inputRef.current?.focus();
+    });
+  }
+
+  function chooseSuggestion(word: string) {
+    preparationSequenceRef.current += 1;
+    clearReview();
+    setInput(word);
+    setNeedsConnectionSettings(false);
+    setMascotState("ready");
+    setMessages([
+      {
+        id: Date.now(),
+        author: "assistant",
+        text: `You selected “${word}”. Press Search to verify it.`
+      }
+    ]);
+    window.requestAnimationFrame(() => {
+      inputRef.current?.focus();
+      inputRef.current?.select();
     });
   }
 
@@ -353,6 +430,7 @@ export function AssistantDock() {
       const nextPreview = createAssistantWordPreview(word, existingEntry, "existing");
       setPreview(nextPreview);
       setNeedsConnectionSettings(false);
+      setWordSuggestions([]);
       setMessages((current) =>
         appendReply(
           current,
@@ -378,6 +456,7 @@ export function AssistantDock() {
             : "Save a Gemini API key in Settings before preparing a missing word.";
         setPreview(undefined);
         setSavePlan(undefined);
+        setWordSuggestions([]);
         setNeedsConnectionSettings(preparation.reason === "not-configured");
         setMascotState("confused");
         setMessages((current) => appendReply(current, messageId + 1, text));
@@ -404,6 +483,7 @@ export function AssistantDock() {
               : "Save a Gemini API key in Settings before preparing a missing word.";
           setPreview(undefined);
           setSavePlan(undefined);
+          setWordSuggestions([]);
           setNeedsConnectionSettings(preparation.reason === "not-configured");
           setMascotState("confused");
           setMessages((current) => appendReply(current, messageId + 2, text));
@@ -417,6 +497,7 @@ export function AssistantDock() {
       if (review.kind === "invalid") {
         setPreview(undefined);
         setSavePlan(undefined);
+        setWordSuggestions([]);
         setNeedsConnectionSettings(false);
         setMascotState("confused");
         setMessages((current) =>
@@ -434,6 +515,7 @@ export function AssistantDock() {
         const nextPreview = createAssistantWordPreview(word, review.entry, "existing");
         setPreview(nextPreview);
         setSavePlan(undefined);
+        setWordSuggestions([]);
         setNeedsConnectionSettings(false);
         setMessages((current) =>
           appendReply(current, messageId + 2, `“${nextPreview.word}” is already available locally.`)
@@ -445,6 +527,7 @@ export function AssistantDock() {
       const nextPreview = createAssistantWordPreview(word, review.entry, "ready");
       setPreview(nextPreview);
       setSavePlan(review.plan);
+      setWordSuggestions([]);
       setNeedsConnectionSettings(false);
       setMessages((current) =>
         appendReply(
@@ -462,12 +545,13 @@ export function AssistantDock() {
       const presentation = userFacingPreparationError(cause);
       setPreview(undefined);
       setSavePlan(undefined);
+      setWordSuggestions(presentation.suggestions);
       setNeedsConnectionSettings(presentation.needsConnectionSettings);
       setMascotState("confused");
       setMessages((current) => appendReply(current, messageId + 2, presentation.message));
       restoreWordForRetry(word);
       showToast({
-        title: "Word not prepared",
+        title: presentation.suggestions.length > 0 ? "Word not found" : "Word not prepared",
         message: presentation.message,
         tone: "error",
         durationMs: 8_000,
@@ -598,6 +682,20 @@ export function AssistantDock() {
                 <p>{message.text}</p>
               </div>
             ))}
+
+            {wordSuggestions.length === 0 ? null : (
+              <div aria-label="Did you mean" className="assistant-word-suggestions">
+                <p>Did you mean:</p>
+                <div>
+                  {wordSuggestions.map((word) => (
+                    <button key={word} onClick={() => chooseSuggestion(word)} type="button">
+                      {word}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {preview === undefined ? null : (
               <AssistantWordPreview
                 isSaving={isSaving}
@@ -659,6 +757,7 @@ export function AssistantDock() {
               maxLength={80}
               onChange={(event) => {
                 setInput(event.currentTarget.value);
+                setWordSuggestions([]);
                 if (mascotState === "confused") {
                   setMascotState("ready");
                   setSaveError(undefined);
