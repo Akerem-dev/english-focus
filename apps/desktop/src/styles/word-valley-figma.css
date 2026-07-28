@@ -116,11 +116,11 @@
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar__nav {
   position: absolute;
   top: 16.388889vh;
-  right: 1.25vw;
+  right: 2.25vw;
   left: 0.625vw;
   z-index: 2;
   display: grid;
-  gap: 0.555556vh;
+  gap: -1.555556vh;
   padding: 0;
 }
 
@@ -265,7 +265,7 @@
   top: 30.555556vh;
   left: calc(50vw - var(--wv-sidebar-width));
   display: grid;
-  width: min(47rem, 40.104167vw);
+  width: min(40rem, 40vw);
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.625vw;
   margin: 0;

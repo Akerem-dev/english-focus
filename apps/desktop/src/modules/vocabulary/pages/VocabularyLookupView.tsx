@@ -11,6 +11,34 @@ import {
   VocabularySearchingState
 } from "../components";
 
+function createRecentSearchSuggestions(
+  query: string,
+  recentWords: readonly string[],
+  recentAdditions: readonly string[]
+): readonly string[] {
+  const normalizedQuery = query.trim().toLocaleLowerCase("en");
+
+  if (normalizedQuery.length === 0) {
+    return [];
+  }
+
+  const seen = new Set<string>();
+
+  return [...recentWords, ...recentAdditions]
+    .filter((word) => word.toLocaleLowerCase("en").includes(normalizedQuery))
+    .filter((word) => {
+      const normalizedWord = word.toLocaleLowerCase("en");
+
+      if (seen.has(normalizedWord)) {
+        return false;
+      }
+
+      seen.add(normalizedWord);
+      return true;
+    })
+    .slice(0, 6);
+}
+
 interface WordListCardProps {
   readonly title: string;
   readonly eyebrow: string;
@@ -76,6 +104,10 @@ export function VocabularyLookupView({
   const missingWord =
     state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
   const isHomeState = state.kind === "initial" || state.kind === "typing";
+  const recentSearchSuggestions =
+    state.kind === "typing"
+      ? createRecentSearchSuggestions(query, recentWords, recentAdditions)
+      : [];
 
   useEffect(() => {
     if (missingWord === undefined) {
@@ -112,6 +144,30 @@ export function VocabularyLookupView({
             placeholder="Type a word, meaning, translation, tag, or note"
             value={query}
           />
+
+          {recentSearchSuggestions.length > 0 ? (
+            <div
+              aria-label="Recent matching words"
+              className="wordbook-search-suggestions"
+              role="listbox"
+            >
+              <p className="wordbook-search-suggestions__title">Recent matches</p>
+
+              {recentSearchSuggestions.map((word) => (
+                <button
+                  className="wordbook-search-suggestion"
+                  key={word}
+                  onClick={() => onSearch(word)}
+                  role="option"
+                  type="button"
+                >
+                  <AppIcon name="book-open" size={15} />
+                  <span className="wordbook-search-suggestion__word">{word}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+
           <Button
             aria-label="Search your wordbook"
             className="vocabulary-search__button"
