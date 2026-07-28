@@ -31,3 +31,8 @@
   padding: 0 0.3rem !important;
   border-radius: var(--wv-row-highlight-radius) !important;
 }
+
+/* Two illustrated pages can show five entries each. */
+.route-page--vocabulary-home .word-list-row:nth-child(n + 11) {
+  display: none !important;
+}
