@@ -1,0 +1,404 @@
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+
+/*
+ * Word Valley — open assistant composition
+ *
+ * Uses only the normalized assets under:
+ * apps/desktop/src/assets/assistant/open/
+ *
+ * The measurements below are derived from the 1920 × 1080 Figma frame.
+ */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  --wv-assistant-open-top: 29.2vh;
+  --wv-assistant-open-right: 0.6vw;
+  --wv-assistant-open-bottom: 0.8vh;
+  --wv-assistant-open-width: clamp(18rem, 29.3vw, 35.2rem);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open] {
+  position: fixed !important;
+  top: var(--wv-assistant-open-top) !important;
+  right: var(--wv-assistant-open-right) !important;
+  bottom: var(--wv-assistant-open-bottom) !important;
+  left: auto !important;
+  z-index: calc(var(--layer-dropdown) + 2) !important;
+
+  width: var(--wv-assistant-open-width) !important;
+  height: auto !important;
+
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel {
+  position: relative !important;
+  isolation: isolate;
+
+  display: grid !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  grid-template-rows: 29% minmax(0, 1fr) auto !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    url("../assets/assistant/open/assistant-open-panel-frame.png") !important;
+  background-position: 95.4% 89.6% !important;
+  background-repeat: no-repeat !important;
+  background-size: 152% 119.3% !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Keep all functional content above the illustrated panel frame. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header: mascot + nameplate                                                 */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__header {
+  position: relative !important;
+
+  display: block !important;
+  min-height: 0 !important;
+  height: 100% !important;
+
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage {
+  position: absolute !important;
+  top: -2.7% !important;
+  left: -6.2% !important;
+
+  width: 57.3% !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+
+  overflow: visible !important;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: contain !important;
+  filter: none !important;
+}
+
+/* Figma: wake rays are 73 px inside a 322 px mascot stage. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--ready {
+  top: 16.5% !important;
+  right: auto !important;
+  left: 62.4% !important;
+
+  width: 22.7% !important;
+  height: 22.7% !important;
+
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading {
+  position: absolute !important;
+  top: 2.9% !important;
+  left: 32.9% !important;
+
+  width: 55.5% !important;
+  height: 81% !important;
+  min-width: 0 !important;
+
+  display: block !important;
+  isolation: isolate;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  background-image:
+    url("../assets/assistant/open/assistant-nameplate-frame.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  content: "";
+  pointer-events: none;
+  filter: none;
+}
+
+/* Replace the old visible heading without changing its accessible id. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading h2 {
+  position: absolute !important;
+  top: 36.3% !important;
+  left: 21.2% !important;
+  z-index: 1;
+
+  width: 57.4% !important;
+  margin: 0 !important;
+
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading h2::after {
+  display: block;
+
+  color: #2e2019;
+  content: "Wordie the Wise Dictionary";
+
+  font-family: "Irish Grover", "Comic Sans MS", cursive;
+  font-size: clamp(0.9rem, 1.25vw, 1.5rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.18;
+  text-align: left;
+  text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 72%);
+}
+
+/* Status remains available to assistive technology but is not in the Figma UI. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading p {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__close {
+  position: absolute !important;
+  top: 4.5% !important;
+  right: 3.5% !important;
+  z-index: 6 !important;
+
+  width: 1.8rem !important;
+  height: 1.8rem !important;
+
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: rgb(255 249 232 / 72%) !important;
+  color: #8f574d !important;
+  box-shadow: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Conversation area                                                         */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-messages {
+  min-height: 0 !important;
+  margin: 0 6.3% !important;
+  padding: 0.8rem 0.6rem 0.5rem !important;
+
+  gap: 0.65rem !important;
+  overflow-y: auto !important;
+
+  background: transparent !important;
+  scrollbar-color: rgb(184 123 102 / 52%) transparent;
+  scrollbar-width: thin;
+}
+
+/* Match the empty Figma-ready state while preserving later responses. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel[data-state="ready"]
+  .assistant-messages:not([data-has-preview])
+  .assistant-message:first-child {
+  display: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-message {
+  max-width: 88% !important;
+  padding: 0.62rem 0.72rem !important;
+
+  border: 1px solid rgb(189 130 105 / 25%) !important;
+  border-radius: 0.8rem !important;
+  background: rgb(255 250 236 / 78%) !important;
+  color: #584433 !important;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.86rem !important;
+  line-height: 1.35 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-message[data-author="user"] {
+  border-color: rgb(182 111 92 / 30%) !important;
+  background: rgb(248 220 204 / 72%) !important;
+}
+
+/* Figma open state does not show the generic shortcut tiles. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-shortcuts {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bottom composer: cropped source assets, visible area equals click area     */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer {
+  position: relative !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 21.5% !important;
+  gap: 1.2% !important;
+
+  padding: 0 4.7% 2.7% !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: clamp(2.35rem, 4.25vh, 2.9rem) !important;
+  min-height: 0 !important;
+
+  padding: 0 0.9rem !important;
+  border: 0 !important;
+  border-radius: 0.55rem !important;
+
+  background-color: transparent !important;
+  background-image:
+    url("../assets/assistant/open/assistant-chat-input-field.png") !important;
+  background-position: 54.2% 57.6% !important;
+  background-repeat: no-repeat !important;
+  background-size: 121.6% 196.1% !important;
+
+  color: #584433 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.82rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer input:focus-visible {
+  outline: 0.1rem solid rgb(171 101 83 / 32%) !important;
+  outline-offset: 0.06rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: clamp(2.35rem, 4.25vh, 2.9rem) !important;
+  min-height: 0 !important;
+
+  padding: 0 !important;
+  overflow: hidden !important;
+
+  border: 0 !important;
+  border-radius: 0.55rem !important;
+
+  background-color: transparent !important;
+  background-image:
+    url("../assets/assistant/open/assistant-chat-send-button.png") !important;
+  background-position: 48% 99% !important;
+  background-repeat: no-repeat !important;
+  background-size: 151.4% 132.3% !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* The Figma button is intentionally textless; accessible text remains in DOM. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button__label {
+  display: block;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button:hover:not(:disabled) {
+  transform: translateY(-0.05rem);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer .button:focus-visible {
+  outline: 0.1rem solid rgb(171 101 83 / 36%) !important;
+  outline-offset: 0.06rem !important;
+}
+
+/* Keep the panel usable on narrower desktop windows without changing Figma at 1920. */
+@media (max-width: 1180px) {
+  .application-frame:has(.route-page--vocabulary-home) {
+    --wv-assistant-open-top: 23vh;
+    --wv-assistant-open-right: 0.4rem;
+    --wv-assistant-open-width: clamp(17.5rem, 30vw, 21rem);
+  }
+
+  .application-frame:has(.route-page--vocabulary-home)
+    .assistant-dock[data-open]
+    .assistant-panel__heading h2::after {
+    font-size: clamp(0.82rem, 1.4vw, 1.05rem);
+  }
+}
