@@ -1,0 +1,73 @@
+/*
+ * Word Valley interaction fixes.
+ * Keeps the existing main-search layout slot while shrinking the real button
+ * hit target to the visible trimmed asset, so it cannot cover book rows.
+ */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  --wv-main-search-button-slot-width: 16rem;
+  --wv-main-search-button-visible-width: 7.2rem;
+  --wv-main-search-button-visible-height: 3rem;
+}
+
+.route-page--vocabulary-home .vocabulary-search {
+  grid-template-columns:
+    minmax(0, 1fr)
+    var(--wv-main-search-button-slot-width) !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] {
+  width: var(--wv-main-search-button-visible-width) !important;
+  min-width: var(--wv-main-search-button-visible-width) !important;
+  max-width: var(--wv-main-search-button-visible-width) !important;
+
+  height: var(--wv-main-search-button-visible-height) !important;
+  min-height: var(--wv-main-search-button-visible-height) !important;
+  max-height: var(--wv-main-search-button-visible-height) !important;
+
+  align-self: center !important;
+  justify-self: end !important;
+  translate: 0 0 !important;
+
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background-color: transparent !important;
+  background-image:
+    url("../assets/assistant/open/assistant-search-button.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled),
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:active:not(:disabled) {
+  background-image:
+    url("../assets/assistant/open/assistant-search-button.png") !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+.route-page--vocabulary-home .word-list-card,
+.route-page--vocabulary-home .word-list-card__rows,
+.route-page--vocabulary-home .word-list-row {
+  position: relative;
+  pointer-events: auto !important;
+}
+
+.route-page--vocabulary-home .word-list-card {
+  z-index: 2;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  z-index: 1;
+}
