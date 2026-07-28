@@ -1,0 +1,57 @@
+/*
+ * Word Valley dictionary/UI corrections.
+ * Loaded last so these rules win over temporary interaction experiments.
+ */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  /* AI input text start: positive = right, negative = left */
+  --wv-ai-search-text-x: 0.35rem;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer input {
+  text-indent: var(--wv-ai-search-text-x) !important;
+}
+
+/* Restore the main page Search button's own asset and adjustable art canvas. */
+.route-page--vocabulary-home .vocabulary-search {
+  grid-template-columns:
+    minmax(0, 1fr)
+    var(--wv-search-button-width) !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] {
+  width: var(--wv-search-button-width) !important;
+  min-width: var(--wv-search-button-width) !important;
+  max-width: var(--wv-search-button-width) !important;
+
+  height: var(--wv-search-button-height) !important;
+  min-height: var(--wv-search-button-height) !important;
+  max-height: var(--wv-search-button-height) !important;
+
+  align-self: center !important;
+  justify-self: end !important;
+  translate: var(--wv-search-button-x) var(--wv-search-button-y) !important;
+
+  background-color: transparent !important;
+  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled),
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:active:not(:disabled) {
+  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
