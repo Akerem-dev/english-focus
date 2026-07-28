@@ -29,7 +29,6 @@
     0 0.18rem 0.5rem rgb(113 77 44 / 10%);
 }
 
-/* A very small ornamental underline keeps the copy tied to the valley theme. */
 .route-page--vocabulary-home .vocabulary-hero__description::after {
   display: block;
   width: 3.5rem;
@@ -46,10 +45,7 @@
   content: "";
 }
 
-/* The Figma stylesheet's padding-inline rule was overriding the primitive
- * leading-icon spacing. Reserve explicit room for both the magnifier and the
- * clear action so the placeholder can never overlap either control.
- */
+/* Reserve explicit room for the magnifier and clear action. */
 .route-page--vocabulary-home .vocabulary-search .field__input {
   padding-left: 3rem !important;
   padding-right: 3rem !important;
@@ -65,12 +61,69 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/* Restore interaction inside the illustrated books                           */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * vocabulary-hero spans the entire page and previously sat above the books.
+ * It looked transparent, but still intercepted every mouse click. Let clicks
+ * pass through the decorative hero while keeping the real search form active.
+ */
+.route-page--vocabulary-home .vocabulary-hero {
+  pointer-events: none;
+}
+
+.route-page--vocabulary-home .vocabulary-search {
+  pointer-events: auto;
+}
+
+.route-page--vocabulary-home .vocabulary-dashboard,
+.route-page--vocabulary-home .word-list-card,
+.route-page--vocabulary-home .word-list-card__rows,
+.route-page--vocabulary-home .word-list-row {
+  pointer-events: auto;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  border: 0 !important;
+  border-radius: 0.55rem;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.route-page--vocabulary-home .word-list-row:hover {
+  background: rgb(255 248 226 / 48%) !important;
+  color: #6f4035;
+  transform: translateX(0.12rem);
+}
+
+.route-page--vocabulary-home .word-list-card:first-child .word-list-row:hover {
+  background: rgb(230 237 201 / 46%) !important;
+  color: #53633c;
+}
+
+.route-page--vocabulary-home .word-list-row:active {
+  transform: translateX(0.12rem) scale(0.99);
+}
+
+.route-page--vocabulary-home .word-list-row:focus-visible {
+  outline: 0.13rem solid rgb(154 111 80 / 42%);
+  outline-offset: 0.08rem;
+}
+
+/* -------------------------------------------------------------------------- */
 /* Sidebar — shared application palette                                       */
 /* -------------------------------------------------------------------------- */
 
-/* Non-home screens use a quiet cream surface inspired by the valley grass,
- * parchment pages and peach blossom tree. No glass blur is used.
- */
 .app-sidebar {
   border-right-color: rgb(142 116 78 / 18%);
   background: linear-gradient(180deg, #fbf5e7 0%, #f7edd9 54%, #f2e2c9 100%);
@@ -89,33 +142,92 @@
   -webkit-backdrop-filter: none;
 }
 
+/* Small illustrated-page tabs rather than generic app rectangles. */
 .sidebar-nav-item {
-  border-color: transparent;
-  color: #655a47;
+  min-height: 3.35rem;
+  border: 1px solid rgb(137 113 72 / 14%);
+  border-radius: 0.3rem 1.05rem 1.05rem 0.3rem;
+  background: linear-gradient(
+    180deg,
+    rgb(255 252 240 / 68%) 0%,
+    rgb(246 237 213 / 52%) 100%
+  );
+  color: #67583f;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 78%),
+    0 0.18rem 0.52rem rgb(92 67 38 / 5%);
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.sidebar-nav-item__icon {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgb(132 126 79 / 16%);
+  border-radius: 0.72rem;
+  background: linear-gradient(180deg, #f7efcf, #eadcb5);
+  color: #766b45;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 76%),
+    0 0.12rem 0.3rem rgb(92 69 36 / 6%);
 }
 
 .sidebar-nav-item:hover {
-  border-color: rgb(132 147 88 / 18%);
-  background: rgb(248 241 216 / 68%);
-  color: #493f32;
+  border-color: rgb(131 149 84 / 26%);
+  background: linear-gradient(
+    180deg,
+    rgb(250 248 224 / 92%),
+    rgb(231 237 200 / 78%)
+  );
+  color: #4f5437;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 86%),
+    0 0.3rem 0.72rem rgb(88 76 43 / 8%);
+  transform: translateY(-0.0625rem);
+}
+
+.sidebar-nav-item:hover .sidebar-nav-item__icon {
+  border-color: rgb(124 146 77 / 25%);
+  background: linear-gradient(180deg, #edf2ce, #dbe5b0);
+  color: #657442;
 }
 
 .sidebar-nav-item--active {
-  border-color: rgb(171 112 91 / 24%);
-  background: linear-gradient(180deg, rgb(255 244 229 / 94%), rgb(245 222 204 / 88%));
-  color: #873a35;
+  border-color: rgb(181 112 91 / 30%);
+  background: linear-gradient(
+    180deg,
+    rgb(255 246 231 / 98%),
+    rgb(246 218 202 / 92%)
+  );
+  color: #863b34;
+  font-weight: var(--font-weight-semibold);
   box-shadow:
-    inset 0 0.0625rem 0 rgb(255 255 255 / 86%),
-    0 0.24rem 0.68rem rgb(107 65 45 / 7%);
+    inset 0 0.0625rem 0 rgb(255 255 255 / 90%),
+    0 0.32rem 0.78rem rgb(108 64 43 / 9%);
+}
+
+.sidebar-nav-item--active .sidebar-nav-item__icon {
+  border-color: rgb(185 111 89 / 25%);
+  background: linear-gradient(180deg, #f9ded0, #efc5b5);
+  color: #98473e;
+}
+
+.sidebar-nav-item::before {
+  top: 0.62rem;
+  bottom: 0.62rem;
+  width: 0.22rem;
+  border-radius: 999px;
 }
 
 .sidebar-nav-item--active::before {
-  background: linear-gradient(180deg, #8e9f61, #c77666);
+  background: linear-gradient(180deg, #8f9f61, #c77867);
+  box-shadow: 0 0 0.35rem rgb(152 112 76 / 18%);
 }
 
-/* The footer has also been removed from AppSidebar.tsx. This fallback ensures
- * an old hot-reloaded tree cannot briefly show it during development.
- */
 .app-sidebar__footer {
   display: none !important;
 }
@@ -124,35 +236,40 @@
 /* Figma Wordbook home sidebar                                                */
 /* -------------------------------------------------------------------------- */
 
-/* Keep the authored transparent shell, but warm it slightly so it belongs to
- * the same palette as the landscape instead of looking like a white overlay.
- */
 .application-frame:has(.route-page--vocabulary-home) .app-sidebar::before {
   opacity: 0.98;
   filter: sepia(0.055) saturate(0.92) brightness(1.015);
 }
 
 .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
-  border-color: transparent;
-  color: #655640;
+  border-color: rgb(142 115 72 / 13%);
+  background: linear-gradient(
+    180deg,
+    rgb(255 251 237 / 66%),
+    rgb(244 233 207 / 50%)
+  );
+  color: #66573f;
 }
 
 .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover {
-  border-color: rgb(128 145 83 / 20%);
-  background: rgb(248 241 215 / 68%);
-  color: #483d30;
+  border-color: rgb(128 145 83 / 25%);
+  background: linear-gradient(
+    180deg,
+    rgb(249 247 221 / 92%),
+    rgb(229 236 197 / 80%)
+  );
+  color: #4b5235;
 }
 
 .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active {
-  border-color: rgb(168 109 88 / 25%);
-  background: linear-gradient(180deg, rgb(255 244 229 / 94%), rgb(245 220 202 / 88%));
+  border-color: rgb(177 108 88 / 30%);
+  background: linear-gradient(
+    180deg,
+    rgb(255 245 229 / 98%),
+    rgb(244 216 200 / 93%)
+  );
   color: #873832;
   box-shadow:
-    inset 0 0.0625rem 0 rgb(255 255 255 / 88%),
-    0 0.24rem 0.68rem rgb(105 63 43 / 7%);
-}
-
-.application-frame:has(.route-page--vocabulary-home)
-  .sidebar-nav-item--active::before {
-  background: linear-gradient(180deg, #8f9f61, #c77867);
+    inset 0 0.0625rem 0 rgb(255 255 255 / 90%),
+    0 0.3rem 0.74rem rgb(105 63 43 / 9%);
 }
