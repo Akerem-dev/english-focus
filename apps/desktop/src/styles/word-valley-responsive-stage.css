@@ -1,0 +1,239 @@
+/*
+ * Word Valley responsive stage
+ *
+ * The illustrated home was authored as one 1920 × 1080 composition. The
+ * application shell now keeps those coordinates fixed and scales the complete
+ * scene uniformly, so resizing cannot stretch vw and vh values independently.
+ */
+
+.application-frame--word-valley-stage {
+  position: relative !important;
+  display: block !important;
+  width: 100vw;
+  height: 100vh;
+  min-width: 0;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #fff8e8 !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) {
+  --wv-sidebar-width: 307.2px;
+  --wv-nav-top: 176px;
+  --wv-search-top: 329.4px;
+  --wv-assistant-open-top: 315.36px;
+  --wv-assistant-open-right: 11.52px;
+  --wv-assistant-open-bottom: 8.64px;
+  --wv-assistant-open-width: 562.56px;
+
+  grid-template-columns: none !important;
+  background-color: #fff8e8 !important;
+  background-image: none !important;
+}
+
+.word-valley-stage-viewport {
+  --wv-stage-scale: 1;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #fff8e8;
+}
+
+.word-valley-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 1920px;
+  height: 1080px;
+  grid-template-columns: 307.2px 1612.8px;
+  overflow: hidden;
+  background-color: #fff8e8;
+  background-image: url("../assets/backgrounds/wordbook-home-background.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 1920px 1080px;
+  isolation: isolate;
+  transform: translate(-50%, -50%) scale(var(--wv-stage-scale));
+  transform-origin: center;
+}
+
+/* Fixed shell dimensions inside the authored stage. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-valley-stage
+  > .app-sidebar {
+  width: 307.2px !important;
+  height: 1080px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-valley-stage
+  > .application-main,
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-valley-stage
+  > .application-main
+  > .app-content {
+  width: 1612.8px !important;
+  height: 1080px !important;
+  min-height: 1080px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .route-page--vocabulary-home {
+  width: 1612.8px !important;
+  height: 1080px !important;
+  min-height: 1080px !important;
+}
+
+/* Sidebar artwork and controls use their 1920 × 1080 Figma coordinates. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .app-sidebar::before {
+  width: 403.2px !important;
+  height: 1080px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .app-sidebar__brand {
+  top: 10.8px !important;
+  left: 17.28px !important;
+  width: 246px !important;
+  height: 164px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .app-sidebar__nav {
+  top: var(--wv-nav-top) !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .sidebar-nav-item {
+  font-size: 1rem !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .sidebar-nav-item__label {
+  display: inline !important;
+}
+
+/* Search wordmark and copy. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .vocabulary-hero
+  h1 {
+  top: -64px !important;
+  left: 247.8px !important;
+  width: 809px !important;
+  height: 539px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .vocabulary-hero__description {
+  top: 296px !important;
+  left: 652.8px !important;
+  width: 544px !important;
+  font-size: 13.44px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .vocabulary-search {
+  top: calc(329.4px + var(--wv-search-y)) !important;
+  left: calc(652.8px + var(--wv-search-x)) !important;
+  width: 1024px !important;
+  max-width: none !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .vocabulary-hero__hint {
+  top: 392px !important;
+  left: 652.8px !important;
+  width: 544px !important;
+  font-size: 12.28px !important;
+}
+
+/* Restore the authored absolute positioning that a late interaction rule had overridden. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .vocabulary-dashboard {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1612.8px !important;
+  height: 1080px !important;
+  z-index: 2 !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .word-list-card {
+  position: absolute !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-list-card:first-child {
+  top: 334.8px !important;
+  left: 115.2px !important;
+  width: 576px !important;
+  height: 489.6px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-list-card:nth-child(2) {
+  top: 151.2px !important;
+  left: 542.8px !important;
+  width: 768px !important;
+  height: 873.8px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-list-card__rows {
+  position: absolute !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .word-list-row {
+  position: relative !important;
+  min-height: 44.8px !important;
+  z-index: 3 !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-list-card__header
+  h2 {
+  font-size: 18.24px !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .word-list-row__word {
+  font-size: 13.06px !important;
+}
+
+/* Open assistant keeps the full-size authored panel coordinates. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open] {
+  top: var(--wv-assistant-open-top) !important;
+  right: var(--wv-assistant-open-right) !important;
+  bottom: var(--wv-assistant-open-bottom) !important;
+  left: auto !important;
+  width: var(--wv-assistant-open-width) !important;
+  transform: none !important;
+}
+
+/* Closed assistant: frame, sleeping mascot and Z effect shrink together. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .assistant-dock:not([data-open]) {
+  position: fixed !important;
+  top: auto !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: 314px !important;
+  height: 209px !important;
+  transform: none !important;
+}
+
+/* The stage itself handles responsiveness; narrow-window rules must not collapse it again. */
+@media (max-width: 60rem) {
+  .application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+    .sidebar-nav-item {
+    justify-content: flex-start !important;
+  }
+
+  .application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+    .sidebar-nav-item__label {
+    display: inline !important;
+  }
+}
