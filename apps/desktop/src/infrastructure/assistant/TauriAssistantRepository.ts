@@ -32,13 +32,18 @@ interface AssistantCandidatePayload {
   readonly model: unknown;
 }
 
+interface PronunciationAudioPayload {
+  readonly bytes: readonly number[];
+  readonly mimeType: string;
+}
+
 type CachedAssistantCandidate = Extract<AssistantWordPreparationResult, { readonly kind: "candidate" }>;
 
 const PREPARATION_CACHE_LIMIT = 500;
 const VOICE_LOAD_TIMEOUT_MS = 1_500;
-const ALLOWED_PRONUNCIATION_HOSTS = new Set(["api.dictionaryapi.dev", "ssl.gstatic.com"]);
 const preparationCache = new Map<string, CachedAssistantCandidate>();
 let activeAudio: HTMLAudioElement | undefined;
+let activeObjectUrl: string | undefined;
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -121,17 +126,19 @@ function parseCandidate(payload: unknown): Readonly<{ value: unknown; model: str
   });
 }
 
-function isPronunciationUrl(value: unknown): value is string {
-  if (typeof value !== "string" || value.length === 0) {
+function isPronunciationAudioPayload(value: unknown): value is PronunciationAudioPayload {
+  if (typeof value !== "object" || value === null || !("bytes" in value) || !("mimeType" in value)) {
     return false;
   }
 
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" && ALLOWED_PRONUNCIATION_HOSTS.has(url.hostname);
-  } catch {
-    return false;
-  }
+  const payload = value as { readonly bytes: unknown; readonly mimeType: unknown };
+  return (
+    Array.isArray(payload.bytes) &&
+    payload.bytes.length > 0 &&
+    payload.bytes.every((byte) => Number.isInteger(byte) && byte >= 0 && byte <= 255) &&
+    typeof payload.mimeType === "string" &&
+    payload.mimeType.startsWith("audio/")
+  );
 }
 
 function stopActiveAudio(): void {
@@ -143,15 +150,23 @@ function stopActiveAudio(): void {
     audio.removeAttribute("src");
     audio.load();
   }
+
+  if (activeObjectUrl !== undefined) {
+    URL.revokeObjectURL(activeObjectUrl);
+    activeObjectUrl = undefined;
+  }
 }
 
-function playRecordedPronunciation(audioUrl: string): Promise<void> {
+function playRecordedPronunciation(payload: PronunciationAudioPayload): Promise<void> {
   stopActiveAudio();
 
-  const audio = new Audio();
-  audio.preload = "none";
-  audio.src = audioUrl;
+  const audioBuffer = Uint8Array.from(payload.bytes).buffer as ArrayBuffer;
+  const objectUrl = URL.createObjectURL(new Blob([audioBuffer], { type: payload.mimeType }));
+  const audio = new Audio(objectUrl);
+
+  audio.preload = "auto";
   activeAudio = audio;
+  activeObjectUrl = objectUrl;
 
   return new Promise((resolve, reject) => {
     let settled = false;
@@ -351,9 +366,9 @@ export class TauriAssistantRepository {
   async pronounceWord(word: string): Promise<void> {
     if (isTauriRuntime()) {
       try {
-        const audioUrl = await invoke<unknown>("assistant_get_pronunciation_url", { word });
-        if (isPronunciationUrl(audioUrl)) {
-          await playRecordedPronunciation(audioUrl);
+        const payload = await invoke<unknown>("assistant_get_pronunciation_audio", { word });
+        if (isPronunciationAudioPayload(payload)) {
+          await playRecordedPronunciation(payload);
           return;
         }
       } catch {
