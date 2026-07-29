@@ -210,10 +210,7 @@ pub async fn assistant_get_pronunciation_audio(
     };
     let audio = download_audio(&client, audio_url).await?;
 
-    remember_pronunciation(
-        normalized,
-        CachedPronunciation::Found(audio.clone()),
-    );
+    remember_pronunciation(normalized, CachedPronunciation::Found(audio.clone()));
     Ok(Some(audio))
 }
 
@@ -234,7 +231,9 @@ mod tests {
             "https://api.dictionaryapi.dev/media/pronunciations/en/test.mp3"
         )
         .is_some());
-        assert!(normalize_audio_url("//ssl.gstatic.com/dictionary/static/sounds/test.mp3").is_some());
+        assert!(
+            normalize_audio_url("//ssl.gstatic.com/dictionary/static/sounds/test.mp3").is_some()
+        );
         assert!(normalize_audio_url("http://api.dictionaryapi.dev/test.mp3").is_none());
         assert!(normalize_audio_url("https://example.com/test.mp3").is_none());
     }
