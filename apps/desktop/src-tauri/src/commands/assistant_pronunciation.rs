@@ -155,10 +155,7 @@ pub async fn assistant_get_pronunciation_url(word: String) -> Result<Option<Stri
     };
     let audio_url = audio_url.to_string();
 
-    remember_pronunciation(
-        normalized,
-        CachedPronunciation::Found(audio_url.clone()),
-    );
+    remember_pronunciation(normalized, CachedPronunciation::Found(audio_url.clone()));
     Ok(Some(audio_url))
 }
 
