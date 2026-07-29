@@ -2,18 +2,26 @@ use std::collections::HashMap;
 use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
 
-use reqwest::{Client, StatusCode, Url};
-use serde::Deserialize;
+use reqwest::{header::CONTENT_TYPE, Client, StatusCode, Url};
+use serde::{Deserialize, Serialize};
 
 const FREE_DICTIONARY_BASE_URL: &str = "https://api.dictionaryapi.dev/api/v2/entries/en/";
 const REQUEST_TIMEOUT_SECONDS: u64 = 6;
-const CACHE_LIMIT: usize = 200;
+const MAX_AUDIO_BYTES: usize = 2_000_000;
+const CACHE_LIMIT: usize = 128;
 const ALLOWED_AUDIO_HOSTS: &[&str] = &["api.dictionaryapi.dev", "ssl.gstatic.com"];
 
 #[derive(Clone)]
 enum CachedPronunciation {
     Found(String),
     Missing,
+}
+
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PronunciationAudio {
+    bytes: Vec<u8>,
+    mime_type: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -132,31 +140,94 @@ async fn fetch_dictionary_entries(
     }
 }
 
-#[tauri::command]
-pub async fn assistant_get_pronunciation_url(word: String) -> Result<Option<String>, String> {
-    let normalized = normalize_headword(&word)?;
-
-    if let Some(cached) = cached_pronunciation(&normalized) {
+async fn resolve_audio_url(client: &Client, word: &str) -> Result<Option<Url>, String> {
+    if let Some(cached) = cached_pronunciation(word) {
         return match cached {
-            CachedPronunciation::Found(audio_url) => Ok(Some(audio_url)),
+            CachedPronunciation::Found(audio_url) => Url::parse(&audio_url)
+                .map(Some)
+                .map_err(|error| format!("assistant_pronunciation_unavailable: {error}")),
             CachedPronunciation::Missing => Ok(None),
         };
     }
 
+    let entries = fetch_dictionary_entries(client, word).await?;
+    let Some(audio_url) = first_audio_url(&entries) else {
+        remember_pronunciation(word.to_string(), CachedPronunciation::Missing);
+        return Ok(None);
+    };
+
+    remember_pronunciation(
+        word.to_string(),
+        CachedPronunciation::Found(audio_url.to_string()),
+    );
+    Ok(Some(audio_url))
+}
+
+async fn download_audio(client: &Client, url: Url) -> Result<PronunciationAudio, String> {
+    let response = client
+        .get(url)
+        .send()
+        .await
+        .map_err(|error| format!("assistant_pronunciation_unavailable: {error}"))?;
+
+    if !response.status().is_success() {
+        return Err(format!(
+            "assistant_pronunciation_unavailable: Audio returned {}.",
+            response.status()
+        ));
+    }
+
+    if response
+        .content_length()
+        .is_some_and(|length| length > MAX_AUDIO_BYTES as u64)
+    {
+        return Err("assistant_pronunciation_unavailable: Audio file is too large.".to_string());
+    }
+
+    let mime_type = response
+        .headers()
+        .get(CONTENT_TYPE)
+        .and_then(|value| value.to_str().ok())
+        .unwrap_or("audio/mpeg")
+        .split(';')
+        .next()
+        .unwrap_or("audio/mpeg")
+        .to_string();
+
+    if !mime_type.starts_with("audio/") {
+        return Err("assistant_pronunciation_unavailable: Invalid audio content type.".to_string());
+    }
+
+    let bytes = response
+        .bytes()
+        .await
+        .map_err(|error| format!("assistant_pronunciation_unavailable: {error}"))?;
+
+    if bytes.is_empty() || bytes.len() > MAX_AUDIO_BYTES {
+        return Err("assistant_pronunciation_unavailable: Invalid audio file.".to_string());
+    }
+
+    Ok(PronunciationAudio {
+        bytes: bytes.to_vec(),
+        mime_type,
+    })
+}
+
+#[tauri::command]
+pub async fn assistant_get_pronunciation_audio(
+    word: String,
+) -> Result<Option<PronunciationAudio>, String> {
+    let normalized = normalize_headword(&word)?;
     let client = Client::builder()
         .timeout(Duration::from_secs(REQUEST_TIMEOUT_SECONDS))
         .user_agent("English-Focus/1.0 pronunciation")
         .build()
         .map_err(|error| format!("assistant_pronunciation_unavailable: {error}"))?;
-    let entries = fetch_dictionary_entries(&client, &normalized).await?;
-    let Some(audio_url) = first_audio_url(&entries) else {
-        remember_pronunciation(normalized, CachedPronunciation::Missing);
+    let Some(audio_url) = resolve_audio_url(&client, &normalized).await? else {
         return Ok(None);
     };
-    let audio_url = audio_url.to_string();
 
-    remember_pronunciation(normalized, CachedPronunciation::Found(audio_url.clone()));
-    Ok(Some(audio_url))
+    download_audio(&client, audio_url).await.map(Some)
 }
 
 #[cfg(test)]
