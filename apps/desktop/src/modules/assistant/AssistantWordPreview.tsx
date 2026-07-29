@@ -1,12 +1,9 @@
-import { useId, useState } from "react";
+import { useId } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
-import { useAssistant } from "../../app/providers";
-import { Button, IconButton } from "../../components";
-import { AppIcon } from "../../design-system";
+import { Button } from "../../components";
 
 type AssistantWordPreviewState = "waiting" | "existing" | "ready" | "saved";
-type PronunciationStatus = "idle" | "playing" | "error";
 
 export interface AssistantWordPreviewModel {
   readonly word: string;
@@ -94,38 +91,14 @@ export function AssistantWordPreview({
   preview,
   saveError
 }: AssistantWordPreviewProps) {
-  const { pronounceWord } = useAssistant();
   const titleId = useId();
   const statusId = useId();
-  const [pronunciation, setPronunciation] = useState<{
-    readonly word: string;
-    readonly status: PronunciationStatus;
-  }>({ word: "", status: "idle" });
-  const pronunciationStatus =
-    pronunciation.word === preview.normalizedWord ? pronunciation.status : "idle";
   const metadata = [preview.partOfSpeech, preview.cefr].filter(
     (value): value is string => value !== undefined
   );
   const canOpen =
     (preview.state === "existing" || preview.state === "saved") && onOpenExisting !== undefined;
   const canAdd = preview.state === "ready" && onAdd !== undefined;
-  const pronunciationLabel =
-    pronunciationStatus === "playing"
-      ? `Playing ${preview.word}`
-      : pronunciationStatus === "error"
-        ? `Pronunciation unavailable for ${preview.word}`
-        : `Pronounce ${preview.word}`;
-
-  async function handlePronunciation(): Promise<void> {
-    setPronunciation({ word: preview.normalizedWord, status: "playing" });
-
-    try {
-      await pronounceWord(preview.word);
-      setPronunciation({ word: preview.normalizedWord, status: "idle" });
-    } catch {
-      setPronunciation({ word: preview.normalizedWord, status: "error" });
-    }
-  }
 
   return (
     <article
@@ -141,19 +114,6 @@ export function AssistantWordPreview({
           <p className="assistant-preview__eyebrow">{EYEBROW_BY_STATE[preview.state]}</p>
           <div className="assistant-preview__title-row">
             <h3 id={titleId}>{preview.word}</h3>
-            {preview.complete ? (
-              <IconButton
-                className="assistant-preview__pronunciation"
-                data-error={pronunciationStatus === "error" || undefined}
-                data-playing={pronunciationStatus === "playing" || undefined}
-                disabled={pronunciationStatus === "playing"}
-                icon={<AppIcon name="volume" size={16} />}
-                label={pronunciationLabel}
-                onClick={() => void handlePronunciation()}
-                size="small"
-                variant="quiet"
-              />
-            ) : null}
           </div>
         </div>
         {metadata.length === 0 ? null : (
@@ -193,11 +153,6 @@ export function AssistantWordPreview({
       <footer className="assistant-preview__footer">
         <div className="assistant-preview__status" id={statusId}>
           <p>{FOOTER_BY_STATE[preview.state]}</p>
-          {pronunciationStatus === "error" ? (
-            <p data-error="true" role="alert">
-              Pronunciation is unavailable on this device.
-            </p>
-          ) : null}
           {saveError === undefined ? null : (
             <p data-error="true" role="alert">
               {saveError}
