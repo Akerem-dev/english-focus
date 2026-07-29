@@ -73,8 +73,6 @@ export function AssistantProvider({ children }: PropsWithChildren) {
     [repository]
   );
 
-  const pronounceWord = useCallback((word: string) => repository.pronounceWord(word), [repository]);
-
   const value = useMemo(
     () => ({
       connection,
@@ -83,19 +81,9 @@ export function AssistantProvider({ children }: PropsWithChildren) {
       refreshConnection,
       saveApiKey,
       clearApiKey,
-      prepareWord,
-      pronounceWord
+      prepareWord
     }),
-    [
-      clearApiKey,
-      connection,
-      error,
-      prepareWord,
-      pronounceWord,
-      refreshConnection,
-      saveApiKey,
-      status
-    ]
+    [clearApiKey, connection, error, prepareWord, refreshConnection, saveApiKey, status]
   );
 
   return <AssistantContext.Provider value={value}>{children}</AssistantContext.Provider>;
