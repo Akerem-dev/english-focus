@@ -1,9 +1,9 @@
 /*
  * Word Valley responsive stage
  *
- * The illustrated home was authored as one 1920 × 1080 composition. The
- * application shell now keeps those coordinates fixed and scales the complete
- * scene uniformly, so resizing cannot stretch vw and vh values independently.
+ * The illustrated home is authored as one 1920 × 1080 composition. The whole
+ * scene now scales as a single unit on both axes so every window size is filled
+ * without letterbox bars, duplicated scenery or independently drifting layers.
  */
 
 .application-frame--word-valley-stage {
@@ -32,7 +32,8 @@
 }
 
 .word-valley-stage-viewport {
-  --wv-stage-scale: 1;
+  --wv-stage-scale-x: 1;
+  --wv-stage-scale-y: 1;
 
   position: absolute;
   inset: 0;
@@ -55,7 +56,8 @@
   background-repeat: no-repeat;
   background-size: 1920px 1080px;
   isolation: isolate;
-  transform: translate(-50%, -50%) scale(var(--wv-stage-scale));
+  transform: translate(-50%, -50%) scaleX(var(--wv-stage-scale-x))
+    scaleY(var(--wv-stage-scale-y));
   transform-origin: center;
 }
 
