@@ -1,12 +1,10 @@
-import { useEffect, type FormEvent, type RefObject } from "react";
+import type { FormEvent, RefObject } from "react";
 
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { dispatchAssistantRequest } from "../../assistant";
 import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
-  VocabularyNotFoundState,
   VocabularySearchResultsState,
   VocabularySearchingState
 } from "../components";
@@ -101,27 +99,12 @@ export function VocabularyLookupView({
   searchInputRef,
   state
 }: VocabularyLookupViewProps) {
-  const missingWord =
-    state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
   const isHomeState =
-    state.kind === "initial" ||
-    state.kind === "typing" ||
-    (state.kind === "not-found" && state.canCreateEntry);
+    state.kind === "initial" || state.kind === "typing" || state.kind === "not-found";
   const recentSearchSuggestions =
     state.kind === "typing"
       ? createRecentSearchSuggestions(query, recentWords, recentAdditions)
       : [];
-
-  useEffect(() => {
-    if (missingWord === undefined) {
-      return;
-    }
-
-    dispatchAssistantRequest({
-      kind: "open",
-      word: missingWord
-    });
-  }, [missingWord]);
 
   return (
     <div
@@ -183,6 +166,17 @@ export function VocabularyLookupView({
             Search
           </Button>
         </form>
+
+        {state.kind === "not-found" ? (
+          <div aria-live="polite" className="wordbook-search-empty-result" role="status">
+            <AppIcon name="search" size={16} />
+            <span>
+              <strong>No results found</strong>
+              <span>“{state.normalizedQuery}” is not in your Wordbook.</span>
+            </span>
+          </div>
+        ) : null}
+
         <p className="vocabulary-hero__hint">Your wordbook stays on this device.</p>
       </section>
 
@@ -196,21 +190,6 @@ export function VocabularyLookupView({
       ) : null}
       {state.kind === "invalid" ? (
         <VocabularyInvalidSearchState message={state.message} onEditSearch={onEditSearch} />
-      ) : null}
-      {state.kind === "not-found" && !state.canCreateEntry ? (
-        <VocabularyNotFoundState
-          canCreateEntry={state.canCreateEntry}
-          normalizedQuery={state.normalizedQuery}
-          onEditSearch={onEditSearch}
-          onOpenAssistant={() => {
-            dispatchAssistantRequest({
-              kind: "open",
-              word: state.normalizedQuery
-            });
-          }}
-          onSelectSuggestion={onSearch}
-          suggestions={state.suggestions}
-        />
       ) : null}
       {state.kind === "repository-error" ? (
         <ErrorState
