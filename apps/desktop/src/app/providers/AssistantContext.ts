@@ -21,7 +21,6 @@ export interface AssistantContextValue {
     preferences: InstructionPreferences,
     strategy?: AssistantPreparationStrategy
   ) => Promise<AssistantWordPreparationResult>;
-  readonly pronounceWord: (word: string) => Promise<void>;
 }
 
 export const AssistantContext = createContext<AssistantContextValue | undefined>(undefined);
