@@ -2,26 +2,18 @@ use std::collections::HashMap;
 use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
 
-use reqwest::{header::CONTENT_TYPE, Client, StatusCode, Url};
-use serde::{Deserialize, Serialize};
+use reqwest::{Client, StatusCode, Url};
+use serde::Deserialize;
 
 const FREE_DICTIONARY_BASE_URL: &str = "https://api.dictionaryapi.dev/api/v2/entries/en/";
 const REQUEST_TIMEOUT_SECONDS: u64 = 6;
-const MAX_AUDIO_BYTES: usize = 2_000_000;
 const CACHE_LIMIT: usize = 200;
 const ALLOWED_AUDIO_HOSTS: &[&str] = &["api.dictionaryapi.dev", "ssl.gstatic.com"];
 
 #[derive(Clone)]
 enum CachedPronunciation {
-    Found(PronunciationAudio),
+    Found(String),
     Missing,
-}
-
-#[derive(Clone, Debug, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct PronunciationAudio {
-    bytes: Vec<u8>,
-    mime_type: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -140,60 +132,13 @@ async fn fetch_dictionary_entries(
     }
 }
 
-async fn download_audio(client: &Client, url: Url) -> Result<PronunciationAudio, String> {
-    let response = client
-        .get(url)
-        .send()
-        .await
-        .map_err(|error| format!("assistant_pronunciation_unavailable: {error}"))?;
-
-    if !response.status().is_success() {
-        return Err(format!(
-            "assistant_pronunciation_unavailable: Audio returned {}.",
-            response.status()
-        ));
-    }
-
-    if response
-        .content_length()
-        .is_some_and(|length| length > MAX_AUDIO_BYTES as u64)
-    {
-        return Err("assistant_pronunciation_unavailable: Audio file is too large.".to_string());
-    }
-
-    let mime_type = response
-        .headers()
-        .get(CONTENT_TYPE)
-        .and_then(|value| value.to_str().ok())
-        .unwrap_or("audio/mpeg")
-        .split(';')
-        .next()
-        .unwrap_or("audio/mpeg")
-        .to_string();
-    let bytes = response
-        .bytes()
-        .await
-        .map_err(|error| format!("assistant_pronunciation_unavailable: {error}"))?;
-
-    if bytes.is_empty() || bytes.len() > MAX_AUDIO_BYTES {
-        return Err("assistant_pronunciation_unavailable: Invalid audio file.".to_string());
-    }
-
-    Ok(PronunciationAudio {
-        bytes: bytes.to_vec(),
-        mime_type,
-    })
-}
-
 #[tauri::command]
-pub async fn assistant_get_pronunciation_audio(
-    word: String,
-) -> Result<Option<PronunciationAudio>, String> {
+pub async fn assistant_get_pronunciation_url(word: String) -> Result<Option<String>, String> {
     let normalized = normalize_headword(&word)?;
 
     if let Some(cached) = cached_pronunciation(&normalized) {
         return match cached {
-            CachedPronunciation::Found(audio) => Ok(Some(audio)),
+            CachedPronunciation::Found(audio_url) => Ok(Some(audio_url)),
             CachedPronunciation::Missing => Ok(None),
         };
     }
@@ -208,10 +153,13 @@ pub async fn assistant_get_pronunciation_audio(
         remember_pronunciation(normalized, CachedPronunciation::Missing);
         return Ok(None);
     };
-    let audio = download_audio(&client, audio_url).await?;
+    let audio_url = audio_url.to_string();
 
-    remember_pronunciation(normalized, CachedPronunciation::Found(audio.clone()));
-    Ok(Some(audio))
+    remember_pronunciation(
+        normalized,
+        CachedPronunciation::Found(audio_url.clone()),
+    );
+    Ok(Some(audio_url))
 }
 
 #[cfg(test)]
