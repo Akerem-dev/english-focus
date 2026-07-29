@@ -17,7 +17,7 @@ import {
 import { VocabularyPage } from "../../../src/modules/vocabulary/pages";
 
 describe("VocabularyPage search states", () => {
-  it("renders the initial local-search experience", () => {
+  it("renders the initial wordbook-search experience", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
         <ActivityProvider>
@@ -30,8 +30,8 @@ describe("VocabularyPage search states", () => {
       </MemoryRouter>
     );
 
-    expect(markup).toContain("Search your local vocabulary");
-    expect(markup).toContain("Prefix and full-text matching");
+    expect(markup).toContain(">Search<");
+    expect(markup).toContain("Your wordbook stays on this device.");
     expect(markup).toContain("Recent searches");
   });
 

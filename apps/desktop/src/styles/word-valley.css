@@ -1,0 +1,361 @@
+.app-sidebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-sidebar) 96%, var(--color-success-soft)),
+    color-mix(in srgb, var(--color-sidebar) 96%, var(--color-accent-soft))
+  );
+}
+
+.application-frame:has(.route-page--vocabulary-home) {
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(
+      ellipse at 50% 24%,
+      color-mix(in srgb, var(--color-surface) 18%, transparent),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 4%, transparent),
+      color-mix(in srgb, var(--color-background) 12%, transparent)
+    ),
+    url("../assets/backgrounds/word-valley-master-background.png");
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar {
+  border-right-color: color-mix(in srgb, var(--color-accent) 12%, var(--color-border));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-sidebar) 58%, transparent),
+    color-mix(in srgb, var(--color-sidebar) 68%, transparent)
+  );
+  box-shadow: 0.35rem 0 1.25rem rgb(74 60 42 / 5%);
+  backdrop-filter: blur(12px) saturate(1.02);
+  -webkit-backdrop-filter: blur(12px) saturate(1.02);
+}
+
+.app-sidebar__brand {
+  justify-content: center;
+  gap: 0.65rem;
+  padding-inline: var(--space-4);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand {
+  min-height: 7.8rem;
+  margin: var(--space-3);
+  border: var(--border-width-hairline) solid
+    color-mix(in srgb, var(--color-accent) 12%, var(--color-border));
+  border-radius: var(--radius-extra-large);
+  background: color-mix(in srgb, var(--color-surface) 38%, transparent);
+  box-shadow:
+    inset 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 82%, transparent),
+    0 0.3rem 0.85rem rgb(74 60 42 / 5%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.app-sidebar__brand-name {
+  color: color-mix(in srgb, var(--color-text) 94%, var(--color-accent));
+  font-size: clamp(1.5rem, 1.55vw, 1.72rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  text-shadow:
+    0 0.04rem 0 var(--color-surface),
+    0 0.14rem 0.28rem color-mix(in srgb, var(--color-accent) 9%, transparent);
+}
+
+.app-sidebar__brand-mascot {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 auto;
+  object-fit: contain;
+  transform: scale(1.45) rotate(2deg) translateY(0.04rem);
+  transform-origin: center;
+  filter: drop-shadow(0 0.25rem 0.42rem rgb(61 47 34 / 14%));
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
+  border: var(--border-width-hairline) solid transparent;
+  background: color-mix(in srgb, var(--color-surface) 18%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 48%, transparent);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active {
+  border-color: color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  box-shadow:
+    inset 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 90%, transparent),
+    0 0.22rem 0.66rem rgb(74 60 42 / 5%);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar__footer {
+  border-top-color: color-mix(in srgb, var(--color-accent) 11%, var(--color-border));
+  background: color-mix(in srgb, var(--color-sidebar) 58%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.application-main:has(.route-page--vocabulary) .app-topbar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface) 96%, var(--color-accent-soft)),
+    color-mix(in srgb, var(--color-background) 97%, var(--color-success-soft))
+  );
+}
+
+.application-main:has(.route-page--vocabulary-home) .app-topbar {
+  border-bottom-color: color-mix(in srgb, var(--color-accent) 12%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 58%, transparent);
+  box-shadow: 0 0.28rem 1rem rgb(74 60 42 / 5%);
+  backdrop-filter: blur(12px) saturate(1.02);
+  -webkit-backdrop-filter: blur(12px) saturate(1.02);
+}
+
+.application-main:has(.route-page--vocabulary) .app-topbar__route {
+  color: color-mix(in srgb, var(--color-accent) 78%, var(--color-text));
+  font-family: var(--font-family-display);
+  font-size: clamp(1.4rem, 1.75vw, 1.72rem);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: -0.028em;
+  text-shadow:
+    0 0.04rem 0 var(--color-surface),
+    0 0.13rem 0.24rem color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.application-main:has(.route-page--vocabulary) .app-content {
+  background:
+    radial-gradient(
+      circle at 24% 8%,
+      color-mix(in srgb, var(--color-success-soft) 46%, transparent),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 82% 13%,
+      color-mix(in srgb, var(--color-accent-soft) 40%, transparent),
+      transparent 26rem
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 97%, var(--color-surface)) 0%,
+      color-mix(in srgb, var(--color-background) 94%, var(--color-success-soft)) 100%
+    );
+}
+
+.application-main:has(.route-page--vocabulary-home) .app-content {
+  background: transparent;
+}
+
+.route-page--vocabulary {
+  gap: var(--space-7);
+  background: transparent;
+}
+
+.route-page--vocabulary .vocabulary-hero {
+  padding-top: clamp(1rem, 3.2vh, 2.65rem);
+}
+
+.route-page--vocabulary .vocabulary-hero h1 {
+  position: relative;
+  max-width: none;
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent));
+  font-size: clamp(3.35rem, 6.2vw, 5.1rem);
+  letter-spacing: -0.06em;
+  text-shadow:
+    0 0.035em 0 color-mix(in srgb, var(--color-surface) 90%, transparent),
+    0 0.1em 0.2em color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.route-page--vocabulary .vocabulary-hero h1::after {
+  display: block;
+  width: 4.5rem;
+  height: 0.22rem;
+  margin: 0.35rem auto 0;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-success) 48%, transparent),
+    color-mix(in srgb, var(--color-accent) 60%, transparent),
+    color-mix(in srgb, var(--color-warning) 45%, transparent)
+  );
+  box-shadow: 0 0.16rem 0.42rem color-mix(in srgb, var(--color-accent) 13%, transparent);
+  content: "";
+}
+
+.route-page--vocabulary .vocabulary-hero__description {
+  max-width: 36rem;
+  margin-top: var(--space-2);
+  color: color-mix(in srgb, var(--color-text-secondary) 92%, var(--color-success));
+  font-size: var(--font-size-3);
+  line-height: var(--line-height-reading);
+  text-shadow: 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 80%, transparent);
+}
+
+.route-page--vocabulary .vocabulary-search {
+  width: min(100%, 50rem);
+  margin-top: var(--space-5);
+}
+
+.route-page--vocabulary .vocabulary-search .field__input {
+  min-height: 3.5rem;
+  border-color: color-mix(in srgb, var(--color-accent) 24%, var(--color-border-strong));
+  border-radius: var(--radius-extra-large);
+  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+  box-shadow:
+    inset 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 92%, transparent),
+    0 0.34rem 1rem rgb(61 47 34 / 8%);
+  backdrop-filter: blur(13px) saturate(1.04);
+  -webkit-backdrop-filter: blur(13px) saturate(1.04);
+}
+
+.route-page--vocabulary .vocabulary-search .field__input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border-strong));
+  background: color-mix(in srgb, var(--color-surface) 84%, transparent);
+}
+
+.route-page--vocabulary .vocabulary-search .field__input:focus-visible {
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  box-shadow:
+    0 0 0 0.18rem color-mix(in srgb, var(--color-accent-soft) 72%, transparent),
+    0 0.34rem 1rem rgb(61 47 34 / 9%);
+}
+
+.route-page--vocabulary .vocabulary-search .field__leading-icon {
+  color: color-mix(in srgb, var(--color-accent) 64%, var(--color-text-secondary));
+}
+
+.route-page--vocabulary .vocabulary-search__button[data-variant="primary"] {
+  min-height: 3.5rem;
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border-strong));
+  border-radius: var(--radius-extra-large);
+  background: color-mix(in srgb, var(--color-surface) 70%, var(--color-accent-soft));
+  color: var(--color-accent);
+  box-shadow:
+    inset 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 92%, transparent),
+    0 0.34rem 1rem color-mix(in srgb, var(--color-accent) 13%, transparent);
+  backdrop-filter: blur(12px) saturate(1.04);
+  -webkit-backdrop-filter: blur(12px) saturate(1.04);
+}
+
+.route-page--vocabulary .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-surface) 58%, var(--color-accent-soft));
+  color: var(--color-accent-hover);
+  transform: translateY(-0.0625rem);
+}
+
+.route-page--vocabulary .vocabulary-search__button[data-variant="primary"]:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-surface) 48%, var(--color-accent-soft));
+  color: var(--color-accent-pressed);
+  transform: translateY(0);
+}
+
+.route-page--vocabulary .vocabulary-hero__hint {
+  margin-top: var(--space-2);
+  color: color-mix(in srgb, var(--color-text-muted) 82%, var(--color-success));
+  text-shadow: 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 86%, transparent);
+}
+
+.route-page--vocabulary .word-list-card {
+  border-color: color-mix(in srgb, var(--color-success) 17%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+  box-shadow:
+    inset 0 0.0625rem 0 color-mix(in srgb, var(--color-surface) 94%, transparent),
+    0 0.42rem 1.25rem rgb(61 47 34 / 8%);
+  backdrop-filter: blur(15px) saturate(1.04);
+  -webkit-backdrop-filter: blur(15px) saturate(1.04);
+}
+
+.route-page--vocabulary .word-list-card:nth-child(2) {
+  border-color: color-mix(in srgb, var(--color-accent) 16%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 76%, var(--color-accent-soft));
+}
+
+.route-page--vocabulary .word-list-card__header {
+  background: color-mix(in srgb, var(--color-success-soft) 30%, transparent);
+}
+
+.route-page--vocabulary .word-list-card:nth-child(2) .word-list-card__header {
+  background: color-mix(in srgb, var(--color-accent-soft) 32%, transparent);
+}
+
+.route-page--vocabulary .word-list-card__header h2 {
+  color: color-mix(in srgb, var(--color-text) 91%, var(--color-accent));
+}
+
+.route-page--vocabulary .word-list-row:hover {
+  background: color-mix(in srgb, var(--color-accent-soft) 34%, transparent);
+}
+
+.route-page--vocabulary .vocabulary-result-state {
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent-soft));
+}
+
+html[data-theme="dark"] .application-frame:has(.route-page--vocabulary-home) {
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-background) 68%, transparent),
+      color-mix(in srgb, var(--color-background) 84%, transparent)
+    ),
+    url("../assets/backgrounds/word-valley-master-background.png");
+  background-attachment: fixed;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+html[data-theme="dark"] .application-frame:has(.route-page--vocabulary-home) .app-sidebar,
+html[data-theme="dark"] .application-main:has(.route-page--vocabulary-home) .app-topbar {
+  background: color-mix(in srgb, var(--color-background) 76%, transparent);
+}
+
+html[data-theme="dark"] .application-main:has(.route-page--vocabulary) .app-content {
+  background:
+    radial-gradient(
+      circle at 24% 8%,
+      color-mix(in srgb, var(--color-success-soft) 20%, transparent),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 82% 13%,
+      color-mix(in srgb, var(--color-accent-soft) 22%, transparent),
+      transparent 26rem
+    ),
+    var(--color-background);
+}
+
+html[data-theme="dark"] .application-main:has(.route-page--vocabulary-home) .app-content {
+  background: transparent;
+}
+
+@media (max-width: 60rem) {
+  .app-sidebar__brand-mascot {
+    width: 2.7rem;
+    height: 2.7rem;
+    transform: scale(1.42);
+  }
+
+  .application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand {
+    min-height: 5rem;
+    margin: var(--space-2);
+  }
+}
+
+@media (max-width: 52rem) {
+  .route-page--vocabulary .vocabulary-hero {
+    padding-top: var(--space-4);
+  }
+
+  .route-page--vocabulary .vocabulary-hero h1 {
+    font-size: clamp(3rem, 12vw, 4.25rem);
+  }
+}

@@ -1,0 +1,301 @@
+/*
+ * Library shell only.
+ *
+ * The Library keeps its current controls and table for the next design pass,
+ * while sharing the Wordbook's 1920 × 1080 illustrated stage, scenery, logo
+ * panel, sidebar artwork and window scaling.
+ */
+
+.application-frame--word-valley-library {
+  --wv-sidebar-width: 307.2px;
+  --wv-nav-top: 176px;
+  --wv-nav-left: -8px;
+  --wv-nav-row-step: 68.8px;
+  --wv-nav-button-width: 286.4px;
+  --wv-nav-button-height: 88px;
+  --wv-nav-icon-x: 3.84px;
+  --wv-nav-icon-y: -6.4px;
+  --wv-nav-label-y: -4.96px;
+
+  background-color: #fff8e8 !important;
+  background-image: none !important;
+}
+
+.application-frame--word-valley-library .word-valley-stage {
+  grid-template-columns: 307.2px 1612.8px !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Fixed authored shell dimensions                                             */
+/* -------------------------------------------------------------------------- */
+
+.application-frame--word-valley-library .word-valley-stage > .app-sidebar {
+  position: relative !important;
+  z-index: 50 !important;
+
+  width: 307.2px !important;
+  height: 1080px !important;
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-right: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  isolation: isolate;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-library .word-valley-stage > .application-main {
+  width: 1612.8px !important;
+  height: 1080px !important;
+  min-height: 1080px !important;
+  background: transparent !important;
+}
+
+.application-frame--word-valley-library
+  .word-valley-stage
+  > .application-main
+  > .app-content {
+  width: 1612.8px !important;
+  min-height: 0 !important;
+  background: transparent !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.application-frame--word-valley-library .route-page--library {
+  background: transparent !important;
+}
+
+/* Keep the existing Library top bar, but let the scenery remain visible. */
+.application-frame--word-valley-library .app-topbar {
+  border-bottom-color: rgb(151 105 73 / 18%) !important;
+  background: rgb(255 250 239 / 84%) !important;
+  box-shadow: 0 4px 18px rgb(84 58 32 / 6%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Illustrated sidebar frame and Word Valley logo                              */
+/* -------------------------------------------------------------------------- */
+
+.application-frame--word-valley-library .app-sidebar::before {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 0 !important;
+
+  width: 403.2px !important;
+  height: 1080px !important;
+
+  background-color: transparent !important;
+  background-image: url("../assets/shell/wordbook-sidebar-frame.png") !important;
+  background-position: 0 0 !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+
+  content: "" !important;
+  opacity: 1 !important;
+  filter: none !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.application-frame--word-valley-library .app-sidebar__brand {
+  position: absolute !important;
+  top: 10.8px !important;
+  left: 17.28px !important;
+  z-index: 2 !important;
+
+  display: block !important;
+  width: 246px !important;
+  height: 164px !important;
+  min-height: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/brand/word-valley-logo-lockup.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+  text-decoration: none !important;
+}
+
+.application-frame--word-valley-library .app-sidebar__brand-name,
+.application-frame--word-valley-library .app-sidebar__brand-mascot {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Same illustrated navigation tabs                                            */
+/* -------------------------------------------------------------------------- */
+
+.application-frame--word-valley-library .app-sidebar__nav {
+  position: absolute !important;
+  top: var(--wv-nav-top) !important;
+  right: auto !important;
+  left: var(--wv-nav-left) !important;
+  z-index: 60 !important;
+
+  display: grid !important;
+  width: var(--wv-nav-button-width) !important;
+  grid-auto-rows: var(--wv-nav-row-step) !important;
+  gap: 0 !important;
+  align-content: start !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item {
+  position: relative !important;
+  z-index: 1 !important;
+  isolation: isolate;
+
+  display: flex !important;
+  width: var(--wv-nav-button-width) !important;
+  height: var(--wv-nav-row-step) !important;
+  min-width: 0 !important;
+  min-height: var(--wv-nav-row-step) !important;
+  max-width: none !important;
+  max-height: var(--wv-nav-row-step) !important;
+  align-items: center !important;
+  justify-self: start !important;
+
+  gap: 16px !important;
+  margin: 0 !important;
+  padding: 0 14.4px 0 33.6px !important;
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 14.4px !important;
+  background: transparent !important;
+  color: #584433 !important;
+  box-shadow: none !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 15.36px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+
+  pointer-events: auto !important;
+  transition:
+    color 150ms ease,
+    transform 150ms ease !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item::before {
+  display: none !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item::after {
+  position: absolute !important;
+  top: calc((var(--wv-nav-row-step) - var(--wv-nav-button-height)) / 2) !important;
+  right: 0 !important;
+  bottom: auto !important;
+  left: 0 !important;
+  z-index: 0 !important;
+
+  width: 100% !important;
+  height: var(--wv-nav-button-height) !important;
+
+  border: 0 !important;
+  border-radius: inherit !important;
+  background-color: transparent !important;
+  background-image: url("../assets/shell/sidebar-nav-button-active.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% auto !important;
+
+  content: "" !important;
+  opacity: 1 !important;
+  filter: none !important;
+  pointer-events: none !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item__icon {
+  display: inline-flex !important;
+  width: 29.6px !important;
+  height: 29.6px !important;
+  flex: 0 0 23.2px !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: #75663f !important;
+  box-shadow: none !important;
+
+  transform: translate(var(--wv-nav-icon-x), var(--wv-nav-icon-y)) !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item__icon svg {
+  width: 17.6px !important;
+  height: 17.6px !important;
+  filter: none !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item__label {
+  display: inline !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 15.36px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.012em !important;
+  line-height: 1 !important;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 58%) !important;
+
+  transform: translateY(var(--wv-nav-label-y)) !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item:hover,
+.application-frame--word-valley-library .sidebar-nav-item:focus-visible {
+  z-index: 5 !important;
+  color: #4f5638 !important;
+  transform: translateX(1.28px) !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item--active {
+  z-index: 1 !important;
+  color: #7f302f !important;
+  transform: none !important;
+}
+
+.application-frame--word-valley-library
+  .sidebar-nav-item--active
+  .sidebar-nav-item__icon {
+  color: #8e3e39 !important;
+}
+
+.application-frame--word-valley-library .sidebar-nav-item:focus-visible {
+  outline: 2.24px solid rgb(143 81 69 / 48%) !important;
+  outline-offset: 1.28px !important;
+}

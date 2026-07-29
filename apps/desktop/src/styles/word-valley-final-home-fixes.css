@@ -1,0 +1,61 @@
+/*
+ * Final Word Valley home interaction corrections.
+ * Loaded after the responsive stage so these rules are authoritative.
+ */
+
+/* Keep the illustrated sidebar and its links above the main scene. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .app-sidebar {
+  z-index: 50 !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home) .app-sidebar__nav {
+  z-index: 60 !important;
+  pointer-events: auto !important;
+}
+
+/*
+ * The decorative button artwork is taller than the distance between rows.
+ * Previously the active Wordbook link's real box overlapped Library. Keep the
+ * artwork tall, but make each real link hitbox exactly one row high.
+ */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .sidebar-nav-item {
+  z-index: 1 !important;
+  width: var(--wv-nav-button-width) !important;
+  height: var(--wv-nav-row-step) !important;
+  min-height: var(--wv-nav-row-step) !important;
+  max-height: var(--wv-nav-row-step) !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .sidebar-nav-item::after {
+  top: calc((var(--wv-nav-row-step) - var(--wv-nav-button-height)) / 2) !important;
+  right: 0 !important;
+  bottom: auto !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: var(--wv-nav-button-height) !important;
+  pointer-events: none !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .sidebar-nav-item--active {
+  z-index: 1 !important;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .sidebar-nav-item:hover,
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .sidebar-nav-item:focus-visible {
+  z-index: 5 !important;
+}
+
+/* Closed assistant: frame, sleeping mascot and Z effect shrink together. */
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .assistant-dock:not([data-open]) {
+  width: 280px !important;
+  height: 186px !important;
+}

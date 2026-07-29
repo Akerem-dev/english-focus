@@ -1,0 +1,75 @@
+/*
+ * Wordbook local-search feedback.
+ * Missing local entries stay on the illustrated home and never open the AI
+ * assistant automatically.
+ */
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .wordbook-search-empty-result {
+  position: absolute;
+  top: 398px;
+  left: 652.8px;
+  z-index: 8;
+
+  display: inline-flex;
+  width: max-content;
+  max-width: 560px;
+  min-height: 38px;
+  align-items: center;
+  gap: 10px;
+
+  padding: 7px 15px;
+  border: 1px solid rgb(182 108 91 / 34%);
+  border-radius: 999px;
+
+  background: linear-gradient(180deg, rgb(255 251 238 / 97%), rgb(248 229 211 / 95%));
+  color: #71483f;
+
+  box-shadow:
+    0 8px 20px rgb(91 58 36 / 10%),
+    inset 0 1px 0 rgb(255 255 255 / 90%);
+
+  font-family: Georgia, "Times New Roman", serif;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .wordbook-search-empty-result
+  > svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  color: #a35850;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .wordbook-search-empty-result
+  > span {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .wordbook-search-empty-result
+  strong {
+  flex: 0 0 auto;
+  color: #7f3937;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.application-frame--word-valley-stage:has(.route-page--vocabulary-home)
+  .wordbook-search-empty-result
+  span
+  span {
+  min-width: 0;
+  overflow: hidden;
+  color: #725e4f;
+  font-size: 12px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -2,6 +2,7 @@ use keyring::{Entry, Error as KeyringError};
 use serde::Serialize;
 
 use super::{
+    assistant_dictionary::validate_headword,
     assistant_generation,
     assistant_routing::{
         generate_vocabulary_candidate, AssistantRoutingCandidateResponse,
@@ -100,6 +101,10 @@ pub async fn assistant_generate_vocabulary(
     preferences: AssistantRoutingPreferences,
     quality_only: Option<bool>,
 ) -> Result<AssistantRoutingCandidateResponse, String> {
+    // No Gemini request is allowed until two non-AI lexical sources accept the headword.
+    // Repeated words are served from the in-memory validation cache.
+    validate_headword(&word).await?;
+
     if quality_only.unwrap_or(false) {
         return generate_quality_candidate(word, preferences).await;
     }

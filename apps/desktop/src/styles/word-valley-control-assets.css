@@ -1,0 +1,685 @@
+/*
+ * Word Valley illustrated controls — consolidated final version
+ *
+ * Replace the entire contents of:
+ * apps/desktop/src/styles/word-valley-control-assets.css
+ *
+ * Keeps the current visual direction while removing conflicting duplicate
+ * declarations, responsive sidebar drift, old search asset fallback,
+ * accidental 13rem input height, CSS blur/filter haze and asset stretching.
+ */
+
+/* ========================================================================== */
+/* QUICK CONTROLS                                                             */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  /* SIDEBAR BUTONLARI */
+
+  /*
+   * Sidebar butonlarının merkezleri arasındaki gerçek mesafe.
+   * Küçüldükçe butonlar yaklaşır; buton yüksekliğinden küçük olabilir.
+   */
+  --wv-nav-row-step: 3.5rem;
+
+  /* Ek standart boşluk. Negatif değer geçersizdir; 0 veya pozitif kullan. */
+  --wv-nav-gap: 0rem;
+
+  /* Her sidebar butonunun eni ve boyu — yalnız bu iki değeri değiştir */
+  --wv-nav-button-width: calc(var(--wv-sidebar-width) - 1.4em);
+  --wv-nav-button-height: 9rem;
+
+  /* SEARCH BAR */
+
+  /* Search barı tek başına sağa-sola taşı: + sağ, - sol */
+  --wv-search-field-x: 5rem;
+
+  /* Search barı tek başına aşağı-yukarı taşı: + aşağı, - yukarı */
+  --wv-search-field-y: 0rem;
+
+  /* Search bar içindeki büyüteci bağımsız taşı: + sağ/aşağı, - sol/yukarı */
+  --wv-search-leading-icon-x: 2.5rem;
+  --wv-search-leading-icon-y: 0rem;
+
+  /* Search bar içindeki çarpıyı bağımsız taşı: + sağ/aşağı, - sol/yukarı */
+  --wv-search-clear-x: -3.25rem;
+  --wv-search-clear-y: 0rem;
+
+  /* Önceki aramalar panelinin Search bar altındaki mesafesi */
+  --wv-search-suggestions-gap: 0.45rem;
+
+  /* SEARCH BUTONU */
+
+  /* Search butonunu tek başına sağa-sola taşı: + sağ, - sol */
+  --wv-search-button-x: 0rem;
+
+  /* Search butonunu tek başına aşağı-yukarı taşı: + aşağı, - yukarı */
+  --wv-search-button-y: -4.1rem;
+
+  /* Search butonunun bağımsız eni ve boyu */
+  --wv-search-button-width: 16rem;
+  --wv-search-button-height: 13rem;
+
+  /* Search butonunun içindeki YALNIZCA büyüteç ikonunu taşır */
+  --wv-search-button-icon-x: 0.15rem;
+  --wv-search-button-icon-y: 0rem;
+
+  /* Mevcut diğer ayarların aynı kalacak */
+  --wv-nav-top: clamp(9.25rem, 16.4vh, 11rem);
+  --wv-nav-left: -0.35rem;
+  --wv-nav-width: calc(var(--wv-sidebar-width) - 0.35rem);
+
+  --wv-nav-icon-x: 0.24rem;
+  --wv-nav-icon-y: -0.4rem;
+  --wv-nav-label-y: -0.31rem;
+
+  --wv-search-top: 30.5vh;
+  --wv-search-x: 1rem;
+  --wv-search-y: 0rem;
+  --wv-search-width: 64rem;
+  --wv-search-height: 5rem;
+  --wv-search-gap: 0.8rem;
+}
+
+/* ========================================================================== */
+/* SIDEBAR NAVIGATION                                                        */
+/* ========================================================================== */
+
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar__nav {
+  position: absolute !important;
+  top: var(--wv-nav-top) !important;
+  left: var(--wv-nav-left) !important;
+  right: auto !important;
+
+  /* Sidebar grubunun ve butonların yatay boyutu */
+  width: var(--wv-nav-button-width) !important;
+
+  display: grid !important;
+  grid-auto-rows: var(--wv-nav-row-step) !important;
+  gap: var(--wv-nav-gap) !important;
+  align-content: start !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
+  position: relative !important;
+  z-index: 1;
+  isolation: isolate;
+
+  width: var(--wv-nav-button-width) !important;
+  height: var(--wv-nav-button-height) !important;
+  justify-self: start !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 1rem !important;
+  padding: 0 0.9rem 0 2.1rem !important;
+  margin: 0 !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0.9rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  color: #584433;
+  font-family: var(--font-family-display);
+  font-size: clamp(0.88rem, 0.82vw, 1rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.006em;
+  text-shadow: none !important;
+
+  transform: none;
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item::before {
+  display: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item::after {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+
+  border: 0 !important;
+  border-radius: inherit;
+
+  background-color: transparent !important;
+  background-image: url("../assets/shell/sidebar-nav-button-active.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% auto !important;
+
+  content: "";
+  opacity: 1 !important;
+  pointer-events: none;
+
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  image-rendering: auto;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Change only --wv-nav-icon-x above to move icons left/right. */
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item__icon {
+  width: 1.85rem !important;
+  height: 1.85rem !important;
+  flex: 0 0 1.45rem !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 0 !important;
+  border-radius: 50%;
+  background: transparent !important;
+  color: #75663f;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  transform: translate(var(--wv-nav-icon-x), var(--wv-nav-icon-y)) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item__icon svg {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+  flex: 0 0 auto;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item__label {
+  min-width: 0;
+  margin: 0 !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.96rem !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.012em !important;
+  text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 58%) !important;
+
+  transform: translateY(var(--wv-nav-label-y)) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover {
+  z-index: 3;
+  background: transparent !important;
+  color: #4f5638;
+  box-shadow: none !important;
+  transform: translateX(0.08rem);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover::after {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: scale(1.006);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .sidebar-nav-item:hover
+  .sidebar-nav-item__icon {
+  background: transparent !important;
+  color: #617143;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active {
+  z-index: 2;
+  background: transparent !important;
+  color: #7f302f;
+  box-shadow: none !important;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active::after {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .sidebar-nav-item--active
+  .sidebar-nav-item__icon {
+  background: transparent !important;
+  color: #8e3e39;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:focus-visible {
+  outline: 0.14rem solid rgb(143 81 69 / 48%);
+  outline-offset: 0.08rem;
+}
+
+/* ========================================================================== */
+/* SEARCH GROUP POSITION, WIDTH AND RESPONSIVE LIMIT                          */
+/* ========================================================================== */
+
+.route-page--vocabulary-home .vocabulary-search {
+  position: absolute !important;
+
+  top: calc(var(--wv-search-top) + var(--wv-search-y)) !important;
+  left: calc(50vw - var(--wv-sidebar-width) + var(--wv-search-x)) !important;
+
+  /* --wv-search-width changes only the horizontal length. */
+  width: min(var(--wv-search-width), calc(100vw - var(--wv-sidebar-width) - 5rem)) !important;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    var(--wv-search-button-width) !important;
+
+  gap: var(--wv-search-gap) !important;
+  transform: translateX(-50%) !important;
+}
+
+/* ========================================================================== */
+/* SEARCH FIELD                                                              */
+/* ========================================================================== */
+
+.route-page--vocabulary-home .vocabulary-search .field__control {
+  position: relative !important;
+
+  width: 100% !important;
+  height: var(--wv-search-height) !important;
+  min-height: var(--wv-search-height) !important;
+
+  /* Yalnız Search barı taşır */
+  translate: var(--wv-search-field-x) var(--wv-search-field-y) !important;
+
+  overflow: visible !important;
+  isolation: isolate;
+
+  border: 0 !important;
+  border-radius: 1rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Inputa tıklanınca çıkan büyük ve kaba dış halkayı tamamen kaldırır. */
+.route-page--vocabulary-home .vocabulary-search .field__control:focus,
+.route-page--vocabulary-home .vocabulary-search .field__control:focus-within {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* New asset is placed on the control, never duplicated on the input. */
+.route-page--vocabulary-home .vocabulary-search .field__control::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  border: 0;
+  border-radius: inherit;
+
+  background-color: transparent;
+  background-image: url("../assets/wordbook/wordbook-search-field-v2.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  content: "";
+  opacity: 1;
+  pointer-events: none;
+
+  filter: none;
+  mix-blend-mode: normal;
+  image-rendering: auto;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input {
+  position: relative !important;
+  z-index: 1 !important;
+
+  width: 100% !important;
+  height: var(--wv-search-height) !important;
+  min-height: var(--wv-search-height) !important;
+
+  padding-left: 5.2rem !important;
+  padding-right: 2.5rem !important;
+
+  border: 0 !important;
+  border-radius: 1rem !important;
+
+  background: transparent !important;
+  background-image: none !important;
+
+  color: #5b4839;
+  box-shadow: none !important;
+  text-shadow: none !important;
+
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input::placeholder {
+  color: rgb(91 72 57 / 76%) !important;
+  opacity: 1 !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input:hover:not(:disabled) {
+  background: transparent !important;
+  filter: none !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__input:focus,
+.route-page--vocabulary-home .vocabulary-search .field__input:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__leading-icon,
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action {
+  position: absolute;
+  z-index: 2 !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__leading-icon {
+  left: 1.2rem !important;
+  color: #925a4f;
+  filter: none !important;
+
+  /* Yalnız Search bar içindeki büyüteci taşır */
+  transform: translate(var(--wv-search-leading-icon-x), var(--wv-search-leading-icon-y)) !important;
+}
+
+/* Arama alanındaki çarpı: Word Valley paletine uyumlu sıcak gül tonu. */
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action {
+  right: 1.05rem !important;
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: #a0665b !important;
+  box-shadow: none !important;
+  filter: none !important;
+
+  /* Yalnız Search bar içindeki çarpıyı taşır */
+  transform: translate(var(--wv-search-clear-x), var(--wv-search-clear-y)) !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action:hover {
+  background: rgb(255 244 229 / 72%) !important;
+  color: #7f3f38 !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action:focus-visible {
+  outline: 0.1rem solid rgb(160 95 78 / 34%) !important;
+  outline-offset: 0.05rem !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action svg {
+  width: 0.95rem !important;
+  height: 0.95rem !important;
+  color: inherit !important;
+  filter: none !important;
+}
+
+/* ========================================================================== */
+/* RECENT SEARCH SUGGESTIONS PANEL                                           */
+/* ========================================================================== */
+
+/*
+ * Bu panel React tarafında yalnız kullanıcı yazarken ve eşleşen yakın geçmiş
+ * kelimeleri varken oluşturulur. Search barın yatay/dikey hareketini takip eder.
+ */
+.route-page--vocabulary-home .wordbook-search-suggestions {
+  position: absolute !important;
+  z-index: 40 !important;
+
+  top: calc(
+    var(--wv-search-height) + var(--wv-search-field-y) + var(--wv-search-suggestions-gap)
+  ) !important;
+
+  left: var(--wv-search-field-x) !important;
+
+  width: calc(100% - var(--wv-search-button-width) - var(--wv-search-gap)) !important;
+
+  max-height: 15.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  padding: 0.42rem;
+
+  border: 1px solid rgb(188 118 97 / 34%);
+  border-radius: 1rem;
+
+  background: linear-gradient(180deg, rgb(255 251 238 / 98%), rgb(249 238 216 / 97%));
+
+  box-shadow:
+    0 0.65rem 1.5rem rgb(91 58 36 / 14%),
+    inset 0 0.0625rem 0 rgb(255 255 255 / 92%);
+
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestions__title {
+  margin: 0;
+  padding: 0.38rem 0.68rem 0.46rem;
+
+  color: #8d584d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestion {
+  width: 100%;
+  min-height: 2.7rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+
+  padding: 0.42rem 0.7rem;
+
+  border: 0;
+  border-radius: 0.72rem;
+
+  background: transparent;
+  color: #584433;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.94rem;
+  font-weight: 600;
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background-color 130ms ease,
+    color 130ms ease,
+    transform 130ms ease;
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestion svg {
+  flex: 0 0 auto;
+  color: #8b9760;
+  filter: none !important;
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestion:hover,
+.route-page--vocabulary-home .wordbook-search-suggestion:focus-visible {
+  background: linear-gradient(90deg, rgb(232 239 204 / 76%), rgb(250 222 207 / 64%));
+  color: #733d36;
+  transform: translateX(0.08rem);
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestion:focus-visible {
+  outline: 0.1rem solid rgb(160 95 78 / 34%);
+  outline-offset: -0.08rem;
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestion__word {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-page--vocabulary-home .wordbook-search-suggestions {
+  scrollbar-color: rgb(181 122 101 / 58%) transparent;
+  scrollbar-width: thin;
+}
+
+/* ========================================================================== */
+/* SEARCH BUTTON                                                             */
+/* ========================================================================== */
+
+.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] {
+  width: var(--wv-search-button-width) !important;
+  min-width: var(--wv-search-button-width) !important;
+
+  height: var(--wv-search-button-height) !important;
+  min-height: var(--wv-search-button-height) !important;
+
+  /* Yalnız Search butonunu taşır */
+  translate: var(--wv-search-button-x) var(--wv-search-button-y) !important;
+
+  gap: 0.48rem;
+  padding: 0 1.1rem !important;
+
+  overflow: hidden !important;
+
+  border: 0 !important;
+  border-radius: 1rem !important;
+
+  background-color: transparent !important;
+  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+
+  color: #fff8e9 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+
+  font-family: var(--font-family-display);
+  font-size: clamp(0.9rem, 0.82vw, 1rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.012em;
+
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  image-rendering: auto;
+
+  transition: transform 150ms ease;
+}
+
+.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"]::after {
+  display: none !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] svg {
+  color: #fff4df;
+  filter: none !important;
+
+  /* Yalnızca büyüteç ikonunu taşır; buton ve Search yazısı sabit kalır. */
+  transform: translate(var(--wv-search-button-icon-x), var(--wv-search-button-icon-y)) !important;
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled) {
+  border: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: translateY(-0.06rem);
+}
+
+.route-page--vocabulary-home
+  .vocabulary-search__button[data-variant="primary"]:active:not(:disabled) {
+  box-shadow: none !important;
+  filter: none !important;
+  transform: translateY(0.02rem) scale(0.985);
+}
+
+/* ========================================================================== */
+/* ASSET CLARITY RESET                                                       */
+/* ========================================================================== */
+
+/* Any remaining glow after this reset is baked into the PNG itself. */
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar,
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar::before,
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar__brand,
+.route-page--vocabulary-home .word-list-card,
+.route-page--vocabulary-home .word-list-card::before,
+.route-page--vocabulary-home img {
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  image-rendering: auto;
+}
+
+/* ========================================================================== */
+/* SMALLER WINDOW SAFETY                                                     */
+/* ========================================================================== */
+
+/*
+ * RESPONSIVE AYARLAR ŞİMDİLİK DEVRE DIŞI.
+ * Pencere küçülmesi ayrıca ele alınacak.
+ * Sidebar aralığı için negatif gap değil --wv-nav-row-step kullanılmalıdır.
+
+@media (max-width: 1100px) {
+  .application-frame:has(.route-page--vocabulary-home) {
+    --wv-nav-left: -0.2rem;
+    --wv-nav-gap: 0.3rem;
+    --wv-search-width: 48rem;
+    --wv-search-button-width: 7rem;
+  }
+
+  .application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
+    gap: 0.9rem !important;
+    padding-left: 1.45rem !important;
+    padding-right: 0.65rem !important;
+  }
+}
+
+*/

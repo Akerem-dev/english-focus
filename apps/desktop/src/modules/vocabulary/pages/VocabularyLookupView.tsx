@@ -1,15 +1,41 @@
-import { useEffect, type FormEvent, type RefObject } from "react";
+import type { FormEvent, RefObject } from "react";
 
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon } from "../../../design-system";
-import { dispatchAssistantRequest } from "../../assistant";
 import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
-  VocabularyNotFoundState,
   VocabularySearchResultsState,
   VocabularySearchingState
 } from "../components";
+
+function createRecentSearchSuggestions(
+  query: string,
+  recentWords: readonly string[],
+  recentAdditions: readonly string[]
+): readonly string[] {
+  const normalizedQuery = query.trim().toLocaleLowerCase("en");
+
+  if (normalizedQuery.length === 0) {
+    return [];
+  }
+
+  const seen = new Set<string>();
+
+  return [...recentWords, ...recentAdditions]
+    .filter((word) => word.toLocaleLowerCase("en").includes(normalizedQuery))
+    .filter((word) => {
+      const normalizedWord = word.toLocaleLowerCase("en");
+
+      if (seen.has(normalizedWord)) {
+        return false;
+      }
+
+      seen.add(normalizedWord);
+      return true;
+    })
+    .slice(0, 6);
+}
 
 interface WordListCardProps {
   readonly title: string;
@@ -73,46 +99,63 @@ export function VocabularyLookupView({
   searchInputRef,
   state
 }: VocabularyLookupViewProps) {
-  const missingWord =
-    state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
-
-  useEffect(() => {
-    if (missingWord === undefined) {
-      return;
-    }
-
-    dispatchAssistantRequest({
-      kind: "wake",
-      word: missingWord
-    });
-  }, [missingWord]);
+  const isHomeState =
+    state.kind === "initial" || state.kind === "typing" || state.kind === "not-found";
+  const recentSearchSuggestions =
+    state.kind === "typing"
+      ? createRecentSearchSuggestions(query, recentWords, recentAdditions)
+      : [];
 
   return (
-    <div className="route-page route-page--vocabulary">
+    <div
+      className={`route-page route-page--vocabulary${isHomeState ? " route-page--vocabulary-home" : ""}`}
+    >
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
-        <p className="route-page__eyebrow">Local English vocabulary</p>
-        <h1 id="vocabulary-heading">Search your local vocabulary</h1>
+        <h1 id="vocabulary-heading">Search</h1>
         <p className="vocabulary-hero__description">
-          Open an exact English word or search Turkish translations, English definitions, word
-          forms, personal tags, and notes—all stored on this device.
+          Find an English word, meaning, translation, tag, or note.
         </p>
         <form
-          aria-label="Vocabulary search"
+          aria-label="Wordbook search"
           className="vocabulary-search"
           onSubmit={onSubmit}
           role="search"
         >
           <SearchInput
             ref={searchInputRef}
-            aria-label="Search vocabulary"
-            label="Search vocabulary"
+            aria-label="Search your wordbook"
+            label="Search your wordbook"
             onChange={(event) => onQueryChange(event.currentTarget.value)}
             onClear={onClear}
-            placeholder="Word, translation, definition, tag, or note"
+            placeholder="Type a word, meaning, translation, tag, or note"
             value={query}
           />
+
+          {recentSearchSuggestions.length > 0 ? (
+            <div
+              aria-label="Recent matching words"
+              className="wordbook-search-suggestions"
+              role="listbox"
+            >
+              <p className="wordbook-search-suggestions__title">Recent matches</p>
+
+              {recentSearchSuggestions.map((word) => (
+                <button
+                  className="wordbook-search-suggestion"
+                  key={word}
+                  onClick={() => onSearch(word)}
+                  role="option"
+                  type="button"
+                >
+                  <AppIcon name="book-open" size={15} />
+                  <span className="wordbook-search-suggestion__word">{word}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+
           <Button
-            aria-label="Search vocabulary"
+            aria-label="Search your wordbook"
             className="vocabulary-search__button"
             isLoading={state.kind === "searching"}
             leadingIcon={<AppIcon name="search" size={18} />}
@@ -123,9 +166,18 @@ export function VocabularyLookupView({
             Search
           </Button>
         </form>
-        <p className="vocabulary-hero__hint">
-          Exact words open immediately. Prefix and full-text matching runs entirely on this device.
-        </p>
+
+        {state.kind === "not-found" ? (
+          <div aria-live="polite" className="wordbook-search-empty-result" role="status">
+            <AppIcon name="search" size={16} />
+            <span>
+              <strong>No results found</strong>
+              <span>“{state.normalizedQuery}” is not in your Wordbook.</span>
+            </span>
+          </div>
+        ) : null}
+
+        <p className="vocabulary-hero__hint">Your wordbook stays on this device.</p>
       </section>
 
       {state.kind === "searching" ? <VocabularySearchingState query={state.query} /> : null}
@@ -139,21 +191,6 @@ export function VocabularyLookupView({
       {state.kind === "invalid" ? (
         <VocabularyInvalidSearchState message={state.message} onEditSearch={onEditSearch} />
       ) : null}
-      {state.kind === "not-found" ? (
-        <VocabularyNotFoundState
-          canCreateEntry={state.canCreateEntry}
-          normalizedQuery={state.normalizedQuery}
-          onEditSearch={onEditSearch}
-          onOpenAssistant={() => {
-            dispatchAssistantRequest({
-              kind: "open",
-              word: state.normalizedQuery
-            });
-          }}
-          onSelectSuggestion={onSearch}
-          suggestions={state.suggestions}
-        />
-      ) : null}
       {state.kind === "repository-error" ? (
         <ErrorState
           actions={
@@ -162,11 +199,11 @@ export function VocabularyLookupView({
             </Button>
           }
           description={state.message}
-          title="Local vocabulary search failed"
+          title="Wordbook search failed"
         />
       ) : null}
 
-      {state.kind === "initial" || state.kind === "typing" ? (
+      {isHomeState ? (
         <div className="vocabulary-dashboard">
           <WordListCard
             emptyMessage="Words you open will appear here."
@@ -176,8 +213,8 @@ export function VocabularyLookupView({
             words={recentWords}
           />
           <WordListCard
-            emptyMessage="Imported and user-created entries will appear here."
-            eyebrow="Added locally"
+            emptyMessage="Words you add will appear here."
+            eyebrow="Added"
             onOpenWord={onSearch}
             title="Recent additions"
             words={recentAdditions}

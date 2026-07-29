@@ -28,12 +28,12 @@ describe("application routes", () => {
     ]);
   });
 
-  it("renders the vocabulary route loading boundary inside the persistent shell", () => {
+  it("renders the wordbook route loading boundary inside the persistent shell", () => {
     const markup = renderRoute(ROUTE_PATHS.vocabulary);
 
-    expect(markup).toContain("Loading Vocabulary");
+    expect(markup).toContain("Loading Wordbook");
     expect(markup).toContain("Primary navigation");
-    expect(markup).toContain("Local Library");
+    expect(markup).toContain("Your Wordbook");
     expect(markup).toContain('href="#main-content"');
   });
 

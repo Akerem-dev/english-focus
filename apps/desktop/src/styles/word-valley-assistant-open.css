@@ -1,0 +1,783 @@
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+
+/*
+ * Word Valley — open assistant composition
+ * Uses only the existing assistant assets and CSS-drawn controls.
+ */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  /* Open panel */
+  --wv-assistant-open-top: 29.2vh;
+  --wv-assistant-open-right: 0.6vw;
+  --wv-assistant-open-bottom: 0.8vh;
+  --wv-assistant-open-width: clamp(18rem, 29.3vw, 35.2rem);
+
+  /* Close button: + top moves down, + right moves left */
+  --wv-assistant-close-top: 6.7%;
+  --wv-assistant-close-right: 4.2%;
+
+  /* Ready mascot stage: negative X moves left */
+  --wv-assistant-ready-x: -8.8%;
+  --wv-assistant-ready-y: -7%;
+
+  /* Thinking mascot and effect */
+  --wv-assistant-thinking-x: -5.7%;
+  --wv-assistant-thinking-y: -2.5%;
+  --wv-assistant-thinking-size: 51.5%;
+  --wv-assistant-thinking-effect-x: 60%;
+  --wv-assistant-thinking-effect-y: 27%;
+
+  /* Confused mascot effect */
+  --wv-assistant-confused-effect-x: 56%;
+  --wv-assistant-confused-effect-y: 24%;
+
+  /* Composer */
+  --wv-assistant-composer-height: 2.9rem;
+  --wv-assistant-send-width: 7.2rem;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] {
+  position: fixed !important;
+  top: var(--wv-assistant-open-top) !important;
+  right: var(--wv-assistant-open-right) !important;
+  bottom: var(--wv-assistant-open-bottom) !important;
+  left: auto !important;
+  z-index: calc(var(--layer-dropdown) + 2) !important;
+
+  width: var(--wv-assistant-open-width) !important;
+  height: auto !important;
+
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-panel {
+  position: relative !important;
+  isolation: isolate;
+
+  display: grid !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  grid-template-rows: 32% minmax(0, 1fr) auto !important;
+
+  overflow: visible !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/assistant/open/assistant-open-panel-frame.png") !important;
+  background-position: 95.4% 89.6% !important;
+  background-repeat: no-repeat !important;
+  background-size: 152% 119.3% !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__header,
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-messages,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-shortcuts,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Remove the generic state line/background shown while thinking or confused. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel[data-state="thinking"]
+  .assistant-panel__header,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel[data-state="success"]
+  .assistant-panel__header,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel[data-state="confused"]
+  .assistant-panel__header {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header: mascot, effects and nameplate                                      */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__header {
+  display: block !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage {
+  position: absolute !important;
+  top: -7% !important;
+  left: -6.2% !important;
+
+  width: 57.3% !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+
+  overflow: visible !important;
+  filter: none !important;
+}
+
+/* Move the ready mascot and its wake rays together slightly left. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="ready"] {
+  top: var(--wv-assistant-ready-y) !important;
+  left: var(--wv-assistant-ready-x) !important;
+}
+
+/* Thinking mascot is slightly smaller and lower. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="thinking"] {
+  top: var(--wv-assistant-thinking-y) !important;
+  left: var(--wv-assistant-thinking-x) !important;
+  width: var(--wv-assistant-thinking-size) !important;
+  animation: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--ready {
+  top: 16.5% !important;
+  right: auto !important;
+  left: 60.4% !important;
+  width: 22.7% !important;
+  height: 22.7% !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* Keep thinking dots next to the mascot, not on the panel's top edge. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--thinking {
+  top: var(--wv-assistant-thinking-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-thinking-effect-x) !important;
+  width: 20% !important;
+  height: 20% !important;
+  opacity: 0.88 !important;
+  filter: none !important;
+}
+
+/* Move the confused question-mark effect down and left. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--confused {
+  top: var(--wv-assistant-confused-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-confused-effect-x) !important;
+  width: 21% !important;
+  height: 21% !important;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--success {
+  top: 12% !important;
+  right: auto !important;
+  left: 61% !important;
+  width: 23% !important;
+  height: 23% !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading {
+  position: absolute !important;
+  top: 7.7% !important;
+  left: 32.9% !important;
+
+  width: 55.5% !important;
+  height: 78.5% !important;
+  min-width: 0 !important;
+
+  display: block !important;
+  isolation: isolate;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  background-image: url("../assets/assistant/open/assistant-nameplate-frame.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  content: "";
+  pointer-events: none;
+  filter: none;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading
+  h2 {
+  position: absolute !important;
+  top: 36.3% !important;
+  left: 21.2% !important;
+  z-index: 1;
+
+  width: 57.4% !important;
+  margin: 0 !important;
+
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading
+  h2::after {
+  display: block;
+
+  color: #2e2019;
+  content: "Wordie the Wise Dictionary";
+
+  font-family: "Irish Grover", "Comic Sans MS", cursive;
+  font-size: clamp(0.9rem, 1.25vw, 1.5rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.18;
+  text-align: left;
+  text-shadow: 0 0.0625rem 0 rgb(255 255 255 / 72%);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__heading
+  p {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__close {
+  position: absolute !important;
+  top: var(--wv-assistant-close-top) !important;
+  right: var(--wv-assistant-close-right) !important;
+  z-index: 6 !important;
+
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: rgb(255 249 232 / 70%) !important;
+  color: #8f574d !important;
+  box-shadow: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__close:hover {
+  background: rgb(250 225 210 / 76%) !important;
+  color: #6f332f !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Conversation area                                                         */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-messages {
+  min-height: 0 !important;
+  margin: 0 6.3% !important;
+  padding: 0.45rem 0.6rem 0.55rem !important;
+
+  gap: 0.65rem !important;
+  overflow-y: auto !important;
+
+  background: transparent !important;
+  scrollbar-color: rgb(184 123 102 / 52%) transparent;
+  scrollbar-width: thin;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel[data-state="ready"]
+  .assistant-messages:not([data-has-preview])
+  .assistant-message:first-child {
+  display: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-message {
+  max-width: 88% !important;
+  padding: 0.62rem 0.72rem !important;
+
+  border: 1px solid rgb(189 130 105 / 25%) !important;
+  border-radius: 0.8rem !important;
+  background: rgb(255 250 236 / 82%) !important;
+  color: #584433 !important;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.86rem !important;
+  line-height: 1.35 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-message[data-author="user"] {
+  border-color: rgb(182 111 92 / 30%) !important;
+  background: rgb(248 220 204 / 76%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-shortcuts {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Word preview: themed, compact and with permanently visible actions         */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-messages[data-has-preview="true"]
+  > .assistant-message {
+  display: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-preview {
+  display: grid !important;
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+
+  border: 1px solid rgb(184 122 99 / 30%) !important;
+  border-radius: 1rem !important;
+  background: linear-gradient(180deg, rgb(255 251 239 / 96%), rgb(250 238 218 / 94%)) !important;
+  box-shadow:
+    0 0.5rem 1.3rem rgb(91 58 36 / 9%),
+    inset 0 0.0625rem 0 rgb(255 255 255 / 90%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__header {
+  align-items: center !important;
+  padding: 0.7rem 0.8rem !important;
+  border-bottom: 1px solid rgb(184 122 99 / 20%) !important;
+  background: linear-gradient(90deg, rgb(232 239 204 / 48%), rgb(250 222 207 / 45%));
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__eyebrow {
+  color: #9a5a4e !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.67rem !important;
+  letter-spacing: 0.075em !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__header
+  h3 {
+  color: #633a31 !important;
+  font-family: "Irish Grover", Georgia, serif !important;
+  font-size: 1.45rem !important;
+  line-height: 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__metadata {
+  margin: 0 !important;
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  background: rgb(255 248 228 / 84%);
+  color: #7a6751 !important;
+  font-size: 0.72rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0.45rem !important;
+  padding: 0.65rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content
+  section {
+  min-width: 0;
+  padding: 0.55rem 0.62rem !important;
+  border: 1px solid rgb(190 134 108 / 16%) !important;
+  border-radius: 0.72rem;
+  background: rgb(255 252 241 / 68%);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content
+  section:first-child {
+  grid-column: auto !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content
+  section
+  + section,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content
+  section:nth-child(3) {
+  border-top: 1px solid rgb(190 134 108 / 16%) !important;
+  border-left: 1px solid rgb(190 134 108 / 16%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content
+  h4 {
+  margin: 0 0 0.22rem !important;
+  color: #8d6a55 !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.67rem !important;
+  letter-spacing: 0.055em !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__content
+  p {
+  color: #55473a !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.79rem !important;
+  line-height: 1.38 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-items: stretch !important;
+  gap: 0.5rem !important;
+  padding: 0.62rem 0.7rem 0.7rem !important;
+
+  border-top: 1px solid rgb(184 122 99 / 20%) !important;
+  background: rgb(252 241 220 / 97%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__status
+  p {
+  color: #7b6956 !important;
+  font-size: 0.7rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__actions
+  .button {
+  min-width: 0 !important;
+  min-height: 2.35rem !important;
+  padding: 0 0.6rem !important;
+  border-radius: 0.72rem !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.76rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__actions
+  .button[data-variant="primary"] {
+  border: 1px solid #bd7667 !important;
+  background: linear-gradient(180deg, #e89d87, #c96f61) !important;
+  color: #fffaf0 !important;
+  box-shadow: 0 0.25rem 0.55rem rgb(128 67 55 / 16%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__actions
+  .button[data-variant="secondary"] {
+  border: 1px solid rgb(139 151 96 / 42%) !important;
+  background: rgb(236 242 209 / 82%) !important;
+  color: #59613e !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-preview__actions
+  .button[data-variant="ghost"] {
+  border: 1px solid rgb(184 122 99 / 25%) !important;
+  background: rgb(255 250 235 / 72%) !important;
+  color: #805247 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bottom composer: one aligned field glow and a readable Search button       */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) var(--wv-assistant-send-width) !important;
+  align-items: center !important;
+  gap: 0.55rem !important;
+
+  padding: 0 4.7% 2.7% !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer[aria-busy="true"] {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: var(--wv-assistant-composer-height) !important;
+  min-height: var(--wv-assistant-composer-height) !important;
+
+  padding: 0 0.9rem !important;
+  border: 1px solid rgb(184 122 99 / 42%) !important;
+  border-radius: 0.75rem !important;
+
+  background: linear-gradient(180deg, rgb(255 253 244 / 96%), rgb(252 244 226 / 94%)) !important;
+  background-image: none !important;
+
+  color: #584433 !important;
+  box-shadow:
+    0 0.16rem 0.45rem rgb(112 73 48 / 8%),
+    inset 0 0.0625rem 0 rgb(255 255 255 / 94%) !important;
+  outline: none !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.82rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  input:focus,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  input:focus-visible {
+  border-color: rgb(178 104 88 / 58%) !important;
+  outline: none !important;
+  box-shadow:
+    0 0 0 0.12rem rgb(239 183 160 / 22%),
+    0 0.2rem 0.55rem rgb(112 73 48 / 9%),
+    inset 0 0.0625rem 0 rgb(255 255 255 / 95%) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button {
+  position: relative;
+
+  width: var(--wv-assistant-send-width) !important;
+  min-width: var(--wv-assistant-send-width) !important;
+  height: var(--wv-assistant-composer-height) !important;
+  min-height: var(--wv-assistant-composer-height) !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.45rem !important;
+
+  padding: 0 0.8rem !important;
+  overflow: hidden !important;
+
+  border: 1px solid #bb6c5d !important;
+  border-radius: 0.75rem !important;
+
+  background: linear-gradient(180deg, #e99a84, #c96658) !important;
+  background-image: none !important;
+
+  color: #fffaf0 !important;
+  box-shadow:
+    0 0.26rem 0.55rem rgb(121 60 49 / 18%),
+    inset 0 0.0625rem 0 rgb(255 255 255 / 28%) !important;
+  filter: none !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+}
+
+/* CSS magnifier; the functional button does not need another image asset. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button::before {
+  width: 0.72rem;
+  height: 0.72rem;
+  flex: 0 0 0.72rem;
+
+  border: 0.11rem solid currentColor;
+  border-radius: 50%;
+
+  content: "";
+  opacity: 0.92;
+  transform: translateY(-0.04rem);
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button::after {
+  position: absolute;
+  top: 56%;
+  left: calc(50% - 2.1rem);
+
+  width: 0.38rem;
+  height: 0.11rem;
+  border-radius: 999px;
+  background: currentColor;
+
+  content: "";
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+/* Replace the old Prepare label visually while keeping it accessible. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button__label {
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+  white-space: nowrap !important;
+
+  font-size: 0 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button__label::after {
+  content: "Search";
+  font-size: 0.88rem;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button:hover:not(:disabled) {
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  background-color: transparent !important;
+  background-image: url("../assets/assistant/open/assistant-search-button.png") !important;
+  background-repeat: no-repeat !important;
+
+  filter: none !important;
+  transform: none !important;
+
+  color: #fff9ec;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button:focus-visible {
+  outline: 0.1rem solid rgb(171 101 83 / 36%) !important;
+  outline-offset: 0.06rem !important;
+}
+
+@media (max-width: 1180px) {
+  .application-frame:has(.route-page--vocabulary-home) {
+    --wv-assistant-open-top: 23vh;
+    --wv-assistant-open-right: 0.4rem;
+    --wv-assistant-open-width: clamp(17.5rem, 30vw, 21rem);
+    --wv-assistant-send-width: 6.2rem;
+  }
+
+  .application-frame:has(.route-page--vocabulary-home)
+    .assistant-dock[data-open]
+    .assistant-panel__heading
+    h2::after {
+    font-size: clamp(0.82rem, 1.4vw, 1.05rem);
+  }
+
+  .application-frame:has(.route-page--vocabulary-home)
+    .assistant-dock[data-open]
+    .assistant-preview__actions {
+    grid-template-columns: 1fr;
+  }
+}

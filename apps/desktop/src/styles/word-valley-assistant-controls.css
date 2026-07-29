@@ -1,0 +1,386 @@
+/*
+ * Word Valley assistant controls — final asset layer.
+ *
+ * This file loads after word-valley-assistant-open.css.
+ * Change only the variables in the first block.
+ *
+ * X: positive = right, negative = left
+ * Y: positive = down, negative = up
+ */
+
+.application-frame:has(.route-page--vocabulary-home) {
+  /* AI ASSISTANT SEARCH FIELD */
+  --wv-ai-search-field-width: calc(100% - 4rem);
+  --wv-ai-search-field-height: 2.9rem;
+  --wv-ai-search-field-x: 0rem;
+  --wv-ai-search-field-y: -0.5rem;
+
+  /* AI ASSISTANT SEARCH BUTTON */
+  --wv-ai-search-button-width: 7.5rem;
+  --wv-ai-search-button-height: 2.7rem;
+  --wv-ai-search-button-x: -4rem;
+  --wv-ai-search-button-y: -0.5rem;
+
+  /* READY — panel first opens */
+  --wv-assistant-ready-x: -11.2%;
+  --wv-assistant-ready-y: -14.8%;
+  --wv-assistant-ready-width: 57.3%;
+  --wv-assistant-ready-height: auto;
+
+  --wv-assistant-ready-effect-x: 61.4%;
+  --wv-assistant-ready-effect-y: 16.5%;
+  --wv-assistant-ready-effect-width: 22.7%;
+  --wv-assistant-ready-effect-height: 22.7%;
+
+  /* THINKING — while searching */
+  --wv-assistant-thinking-x: 4.7%;
+  --wv-assistant-thinking-y: 5.5%;
+  --wv-assistant-thinking-width: 36.5%;
+  --wv-assistant-thinking-height: auto;
+
+  --wv-assistant-thinking-effect-x: 62%;
+  --wv-assistant-thinking-effect-y: 13%;
+  --wv-assistant-thinking-effect-width: 20%;
+  --wv-assistant-thinking-effect-height: 20%;
+
+  /* CONFUSED — invalid word or error */
+  --wv-assistant-confused-x: -6.2%;
+  --wv-assistant-confused-y: -7.8%;
+  --wv-assistant-confused-width: 57.3%;
+  --wv-assistant-confused-height: auto;
+
+  --wv-assistant-confused-effect-x: 58%;
+  --wv-assistant-confused-effect-y: 18%;
+  --wv-assistant-confused-effect-width: 21%;
+  --wv-assistant-confused-effect-height: 21%;
+
+  /* SUCCESS — word saved */
+  --wv-assistant-success-x: -4.8%;
+  --wv-assistant-success-y: -2.8%;
+  --wv-assistant-success-width: 53%;
+  --wv-assistant-success-height: auto;
+
+  --wv-assistant-success-effect-x: 59%;
+  --wv-assistant-success-effect-y: 18%;
+  --wv-assistant-success-effect-width: 23%;
+  --wv-assistant-success-effect-height: 23%;
+}
+
+/* Composer layout */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer {
+  grid-template-columns:
+    var(--wv-ai-search-field-width)
+    var(--wv-ai-search-button-width) !important;
+  justify-content: start !important;
+  align-items: center !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* SEARCH FIELD — NEW ASSET                                                   */
+/* apps/desktop/src/assets/assistant/open/assistant-search-field.png           */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  input {
+  width: var(--wv-ai-search-field-width) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+
+  height: var(--wv-ai-search-field-height) !important;
+  min-height: var(--wv-ai-search-field-height) !important;
+  max-height: var(--wv-ai-search-field-height) !important;
+
+  justify-self: start !important;
+  translate: var(--wv-ai-search-field-x) var(--wv-ai-search-field-y) !important;
+
+  padding: 0 1rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background-color: transparent !important;
+  background-image: url("../assets/assistant/open/assistant-search-field.png") !important;
+  background-repeat: no-repeat !important;
+
+  /* 738x294 canvas; visible content: x76 y91 w596 h134. */
+  background-size: 123.8255% 219.403% !important;
+  background-position: 53.5% 56.87% !important;
+
+  color: #584433 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  filter: none !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.82rem !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  input:focus,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  input:focus-visible {
+  border: 0 !important;
+  outline: none !important;
+  background-image: url("../assets/assistant/open/assistant-search-field.png") !important;
+  box-shadow: 0 0 0.42rem rgb(195 116 96 / 18%) !important;
+  filter: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* SEARCH BUTTON — NEW ASSET                                                  */
+/* apps/desktop/src/assets/assistant/open/assistant-search-button.png          */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button:disabled {
+  width: var(--wv-ai-search-button-width) !important;
+  min-width: var(--wv-ai-search-button-width) !important;
+  max-width: var(--wv-ai-search-button-width) !important;
+
+  height: var(--wv-ai-search-button-height) !important;
+  min-height: var(--wv-ai-search-button-height) !important;
+  max-height: var(--wv-ai-search-button-height) !important;
+
+  justify-self: start !important;
+  translate: var(--wv-ai-search-button-x) var(--wv-ai-search-button-y) !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  padding: 0 0.65rem !important;
+  overflow: hidden !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/assistant/open/assistant-search-button.png") !important;
+  background-repeat: no-repeat !important;
+
+  /* 448x480 canvas; visible content: x156 y280 w210 h124. */
+  background-size: 213.3333% 387.0968% !important;
+  background-position: 65.55% 78.65% !important;
+
+  color: #fff9ec !important;
+  box-shadow: none !important;
+  text-shadow:
+    0 0.0625rem 0 rgb(112 54 45 / 46%),
+    0 0.12rem 0.24rem rgb(112 54 45 / 18%) !important;
+  filter: none !important;
+
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+}
+
+/* Remove the old CSS-drawn magnifier. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button::before,
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Keep the accessible Prepare label but display Search visually. */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button__label {
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+  white-space: nowrap !important;
+  font-size: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button__label::after {
+  display: inline !important;
+  content: "Search" !important;
+  font-size: 0.88rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button:disabled {
+  opacity: 0.78 !important;
+  cursor: not-allowed !important;
+  background-image: url("../assets/assistant/open/assistant-search-button.png") !important;
+  filter: saturate(0.82) brightness(1.04) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button:hover:not(:disabled) {
+  opacity: 1 !important;
+  background-image: url("../assets/assistant/open/assistant-search-button.png") !important;
+  filter: brightness(1.045) saturate(1.025) !important;
+  transform: translateY(-0.04rem) !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-composer
+  .button:focus-visible {
+  outline: 0.1rem solid rgb(171 101 83 / 34%) !important;
+  outline-offset: -0.12rem !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* MASCOTS AND EFFECTS                                                        */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage {
+  position: absolute !important;
+  z-index: 4 !important;
+  overflow: visible !important;
+  aspect-ratio: 1 / 1 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot {
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect {
+  display: block !important;
+  position: absolute !important;
+  z-index: 5 !important;
+  object-fit: contain !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+/* READY */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="ready"] {
+  top: var(--wv-assistant-ready-y) !important;
+  left: var(--wv-assistant-ready-x) !important;
+  width: var(--wv-assistant-ready-width) !important;
+  height: var(--wv-assistant-ready-height) !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--ready {
+  top: var(--wv-assistant-ready-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-ready-effect-x) !important;
+  width: var(--wv-assistant-ready-effect-width) !important;
+  height: var(--wv-assistant-ready-effect-height) !important;
+}
+
+/* THINKING */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="thinking"] {
+  top: var(--wv-assistant-thinking-y) !important;
+  left: var(--wv-assistant-thinking-x) !important;
+  width: var(--wv-assistant-thinking-width) !important;
+  height: var(--wv-assistant-thinking-height) !important;
+  aspect-ratio: 1 / 1 !important;
+  animation: none !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--thinking {
+  top: var(--wv-assistant-thinking-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-thinking-effect-x) !important;
+  width: var(--wv-assistant-thinking-effect-width) !important;
+  height: var(--wv-assistant-thinking-effect-height) !important;
+}
+
+/* CONFUSED */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="confused"] {
+  top: var(--wv-assistant-confused-y) !important;
+  left: var(--wv-assistant-confused-x) !important;
+  width: var(--wv-assistant-confused-width) !important;
+  height: var(--wv-assistant-confused-height) !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--confused {
+  top: var(--wv-assistant-confused-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-confused-effect-x) !important;
+  width: var(--wv-assistant-confused-effect-width) !important;
+  height: var(--wv-assistant-confused-effect-height) !important;
+}
+
+/* SUCCESS */
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__mascot-stage[data-state="success"] {
+  top: var(--wv-assistant-success-y) !important;
+  left: var(--wv-assistant-success-x) !important;
+  width: var(--wv-assistant-success-width) !important;
+  height: var(--wv-assistant-success-height) !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+.application-frame:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open]
+  .assistant-panel__state-effect--success {
+  top: var(--wv-assistant-success-effect-y) !important;
+  right: auto !important;
+  left: var(--wv-assistant-success-effect-x) !important;
+  width: var(--wv-assistant-success-effect-width) !important;
+  height: var(--wv-assistant-success-effect-height) !important;
+}

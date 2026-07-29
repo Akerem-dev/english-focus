@@ -1,0 +1,321 @@
+/*
+ * Final Word Valley polish.
+ *
+ * This file intentionally loads after every earlier Word Valley stylesheet so
+ * the Figma-authored positions and the user's latest book sizing remain intact.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Wordbook search copy                                                       */
+/* -------------------------------------------------------------------------- */
+
+/* Remove the redundant local-storage sentence below the search field. */
+.route-page--vocabulary-home .vocabulary-hero__hint {
+  display: none !important;
+}
+
+/* Give the description a warmer editorial/storybook voice. */
+.route-page--vocabulary-home .vocabulary-hero__description {
+  top: 26.9vh;
+  color: #6c4e39;
+  font-family: var(--font-family-display);
+  font-size: clamp(0.82rem, 0.82vw, 1rem);
+  font-style: italic;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.018em;
+  line-height: 1.35;
+  text-shadow:
+    0 0.0625rem 0 rgb(255 255 255 / 88%),
+    0 0.18rem 0.5rem rgb(113 77 44 / 10%);
+}
+
+.route-page--vocabulary-home .vocabulary-hero__description::after {
+  display: block;
+  width: 3.5rem;
+  height: 0.1rem;
+  margin: 0.34rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(135 151 91 / 58%),
+    rgb(189 112 96 / 54%),
+    transparent
+  );
+  content: "";
+}
+
+/* Reserve explicit room for the magnifier and clear action. */
+.route-page--vocabulary-home .vocabulary-search .field__input {
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__leading-icon {
+  left: 1rem;
+  color: #966057;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__trailing-action {
+  right: 0.7rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Restore interaction inside the illustrated books                           */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * vocabulary-hero spans the entire page and previously sat above the books.
+ * It looked transparent, but still intercepted every mouse click. Let clicks
+ * pass through the decorative hero while keeping the real search form active.
+ */
+.route-page--vocabulary-home .vocabulary-hero {
+  pointer-events: none;
+}
+
+.route-page--vocabulary-home .vocabulary-search {
+  pointer-events: auto;
+}
+
+.route-page--vocabulary-home .vocabulary-dashboard,
+.route-page--vocabulary-home .word-list-card,
+.route-page--vocabulary-home .word-list-card__rows,
+.route-page--vocabulary-home .word-list-row {
+  pointer-events: auto;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  border: 0 !important;
+  border-radius: 0.55rem;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.route-page--vocabulary-home .word-list-row:hover {
+  background: rgb(255 248 226 / 48%) !important;
+  color: #6f4035;
+  transform: translateX(0.12rem);
+}
+
+.route-page--vocabulary-home .word-list-card:first-child .word-list-row:hover {
+  background: rgb(230 237 201 / 46%) !important;
+  color: #53633c;
+}
+
+.route-page--vocabulary-home .word-list-row:active {
+  transform: translateX(0.12rem) scale(0.99);
+}
+
+.route-page--vocabulary-home .word-list-row:focus-visible {
+  outline: 0.13rem solid rgb(154 111 80 / 42%);
+  outline-offset: 0.08rem;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Book page flow and hover highlight sizing                                  */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * These values are the controls for the light area shown behind a word:
+ *   --wv-row-highlight-width  = horizontal size of the glow
+ *   --wv-row-highlight-height = vertical size of the glow
+ *   --wv-row-highlight-radius = corner roundness of the glow
+ *
+ * Six entries fill the left page. Entry 7 starts at the top of the right page.
+ */
+.route-page--vocabulary-home .word-list-card {
+  --wv-row-highlight-width: 90%;
+  --wv-row-highlight-height: 2.2rem;
+  --wv-row-highlight-radius: 0.62rem;
+  --wv-book-page-gap: 9%;
+}
+
+.route-page--vocabulary-home .word-list-card__rows {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(6, var(--wv-row-highlight-height));
+  grid-auto-flow: column;
+  column-gap: var(--wv-book-page-gap);
+  row-gap: 0.12rem;
+  align-content: start;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  width: var(--wv-row-highlight-width);
+  min-width: 0;
+  min-height: var(--wv-row-highlight-height);
+  height: var(--wv-row-highlight-height);
+  justify-self: center;
+  padding: 0 0.55rem;
+  border-radius: var(--wv-row-highlight-radius);
+}
+
+.route-page--vocabulary-home .word-list-row__word {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Sidebar — shared application palette                                       */
+/* -------------------------------------------------------------------------- */
+
+.app-sidebar {
+  border-right-color: rgb(142 116 78 / 18%);
+  background: linear-gradient(180deg, #fbf5e7 0%, #f7edd9 54%, #f2e2c9 100%);
+  box-shadow: 0.3rem 0 1rem rgb(82 61 34 / 6%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.app-sidebar__brand {
+  border-color: rgb(143 113 73 / 16%);
+  background-color: rgb(255 251 240 / 72%);
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 82%),
+    0 0.22rem 0.65rem rgb(95 70 40 / 5%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Small illustrated-page tabs rather than generic app rectangles. */
+.sidebar-nav-item {
+  min-height: 3.35rem;
+  border: 1px solid rgb(137 113 72 / 14%);
+  border-radius: 0.3rem 1.05rem 1.05rem 0.3rem;
+  background: linear-gradient(
+    180deg,
+    rgb(255 252 240 / 68%) 0%,
+    rgb(246 237 213 / 52%) 100%
+  );
+  color: #67583f;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 78%),
+    0 0.18rem 0.52rem rgb(92 67 38 / 5%);
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.sidebar-nav-item__icon {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgb(132 126 79 / 16%);
+  border-radius: 0.72rem;
+  background: linear-gradient(180deg, #f7efcf, #eadcb5);
+  color: #766b45;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 76%),
+    0 0.12rem 0.3rem rgb(92 69 36 / 6%);
+}
+
+.sidebar-nav-item:hover {
+  border-color: rgb(131 149 84 / 26%);
+  background: linear-gradient(
+    180deg,
+    rgb(250 248 224 / 92%),
+    rgb(231 237 200 / 78%)
+  );
+  color: #4f5437;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 86%),
+    0 0.3rem 0.72rem rgb(88 76 43 / 8%);
+  transform: translateY(-0.0625rem);
+}
+
+.sidebar-nav-item:hover .sidebar-nav-item__icon {
+  border-color: rgb(124 146 77 / 25%);
+  background: linear-gradient(180deg, #edf2ce, #dbe5b0);
+  color: #657442;
+}
+
+.sidebar-nav-item--active {
+  border-color: rgb(181 112 91 / 30%);
+  background: linear-gradient(
+    180deg,
+    rgb(255 246 231 / 98%),
+    rgb(246 218 202 / 92%)
+  );
+  color: #863b34;
+  font-weight: var(--font-weight-semibold);
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 90%),
+    0 0.32rem 0.78rem rgb(108 64 43 / 9%);
+}
+
+.sidebar-nav-item--active .sidebar-nav-item__icon {
+  border-color: rgb(185 111 89 / 25%);
+  background: linear-gradient(180deg, #f9ded0, #efc5b5);
+  color: #98473e;
+}
+
+.sidebar-nav-item::before {
+  top: 0.62rem;
+  bottom: 0.62rem;
+  width: 0.22rem;
+  border-radius: 999px;
+}
+
+.sidebar-nav-item--active::before {
+  background: linear-gradient(180deg, #8f9f61, #c77867);
+  box-shadow: 0 0 0.35rem rgb(152 112 76 / 18%);
+}
+
+.app-sidebar__footer {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Figma Wordbook home sidebar                                                */
+/* -------------------------------------------------------------------------- */
+
+.application-frame:has(.route-page--vocabulary-home) .app-sidebar::before {
+  opacity: 0.98;
+  filter: sepia(0.055) saturate(0.92) brightness(1.015);
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item {
+  border-color: rgb(142 115 72 / 13%);
+  background: linear-gradient(
+    180deg,
+    rgb(255 251 237 / 66%),
+    rgb(244 233 207 / 50%)
+  );
+  color: #66573f;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item:hover {
+  border-color: rgb(128 145 83 / 25%);
+  background: linear-gradient(
+    180deg,
+    rgb(249 247 221 / 92%),
+    rgb(229 236 197 / 80%)
+  );
+  color: #4b5235;
+}
+
+.application-frame:has(.route-page--vocabulary-home) .sidebar-nav-item--active {
+  border-color: rgb(177 108 88 / 30%);
+  background: linear-gradient(
+    180deg,
+    rgb(255 245 229 / 98%),
+    rgb(244 216 200 / 93%)
+  );
+  color: #873832;
+  box-shadow:
+    inset 0 0.0625rem 0 rgb(255 255 255 / 90%),
+    0 0.3rem 0.74rem rgb(105 63 43 / 9%);
+}
