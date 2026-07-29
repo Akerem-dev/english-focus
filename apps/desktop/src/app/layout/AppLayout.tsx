@@ -49,12 +49,11 @@ export function AppLayout({ children }: PropsWithChildren) {
 
     const updateScale = () => {
       const bounds = viewport.getBoundingClientRect();
-      const scale = Math.min(
-        bounds.width / WORD_VALLEY_STAGE_WIDTH,
-        bounds.height / WORD_VALLEY_STAGE_HEIGHT
-      );
+      const scaleX = Math.max(bounds.width / WORD_VALLEY_STAGE_WIDTH, 0.01);
+      const scaleY = Math.max(bounds.height / WORD_VALLEY_STAGE_HEIGHT, 0.01);
 
-      viewport.style.setProperty("--wv-stage-scale", String(Math.max(scale, 0.01)));
+      viewport.style.setProperty("--wv-stage-scale-x", String(scaleX));
+      viewport.style.setProperty("--wv-stage-scale-y", String(scaleY));
     };
 
     updateScale();
