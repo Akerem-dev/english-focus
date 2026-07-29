@@ -13,8 +13,8 @@
   --wv-assistant-open-width: clamp(18rem, 29.3vw, 35.2rem);
 
   /* Close button: + top moves down, + right moves left */
-  --wv-assistant-close-top: 1.7%;
-  --wv-assistant-close-right: 2.2%;
+  --wv-assistant-close-top: 6.7%;
+  --wv-assistant-close-right: 4.2%;
 
   /* Ready mascot stage: negative X moves left */
   --wv-assistant-ready-x: -8.8%;
@@ -50,9 +50,7 @@
   font-family: Georgia, "Times New Roman", serif;
 }
 
-.application-frame:has(.route-page--vocabulary-home)
-  .assistant-dock[data-open]
-  .assistant-panel {
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-panel {
   position: relative !important;
   isolation: isolate;
 
@@ -67,8 +65,7 @@
   border: 0 !important;
   border-radius: 0 !important;
   background-color: transparent !important;
-  background-image:
-    url("../assets/assistant/open/assistant-open-panel-frame.png") !important;
+  background-image: url("../assets/assistant/open/assistant-open-panel-frame.png") !important;
   background-position: 95.4% 89.6% !important;
   background-repeat: no-repeat !important;
   background-size: 152% 119.3% !important;
@@ -82,9 +79,7 @@
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-panel__header,
-.application-frame:has(.route-page--vocabulary-home)
-  .assistant-dock[data-open]
-  .assistant-messages,
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-messages,
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
   .assistant-shortcuts,
@@ -243,8 +238,7 @@
   inset: 0;
   z-index: 0;
 
-  background-image:
-    url("../assets/assistant/open/assistant-nameplate-frame.png");
+  background-image: url("../assets/assistant/open/assistant-nameplate-frame.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -256,7 +250,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-panel__heading h2 {
+  .assistant-panel__heading
+  h2 {
   position: absolute !important;
   top: 36.3% !important;
   left: 21.2% !important;
@@ -272,7 +267,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-panel__heading h2::after {
+  .assistant-panel__heading
+  h2::after {
   display: block;
 
   color: #2e2019;
@@ -289,7 +285,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-panel__heading p {
+  .assistant-panel__heading
+  p {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -351,9 +348,7 @@
   display: none !important;
 }
 
-.application-frame:has(.route-page--vocabulary-home)
-  .assistant-dock[data-open]
-  .assistant-message {
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-message {
   max-width: 88% !important;
   padding: 0.62rem 0.72rem !important;
 
@@ -391,9 +386,7 @@
   display: none !important;
 }
 
-.application-frame:has(.route-page--vocabulary-home)
-  .assistant-dock[data-open]
-  .assistant-preview {
+.application-frame:has(.route-page--vocabulary-home) .assistant-dock[data-open] .assistant-preview {
   display: grid !important;
   width: 100% !important;
   flex: 0 0 auto !important;
@@ -401,8 +394,7 @@
 
   border: 1px solid rgb(184 122 99 / 30%) !important;
   border-radius: 1rem !important;
-  background:
-    linear-gradient(180deg, rgb(255 251 239 / 96%), rgb(250 238 218 / 94%)) !important;
+  background: linear-gradient(180deg, rgb(255 251 239 / 96%), rgb(250 238 218 / 94%)) !important;
   box-shadow:
     0 0.5rem 1.3rem rgb(91 58 36 / 9%),
     inset 0 0.0625rem 0 rgb(255 255 255 / 90%) !important;
@@ -428,7 +420,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__header h3 {
+  .assistant-preview__header
+  h3 {
   color: #633a31 !important;
   font-family: "Irish Grover", Georgia, serif !important;
   font-size: 1.45rem !important;
@@ -457,7 +450,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__content section {
+  .assistant-preview__content
+  section {
   min-width: 0;
   padding: 0.55rem 0.62rem !important;
   border: 1px solid rgb(190 134 108 / 16%) !important;
@@ -467,23 +461,28 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__content section:first-child {
+  .assistant-preview__content
+  section:first-child {
   grid-column: auto !important;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__content section + section,
+  .assistant-preview__content
+  section
+  + section,
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__content section:nth-child(3) {
+  .assistant-preview__content
+  section:nth-child(3) {
   border-top: 1px solid rgb(190 134 108 / 16%) !important;
   border-left: 1px solid rgb(190 134 108 / 16%) !important;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__content h4 {
+  .assistant-preview__content
+  h4 {
   margin: 0 0 0.22rem !important;
   color: #8d6a55 !important;
   font-family: Georgia, "Times New Roman", serif;
@@ -493,7 +492,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__content p {
+  .assistant-preview__content
+  p {
   color: #55473a !important;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 0.79rem !important;
@@ -519,7 +519,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__status p {
+  .assistant-preview__status
+  p {
   color: #7b6956 !important;
   font-size: 0.7rem !important;
 }
@@ -534,7 +535,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__actions .button {
+  .assistant-preview__actions
+  .button {
   min-width: 0 !important;
   min-height: 2.35rem !important;
   padding: 0 0.6rem !important;
@@ -545,7 +547,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__actions .button[data-variant="primary"] {
+  .assistant-preview__actions
+  .button[data-variant="primary"] {
   border: 1px solid #bd7667 !important;
   background: linear-gradient(180deg, #e89d87, #c96f61) !important;
   color: #fffaf0 !important;
@@ -554,7 +557,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__actions .button[data-variant="secondary"] {
+  .assistant-preview__actions
+  .button[data-variant="secondary"] {
   border: 1px solid rgb(139 151 96 / 42%) !important;
   background: rgb(236 242 209 / 82%) !important;
   color: #59613e !important;
@@ -562,7 +566,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-preview__actions .button[data-variant="ghost"] {
+  .assistant-preview__actions
+  .button[data-variant="ghost"] {
   border: 1px solid rgb(184 122 99 / 25%) !important;
   background: rgb(255 250 235 / 72%) !important;
   color: #805247 !important;
@@ -595,7 +600,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer input {
+  .assistant-composer
+  input {
   width: 100% !important;
   min-width: 0 !important;
   height: var(--wv-assistant-composer-height) !important;
@@ -620,10 +626,12 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer input:focus,
+  .assistant-composer
+  input:focus,
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer input:focus-visible {
+  .assistant-composer
+  input:focus-visible {
   border-color: rgb(178 104 88 / 58%) !important;
   outline: none !important;
   box-shadow:
@@ -634,7 +642,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button {
+  .assistant-composer
+  .button {
   position: relative;
 
   width: var(--wv-assistant-send-width) !important;
@@ -670,7 +679,8 @@
 /* CSS magnifier; the functional button does not need another image asset. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button::before {
+  .assistant-composer
+  .button::before {
   width: 0.72rem;
   height: 0.72rem;
   flex: 0 0 0.72rem;
@@ -685,7 +695,8 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button::after {
+  .assistant-composer
+  .button::after {
   position: absolute;
   top: 56%;
   left: calc(50% - 2.1rem);
@@ -703,7 +714,8 @@
 /* Replace the old Prepare label visually while keeping it accessible. */
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button__label {
+  .assistant-composer
+  .button__label {
   display: inline !important;
   width: auto !important;
   height: auto !important;
@@ -717,21 +729,33 @@
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button__label::after {
+  .assistant-composer
+  .button__label::after {
   content: "Search";
   font-size: 0.88rem;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button:hover:not(:disabled) {
-  background: linear-gradient(180deg, #eca18c, #ce705f) !important;
-  transform: translateY(-0.05rem);
+  .assistant-composer
+  .button:hover:not(:disabled) {
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  background-color: transparent !important;
+  background-image: url("../assets/assistant/open/assistant-search-button.png") !important;
+  background-repeat: no-repeat !important;
+
+  filter: none !important;
+  transform: none !important;
+
+  color: #fff9ec;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
   .assistant-dock[data-open]
-  .assistant-composer .button:focus-visible {
+  .assistant-composer
+  .button:focus-visible {
   outline: 0.1rem solid rgb(171 101 83 / 36%) !important;
   outline-offset: 0.06rem !important;
 }
@@ -746,7 +770,8 @@
 
   .application-frame:has(.route-page--vocabulary-home)
     .assistant-dock[data-open]
-    .assistant-panel__heading h2::after {
+    .assistant-panel__heading
+    h2::after {
     font-size: clamp(0.82rem, 1.4vw, 1.05rem);
   }
 

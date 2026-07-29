@@ -20,14 +20,14 @@
    * Sidebar butonlarının merkezleri arasındaki gerçek mesafe.
    * Küçüldükçe butonlar yaklaşır; buton yüksekliğinden küçük olabilir.
    */
-  --wv-nav-row-step: 4.3rem;
+  --wv-nav-row-step: 3.5rem;
 
   /* Ek standart boşluk. Negatif değer geçersizdir; 0 veya pozitif kullan. */
   --wv-nav-gap: 0rem;
 
   /* Her sidebar butonunun eni ve boyu — yalnız bu iki değeri değiştir */
-  --wv-nav-button-width: calc(var(--wv-sidebar-width) - 1.3rem);
-  --wv-nav-button-height: 5.5rem;
+  --wv-nav-button-width: calc(var(--wv-sidebar-width) - 1.4em);
+  --wv-nav-button-height: 9rem;
 
   /* SEARCH BAR */
 
@@ -66,7 +66,7 @@
 
   /* Mevcut diğer ayarların aynı kalacak */
   --wv-nav-top: clamp(9.25rem, 16.4vh, 11rem);
-  --wv-nav-left: -0.5rem;
+  --wv-nav-left: -0.35rem;
   --wv-nav-width: calc(var(--wv-sidebar-width) - 0.35rem);
 
   --wv-nav-icon-x: 0.24rem;
