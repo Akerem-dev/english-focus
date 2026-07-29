@@ -103,7 +103,10 @@ export function VocabularyLookupView({
 }: VocabularyLookupViewProps) {
   const missingWord =
     state.kind === "not-found" && state.canCreateEntry ? state.normalizedQuery : undefined;
-  const isHomeState = state.kind === "initial" || state.kind === "typing";
+  const isHomeState =
+    state.kind === "initial" ||
+    state.kind === "typing" ||
+    (state.kind === "not-found" && state.canCreateEntry);
   const recentSearchSuggestions =
     state.kind === "typing"
       ? createRecentSearchSuggestions(query, recentWords, recentAdditions)
@@ -115,7 +118,7 @@ export function VocabularyLookupView({
     }
 
     dispatchAssistantRequest({
-      kind: "wake",
+      kind: "open",
       word: missingWord
     });
   }, [missingWord]);
@@ -194,7 +197,7 @@ export function VocabularyLookupView({
       {state.kind === "invalid" ? (
         <VocabularyInvalidSearchState message={state.message} onEditSearch={onEditSearch} />
       ) : null}
-      {state.kind === "not-found" ? (
+      {state.kind === "not-found" && !state.canCreateEntry ? (
         <VocabularyNotFoundState
           canCreateEntry={state.canCreateEntry}
           normalizedQuery={state.normalizedQuery}
