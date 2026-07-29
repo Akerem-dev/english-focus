@@ -163,7 +163,7 @@ function hasAscii(bytes: Uint8Array, offset: number, text: string): boolean {
 function audioMimeType(bytes: Uint8Array): string | undefined {
   if (
     hasAscii(bytes, 0, "ID3") ||
-    (bytes.length >= 2 && bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0)
+    (bytes.at(0) === 0xff && ((bytes.at(1) ?? 0) & 0xe0) === 0xe0)
   ) {
     return "audio/mpeg";
   }
