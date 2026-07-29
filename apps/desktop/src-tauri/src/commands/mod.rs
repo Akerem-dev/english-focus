@@ -2,7 +2,6 @@ pub mod activity;
 pub mod assistant;
 pub mod assistant_dictionary;
 pub mod assistant_generation;
-pub mod assistant_pronunciation;
 pub mod assistant_routing;
 pub mod backup;
 pub mod backup_inventory;
