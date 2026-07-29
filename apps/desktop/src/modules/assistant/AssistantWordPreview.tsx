@@ -1,9 +1,9 @@
 import { useId, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
+import { useAssistant } from "../../app/providers";
 import { Button, IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
-import { pronounceEnglishWord } from "./pronunciation";
 
 type AssistantWordPreviewState = "waiting" | "existing" | "ready" | "saved";
 type PronunciationStatus = "idle" | "playing" | "error";
@@ -94,6 +94,7 @@ export function AssistantWordPreview({
   preview,
   saveError
 }: AssistantWordPreviewProps) {
+  const { pronounceWord } = useAssistant();
   const titleId = useId();
   const statusId = useId();
   const [pronunciation, setPronunciation] = useState<{
@@ -119,7 +120,7 @@ export function AssistantWordPreview({
     setPronunciation({ word: preview.normalizedWord, status: "playing" });
 
     try {
-      await pronounceEnglishWord(preview.word);
+      await pronounceWord(preview.word);
       setPronunciation({ word: preview.normalizedWord, status: "idle" });
     } catch {
       setPronunciation({ word: preview.normalizedWord, status: "error" });
