@@ -35,7 +35,9 @@ export function AppLayout({ children }: PropsWithChildren) {
   const commands = useMemo(() => createCommandRegistry(location.pathname), [location.pathname]);
   const canExportCurrent = hasAction(commands, "export-current");
   const canSaveCurrent = hasAction(commands, "save-current");
-  const isWordValleyRoute = location.pathname === ROUTE_PATHS.vocabulary;
+  const isWordValleyLibrary = location.pathname === ROUTE_PATHS.library;
+  const isWordValleyRoute =
+    location.pathname === ROUTE_PATHS.vocabulary || isWordValleyLibrary;
 
   useEffect(() => {
     if (!isWordValleyRoute) {
@@ -148,7 +150,7 @@ export function AppLayout({ children }: PropsWithChildren) {
 
   return (
     <div
-      className={`application-frame${isWordValleyRoute ? " application-frame--word-valley-stage" : ""}`}
+      className={`application-frame${isWordValleyRoute ? " application-frame--word-valley-stage" : ""}${isWordValleyLibrary ? " application-frame--word-valley-library" : ""}`}
     >
       <a className="skip-link" href="#main-content">
         Skip to content
