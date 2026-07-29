@@ -32,17 +32,12 @@ interface AssistantCandidatePayload {
   readonly model: unknown;
 }
 
-interface PronunciationAudioPayload {
-  readonly bytes: readonly number[];
-  readonly mimeType: string;
-}
-
 type CachedAssistantCandidate = Extract<AssistantWordPreparationResult, { readonly kind: "candidate" }>;
 
 const PREPARATION_CACHE_LIMIT = 500;
+const ALLOWED_PRONUNCIATION_HOSTS = new Set(["api.dictionaryapi.dev", "ssl.gstatic.com"]);
 const preparationCache = new Map<string, CachedAssistantCandidate>();
 let activeAudio: HTMLAudioElement | undefined;
-let activeObjectUrl: string | undefined;
 
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
@@ -125,55 +120,69 @@ function parseCandidate(payload: unknown): Readonly<{ value: unknown; model: str
   });
 }
 
-function isPronunciationAudioPayload(value: unknown): value is PronunciationAudioPayload {
-  if (typeof value !== "object" || value === null || !("bytes" in value) || !("mimeType" in value)) {
+function isPronunciationUrl(value: unknown): value is string {
+  if (typeof value !== "string" || value.length === 0) {
     return false;
   }
 
-  const payload = value as { readonly bytes: unknown; readonly mimeType: unknown };
-  return (
-    Array.isArray(payload.bytes) &&
-    payload.bytes.every((byte) => Number.isInteger(byte) && byte >= 0 && byte <= 255) &&
-    typeof payload.mimeType === "string" &&
-    payload.mimeType.startsWith("audio/")
-  );
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && ALLOWED_PRONUNCIATION_HOSTS.has(url.hostname);
+  } catch {
+    return false;
+  }
 }
 
 function stopActiveAudio(): void {
-  activeAudio?.pause();
+  const audio = activeAudio;
   activeAudio = undefined;
 
-  if (activeObjectUrl !== undefined) {
-    URL.revokeObjectURL(activeObjectUrl);
-    activeObjectUrl = undefined;
+  if (audio !== undefined) {
+    audio.pause();
+    audio.removeAttribute("src");
+    audio.load();
   }
 }
 
-async function playRecordedPronunciation(payload: PronunciationAudioPayload): Promise<void> {
+function playRecordedPronunciation(audioUrl: string): Promise<void> {
   stopActiveAudio();
 
-  const audioBuffer = Uint8Array.from(payload.bytes).buffer as ArrayBuffer;
-  const objectUrl = URL.createObjectURL(new Blob([audioBuffer], { type: payload.mimeType }));
-  const audio = new Audio(objectUrl);
-
+  const audio = new Audio();
+  audio.preload = "none";
+  audio.src = audioUrl;
   activeAudio = audio;
-  activeObjectUrl = objectUrl;
 
-  const cleanup = () => {
-    if (activeAudio === audio) {
-      stopActiveAudio();
-    }
-  };
+  return new Promise((resolve, reject) => {
+    let settled = false;
 
-  audio.addEventListener("ended", cleanup, { once: true });
-  audio.addEventListener("error", cleanup, { once: true });
+    const cleanup = () => {
+      if (activeAudio === audio) {
+        stopActiveAudio();
+      }
+    };
+    const finish = () => {
+      if (settled) {
+        return;
+      }
 
-  try {
-    await audio.play();
-  } catch (cause) {
-    cleanup();
-    throw cause;
-  }
+      settled = true;
+      cleanup();
+      resolve();
+    };
+    const fail = () => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      cleanup();
+      reject(new Error("Recorded pronunciation could not be played."));
+    };
+
+    audio.addEventListener("ended", finish, { once: true });
+    audio.addEventListener("error", fail, { once: true });
+    void audio.play().catch(fail);
+  });
 }
 
 function selectEnglishVoice(voices: readonly SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined {
@@ -304,9 +313,9 @@ export class TauriAssistantRepository {
   async pronounceWord(word: string): Promise<void> {
     if (isTauriRuntime()) {
       try {
-        const payload = await invoke<unknown>("assistant_get_pronunciation_audio", { word });
-        if (isPronunciationAudioPayload(payload) && payload.bytes.length > 0) {
-          await playRecordedPronunciation(payload);
+        const audioUrl = await invoke<unknown>("assistant_get_pronunciation_url", { word });
+        if (isPronunciationUrl(audioUrl)) {
+          await playRecordedPronunciation(audioUrl);
           return;
         }
       } catch {
