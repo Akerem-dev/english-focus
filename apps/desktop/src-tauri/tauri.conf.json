@@ -31,6 +31,7 @@
         "connect-src": "ipc: http://ipc.localhost",
         "font-src": "'self' data:",
         "img-src": "'self' asset: http://asset.localhost blob: data:",
+        "media-src": "'self' blob: data:",
         "object-src": "'none'",
         "base-uri": "'none'",
         "frame-ancestors": "'none'",
