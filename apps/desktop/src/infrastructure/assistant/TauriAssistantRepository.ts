@@ -32,6 +32,11 @@ interface AssistantCandidatePayload {
   readonly model: unknown;
 }
 
+type CachedAssistantCandidate = Extract<AssistantWordPreparationResult, { readonly kind: "candidate" }>;
+
+const PREPARATION_CACHE_LIMIT = 500;
+const preparationCache = new Map<string, CachedAssistantCandidate>();
+
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
@@ -42,6 +47,32 @@ function errorText(cause: unknown): string {
   }
 
   return typeof cause === "string" ? cause : "The word helper request failed.";
+}
+
+function preparationCacheKey(
+  word: string,
+  preferences: InstructionPreferences,
+  strategy: AssistantPreparationStrategy
+): string {
+  const normalizedWord = word
+    .trim()
+    .replaceAll("’", "'")
+    .split(/\s+/u)
+    .join(" ")
+    .toLocaleLowerCase("en-US");
+
+  return `${normalizedWord}|${strategy}|${JSON.stringify(preferences)}`;
+}
+
+function rememberPreparation(key: string, candidate: CachedAssistantCandidate): void {
+  if (preparationCache.size >= PREPARATION_CACHE_LIMIT) {
+    const oldestKey = preparationCache.keys().next().value;
+    if (typeof oldestKey === "string") {
+      preparationCache.delete(oldestKey);
+    }
+  }
+
+  preparationCache.set(key, candidate);
 }
 
 function parseStatus(payload: unknown): AssistantConnectionStatus {
@@ -117,6 +148,7 @@ export class TauriAssistantRepository {
       throw new Error("Open the English Focus desktop app to change the word helper connection.");
     }
 
+    preparationCache.clear();
     return parseStatus(await invoke<unknown>("assistant_clear_api_key"));
   }
 
@@ -132,6 +164,12 @@ export class TauriAssistantRepository {
       });
     }
 
+    const cacheKey = preparationCacheKey(word, preferences, strategy);
+    const cachedCandidate = preparationCache.get(cacheKey);
+    if (cachedCandidate !== undefined) {
+      return cachedCandidate;
+    }
+
     try {
       const payload = parseCandidate(
         await invoke<unknown>("assistant_generate_vocabulary", {
@@ -140,12 +178,14 @@ export class TauriAssistantRepository {
           qualityOnly: strategy === "quality"
         })
       );
-
-      return Object.freeze({
+      const candidate = Object.freeze({
         kind: "candidate" as const,
         value: payload.value,
         model: payload.model
       });
+
+      rememberPreparation(cacheKey, candidate);
+      return candidate;
     } catch (cause) {
       const message = errorText(cause);
       if (message.includes("assistant_api_key_missing")) {
