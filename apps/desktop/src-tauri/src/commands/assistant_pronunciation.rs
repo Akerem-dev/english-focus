@@ -311,10 +311,10 @@ mod tests {
         assert!(
             normalize_audio_url("//ssl.gstatic.com/dictionary/static/sounds/test.mp3").is_some()
         );
-        assert!(normalize_audio_url(
-            "https://upload.wikimedia.org/wikipedia/commons/test.ogg"
-        )
-        .is_some());
+        assert!(
+            normalize_audio_url("https://upload.wikimedia.org/wikipedia/commons/test.ogg")
+                .is_some()
+        );
         assert!(normalize_audio_url("http://api.dictionaryapi.dev/test.mp3").is_none());
         assert!(normalize_audio_url("https://example.com/test.mp3").is_none());
     }
