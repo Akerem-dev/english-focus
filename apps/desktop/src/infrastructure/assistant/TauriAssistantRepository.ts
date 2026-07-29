@@ -35,6 +35,7 @@ interface AssistantCandidatePayload {
 type CachedAssistantCandidate = Extract<AssistantWordPreparationResult, { readonly kind: "candidate" }>;
 
 const PREPARATION_CACHE_LIMIT = 500;
+const VOICE_LOAD_TIMEOUT_MS = 1_500;
 const ALLOWED_PRONUNCIATION_HOSTS = new Set(["api.dictionaryapi.dev", "ssl.gstatic.com"]);
 const preparationCache = new Map<string, CachedAssistantCandidate>();
 let activeAudio: HTMLAudioElement | undefined;
@@ -186,36 +187,73 @@ function playRecordedPronunciation(audioUrl: string): Promise<void> {
 }
 
 function selectEnglishVoice(voices: readonly SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined {
+  const languageOf = (voice: SpeechSynthesisVoice) => voice.lang.toLowerCase();
+
   return (
-    voices.find((voice) => voice.lang.toLocaleLowerCase("en-US") === "en-gb") ??
-    voices.find((voice) => voice.lang.toLocaleLowerCase("en-US") === "en-us") ??
-    voices.find((voice) => voice.lang.toLocaleLowerCase("en-US").startsWith("en"))
+    voices.find((voice) => languageOf(voice) === "en-gb") ??
+    voices.find((voice) => languageOf(voice) === "en-us") ??
+    voices.find((voice) => languageOf(voice).startsWith("en-")) ??
+    voices.find((voice) => languageOf(voice) === "en")
   );
 }
 
-function speakWithDeviceVoice(word: string): Promise<void> {
+function loadSpeechVoices(synthesis: SpeechSynthesis): Promise<readonly SpeechSynthesisVoice[]> {
+  const availableVoices = synthesis.getVoices();
+  if (availableVoices.length > 0) {
+    return Promise.resolve(availableVoices);
+  }
+
+  return new Promise((resolve) => {
+    let settled = false;
+    let timeoutId = 0;
+
+    const finish = (voices: readonly SpeechSynthesisVoice[]) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      window.clearTimeout(timeoutId);
+      synthesis.removeEventListener("voiceschanged", handleVoicesChanged);
+      resolve(voices);
+    };
+    const handleVoicesChanged = () => {
+      const voices = synthesis.getVoices();
+      if (voices.length > 0) {
+        finish(voices);
+      }
+    };
+
+    synthesis.addEventListener("voiceschanged", handleVoicesChanged);
+    timeoutId = window.setTimeout(() => finish(synthesis.getVoices()), VOICE_LOAD_TIMEOUT_MS);
+  });
+}
+
+async function speakWithDeviceVoice(word: string): Promise<void> {
   if (
     typeof window === "undefined" ||
     !("speechSynthesis" in window) ||
     typeof SpeechSynthesisUtterance === "undefined"
   ) {
-    return Promise.reject(new Error("Pronunciation is not available on this device."));
+    throw new Error("Pronunciation is not available on this device.");
   }
 
-  return new Promise((resolve, reject) => {
-    stopActiveAudio();
+  stopActiveAudio();
 
-    const synthesis = window.speechSynthesis;
+  const synthesis = window.speechSynthesis;
+  const voice = selectEnglishVoice(await loadSpeechVoices(synthesis));
+  if (voice === undefined) {
+    throw new Error("No English pronunciation voice is installed on this device.");
+  }
+
+  await new Promise<void>((resolve, reject) => {
     const utterance = new SpeechSynthesisUtterance(word);
-    const voice = selectEnglishVoice(synthesis.getVoices());
 
-    utterance.lang = voice?.lang ?? "en-GB";
+    utterance.voice = voice;
+    utterance.lang = voice.lang;
     utterance.rate = 0.85;
     utterance.pitch = 1;
     utterance.volume = 1;
-    if (voice !== undefined) {
-      utterance.voice = voice;
-    }
 
     utterance.addEventListener("end", () => resolve(), { once: true });
     utterance.addEventListener(
@@ -319,7 +357,7 @@ export class TauriAssistantRepository {
           return;
         }
       } catch {
-        // Recorded dictionary audio is optional; the free device voice is the fallback.
+        // Recorded dictionary audio is optional; a real English device voice is the fallback.
       }
     }
 
