@@ -32,11 +32,6 @@ interface AssistantCandidatePayload {
   readonly model: unknown;
 }
 
-interface PronunciationAudioPayload {
-  readonly bytes: readonly number[];
-  readonly mimeType: string;
-}
-
 type CachedAssistantCandidate = Extract<AssistantWordPreparationResult, { readonly kind: "candidate" }>;
 
 const PREPARATION_CACHE_LIMIT = 500;
@@ -126,19 +121,80 @@ function parseCandidate(payload: unknown): Readonly<{ value: unknown; model: str
   });
 }
 
-function isPronunciationAudioPayload(value: unknown): value is PronunciationAudioPayload {
-  if (typeof value !== "object" || value === null || !("bytes" in value) || !("mimeType" in value)) {
+function parsePronunciationBytes(value: unknown): Uint8Array | undefined {
+  if (value instanceof ArrayBuffer) {
+    return value.byteLength > 0 ? new Uint8Array(value) : undefined;
+  }
+
+  if (value instanceof Uint8Array) {
+    return value.byteLength > 0 ? value : undefined;
+  }
+
+  if (ArrayBuffer.isView(value)) {
+    const bytes = new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+    return bytes.byteLength > 0 ? bytes.slice() : undefined;
+  }
+
+  if (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.every((byte) => Number.isInteger(byte) && byte >= 0 && byte <= 255)
+  ) {
+    return Uint8Array.from(value);
+  }
+
+  return undefined;
+}
+
+function hasAscii(bytes: Uint8Array, offset: number, text: string): boolean {
+  if (offset + text.length > bytes.length) {
     return false;
   }
 
-  const payload = value as { readonly bytes: unknown; readonly mimeType: unknown };
-  return (
-    Array.isArray(payload.bytes) &&
-    payload.bytes.length > 0 &&
-    payload.bytes.every((byte) => Number.isInteger(byte) && byte >= 0 && byte <= 255) &&
-    typeof payload.mimeType === "string" &&
-    payload.mimeType.startsWith("audio/")
-  );
+  for (let index = 0; index < text.length; index += 1) {
+    if (bytes[offset + index] !== text.charCodeAt(index)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function audioMimeType(bytes: Uint8Array): string | undefined {
+  if (
+    hasAscii(bytes, 0, "ID3") ||
+    (bytes.length >= 2 && bytes[0] === 0xff && (bytes[1] & 0xe0) === 0xe0)
+  ) {
+    return "audio/mpeg";
+  }
+
+  if (hasAscii(bytes, 0, "OggS")) {
+    return "audio/ogg";
+  }
+
+  if (hasAscii(bytes, 0, "RIFF") && hasAscii(bytes, 8, "WAVE")) {
+    return "audio/wav";
+  }
+
+  if (hasAscii(bytes, 0, "fLaC")) {
+    return "audio/flac";
+  }
+
+  if (
+    bytes.length >= 4 &&
+    bytes[0] === 0x1a &&
+    bytes[1] === 0x45 &&
+    bytes[2] === 0xdf &&
+    bytes[3] === 0xa3
+  ) {
+    return "audio/webm";
+  }
+
+  if (hasAscii(bytes, 4, "ftyp")) {
+    return "audio/mp4";
+  }
+
+  return undefined;
 }
 
 function stopActiveAudio(): void {
@@ -157,11 +213,19 @@ function stopActiveAudio(): void {
   }
 }
 
-function playRecordedPronunciation(payload: PronunciationAudioPayload): Promise<void> {
+function playRecordedPronunciation(bytes: Uint8Array): Promise<void> {
+  const mimeType = audioMimeType(bytes);
+  if (mimeType === undefined) {
+    return Promise.reject(new Error("Recorded pronunciation has an unsupported audio format."));
+  }
+
   stopActiveAudio();
 
-  const audioBuffer = Uint8Array.from(payload.bytes).buffer as ArrayBuffer;
-  const objectUrl = URL.createObjectURL(new Blob([audioBuffer], { type: payload.mimeType }));
+  const audioBuffer = bytes.buffer.slice(
+    bytes.byteOffset,
+    bytes.byteOffset + bytes.byteLength
+  ) as ArrayBuffer;
+  const objectUrl = URL.createObjectURL(new Blob([audioBuffer], { type: mimeType }));
   const audio = new Audio(objectUrl);
 
   audio.preload = "auto";
@@ -366,13 +430,14 @@ export class TauriAssistantRepository {
   async pronounceWord(word: string): Promise<void> {
     if (isTauriRuntime()) {
       try {
-        const payload = await invoke<unknown>("assistant_get_pronunciation_audio", { word });
-        if (isPronunciationAudioPayload(payload)) {
-          await playRecordedPronunciation(payload);
+        const response = await invoke<ArrayBuffer>("assistant_get_pronunciation_audio", { word });
+        const bytes = parsePronunciationBytes(response);
+        if (bytes !== undefined) {
+          await playRecordedPronunciation(bytes);
           return;
         }
       } catch {
-        // Recorded dictionary audio is optional; a real English device voice is the fallback.
+        // Both free recorded-audio providers are optional; a real English device voice is the fallback.
       }
     }
 
