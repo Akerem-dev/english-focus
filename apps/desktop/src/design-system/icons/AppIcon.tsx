@@ -14,6 +14,7 @@ export type AppIconName =
   | "settings"
   | "star"
   | "upload"
+  | "volume"
   | "warning";
 
 interface AppIconProps {
@@ -98,6 +99,14 @@ function renderGlyph(name: AppIconName): ReactNode {
           <path d="M12 20.5v-11" />
           <path d="m7.5 13.5 4.5-4.5 4.5 4.5" />
           <path d="M4.5 4.5h15" />
+        </>
+      );
+    case "volume":
+      return (
+        <>
+          <path d="M4.5 10h3L12 7v10l-4.5-3h-3v-4Z" />
+          <path d="M15.5 9.5a4 4 0 0 1 0 5" />
+          <path d="M18 7a7 7 0 0 1 0 10" />
         </>
       );
     case "warning":
