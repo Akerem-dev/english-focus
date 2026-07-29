@@ -6,6 +6,12 @@
 .application-frame:has(.route-page--vocabulary-home) {
   /* AI input text start: positive = right, negative = left */
   --wv-ai-search-text-x: 0.35rem;
+
+  /* Main Search button visible size and position. */
+  --wv-main-search-button-width: 7.2rem;
+  --wv-main-search-button-height: 3rem;
+  --wv-main-search-button-x: 0rem;
+  --wv-main-search-button-y: 0rem;
 }
 
 .application-frame:has(.route-page--vocabulary-home)
@@ -14,44 +20,82 @@
   text-indent: var(--wv-ai-search-text-x) !important;
 }
 
-/* Restore the main page Search button's own asset and adjustable art canvas. */
+/*
+ * Keep the original 16rem layout slot so the search field does not move, but
+ * make the real button hitbox only as large as the visible button artwork.
+ * The form itself cannot intercept clicks in its transparent empty area.
+ */
 .route-page--vocabulary-home .vocabulary-search {
   grid-template-columns:
     minmax(0, 1fr)
     var(--wv-search-button-width) !important;
+  align-items: center !important;
+  pointer-events: none !important;
+}
+
+.route-page--vocabulary-home .vocabulary-search .field__control,
+.route-page--vocabulary-home .vocabulary-search .wordbook-search-suggestions,
+.route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] {
+  pointer-events: auto !important;
 }
 
 .route-page--vocabulary-home .vocabulary-search__button[data-variant="primary"] {
-  width: var(--wv-search-button-width) !important;
-  min-width: var(--wv-search-button-width) !important;
-  max-width: var(--wv-search-button-width) !important;
+  width: var(--wv-main-search-button-width) !important;
+  min-width: var(--wv-main-search-button-width) !important;
+  max-width: var(--wv-main-search-button-width) !important;
 
-  height: var(--wv-search-button-height) !important;
-  min-height: var(--wv-search-button-height) !important;
-  max-height: var(--wv-search-button-height) !important;
+  height: var(--wv-main-search-button-height) !important;
+  min-height: var(--wv-main-search-button-height) !important;
+  max-height: var(--wv-main-search-button-height) !important;
 
   align-self: center !important;
-  justify-self: end !important;
-  translate: var(--wv-search-button-x) var(--wv-search-button-y) !important;
+  justify-self: start !important;
+  translate:
+    var(--wv-main-search-button-x)
+    var(--wv-main-search-button-y) !important;
+
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
 
   background-color: transparent !important;
-  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
-  background-position: center !important;
+  background-image:
+    url("../assets/assistant/open/assistant-search-button.png") !important;
   background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
+
+  /* 448x480 canvas; visible artwork: x156 y280 w210 h124. */
+  background-size: 213.3333% 387.0968% !important;
+  background-position: 65.55% 78.65% !important;
 
   opacity: 1 !important;
   visibility: visible !important;
   filter: none !important;
-  pointer-events: auto !important;
 }
 
 .route-page--vocabulary-home
   .vocabulary-search__button[data-variant="primary"]:hover:not(:disabled),
 .route-page--vocabulary-home
   .vocabulary-search__button[data-variant="primary"]:active:not(:disabled) {
-  background-image: url("../assets/wordbook/wordbook-search-button.png") !important;
+  background-image:
+    url("../assets/assistant/open/assistant-search-button.png") !important;
   opacity: 1 !important;
   visibility: visible !important;
   filter: none !important;
+}
+
+/* Keep every dashboard row above decorative book layers and fully clickable. */
+.route-page--vocabulary-home .vocabulary-dashboard,
+.route-page--vocabulary-home .word-list-card,
+.route-page--vocabulary-home .word-list-card__rows,
+.route-page--vocabulary-home .word-list-row {
+  position: relative !important;
+  pointer-events: auto !important;
+}
+
+.route-page--vocabulary-home .vocabulary-dashboard {
+  z-index: 2 !important;
+}
+
+.route-page--vocabulary-home .word-list-row {
+  z-index: 3 !important;
 }
