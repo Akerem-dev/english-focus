@@ -55,3 +55,6 @@
 @import "./word-valley-final-home-fixes.css";
 @import "./word-valley-search-feedback.css";
 @import "./word-valley-library-shell.css";
+
+/* Final Figma-authored Search composition. Keep this import last. */
+@import "./word-valley-final-figma-search.css";
