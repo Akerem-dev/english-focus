@@ -2,17 +2,23 @@ import type { ReactNode } from "react";
 
 export type AppIconName =
   | "book-open"
+  | "bookmark"
   | "books"
   | "check"
   | "chevron-down"
   | "chevron-right"
+  | "clock"
   | "close"
   | "command"
   | "copy"
   | "download"
+  | "edit"
+  | "eye"
+  | "moon"
   | "search"
   | "settings"
   | "star"
+  | "sun"
   | "upload"
   | "volume"
   | "warning";
@@ -33,6 +39,8 @@ function renderGlyph(name: AppIconName): ReactNode {
           <path d="M20.5 5.5c-2.6-.7-5.1-.3-7 1.1v12.2c1.9-1.4 4.4-1.8 7-1.1V5.5Z" />
         </>
       );
+    case "bookmark":
+      return <path d="M6.5 3.5h11v17L12 17l-5.5 3.5v-17Z" />;
     case "books":
       return (
         <>
@@ -47,6 +55,13 @@ function renderGlyph(name: AppIconName): ReactNode {
       return <path d="m6.5 9 5.5 5.5L17.5 9" />;
     case "chevron-right":
       return <path d="m9 6.5 5.5 5.5L9 17.5" />;
+    case "clock":
+      return (
+        <>
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M12 7.5V12l3.25 2" />
+        </>
+      );
     case "close":
       return (
         <>
@@ -55,11 +70,7 @@ function renderGlyph(name: AppIconName): ReactNode {
         </>
       );
     case "command":
-      return (
-        <>
-          <path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6Z" />
-        </>
-      );
+      return <path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6Z" />;
     case "copy":
       return (
         <>
@@ -75,6 +86,22 @@ function renderGlyph(name: AppIconName): ReactNode {
           <path d="M4.5 19.5h15" />
         </>
       );
+    case "edit":
+      return (
+        <>
+          <path d="m4.5 19.5 3.2-.7L19 7.5a2.1 2.1 0 0 0-3-3L4.7 15.8l-.2 3.7Z" />
+          <path d="m14.5 6 3.5 3.5" />
+        </>
+      );
+    case "eye":
+      return (
+        <>
+          <path d="M2.8 12s3.3-5.2 9.2-5.2 9.2 5.2 9.2 5.2-3.3 5.2-9.2 5.2S2.8 12 2.8 12Z" />
+          <circle cx="12" cy="12" r="2.5" />
+        </>
+      );
+    case "moon":
+      return <path d="M19 15.5A8 8 0 0 1 8.5 5 8.5 8.5 0 1 0 19 15.5Z" />;
     case "search":
       return (
         <>
@@ -90,8 +117,13 @@ function renderGlyph(name: AppIconName): ReactNode {
         </>
       );
     case "star":
+      return <path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />;
+    case "sun":
       return (
-        <path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />
+        <>
+          <circle cx="12" cy="12" r="3.5" />
+          <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4" />
+        </>
       );
     case "upload":
       return (
