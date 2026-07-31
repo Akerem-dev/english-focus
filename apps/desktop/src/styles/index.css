@@ -56,5 +56,8 @@
 @import "./word-valley-search-feedback.css";
 @import "./word-valley-library-shell.css";
 
-/* Final Figma-authored Search composition. Keep this import last. */
+/* Final Figma-authored Search composition. */
 @import "./word-valley-final-figma-search.css";
+
+/* Must remain the final import: beats the legacy :has(...) stage selectors. */
+@import "./word-valley-final-cascade-lock.css";
