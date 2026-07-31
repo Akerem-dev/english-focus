@@ -1,7 +1,7 @@
-import type { FormEvent, RefObject } from "react";
+import { useEffect, useState, type FormEvent, type RefObject } from "react";
 
 import { Button, ErrorState, SearchInput } from "../../../components";
-import { AppIcon } from "../../../design-system";
+import { AppIcon, type AppIconName } from "../../../design-system";
 import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
@@ -37,24 +37,46 @@ function createRecentSearchSuggestions(
     .slice(0, 6);
 }
 
+type WordValleyTheme = "day" | "night";
+
+function readTheme(): WordValleyTheme {
+  if (typeof document === "undefined") {
+    return "day";
+  }
+
+  return document.documentElement.dataset.theme === "dark" ? "night" : "day";
+}
+
 interface WordListCardProps {
   readonly title: string;
-  readonly eyebrow: string;
+  readonly icon: AppIconName;
+  readonly panel: "recent-searches" | "recent-viewed";
   readonly words: readonly string[];
   readonly onOpenWord: (word: string) => void;
   readonly emptyMessage: string;
 }
 
-function WordListCard({ emptyMessage, eyebrow, onOpenWord, title, words }: WordListCardProps) {
+function WordListCard({
+  emptyMessage,
+  icon,
+  onOpenWord,
+  panel,
+  title,
+  words
+}: WordListCardProps) {
+  const visibleWords = words.slice(0, 4);
+
   return (
-    <section className="word-list-card">
+    <section className="word-list-card" data-panel={panel}>
       <header className="word-list-card__header">
+        <AppIcon name={icon} size={24} />
         <h2>{title}</h2>
-        <span>{eyebrow}</span>
       </header>
       <div className="word-list-card__rows">
-        {words.length === 0 ? <p className="word-list-card__empty">{emptyMessage}</p> : null}
-        {words.map((word) => (
+        {visibleWords.length === 0 ? (
+          <p className="word-list-card__empty">{emptyMessage}</p>
+        ) : null}
+        {visibleWords.map((word) => (
           <button
             className="word-list-row"
             key={word}
@@ -62,11 +84,8 @@ function WordListCard({ emptyMessage, eyebrow, onOpenWord, title, words }: WordL
             title={`Open ${word}`}
             type="button"
           >
-            <span className="word-list-row__word">
-              <AppIcon name="book-open" size={16} />
-              {word}
-            </span>
-            <span className="word-list-row__meta">Open entry</span>
+            <span className="word-list-row__word">{word}</span>
+            <AppIcon className="word-list-row__chevron" name="chevron-right" size={18} />
           </button>
         ))}
       </div>
@@ -105,16 +124,62 @@ export function VocabularyLookupView({
     state.kind === "typing"
       ? createRecentSearchSuggestions(query, recentWords, recentAdditions)
       : [];
+  const [theme, setTheme] = useState<WordValleyTheme>(readTheme);
+
+  useEffect(() => {
+    function syncTheme() {
+      setTheme(readTheme());
+    }
+
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"]
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  function chooseTheme(nextTheme: WordValleyTheme) {
+    document.documentElement.dataset.theme = nextTheme === "night" ? "dark" : "light";
+    window.localStorage.setItem("english-focus:theme", nextTheme === "night" ? "dark" : "light");
+    setTheme(nextTheme);
+  }
 
   return (
     <div
       className={`route-page route-page--vocabulary${isHomeState ? " route-page--vocabulary-home" : ""}`}
     >
+      <div aria-label="Theme" className="word-valley-theme-control" role="group">
+        <span aria-hidden="true" className="word-valley-theme-control__lantern" />
+        <button
+          aria-label="Use day theme"
+          aria-pressed={theme === "day"}
+          className="word-valley-theme-control__option"
+          data-theme-option="day"
+          onClick={() => chooseTheme("day")}
+          type="button"
+        >
+          <AppIcon name="sun" size={24} />
+        </button>
+        <button
+          aria-label="Use night theme"
+          aria-pressed={theme === "night"}
+          className="word-valley-theme-control__option"
+          data-theme-option="night"
+          onClick={() => chooseTheme("night")}
+          type="button"
+        >
+          <AppIcon name="moon" size={24} />
+        </button>
+      </div>
+
       <section className="vocabulary-hero" aria-labelledby="vocabulary-heading">
-        <h1 id="vocabulary-heading">Search</h1>
-        <p className="vocabulary-hero__description">
-          Find an English word, meaning, translation, tag, or note.
-        </p>
+        <div aria-hidden="true" className="vocabulary-hero__ornament" />
+        <h1 id="vocabulary-heading">WORD VALLEY</h1>
+        <p className="vocabulary-hero__description">Let’s explore a new word.</p>
         <form
           aria-label="Wordbook search"
           className="vocabulary-search"
@@ -127,7 +192,7 @@ export function VocabularyLookupView({
             label="Search your wordbook"
             onChange={(event) => onQueryChange(event.currentTarget.value)}
             onClear={onClear}
-            placeholder="Type a word, meaning, translation, tag, or note"
+            placeholder="Discover a word…"
             value={query}
           />
 
@@ -176,8 +241,6 @@ export function VocabularyLookupView({
             </span>
           </div>
         ) : null}
-
-        <p className="vocabulary-hero__hint">Your wordbook stays on this device.</p>
       </section>
 
       {state.kind === "searching" ? <VocabularySearchingState query={state.query} /> : null}
@@ -206,17 +269,19 @@ export function VocabularyLookupView({
       {isHomeState ? (
         <div className="vocabulary-dashboard">
           <WordListCard
-            emptyMessage="Words you open will appear here."
-            eyebrow="Recent"
+            emptyMessage="Words you search will appear here."
+            icon="clock"
             onOpenWord={onSearch}
-            title="Recent searches"
+            panel="recent-searches"
+            title="Recent Searches"
             words={recentWords}
           />
           <WordListCard
-            emptyMessage="Words you add will appear here."
-            eyebrow="Added"
+            emptyMessage="Words you view will appear here."
+            icon="eye"
             onOpenWord={onSearch}
-            title="Recent additions"
+            panel="recent-viewed"
+            title="Recently Viewed"
             words={recentAdditions}
           />
         </div>
