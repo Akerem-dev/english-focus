@@ -61,7 +61,7 @@ function FinalWordValleySidebar() {
               className={({ isActive }) =>
                 `sidebar-nav-item${isActive ? " sidebar-nav-item--active" : ""}`
               }
-              end={item.end}
+              end={item.end ?? false}
               key={item.label}
               title={item.label}
               to={item.to}
