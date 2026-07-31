@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 
+import wordValleyLogo from "../../assets/word-valley-final/shell/word-valley-logo.png";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
@@ -33,11 +34,7 @@ function FinalWordValleySidebar() {
         }}
         to={ROUTE_PATHS.vocabulary}
       >
-        <img
-          alt="Word Valley"
-          className="app-sidebar__brand-final-logo"
-          src="/word-valley-final/shell/word-valley-logo.png"
-        />
+        <img alt="Word Valley" className="app-sidebar__brand-final-logo" src={wordValleyLogo} />
       </Link>
 
       <nav aria-label="Primary navigation" className="app-sidebar__nav">
