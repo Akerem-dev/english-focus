@@ -19,10 +19,81 @@ import { AppTopBar } from "./AppTopBar";
 
 const WORD_VALLEY_STAGE_WIDTH = 1920;
 const WORD_VALLEY_STAGE_HEIGHT = 1080;
+const WORD_VALLEY_MOTION_STORAGE_KEYS = Object.freeze([
+  "english-focus:reduce-motion",
+  "word-valley:reduce-motion"
+]);
 
 function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
   return commands.some(
     (command) => command.target.kind === "action" && command.target.action === action
+  );
+}
+
+function readReducedMotionPreference(mediaQuery: MediaQueryList): boolean {
+  const root = document.documentElement;
+  const appPreference =
+    root.dataset.reduceMotion === "true" ||
+    root.dataset.motion === "reduced" ||
+    root.dataset.animations === "off";
+  const storedPreference = WORD_VALLEY_MOTION_STORAGE_KEYS.some(
+    (key) => window.localStorage.getItem(key) === "true"
+  );
+
+  return mediaQuery.matches || appPreference || storedPreference;
+}
+
+function WordValleyBackdrop() {
+  const [reduceMotion, setReduceMotion] = useState(true);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => {
+      setReduceMotion(readReducedMotionPreference(mediaQuery));
+    };
+
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+
+    const observer = new MutationObserver(updatePreference);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-reduce-motion", "data-motion", "data-animations"]
+    });
+
+    window.addEventListener("storage", updatePreference);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePreference);
+      observer.disconnect();
+      window.removeEventListener("storage", updatePreference);
+    };
+  }, []);
+
+  return (
+    <div aria-hidden="true" className="word-valley-backdrop">
+      <img
+        alt=""
+        className="word-valley-backdrop__static"
+        src="/word-valley-final/background/home-background-static.png"
+      />
+      {reduceMotion ? null : (
+        <video
+          autoPlay
+          className="word-valley-backdrop__video"
+          loop
+          muted
+          playsInline
+          poster="/word-valley-final/background/home-background-static.png"
+          preload="metadata"
+        >
+          <source
+            src="/word-valley-final/background/home-background-loop.mp4"
+            type="video/mp4"
+          />
+        </video>
+      )}
+    </div>
   );
 }
 
@@ -35,9 +106,9 @@ export function AppLayout({ children }: PropsWithChildren) {
   const commands = useMemo(() => createCommandRegistry(location.pathname), [location.pathname]);
   const canExportCurrent = hasAction(commands, "export-current");
   const canSaveCurrent = hasAction(commands, "save-current");
+  const isWordValleySearch = location.pathname === ROUTE_PATHS.vocabulary;
   const isWordValleyLibrary = location.pathname === ROUTE_PATHS.library;
-  const isWordValleyRoute =
-    location.pathname === ROUTE_PATHS.vocabulary || isWordValleyLibrary;
+  const isWordValleyRoute = isWordValleySearch || isWordValleyLibrary;
 
   useEffect(() => {
     if (!isWordValleyRoute) {
@@ -150,7 +221,7 @@ export function AppLayout({ children }: PropsWithChildren) {
 
   return (
     <div
-      className={`application-frame${isWordValleyRoute ? " application-frame--word-valley-stage" : ""}${isWordValleyLibrary ? " application-frame--word-valley-library" : ""}`}
+      className={`application-frame${isWordValleyRoute ? " application-frame--word-valley-stage" : ""}${isWordValleyLibrary ? " application-frame--word-valley-library" : ""}${isWordValleySearch ? " application-frame--word-valley-final-search" : ""}`}
     >
       <a className="skip-link" href="#main-content">
         Skip to content
@@ -158,7 +229,10 @@ export function AppLayout({ children }: PropsWithChildren) {
 
       {isWordValleyRoute ? (
         <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
-          <div className="word-valley-stage">{applicationShell}</div>
+          <div className="word-valley-stage">
+            {isWordValleySearch ? <WordValleyBackdrop /> : null}
+            {applicationShell}
+          </div>
         </div>
       ) : (
         applicationShell
