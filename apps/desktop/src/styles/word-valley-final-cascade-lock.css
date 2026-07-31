@@ -1,0 +1,359 @@
+/*
+ * Final cascade lock for Figma frames 39:2 and 55:2.
+ *
+ * The legacy responsive-stage sheet uses :has(...), so those declarations have
+ * more specificity than the first final-Figma pass. This file is imported last
+ * and deliberately uses the same :has(...) context plus the final-search class.
+ */
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-valley-stage {
+  grid-template-columns: 307.2px 1612.8px !important;
+  background-color: #10232a !important;
+  background-image: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-valley-stage > .app-sidebar.app-sidebar--word-valley-final {
+  position: relative !important;
+  width: 307.2px !important;
+  height: 1080px !important;
+  min-height: 1080px !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-right: 2px solid rgb(198 162 69 / 88%) !important;
+  background-color: #0b1c25 !important;
+  background-image: url("/word-valley-final/shell/sidebar-frame.png") !important;
+  background-position: -256px -157px !important;
+  background-repeat: no-repeat !important;
+  background-size: 908px 1384px !important;
+  box-shadow: 9px 0 28px rgb(2 11 16 / 22%) !important;
+  isolation: isolate !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final::before,
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final::after {
+  display: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .app-sidebar__brand {
+  position: absolute !important;
+  top: -52px !important;
+  left: -89px !important;
+  z-index: 4 !important;
+  width: 514.5px !important;
+  height: 343px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .app-sidebar__brand-final-logo {
+  display: block !important;
+  width: 514.5px !important;
+  height: 343px !important;
+  object-fit: fill !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .app-sidebar__nav {
+  position: absolute !important;
+  top: 181px !important;
+  left: 0 !important;
+  z-index: 5 !important;
+  display: flex !important;
+  width: 307.2px !important;
+  height: 540px !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .sidebar-nav-item {
+  position: relative !important;
+  isolation: isolate !important;
+  display: flex !important;
+  width: 307.2px !important;
+  height: 90px !important;
+  min-height: 90px !important;
+  flex: 0 0 90px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 17px !important;
+  padding: 0 20px 0 44px !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #f0efe8 !important;
+  font: 500 22px/28px Inter, ui-sans-serif, system-ui, sans-serif !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .sidebar-nav-item::before {
+  top: -116px !important;
+  left: -38px !important;
+  z-index: 0 !important;
+  display: block !important;
+  width: 410px !important;
+  height: 352px !important;
+  background: url("/word-valley-final/shell/sidebar-nav-default.png") 0 0 / 410px 352px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .sidebar-nav-item--active::before {
+  top: 0 !important;
+  left: -5px !important;
+  z-index: 0 !important;
+  width: 330px !important;
+  height: 130px !important;
+  background: url("/word-valley-final/shell/sidebar-nav-active.png") 0 0 / 330px 130px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .sidebar-nav-item__icon,
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .app-sidebar--word-valley-final .sidebar-nav-item__label {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-valley-progress {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 6 !important;
+  width: 307.2px !important;
+  height: 1080px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-valley-stage > .application-main,
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .application-main > .app-content,
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .route-page--vocabulary-home {
+  width: 1612.8px !important;
+  height: 1080px !important;
+  min-height: 1080px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-hero {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1612.8px !important;
+  height: 1080px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-hero h1 {
+  top: 280px !important;
+  left: 321.8px !important;
+  width: 760px !important;
+  height: 100px !important;
+  color: #12202a !important;
+  font: 600 86px/94px "Cormorant Garamond", Georgia, serif !important;
+  letter-spacing: 0.5px !important;
+  text-align: center !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-hero__description {
+  top: 397px !important;
+  left: 369.8px !important;
+  width: 640px !important;
+  height: 44px !important;
+  color: #334b5b !important;
+  font: 400 26px/34px "Cormorant Garamond", Georgia, serif !important;
+  letter-spacing: 0.2px !important;
+  text-align: center !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-hero__ornament {
+  top: 197px !important;
+  left: 386.8px !important;
+  width: 605px !important;
+  height: 403px !important;
+  background: url("/word-valley-final/home/home-title-ornament.png") 0 0 / 605px 403px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-search {
+  position: absolute !important;
+  top: 271px !important;
+  left: 245.8px !important;
+  width: 916px !important;
+  height: 531px !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-search::before {
+  inset: 0 !important;
+  z-index: 0 !important;
+  width: 916px !important;
+  height: 531px !important;
+  background: url("/word-valley-final/home/home-search-field.png") 0 0 / 916px 531px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-search > .field {
+  top: 208px !important;
+  left: 66px !important;
+  width: 739px !important;
+  height: 104px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-search__button[data-variant="primary"] {
+  top: 231px !important;
+  left: 626px !important;
+  isolation: isolate !important;
+  width: 171px !important;
+  min-width: 171px !important;
+  height: 60px !important;
+  min-height: 60px !important;
+  background: transparent !important;
+  color: #f5f1e6 !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-search__button[data-variant="primary"]::before {
+  top: -167px !important;
+  left: -76px !important;
+  z-index: 0 !important;
+  width: 312px !important;
+  height: 402px !important;
+  background: url("/word-valley-final/home/home-search-button.png") 0 0 / 312px 402px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-search__button[data-variant="primary"] > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .vocabulary-dashboard {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 3 !important;
+  display: block !important;
+  width: 1612.8px !important;
+  height: 1080px !important;
+  pointer-events: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-list-card {
+  position: absolute !important;
+  left: 1096.8px !important;
+  display: block !important;
+  width: 516px !important;
+  height: 394px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-list-card[data-panel="recent-searches"] {
+  top: 133px !important;
+  background: url("/word-valley-final/home/recent-searches-panel.png") 0 0 / 516px 394px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-list-card[data-panel="recent-viewed"] {
+  top: 474px !important;
+  background: url("/word-valley-final/home/recent-viewed-panel.png") 0 0 / 516px 394px no-repeat !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-list-card__header {
+  top: 64px !important;
+  left: 197px !important;
+  width: 286px !important;
+  height: 42px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-list-card__rows {
+  top: 117px !important;
+  left: 129px !important;
+  width: 364px !important;
+  height: 200px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-list-row {
+  width: 364px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  flex: 0 0 50px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .word-valley-theme-control {
+  top: 0 !important;
+  left: 1416.8px !important;
+  width: 196px !important;
+  height: 120px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .assistant-dock:not([data-open]) {
+  position: absolute !important;
+  top: 791px !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 1518px !important;
+  width: 402px !important;
+  height: 289px !important;
+  transform: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home)
+  .assistant-dock[data-open] {
+  position: absolute !important;
+  top: 406px !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 1306px !important;
+  width: 614px !important;
+  height: 674px !important;
+  transform: none !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home):has(.assistant-dock[data-open])
+  .word-list-card[data-panel="recent-searches"] {
+  top: 117px !important;
+}
+
+.application-frame--word-valley-stage.application-frame--word-valley-final-search:has(.route-page--vocabulary-home):has(.assistant-dock[data-open])
+  .word-list-card[data-panel="recent-viewed"] {
+  display: none !important;
+}
