@@ -1,0 +1,366 @@
+/*
+ * Pixel correction layer for Figma node 55:2.
+ * This file must stay after word-valley-final-exact.css.
+ */
+
+#root .application-frame--word-valley-final-search {
+  --font-family-display: "Cormorant Garamond", Georgia, serif;
+  --font-family-ui: Inter, "Segoe UI", sans-serif;
+  font-synthesis: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Exact typography                                                           */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--word-valley-final-search .vocabulary-hero h1 {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-size: 86px !important;
+  font-weight: 600 !important;
+  line-height: 94px !important;
+  letter-spacing: 0.5px !important;
+  text-wrap: nowrap !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-hero__description {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-size: 26px !important;
+  font-weight: 400 !important;
+  line-height: 34px !important;
+  letter-spacing: 0.2px !important;
+  text-wrap: nowrap !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .sidebar-nav-item,
+#root .application-frame--word-valley-final-search .word-valley-progress,
+#root .application-frame--word-valley-final-search .vocabulary-search,
+#root .application-frame--word-valley-final-search .word-list-card,
+#root .application-frame--word-valley-final-search .assistant-panel {
+  font-family: Inter, "Segoe UI", sans-serif !important;
+  font-synthesis: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card__header h2,
+#root .application-frame--word-valley-final-search .assistant-preview__title-row h3,
+#root .application-frame--word-valley-final-search .word-valley-progress__streak strong {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-synthesis: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Real Figma lantern asset: image 7.png                                      */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control {
+  position: absolute !important;
+  top: -31px !important;
+  left: 1416.8px !important;
+  display: block !important;
+  width: 199px !important;
+  height: 199px !important;
+  padding: 0 !important;
+  background: url("../assets/word-valley-final/shell/image 7.png") 0 0 / 199px 199px no-repeat !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control::before,
+#root .application-frame--word-valley-final-search .word-valley-theme-control::after,
+#root .application-frame--word-valley-final-search .word-valley-theme-control__lantern,
+#root .application-frame--word-valley-final-search .word-valley-theme-control__lantern::before,
+#root .application-frame--word-valley-final-search .word-valley-theme-control__lantern::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option {
+  position: absolute !important;
+  z-index: 2 !important;
+  display: grid !important;
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[data-theme-option="day"] {
+  top: 97px !important;
+  left: 70px !important;
+  color: #f5d67c !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[data-theme-option="night"] {
+  top: 96px !important;
+  left: 132px !important;
+  color: #ede7d6 !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[aria-pressed="true"],
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option:hover,
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option:active {
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option svg {
+  width: 24px !important;
+  height: 24px !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Open-state composition                                                     */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--word-valley-final-search:has(.assistant-dock[data-open])
+  .wordbook-search-suggestions {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search:has(.assistant-dock[data-open])
+  .word-list-card[data-panel="recent-searches"] {
+  top: 117px !important;
+}
+
+#root .application-frame--word-valley-final-search:has(.assistant-dock[data-open])
+  .word-list-card[data-panel="recent-viewed"] {
+  display: none !important;
+}
+
+/* Remove every old decorative/live-status artefact from the header. */
+#root .application-frame--word-valley-final-search .assistant-panel::before,
+#root .application-frame--word-valley-final-search .assistant-panel::after,
+#root .application-frame--word-valley-final-search .assistant-panel__header::before,
+#root .application-frame--word-valley-final-search .assistant-panel__header::after,
+#root .application-frame--word-valley-final-search .assistant-panel__heading::before,
+#root .application-frame--word-valley-final-search .assistant-panel__heading::after,
+#root .application-frame--word-valley-final-search .assistant-panel__heading h2::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel > .visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__header {
+  background: transparent !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading {
+  position: absolute !important;
+  top: 72px !important;
+  left: 290px !important;
+  z-index: 9 !important;
+  display: block !important;
+  width: 104px !important;
+  height: 26px !important;
+  min-width: 104px !important;
+  min-height: 26px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading h2 {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 104px !important;
+  height: 26px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading h2::after {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  width: 104px !important;
+  height: 26px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #c9a85c !important;
+  font-family: "Irish Grover", "Cormorant Garamond", Georgia, serif !important;
+  font-size: 26px !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  letter-spacing: 1.6px !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  content: "WORDIE" !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading > p {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close {
+  top: 74px !important;
+  right: auto !important;
+  left: 540px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close svg {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close::after {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ece8dd !important;
+  font-family: Inter, "Segoe UI", sans-serif !important;
+  font-size: 26px !important;
+  font-weight: 400 !important;
+  line-height: 26px !important;
+  content: "×" !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__mascot-stage,
+#root .application-frame--word-valley-final-search .assistant-panel__mascot {
+  animation: none !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] {
+  box-sizing: border-box !important;
+  top: 143px !important;
+  left: 326px !important;
+  width: 252px !important;
+  min-width: 252px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 11px 16px !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] p {
+  width: 220px !important;
+  margin: 0 !important;
+  font-family: Inter, "Segoe UI", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 22px !important;
+  text-wrap: pretty !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview {
+  box-sizing: border-box !important;
+  top: 219px !important;
+  left: 116px !important;
+  width: 430px !important;
+  height: 260px !important;
+  min-height: 260px !important;
+  max-height: 260px !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__eyebrow,
+#root .application-frame--word-valley-final-search .assistant-preview__metadata,
+#root .application-frame--word-valley-final-search .assistant-preview__content h4,
+#root .application-frame--word-valley-final-search .assistant-preview__content p,
+#root .application-frame--word-valley-final-search .assistant-preview__actions button,
+#root .application-frame--word-valley-final-search .assistant-composer input {
+  font-family: Inter, "Segoe UI", sans-serif !important;
+  font-synthesis: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__title-row h3 {
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+  font-size: 30px !important;
+  font-weight: 600 !important;
+  line-height: 36px !important;
+  font-synthesis: none !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__metadata {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 18px !important;
+  text-transform: lowercase !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content p {
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  text-wrap: pretty !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__actions,
+#root .application-frame--word-valley-final-search .assistant-composer {
+  transform: none !important;
+}
+
+/* Figma has a plain green send surface with no visible glyph. */
+#root .application-frame--word-valley-final-search .assistant-composer button[data-variant="primary"]::before,
+#root .application-frame--word-valley-final-search .assistant-composer button[data-variant="primary"]::after,
+#root .application-frame--word-valley-final-search .assistant-composer button[data-variant="primary"] .button__label,
+#root .application-frame--word-valley-final-search .assistant-composer button[data-variant="primary"] svg {
+  display: none !important;
+  content: none !important;
+}
+
+/* Prevent global animation/layout rules from moving authored Figma coordinates. */
+#root .application-frame--word-valley-final-search .word-list-row,
+#root .application-frame--word-valley-final-search .sidebar-nav-item,
+#root .application-frame--word-valley-final-search .vocabulary-search__button,
+#root .application-frame--word-valley-final-search .assistant-panel button,
+#root .application-frame--word-valley-final-search .assistant-panel input {
+  transition: none !important;
+}
