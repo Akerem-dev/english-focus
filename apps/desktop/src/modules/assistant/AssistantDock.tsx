@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import launcherFrame from "../../assets/word-valley-final/assistant/assistant-launcher-closed.png";
 import {
   useAssistant,
   useInstructionPreferences,
@@ -13,7 +14,6 @@ import { AppIcon } from "../../design-system";
 import type { VocabularyPersistencePlan } from "../import-export/application";
 import { inspectAssistantCandidate } from "./application";
 import { ASSISTANT_REQUEST_EVENT, type AssistantRequestDetail } from "./assistantEvents";
-import launcherFrame from "./assets/launcher/assistant-launcher-frame.png";
 import {
   AssistantLauncherMascot,
   AssistantPanelMascot,
@@ -43,7 +43,7 @@ const INITIAL_MESSAGES: readonly AssistantMessage[] = Object.freeze([
   {
     id: 1,
     author: "assistant",
-    text: "Type one English word. I will prepare it for review before anything is saved."
+    text: "Type one English word. I will prepare its Turkish meaning and an example."
   }
 ]);
 
@@ -591,7 +591,7 @@ export function AssistantDock() {
     clearReview();
     setNeedsConnectionSettings(false);
     setMascotState("thinking");
-    setMessages([{ id: messageId, author: "user", text: word }]);
+    setMessages([{ id: messageId, author: "user", text: `What does “${word}” mean?` }]);
     setInput("");
     void finishPreparation(word, messageId, sequence);
   }
@@ -764,7 +764,7 @@ export function AssistantDock() {
                   setNeedsConnectionSettings(false);
                 }
               }}
-              placeholder="Type an English word"
+              placeholder="Ask about a word…"
               ref={inputRef}
               spellCheck="false"
               value={input}
@@ -776,7 +776,7 @@ export function AssistantDock() {
               type="submit"
               variant="primary"
             >
-              Prepare
+              Send
             </Button>
           </form>
         </section>
