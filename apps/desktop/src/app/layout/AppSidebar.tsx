@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 
-import wordValleyLogo from "../../assets/word-valley-final/shell/word-valley-logo.png";
+import wordValleyLogo from "../../assets/shell/word-valley-logo.png";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
