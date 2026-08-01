@@ -1,0 +1,523 @@
+/* -------------------------------------------------------------------------- */
+/* Assistant open state — Figma 55:2                                          */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--word-valley-final-search .assistant-panel {
+  position: absolute !important;
+  top: 406px !important;
+  left: 1306px !important;
+  z-index: 85 !important;
+  display: block !important;
+  width: 743px !important;
+  height: 674px !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url("../assets/shell/sidebar-progress-panel.png") 0 0 / 100% 100% no-repeat !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__header {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 4 !important;
+  display: block !important;
+  width: 743px !important;
+  height: 674px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__mascot-stage {
+  position: absolute !important;
+  top: 55px !important;
+  left: 61px !important;
+  z-index: 5 !important;
+  display: block !important;
+  width: 220px !important;
+  height: 147px !important;
+  overflow: hidden !important;
+  animation: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__mascot {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 220px !important;
+  height: 147px !important;
+  max-width: none !important;
+  object-fit: fill !important;
+  filter: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading {
+  position: absolute !important;
+  top: 59px !important;
+  left: 290px !important;
+  z-index: 6 !important;
+  display: block !important;
+  width: 180px !important;
+  height: 30px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading h2 {
+  display: flex !important;
+  width: 180px !important;
+  height: 30px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #c9a85c !important;
+  font: 400 26px/18px "Irish Grover", Georgia, serif !important;
+  letter-spacing: 1.6px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading p {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close {
+  position: absolute !important;
+  top: 74px !important;
+  left: 540px !important;
+  z-index: 10 !important;
+  display: grid !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #ece8dd !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-messages {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 7 !important;
+  display: block !important;
+  width: 743px !important;
+  height: 674px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"] {
+  position: absolute !important;
+  top: 219px !important;
+  left: 116px !important;
+  display: block !important;
+  width: 430px !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 18px 20px !important;
+  border: 1px solid #c7ae72 !important;
+  border-radius: 18px !important;
+  background: #f3efe4 !important;
+  color: #27352f !important;
+  font: 400 15px/21px Inter, sans-serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"] p {
+  margin: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] {
+  position: absolute !important;
+  top: 143px !important;
+  left: 326px !important;
+  display: block !important;
+  width: 252px !important;
+  height: 58px !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 1px solid #51604b !important;
+  border-radius: 15px !important;
+  background: #2a3a2e !important;
+  color: #f0eee8 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] p {
+  position: absolute !important;
+  top: 10px !important;
+  left: 15px !important;
+  display: flex !important;
+  width: 220px !important;
+  height: 36px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #f0eee8 !important;
+  font: 400 16px/22px Inter, sans-serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-word-suggestions {
+  position: absolute !important;
+  top: 219px !important;
+  left: 116px !important;
+  width: 430px !important;
+  padding: 16px 18px !important;
+  border: 1px solid #c7ae72 !important;
+  border-radius: 18px !important;
+  background: #f3efe4 !important;
+  color: #27352f !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-word-suggestions p {
+  margin: 0 0 10px !important;
+  color: #8c713b !important;
+  font: 600 12px/16px Inter, sans-serif !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-word-suggestions button {
+  margin: 0 7px 7px 0 !important;
+  padding: 6px 10px !important;
+  border: 1px solid #a9bd7a !important;
+  border-radius: 10px !important;
+  background: #6f874d !important;
+  color: #f6f2e8 !important;
+  font: 600 13px/18px Inter, sans-serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview {
+  position: absolute !important;
+  top: 219px !important;
+  left: 116px !important;
+  display: block !important;
+  width: 430px !important;
+  height: 330px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview::before {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 0 !important;
+  display: block !important;
+  width: 430px !important;
+  height: 260px !important;
+  border: 1px solid #c7ae72 !important;
+  border-radius: 18px !important;
+  background: #f3efe4 !important;
+  content: "" !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__header {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 2 !important;
+  display: block !important;
+  width: 430px !important;
+  height: 84px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__eyebrow {
+  position: absolute !important;
+  top: 17px !important;
+  left: 20px !important;
+  display: flex !important;
+  width: 250px !important;
+  height: 22px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #8c713b !important;
+  font: 600 12px/16px Inter, sans-serif !important;
+  letter-spacing: 1.3px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__title-row {
+  position: absolute !important;
+  top: 40px !important;
+  left: 20px !important;
+  display: block !important;
+  width: 290px !important;
+  height: 40px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__title-row h3 {
+  display: flex !important;
+  width: 290px !important;
+  height: 40px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #1e2b26 !important;
+  font: 600 30px/36px "Cormorant Garamond", Georgia, serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__metadata {
+  position: absolute !important;
+  top: 24px !important;
+  right: 19px !important;
+  display: flex !important;
+  width: 88px !important;
+  height: 28px !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  margin: 0 !important;
+  color: #526056 !important;
+  font: 500 13px/18px Inter, sans-serif !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content {
+  position: absolute !important;
+  top: 84px !important;
+  left: 0 !important;
+  z-index: 2 !important;
+  display: block !important;
+  width: 430px !important;
+  height: 176px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section {
+  position: absolute !important;
+  left: 20px !important;
+  display: block !important;
+  width: 380px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section:nth-child(1) {
+  top: 4px !important;
+  height: 67px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section:nth-child(2) {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section:nth-child(3) {
+  top: 75px !important;
+  height: 95px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content h4 {
+  display: flex !important;
+  width: 90px !important;
+  height: 22px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #8c713b !important;
+  font: 600 12px/16px Inter, sans-serif !important;
+  letter-spacing: 1px !important;
+  text-transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section > p {
+  display: flex !important;
+  width: 380px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #27352f !important;
+  font: 400 15px/20px Inter, sans-serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section:nth-child(1) > p {
+  height: 46px !important;
+  line-height: 21px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__content section:nth-child(3) > p:not(.assistant-preview__translation) {
+  position: absolute !important;
+  top: 19px !important;
+  left: 17px !important;
+  height: 36px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__translation {
+  position: absolute !important;
+  top: 58px !important;
+  left: 0 !important;
+  height: 36px !important;
+  color: #55635b !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__footer {
+  position: absolute !important;
+  top: 274px !important;
+  left: 18px !important;
+  z-index: 3 !important;
+  display: block !important;
+  width: 430px !important;
+  height: 56px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__status {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__actions {
+  display: flex !important;
+  width: 430px !important;
+  height: 56px !important;
+  gap: 13px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__actions .button {
+  position: relative !important;
+  display: flex !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  font: 600 15px/22px Inter, sans-serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__actions .button:first-child {
+  width: 235px !important;
+  min-width: 235px !important;
+  border: 1px solid #71805f !important;
+  background: #26392e !important;
+  color: #ede9de !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-preview__actions .button:last-child:not(:first-child) {
+  width: 182px !important;
+  min-width: 182px !important;
+  border: 1px solid #a9bd7a !important;
+  background: #6f874d !important;
+  color: #f6f2e8 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-shortcuts {
+  position: absolute !important;
+  top: 365px !important;
+  left: 116px !important;
+  z-index: 9 !important;
+  display: grid !important;
+  width: 430px !important;
+  gap: 10px !important;
+  padding: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-shortcuts button {
+  min-height: 44px !important;
+  border: 1px solid #71805f !important;
+  border-radius: 12px !important;
+  background: #26392e !important;
+  color: #ede9de !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer {
+  position: absolute !important;
+  top: 570px !important;
+  left: 134px !important;
+  z-index: 12 !important;
+  display: grid !important;
+  width: 430px !important;
+  height: 48px !important;
+  grid-template-columns: 364px 57px !important;
+  gap: 9px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer input {
+  width: 364px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  border: 1px solid #b8a77a !important;
+  border-radius: 14px !important;
+  outline: 0 !important;
+  background: #f7f4ea !important;
+  color: #27352f !important;
+  font: 400 15px/22px Inter, sans-serif !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer input::placeholder {
+  color: #777d79 !important;
+  opacity: 1 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer input:focus-visible {
+  outline: 2px solid rgb(201 168 92 / 74%) !important;
+  outline-offset: 2px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer .button {
+  display: grid !important;
+  width: 57px !important;
+  height: 48px !important;
+  min-width: 57px !important;
+  min-height: 48px !important;
+  padding: 0 !important;
+  place-items: center !important;
+  border: 1px solid #a9bd7a !important;
+  border-radius: 14px !important;
+  background: #6f874d !important;
+  color: #f6f2e8 !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer .button__label {
+  font-size: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-composer .button__label::after {
+  color: #f6f2e8 !important;
+  font: 600 20px/20px Inter, sans-serif !important;
+  content: "›" !important;
+}
+
