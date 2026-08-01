@@ -1,4 +1,13 @@
 /* Final asset geometry corrections from the AssetTrim report. */
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final::before {
+  inset: auto !important;
+  top: -157px !important;
+  left: -256px !important;
+  width: 908px !important;
+  height: 1384px !important;
+  background-size: 908px 1384px !important;
+}
+
 #root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item::before {
   width: 372px !important;
   background-size: 372px 352px !important;
@@ -9,8 +18,15 @@
   background-size: 330px 130px !important;
 }
 
+#root .application-frame--word-valley-final-search .word-valley-theme-control {
+  background-size: 196px 168px !important;
+}
+
 #root .application-frame--word-valley-final-search .assistant-panel {
   background-image: url("../assets/shell/sidebar-frame.png") !important;
+  background-position: 0 0 !important;
+  background-size: 614px 674px !important;
+  background-repeat: no-repeat !important;
 }
 
 /* Assistant open: only the upper recent panel remains, matching 55:2. */
