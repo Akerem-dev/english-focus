@@ -60,13 +60,6 @@ export function createAssistantWordPreview(
   };
 }
 
-const EYEBROW_BY_STATE: Readonly<Record<AssistantWordPreviewState, string>> = Object.freeze({
-  waiting: "Preparing preview",
-  existing: "Already in your Wordbook",
-  ready: "Ready for your Wordbook",
-  saved: "Added to your Wordbook"
-});
-
 const FOOTER_BY_STATE: Readonly<Record<AssistantWordPreviewState, string>> = Object.freeze({
   waiting: "Nothing has been saved yet.",
   existing: "This word is already available in your Wordbook.",
@@ -111,7 +104,7 @@ export function AssistantWordPreview({
     >
       <header className="assistant-preview__header">
         <div>
-          <p className="assistant-preview__eyebrow">{EYEBROW_BY_STATE[preview.state]}</p>
+          <p className="assistant-preview__eyebrow">{preview.word.toLocaleUpperCase("en-US")}</p>
           <div className="assistant-preview__title-row">
             <h3 id={titleId}>{preview.word}</h3>
           </div>
@@ -123,11 +116,11 @@ export function AssistantWordPreview({
 
       <div className="assistant-preview__content">
         <section>
-          <h4>Turkish meaning</h4>
+          <h4>Türkçe</h4>
           <p data-empty={preview.translationsTr.length === 0 || undefined}>
             {preview.translationsTr.length > 0
               ? preview.translationsTr.join(", ")
-              : "The Turkish meaning will appear here before this word can be added."}
+              : "Kelimenin Türkçe anlamı kaydetmeden önce burada görünecek."}
           </p>
         </section>
 
@@ -162,7 +155,7 @@ export function AssistantWordPreview({
         <div className="assistant-preview__actions">
           {preview.state === "saved" ? null : (
             <Button disabled={isSaving} onClick={onEdit} size="small" variant="ghost">
-              Change word
+              Ask another word
             </Button>
           )}
           {canOpen ? (
@@ -178,7 +171,7 @@ export function AssistantWordPreview({
               size="small"
               variant="primary"
             >
-              Add to Wordbook
+              Save to Library
             </Button>
           ) : null}
         </div>
