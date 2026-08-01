@@ -41,8 +41,8 @@
   inset: 0 !important;
   z-index: 1 !important;
   display: block !important;
-  width: 479px !important;
-  height: 352px !important;
+  width: 402px !important;
+  height: 289px !important;
   max-width: none !important;
   object-fit: fill !important;
   filter: none !important;
@@ -80,4 +80,3 @@
   outline: 2px solid #d0b76c !important;
   outline-offset: -62px !important;
 }
-
