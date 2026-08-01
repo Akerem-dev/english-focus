@@ -1,0 +1,162 @@
+/* -------------------------------------------------------------------------- */
+/* Recent panels                                                              */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--word-valley-final-search .vocabulary-dashboard {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 20 !important;
+  display: block !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card {
+  position: absolute !important;
+  left: 1404px !important;
+  display: block !important;
+  width: 591px !important;
+  height: 394px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #f1f0ea !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-searches"] {
+  top: 133px !important;
+  background: url("../assets/home/recent-searches-panel.png") 0 0 / 100% 100% no-repeat !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-viewed"] {
+  top: 474px !important;
+  background: url("../assets/home/recent-viewed-panel.png") 0 0 / 100% 100% no-repeat !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card__header {
+  position: absolute !important;
+  top: 64px !important;
+  left: 197px !important;
+  display: block !important;
+  width: 300px !important;
+  height: 42px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card__header > svg {
+  position: absolute !important;
+  top: 9px !important;
+  left: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  color: #ede7d6 !important;
+  stroke-width: 1.8 !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card__header h2 {
+  position: absolute !important;
+  top: 0 !important;
+  left: 34px !important;
+  display: flex !important;
+  width: 260px !important;
+  height: 42px !important;
+  align-items: center !important;
+  margin: 0 !important;
+  color: #f4f0e5 !important;
+  font: 600 24px/30px "Cormorant Garamond", Georgia, serif !important;
+  white-space: nowrap !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-viewed"] .word-list-card__header {
+  top: 65px !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-viewed"] .word-list-card__header h2 {
+  width: 270px !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card__rows {
+  position: absolute !important;
+  top: 117px !important;
+  left: 114px !important;
+  display: block !important;
+  width: 364px !important;
+  height: 200px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-viewed"] .word-list-card__rows {
+  top: 116px !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-row {
+  position: relative !important;
+  display: block !important;
+  width: 364px !important;
+  height: 50px !important;
+  min-height: 50px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-top: 1px solid rgb(102 112 87 / 45%) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #f1f0ea !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-row__word {
+  position: absolute !important;
+  top: 6px !important;
+  left: 15px !important;
+  display: flex !important;
+  width: 300px !important;
+  height: 38px !important;
+  align-items: center !important;
+  color: #f1f0ea !important;
+  font: 400 18px/24px Inter, sans-serif !important;
+  text-transform: capitalize !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-row__chevron {
+  position: absolute !important;
+  top: 10px !important;
+  right: 0 !important;
+  display: block !important;
+  width: 28px !important;
+  height: 28px !important;
+  color: #e8e4d8 !important;
+  stroke-width: 1.7 !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-row:hover .word-list-row__word,
+#root .application-frame--word-valley-final-search .word-list-row:focus-visible .word-list-row__word {
+  color: #d8e9ad !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-row:focus-visible {
+  outline: 1px solid #d0b76c !important;
+  outline-offset: -2px !important;
+}
+
+#root .application-frame--word-valley-final-search .word-list-card__empty {
+  margin: 24px 15px 0 !important;
+  color: #d7d7cd !important;
+  font: 400 15px/22px Inter, sans-serif !important;
+}
+
