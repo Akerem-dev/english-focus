@@ -56,8 +56,8 @@
 @import "./word-valley-search-feedback.css";
 @import "./word-valley-library-shell.css";
 
-/* Final Figma-authored Search composition. */
-@import "./word-valley-final-figma-search.css";
-
-/* Must remain the final import: beats the legacy :has(...) stage selectors. */
-@import "./word-valley-final-cascade-lock.css";
+/*
+ * Final source of truth for Search. It is intentionally the last import and
+ * uses only apps/desktop/src/assets/word-valley-final.
+ */
+@import "./word-valley-final-exact.css";
