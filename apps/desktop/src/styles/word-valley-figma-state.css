@@ -1,0 +1,22 @@
+/* Assistant open: only the upper recent panel remains, matching 55:2. */
+#root .application-frame--word-valley-final-search .word-valley-stage:has(> .assistant-dock[data-open]) .word-list-card[data-panel="recent-searches"] {
+  top: 117px !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage:has(> .assistant-dock[data-open]) .word-list-card[data-panel="recent-searches"] .word-list-card__header {
+  top: 64px !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage:has(> .assistant-dock[data-open]) .word-list-card[data-panel="recent-viewed"] {
+  display: none !important;
+}
+
+/* Search result/matches/error states from the existing feature stay above scenery. */
+#root .application-frame--word-valley-final-search .vocabulary-search-state,
+#root .application-frame--word-valley-final-search .error-state {
+  position: absolute !important;
+  z-index: 40 !important;
+  top: 610px !important;
+  left: 610px !important;
+  width: 700px !important;
+}
