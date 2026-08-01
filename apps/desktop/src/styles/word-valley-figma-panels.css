@@ -33,12 +33,12 @@
 
 #root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-searches"] {
   top: 133px !important;
-  background: url("../assets/home/recent-searches-panel.png") 0 0 / 100% 100% no-repeat !important;
+  background: url("../assets/home/recent-searches-panel.png") 0 0 / 516px 394px no-repeat !important;
 }
 
 #root .application-frame--word-valley-final-search .word-list-card[data-panel="recent-viewed"] {
   top: 474px !important;
-  background: url("../assets/home/recent-viewed-panel.png") 0 0 / 100% 100% no-repeat !important;
+  background: url("../assets/home/recent-viewed-panel.png") 0 0 / 516px 394px no-repeat !important;
 }
 
 #root .application-frame--word-valley-final-search .word-list-card__header {
@@ -159,4 +159,3 @@
   color: #d7d7cd !important;
   font: 400 15px/22px Inter, sans-serif !important;
 }
-
