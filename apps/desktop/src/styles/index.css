@@ -36,28 +36,13 @@
 @import "./settings-task-simplification.css";
 @import "./settings-task-flow-polish.css";
 @import "./interface-polish.css";
-
 @import "./phase-1-ui-polish.css";
 @import "./phase-3-health-backup.css";
-@import "./word-valley.css";
-@import "./word-valley-figma.css";
-@import "./word-valley-asset-bindings.css";
-@import "./word-valley-no-topbar.css";
-@import "./word-valley-final-polish.css";
-@import "./word-valley-book-flow-fix.css";
-@import "./word-valley-controls-quality.css";
-@import "./word-valley-control-assets.css";
-@import "./word-valley-assistant-open.css";
-@import "./word-valley-assistant-controls.css";
-@import "./word-valley-interaction-fixes.css";
-@import "./word-valley-dictionary-ui-fixes.css";
-@import "./word-valley-responsive-stage.css";
-@import "./word-valley-final-home-fixes.css";
-@import "./word-valley-search-feedback.css";
-@import "./word-valley-library-shell.css";
 
-/* Base 1920 x 1080 Search composition. */
-@import "./word-valley-final-exact.css";
-
-/* Must remain last: exact Figma 55:2 typography, lantern and open-state lock. */
-@import "./word-valley-figma-55-sync.css";
+/* Only these six Figma 39:2 / 55:2 overrides control the Search screen. */
+@import "./word-valley-figma-stage.css";
+@import "./word-valley-figma-hero.css";
+@import "./word-valley-figma-panels.css";
+@import "./word-valley-figma-launcher.css";
+@import "./word-valley-figma-assistant.css";
+@import "./word-valley-figma-state.css";
