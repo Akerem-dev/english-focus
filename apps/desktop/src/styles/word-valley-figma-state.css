@@ -1,3 +1,18 @@
+/* Final asset geometry corrections from the AssetTrim report. */
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item::before {
+  width: 372px !important;
+  background-size: 372px 352px !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item--active::before {
+  width: 330px !important;
+  background-size: 330px 130px !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel {
+  background-image: url("../assets/shell/sidebar-frame.png") !important;
+}
+
 /* Assistant open: only the upper recent panel remains, matching 55:2. */
 #root .application-frame--word-valley-final-search .word-valley-stage:has(> .assistant-dock[data-open]) .word-list-card[data-panel="recent-searches"] {
   top: 117px !important;
