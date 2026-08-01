@@ -19,8 +19,7 @@ export interface AssistantWordPreviewModel {
 }
 
 function formatPartOfSpeech(value: string): string {
-  const normalized = value.replaceAll("-", " ");
-  return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+  return value.replaceAll("-", " ").toLocaleLowerCase("en-US");
 }
 
 export function createAssistantWordPreview(
@@ -86,9 +85,10 @@ export function AssistantWordPreview({
 }: AssistantWordPreviewProps) {
   const titleId = useId();
   const statusId = useId();
-  const metadata = [preview.partOfSpeech, preview.cefr].filter(
-    (value): value is string => value !== undefined
-  );
+  const metadata = [
+    preview.partOfSpeech?.toLocaleLowerCase("en-US"),
+    preview.cefr?.toLocaleUpperCase("en-US")
+  ].filter((value): value is string => value !== undefined);
   const canOpen =
     (preview.state === "existing" || preview.state === "saved") && onOpenExisting !== undefined;
   const canAdd = preview.state === "ready" && onAdd !== undefined;
@@ -110,7 +110,7 @@ export function AssistantWordPreview({
           </div>
         </div>
         {metadata.length === 0 ? null : (
-          <p className="assistant-preview__metadata">{metadata.join(" · ")}</p>
+          <p className="assistant-preview__metadata">{metadata.join("  ·  ")}</p>
         )}
       </header>
 
