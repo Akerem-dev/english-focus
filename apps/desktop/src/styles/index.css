@@ -56,8 +56,8 @@
 @import "./word-valley-search-feedback.css";
 @import "./word-valley-library-shell.css";
 
-/*
- * Final source of truth for Search. It is intentionally the last import and
- * uses only apps/desktop/src/assets/word-valley-final.
- */
+/* Base 1920 x 1080 Search composition. */
 @import "./word-valley-final-exact.css";
+
+/* Must remain last: exact Figma 55:2 typography, lantern and open-state lock. */
+@import "./word-valley-figma-55-sync.css";
