@@ -1,0 +1,83 @@
+/* -------------------------------------------------------------------------- */
+/* Assistant closed state — Figma 39:2                                        */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--word-valley-final-search .assistant-dock {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 80 !important;
+  display: block !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+  font-family: Inter, sans-serif !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher {
+  position: absolute !important;
+  top: 791px !important;
+  left: 1518px !important;
+  display: block !important;
+  width: 479px !important;
+  height: 352px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher__frame {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  display: block !important;
+  width: 479px !important;
+  height: 352px !important;
+  max-width: none !important;
+  object-fit: fill !important;
+  filter: none !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher__mascot,
+#root .application-frame--word-valley-final-search .assistant-launcher__glow {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher__prompt {
+  position: absolute !important;
+  top: 77px !important;
+  left: 117px !important;
+  z-index: 3 !important;
+  display: flex !important;
+  width: 146px !important;
+  height: 64px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #27343b !important;
+  font: 500 17px/23px Inter, sans-serif !important;
+  text-align: center !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher:hover,
+#root .application-frame--word-valley-final-search .assistant-launcher:active {
+  filter: brightness(1.025) !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher:focus-visible {
+  outline: 2px solid #d0b76c !important;
+  outline-offset: -62px !important;
+}
+
