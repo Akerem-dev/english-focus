@@ -1,8 +1,8 @@
-import mascotConfused from "../../assets/word-valley-final/assistant/assistant-confused.png";
-import mascotReady from "../../assets/word-valley-final/assistant/assistant-ready.png";
-import mascotSleeping from "../../assets/word-valley-final/assistant/assistant-sleeping.png";
-import mascotSuccess from "../../assets/word-valley-final/assistant/assistant-success.png";
-import mascotThinking from "../../assets/word-valley-final/assistant/assistant-thinking.png";
+import mascotConfused from "../../assets/assistant/assistant-confused.png";
+import mascotReady from "../../assets/assistant/assistant-ready.png";
+import mascotSleeping from "../../assets/assistant/assistant-sleeping.png";
+import mascotSuccess from "../../assets/assistant/assistant-success.png";
+import mascotThinking from "../../assets/assistant/assistant-thinking.png";
 
 export type AssistantMascotState = "ready" | "thinking" | "success" | "confused" | "sleeping";
 
