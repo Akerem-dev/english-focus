@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import wordValleyBackgroundLoop from "../../assets/word-valley-final/background/home-background-loop.mp4";
-import wordValleyBackgroundStatic from "../../assets/word-valley-final/background/home-background-static.png";
+import wordValleyBackgroundLoop from "../../assets/background/home-background-loop.mp4";
+import wordValleyBackgroundStatic from "../../assets/background/home-background-static.png";
 import { AssistantDock } from "../../modules/assistant";
 import {
   CommandBar,
@@ -74,11 +74,7 @@ function WordValleyBackdrop() {
 
   return (
     <div aria-hidden="true" className="word-valley-backdrop">
-      <img
-        alt=""
-        className="word-valley-backdrop__static"
-        src={wordValleyBackgroundStatic}
-      />
+      <img alt="" className="word-valley-backdrop__static" src={wordValleyBackgroundStatic} />
       {reduceMotion ? null : (
         <video
           autoPlay
