@@ -1,27 +1,116 @@
-/* Final asset geometry corrections from the AssetTrim report. */
-#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final::before {
-  inset: auto !important;
-  top: -157px !important;
-  left: -256px !important;
-  width: 908px !important;
-  height: 1384px !important;
-  background-size: 908px 1384px !important;
+/*
+ * Final Figma 39:2 / 55:2 tuning layer.
+ * Keep user-facing geometry adjustments here so each pass changes one source.
+ */
+#root .application-frame--word-valley-final-search {
+  --wv-sidebar-shift-x: 12px;
+  --wv-sidebar-content-scale: 0.96;
+  --wv-theme-icon-shift-y: -10px;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Sidebar: move the visible panel right, reduce its contents slightly, and    */
+/* keep the authored 307.2px application column boundary unchanged.            */
+/* -------------------------------------------------------------------------- */
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final::before {
+  inset: auto !important;
+  top: 0 !important;
+  left: var(--wv-sidebar-shift-x) !important;
+  width: calc(307.2px - var(--wv-sidebar-shift-x)) !important;
+  height: 1080px !important;
+  background-position: 0 0 !important;
+  background-size: 100% 100% !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__brand,
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__nav,
+#root .application-frame--word-valley-final-search .word-valley-progress {
+  transform: translateX(var(--wv-sidebar-shift-x)) scale(var(--wv-sidebar-content-scale)) !important;
+  transform-origin: top left !important;
+}
+
+/* AssetTrim alpha bounds:
+ * default: x30/y137/w262/h75 in a 372x352 canvas
+ * active:  x22/y24/w276/h74 in a 325x130 canvas
+ * These offsets place both visible frames on the same left/top anchor.
+ */
 #root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item::before {
+  top: -113px !important;
+  left: -13px !important;
   width: 372px !important;
-  background-size: 372px 352px !important;
+  height: 352px !important;
+  background: url("../assets/shell/sidebar-nav-default.png") 0 0 / 372px 352px no-repeat !important;
 }
 
 #root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item--active::before {
-  width: 330px !important;
-  background-size: 330px 130px !important;
+  top: 0 !important;
+  left: -5px !important;
+  width: 325px !important;
+  height: 130px !important;
+  background: url("../assets/shell/sidebar-nav-active.png") 0 0 / 325px 130px no-repeat !important;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Lantern: preserve the real 199x199 Figma asset and lift both controls.       */
+/* -------------------------------------------------------------------------- */
 #root .application-frame--word-valley-final-search .word-valley-theme-control {
-  background-size: 196px 168px !important;
+  background-position: 0 0 !important;
+  background-size: 199px 199px !important;
 }
 
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[data-theme-option="day"] {
+  top: calc(97px + var(--wv-theme-icon-shift-y)) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[data-theme-option="night"] {
+  top: calc(96px + var(--wv-theme-icon-shift-y)) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main Search: the exported PNG has a 312x402 transparent canvas, while the    */
+/* visible control is roughly 170x50. Keep the art, shrink only the hit target. */
+/* -------------------------------------------------------------------------- */
+#root .application-frame--word-valley-final-search .vocabulary-search__button {
+  top: 503px !important;
+  left: 1177px !important;
+  width: 170px !important;
+  height: 50px !important;
+  min-width: 170px !important;
+  min-height: 50px !important;
+  overflow: visible !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  isolation: isolate !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search__button::before {
+  position: absolute !important;
+  top: -168px !important;
+  left: -74px !important;
+  z-index: 0 !important;
+  display: block !important;
+  width: 312px !important;
+  height: 402px !important;
+  background: url("../assets/home/home-search-button.png") 0 0 / 312px 402px no-repeat !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search__button .button__label {
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 1 !important;
+  width: 170px !important;
+  height: 50px !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search__button:focus-visible {
+  outline: 2px solid #f5d67c !important;
+  outline-offset: 3px !important;
+}
+
+/* Assistant open: only the upper recent panel remains, matching 55:2. */
 #root .application-frame--word-valley-final-search .assistant-panel {
   background-image: url("../assets/shell/sidebar-frame.png") !important;
   background-position: 0 0 !important;
@@ -29,7 +118,6 @@
   background-repeat: no-repeat !important;
 }
 
-/* Assistant open: only the upper recent panel remains, matching 55:2. */
 #root .application-frame--word-valley-final-search .word-valley-stage:has(> .assistant-dock[data-open]) .word-list-card[data-panel="recent-searches"] {
   top: 117px !important;
 }
