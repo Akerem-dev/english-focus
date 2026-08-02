@@ -39,10 +39,13 @@
 @import "./phase-1-ui-polish.css";
 @import "./phase-3-health-backup.css";
 
-/* Only these six Figma 39:2 / 55:2 overrides control the Search screen. */
+/* Figma 39:2 / 55:2 Search-screen layers. */
 @import "./word-valley-figma-stage.css";
 @import "./word-valley-figma-hero.css";
 @import "./word-valley-figma-panels.css";
 @import "./word-valley-figma-launcher.css";
 @import "./word-valley-figma-assistant.css";
 @import "./word-valley-figma-state.css";
+
+/* Import last: centralized screenshot-by-screenshot fine-tuning controls. */
+@import "./word-valley-tuning-controls.css";
