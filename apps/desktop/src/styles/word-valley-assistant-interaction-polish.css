@@ -1,0 +1,187 @@
+/*
+ * Wordie interaction polish.
+ * Loaded after every other Word Valley sheet.
+ *
+ * Fixes:
+ * - The full-size messages layer previously sat above the header stacking
+ *   context and intercepted the close button.
+ * - The user question bubble now uses a softer premium, storybook-compatible
+ *   treatment instead of a flat rectangular chat block.
+ */
+
+#root .application-frame--word-valley-final-search .assistant-panel {
+  isolation: isolate !important;
+}
+
+/* Keep decorative header content visually above the message canvas without
+ * allowing the full 743×674 header box to block controls underneath. */
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__header {
+  z-index: 60 !important;
+  pointer-events: none !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__mascot-stage,
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__heading {
+  pointer-events: none !important;
+}
+
+/* The close control itself remains interactive and sits above every assistant
+ * content layer. */
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close {
+  z-index: 1000 !important;
+  display: grid !important;
+  padding: 0 !important;
+  place-items: center !important;
+  overflow: visible !important;
+  border: 1px solid rgb(208 178 100 / 82%) !important;
+  border-radius: 999px !important;
+  outline: 0 !important;
+  background:
+    radial-gradient(circle at 35% 28%, rgb(74 96 75 / 96%), rgb(25 45 38 / 98%) 72%) !important;
+  color: #f8f2df !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 16%),
+    0 5px 14px rgb(3 14 18 / 32%) !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close::before {
+  position: absolute !important;
+  inset: 3px !important;
+  border: 1px solid rgb(255 245 205 / 12%) !important;
+  border-radius: inherit !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close svg {
+  display: block !important;
+  color: currentColor !important;
+  stroke-width: 2.1 !important;
+  pointer-events: none !important;
+  transition: transform 160ms ease !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close:hover {
+  border-color: #f3d783 !important;
+  background:
+    radial-gradient(circle at 35% 28%, rgb(94 118 88 / 100%), rgb(31 57 46 / 100%) 72%) !important;
+  color: #fffaf0 !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 20%),
+    0 7px 18px rgb(3 14 18 / 38%) !important;
+  transform: translateY(-1px) !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close:hover svg {
+  transform: rotate(90deg) !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close:active {
+  transform: translateY(0) scale(0.94) !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__close:focus-visible {
+  outline: 2px solid #f5d67c !important;
+  outline-offset: 3px !important;
+}
+
+/* The messages canvas can remain above the panel artwork, but below the close
+ * button/header stacking context. */
+#root
+  .application-frame--word-valley-final-search
+  .assistant-messages {
+  z-index: 20 !important;
+}
+
+/* Premium user question bubble. Existing position/size tuning variables are
+ * preserved, so screenshot adjustments continue to work from the central
+ * tuning file. */
+#root
+  .application-frame--word-valley-final-search
+  .assistant-message[data-author="user"] {
+  box-sizing: border-box !important;
+  display: flex !important;
+  height: auto !important;
+  min-height: var(--wv-assistant-user-bubble-min-height) !important;
+  align-items: center !important;
+  padding: 11px 18px 11px 20px !important;
+  overflow: visible !important;
+  border: 1px solid rgb(169 189 122 / 46%) !important;
+  border-radius: 18px 18px 6px 18px !important;
+  background:
+    linear-gradient(135deg, rgb(58 80 63 / 98%) 0%, rgb(37 58 47 / 98%) 54%, rgb(29 48 40 / 99%) 100%) !important;
+  color: #f5f1e8 !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 10%),
+    inset 0 -1px 0 rgb(7 22 18 / 22%),
+    0 10px 24px rgb(3 16 20 / 24%) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  isolation: isolate !important;
+}
+
+/* Small speech tail. */
+#root
+  .application-frame--word-valley-final-search
+  .assistant-message[data-author="user"]::after {
+  position: absolute !important;
+  right: -6px !important;
+  bottom: 8px !important;
+  z-index: -1 !important;
+  display: block !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-right: 1px solid rgb(169 189 122 / 40%) !important;
+  border-bottom: 1px solid rgb(169 189 122 / 40%) !important;
+  border-radius: 0 0 3px 0 !important;
+  background: rgb(29 48 40 / 99%) !important;
+  content: "" !important;
+  transform: rotate(45deg) !important;
+  pointer-events: none !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .assistant-message[data-author="user"] p {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  color: #f7f3e9 !important;
+  font-family: Inter, "Segoe UI", sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+  letter-spacing: -0.08px !important;
+  text-wrap: balance !important;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 18%) !important;
+}
