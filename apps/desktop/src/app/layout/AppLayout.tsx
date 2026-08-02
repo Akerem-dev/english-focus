@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import wordValleyBackgroundLoop from "../../assets/background/home-background-loop.mp4";
 import wordValleyBackgroundStatic from "../../assets/background/home-background-static.png";
+import wordValleyLogo from "../../assets/shell/word-valley-logo.png";
 import { AssistantDock } from "../../modules/assistant";
 import {
   CommandBar,
@@ -115,24 +116,32 @@ export function AppLayout({ children }: PropsWithChildren) {
       return;
     }
 
-    const updateScale = () => {
-      const bounds = viewport.getBoundingClientRect();
-      const scaleX = Math.max(bounds.width / WORD_VALLEY_STAGE_WIDTH, 0.01);
-      const scaleY = Math.max(bounds.height / WORD_VALLEY_STAGE_HEIGHT, 0.01);
+    let animationFrame = 0;
 
-      viewport.style.setProperty("--wv-stage-scale-x", String(scaleX));
-      viewport.style.setProperty("--wv-stage-scale-y", String(scaleY));
+    const updateScale = () => {
+      window.cancelAnimationFrame(animationFrame);
+      animationFrame = window.requestAnimationFrame(() => {
+        const viewportWidth = Math.max(
+          document.documentElement.clientWidth || window.innerWidth,
+          1
+        );
+        const viewportHeight = Math.max(
+          document.documentElement.clientHeight || window.innerHeight,
+          1
+        );
+        const scaleX = Math.max(viewportWidth / WORD_VALLEY_STAGE_WIDTH, 0.01);
+        const scaleY = Math.max(viewportHeight / WORD_VALLEY_STAGE_HEIGHT, 0.01);
+
+        viewport.style.setProperty("--wv-stage-scale-x", String(scaleX));
+        viewport.style.setProperty("--wv-stage-scale-y", String(scaleY));
+      });
     };
 
     updateScale();
     window.addEventListener("resize", updateScale);
 
-    const resizeObserver =
-      typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(updateScale);
-    resizeObserver?.observe(viewport);
-
     return () => {
-      resizeObserver?.disconnect();
+      window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", updateScale);
     };
   }, [isWordValleyRoute]);
@@ -226,6 +235,24 @@ export function AppLayout({ children }: PropsWithChildren) {
         <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
           <div className="word-valley-stage">
             {isWordValleySearch ? <WordValleyBackdrop /> : null}
+            {isWordValleySearch ? (
+              <Link
+                aria-label="Word Valley search home"
+                className="word-valley-stage-logo"
+                onClick={(event) => {
+                  event.preventDefault();
+                  openVocabularyHome();
+                }}
+                to={ROUTE_PATHS.vocabulary}
+              >
+                <img
+                  alt="Word Valley"
+                  className="word-valley-stage-logo__image"
+                  draggable={false}
+                  src={wordValleyLogo}
+                />
+              </Link>
+            ) : null}
             {applicationShell}
           </div>
         </div>
