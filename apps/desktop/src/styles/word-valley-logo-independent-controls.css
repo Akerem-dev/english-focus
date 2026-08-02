@@ -1,0 +1,41 @@
+/*
+ * Word Valley logo positioning — independent from the sidebar shell.
+ *
+ * The logo remains a child of the sidebar in the React tree, but its tuning
+ * variables represent absolute 1920×1080 stage coordinates. Subtracting the
+ * parent sidebar offset prevents sidebar movement from dragging the logo.
+ *
+ * Keep editing these existing variables in word-valley-tuning-controls.css:
+ *   --wv-logo-x
+ *   --wv-logo-y
+ *   --wv-logo-width
+ *   --wv-logo-height
+ */
+
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar--word-valley-final
+  .app-sidebar__brand {
+  top: calc(var(--wv-logo-y) - var(--wv-sidebar-y)) !important;
+  left: calc(var(--wv-logo-x) - var(--wv-sidebar-x)) !important;
+  width: var(--wv-logo-width) !important;
+  height: var(--wv-logo-height) !important;
+  transform: none !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar__brand-final-logo {
+  display: block !important;
+  width: var(--wv-logo-width) !important;
+  height: var(--wv-logo-height) !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: fill !important;
+  object-position: 0 0 !important;
+  image-rendering: auto !important;
+  backface-visibility: hidden !important;
+  transform: translate3d(0, 0, 0) !important;
+  transform-origin: top left !important;
+  filter: none !important;
+}
