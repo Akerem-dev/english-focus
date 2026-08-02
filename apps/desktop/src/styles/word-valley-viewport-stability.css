@@ -1,6 +1,7 @@
 /*
  * Keep the authored 1920×1080 Word Valley stage stationary while Wordie opens
- * and closes. Focus restoration must not make the browser scroll the document.
+ * and closes. The application frame is pinned to the webview; body geometry is
+ * deliberately left alone so focus changes cannot shrink the measured stage.
  */
 
 html:has(.application-frame--word-valley-final-search),
@@ -9,22 +10,41 @@ body:has(.application-frame--word-valley-final-search) {
   height: 100% !important;
   min-width: 0 !important;
   min-height: 0 !important;
+  margin: 0 !important;
   overflow: hidden !important;
   overscroll-behavior: none !important;
   scroll-behavior: auto !important;
 }
 
-body:has(.application-frame--word-valley-final-search) {
+#root:has(.application-frame--word-valley-final-search) {
   position: fixed !important;
   inset: 0 !important;
-  margin: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
 }
 
-#root:has(.application-frame--word-valley-final-search),
-#root .application-frame--word-valley-final-search,
+#root .application-frame--word-valley-final-search {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  scroll-behavior: auto !important;
+}
+
 #root .application-frame--word-valley-final-search .word-valley-stage-viewport {
-  width: 100% !important;
-  height: 100% !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
   overflow: hidden !important;
   overscroll-behavior: none !important;
   scroll-behavior: auto !important;
