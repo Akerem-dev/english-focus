@@ -1,0 +1,659 @@
+/*
+ * Word Valley Search — centralized tuning controls.
+ *
+ * Edit only the variables in the first block while matching screenshots.
+ * This file is imported after every Figma sheet, so these controls are the
+ * final source of truth for fine positioning and sizing.
+ */
+
+#root .application-frame--word-valley-final-search {
+  /* ---------------------------------------------------------------------- */
+  /* 1. Whole sidebar + logo                                                */
+  /* ---------------------------------------------------------------------- */
+  --wv-sidebar-x: 0px;
+  --wv-sidebar-y: 0px;
+  --wv-sidebar-width: 307.2px;
+  --wv-sidebar-height: 1080px;
+
+  --wv-logo-x: -89px;
+  --wv-logo-y: -52px;
+  --wv-logo-width: 514.5px;
+  --wv-logo-height: 343px;
+
+  /* ---------------------------------------------------------------------- */
+  /* 3. Sidebar navigation assets                                           */
+  /* ---------------------------------------------------------------------- */
+  --wv-nav-x: 0px;
+  --wv-nav-y: 181px;
+  --wv-nav-width: 330px;
+  --wv-nav-item-width: 330px;
+  --wv-nav-item-height: 90px;
+  --wv-nav-item-gap: 0px;
+
+  --wv-nav-default-asset-x: -38px;
+  --wv-nav-default-asset-y: -116px;
+  --wv-nav-default-asset-width: 372px;
+  --wv-nav-default-asset-height: 352px;
+
+  --wv-nav-active-asset-x: -5px;
+  --wv-nav-active-asset-y: 0px;
+  --wv-nav-active-asset-width: 330px;
+  --wv-nav-active-asset-height: 130px;
+
+  /* ---------------------------------------------------------------------- */
+  /* 4. Sidebar icon + text                                                 */
+  /* ---------------------------------------------------------------------- */
+  --wv-nav-icon-x: 44px;
+  --wv-nav-icon-y: 46px;
+  --wv-nav-icon-width: 26px;
+  --wv-nav-icon-height: 26px;
+  --wv-nav-icon-stroke-width: 1.8;
+
+  --wv-nav-text-x: 87px;
+  --wv-nav-text-y: 38px;
+  --wv-nav-text-width: 190px;
+  --wv-nav-text-height: 42px;
+  --wv-nav-text-font-size: 22px;
+  --wv-nav-text-line-height: 28px;
+  --wv-nav-text-font-weight: 500;
+
+  /* ---------------------------------------------------------------------- */
+  /* 2, 5, 6, 7. Progress panel and every child                             */
+  /* ---------------------------------------------------------------------- */
+  --wv-progress-panel-display: block;
+  --wv-progress-panel-opacity: 1;
+  --wv-progress-panel-x: -74px;
+  --wv-progress-panel-y: 675px;
+  --wv-progress-panel-width: 496px;
+  --wv-progress-panel-height: 457px;
+
+  --wv-progress-title-x: 93px;
+  --wv-progress-title-y: 733px;
+  --wv-progress-title-width: 130px;
+  --wv-progress-title-height: 28px;
+  --wv-progress-title-font-size: 13px;
+  --wv-progress-title-line-height: 18px;
+  --wv-progress-title-letter-spacing: 1.5px;
+
+  --wv-streak-number-x: 48px;
+  --wv-streak-number-y: 778px;
+  --wv-streak-number-width: 42px;
+  --wv-streak-number-height: 58px;
+  --wv-streak-number-font-size: 42px;
+  --wv-streak-number-line-height: 48px;
+
+  --wv-streak-label-x: 90px;
+  --wv-streak-label-y: 792px;
+  --wv-streak-label-width: 130px;
+  --wv-streak-label-height: 36px;
+  --wv-streak-label-font-size: 18px;
+  --wv-streak-label-line-height: 24px;
+
+  --wv-progress-dots-x: 48px;
+  --wv-progress-dots-y: 848px;
+  --wv-progress-dot-width: 13px;
+  --wv-progress-dot-height: 13px;
+  --wv-progress-dot-gap: 12px;
+
+  --wv-progress-divider-x: 48px;
+  --wv-progress-divider-y: 884px;
+  --wv-progress-divider-width: 197px;
+  --wv-progress-divider-height: 1px;
+
+  --wv-progress-collected-x: 48px;
+  --wv-progress-collected-y: 901px;
+  --wv-progress-collected-width: 210px;
+  --wv-progress-collected-height: 30px;
+  --wv-progress-collected-font-size: 17px;
+  --wv-progress-collected-line-height: 22px;
+
+  --wv-progress-bar-x: 48px;
+  --wv-progress-bar-y: 949px;
+  --wv-progress-bar-width: 190px;
+  --wv-progress-bar-height: 10px;
+  --wv-progress-fill-width: 72px;
+  --wv-progress-fill-height: 10px;
+
+  --wv-progress-percent-x: 233px;
+  --wv-progress-percent-y: 939px;
+  --wv-progress-percent-width: 42px;
+  --wv-progress-percent-height: 30px;
+  --wv-progress-percent-font-size: 14px;
+  --wv-progress-percent-line-height: 20px;
+
+  /* ---------------------------------------------------------------------- */
+  /* 9, 10, 11. Search input text + magnifier                               */
+  /* ---------------------------------------------------------------------- */
+  --wv-search-input-x: 141px;
+  --wv-search-input-y: 233px;
+  --wv-search-input-width: 430px;
+  --wv-search-input-height: 52px;
+  --wv-search-input-font-family: Inter, "Segoe UI", sans-serif;
+  --wv-search-input-font-size: 23px;
+  --wv-search-input-font-weight: 400;
+  --wv-search-input-line-height: 32px;
+  --wv-search-input-letter-spacing: 0px;
+  --wv-search-input-color: #394c58;
+  --wv-search-placeholder-color: #737a84;
+
+  --wv-search-icon-x: 71px;
+  --wv-search-icon-y: 236px;
+  --wv-search-icon-width: 28px;
+  --wv-search-icon-height: 28px;
+  --wv-search-icon-stroke-width: 2;
+
+  /* ---------------------------------------------------------------------- */
+  /* 12. Search button visible asset + exact clickable hit box              */
+  /* ---------------------------------------------------------------------- */
+  --wv-search-button-hit-x: 1177px;
+  --wv-search-button-hit-y: 503px;
+  --wv-search-button-hit-width: 170px;
+  --wv-search-button-hit-height: 50px;
+
+  --wv-search-button-asset-x: -74px;
+  --wv-search-button-asset-y: -168px;
+  --wv-search-button-asset-width: 312px;
+  --wv-search-button-asset-height: 402px;
+
+  --wv-search-button-label-x: 0px;
+  --wv-search-button-label-y: 0px;
+  --wv-search-button-label-width: 170px;
+  --wv-search-button-label-height: 50px;
+  --wv-search-button-label-font-size: 22px;
+  --wv-search-button-label-line-height: 30px;
+
+  /* ---------------------------------------------------------------------- */
+  /* 13. Lantern and both theme icons as one group                          */
+  /* ---------------------------------------------------------------------- */
+  --wv-theme-control-x: 1724px;
+  --wv-theme-control-y: -31px;
+  --wv-theme-control-width: 199px;
+  --wv-theme-control-height: 199px;
+  --wv-theme-icons-group-x: 0px;
+  --wv-theme-icons-group-y: 0px;
+  --wv-theme-icons-start-x: 70px;
+  --wv-theme-icons-start-y: 97px;
+  --wv-theme-icon-width: 24px;
+  --wv-theme-icon-height: 24px;
+  --wv-theme-icon-gap: 38px;
+
+  /* ---------------------------------------------------------------------- */
+  /* 14, 15, 17. Assistant panel, dialogue, WORDIE and close button         */
+  /* ---------------------------------------------------------------------- */
+  --wv-assistant-panel-x: 1306px;
+  --wv-assistant-panel-y: 406px;
+  --wv-assistant-panel-width: 743px;
+  --wv-assistant-panel-height: 674px;
+
+  --wv-wordie-x: 290px;
+  --wv-wordie-y: 59px;
+  --wv-wordie-width: 180px;
+  --wv-wordie-height: 30px;
+  --wv-wordie-font-size: 26px;
+  --wv-wordie-line-height: 30px;
+  --wv-wordie-letter-spacing: 1.6px;
+
+  --wv-assistant-user-bubble-x: 326px;
+  --wv-assistant-user-bubble-y: 143px;
+  --wv-assistant-user-bubble-width: 252px;
+  --wv-assistant-user-bubble-min-height: 58px;
+  --wv-assistant-user-bubble-padding-x: 16px;
+  --wv-assistant-user-bubble-padding-y: 10px;
+  --wv-assistant-user-bubble-radius: 15px;
+  --wv-assistant-user-bubble-font-size: 16px;
+  --wv-assistant-user-bubble-line-height: 22px;
+  --wv-assistant-user-bubble-background: #2a3a2e;
+  --wv-assistant-user-bubble-border: #51604b;
+
+  --wv-assistant-reply-x: 116px;
+  --wv-assistant-reply-y: 219px;
+  --wv-assistant-reply-width: 430px;
+  --wv-assistant-reply-padding-x: 20px;
+  --wv-assistant-reply-padding-y: 18px;
+  --wv-assistant-reply-radius: 18px;
+  --wv-assistant-reply-font-size: 15px;
+  --wv-assistant-reply-line-height: 21px;
+
+  --wv-assistant-close-x: 540px;
+  --wv-assistant-close-y: 68px;
+  --wv-assistant-close-width: 38px;
+  --wv-assistant-close-height: 38px;
+  --wv-assistant-close-icon-width: 20px;
+  --wv-assistant-close-icon-height: 20px;
+  --wv-assistant-close-radius: 999px;
+  --wv-assistant-close-background: rgb(19 42 53 / 88%);
+  --wv-assistant-close-border: rgb(201 168 92 / 78%);
+  --wv-assistant-close-color: #f3efe4;
+}
+
+/* ========================================================================== */
+/* Sidebar and logo                                                           */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final {
+  top: var(--wv-sidebar-y) !important;
+  left: var(--wv-sidebar-x) !important;
+  width: var(--wv-sidebar-width) !important;
+  height: var(--wv-sidebar-height) !important;
+  min-width: var(--wv-sidebar-width) !important;
+  min-height: var(--wv-sidebar-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__brand {
+  top: var(--wv-logo-y) !important;
+  left: var(--wv-logo-x) !important;
+  width: var(--wv-logo-width) !important;
+  height: var(--wv-logo-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar__brand-final-logo {
+  width: var(--wv-logo-width) !important;
+  height: var(--wv-logo-height) !important;
+  image-rendering: auto !important;
+  backface-visibility: hidden !important;
+}
+
+/* ========================================================================== */
+/* Sidebar navigation                                                         */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__nav {
+  top: var(--wv-nav-y) !important;
+  left: var(--wv-nav-x) !important;
+  width: var(--wv-nav-width) !important;
+  gap: var(--wv-nav-item-gap) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item {
+  width: var(--wv-nav-item-width) !important;
+  min-width: var(--wv-nav-item-width) !important;
+  max-width: var(--wv-nav-item-width) !important;
+  height: var(--wv-nav-item-height) !important;
+  min-height: var(--wv-nav-item-height) !important;
+  max-height: var(--wv-nav-item-height) !important;
+  flex-basis: var(--wv-nav-item-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item::before {
+  top: var(--wv-nav-default-asset-y) !important;
+  left: var(--wv-nav-default-asset-x) !important;
+  width: var(--wv-nav-default-asset-width) !important;
+  height: var(--wv-nav-default-asset-height) !important;
+  background-size: var(--wv-nav-default-asset-width) var(--wv-nav-default-asset-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item--active::before {
+  top: var(--wv-nav-active-asset-y) !important;
+  left: var(--wv-nav-active-asset-x) !important;
+  width: var(--wv-nav-active-asset-width) !important;
+  height: var(--wv-nav-active-asset-height) !important;
+  background-size: var(--wv-nav-active-asset-width) var(--wv-nav-active-asset-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item__icon {
+  top: var(--wv-nav-icon-y) !important;
+  left: var(--wv-nav-icon-x) !important;
+  width: var(--wv-nav-icon-width) !important;
+  height: var(--wv-nav-icon-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item__icon svg {
+  width: var(--wv-nav-icon-width) !important;
+  height: var(--wv-nav-icon-height) !important;
+  stroke-width: var(--wv-nav-icon-stroke-width) !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .sidebar-nav-item__label {
+  top: var(--wv-nav-text-y) !important;
+  left: var(--wv-nav-text-x) !important;
+  width: var(--wv-nav-text-width) !important;
+  height: var(--wv-nav-text-height) !important;
+  font-size: var(--wv-nav-text-font-size) !important;
+  line-height: var(--wv-nav-text-line-height) !important;
+  font-weight: var(--wv-nav-text-font-weight) !important;
+}
+
+/* ========================================================================== */
+/* Progress panel                                                             */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search .word-valley-progress::before {
+  display: var(--wv-progress-panel-display) !important;
+  top: var(--wv-progress-panel-y) !important;
+  left: var(--wv-progress-panel-x) !important;
+  width: var(--wv-progress-panel-width) !important;
+  height: var(--wv-progress-panel-height) !important;
+  background-size: var(--wv-progress-panel-width) var(--wv-progress-panel-height) !important;
+  opacity: var(--wv-progress-panel-opacity) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__eyebrow {
+  top: var(--wv-progress-title-y) !important;
+  left: var(--wv-progress-title-x) !important;
+  width: var(--wv-progress-title-width) !important;
+  height: var(--wv-progress-title-height) !important;
+  font-size: var(--wv-progress-title-font-size) !important;
+  line-height: var(--wv-progress-title-line-height) !important;
+  letter-spacing: var(--wv-progress-title-letter-spacing) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__streak {
+  top: 0 !important;
+  left: 0 !important;
+  width: var(--wv-sidebar-width) !important;
+  height: var(--wv-sidebar-height) !important;
+  align-items: initial !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__streak strong {
+  position: absolute !important;
+  top: var(--wv-streak-number-y) !important;
+  left: var(--wv-streak-number-x) !important;
+  width: var(--wv-streak-number-width) !important;
+  height: var(--wv-streak-number-height) !important;
+  font-size: var(--wv-streak-number-font-size) !important;
+  line-height: var(--wv-streak-number-line-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__streak span {
+  position: absolute !important;
+  top: var(--wv-streak-label-y) !important;
+  left: var(--wv-streak-label-x) !important;
+  width: var(--wv-streak-label-width) !important;
+  height: var(--wv-streak-label-height) !important;
+  font-size: var(--wv-streak-label-font-size) !important;
+  line-height: var(--wv-streak-label-line-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__days {
+  top: var(--wv-progress-dots-y) !important;
+  left: var(--wv-progress-dots-x) !important;
+  gap: var(--wv-progress-dot-gap) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__days span {
+  width: var(--wv-progress-dot-width) !important;
+  height: var(--wv-progress-dot-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__divider {
+  top: var(--wv-progress-divider-y) !important;
+  left: var(--wv-progress-divider-x) !important;
+  width: var(--wv-progress-divider-width) !important;
+  height: var(--wv-progress-divider-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__collected {
+  top: var(--wv-progress-collected-y) !important;
+  left: var(--wv-progress-collected-x) !important;
+  width: var(--wv-progress-collected-width) !important;
+  height: var(--wv-progress-collected-height) !important;
+  font-size: var(--wv-progress-collected-font-size) !important;
+  line-height: var(--wv-progress-collected-line-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__bar {
+  top: var(--wv-progress-bar-y) !important;
+  left: var(--wv-progress-bar-x) !important;
+  width: var(--wv-progress-bar-width) !important;
+  height: var(--wv-progress-bar-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__bar > span {
+  width: var(--wv-progress-fill-width) !important;
+  height: var(--wv-progress-fill-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__percent {
+  top: var(--wv-progress-percent-y) !important;
+  left: var(--wv-progress-percent-x) !important;
+  width: var(--wv-progress-percent-width) !important;
+  height: var(--wv-progress-percent-height) !important;
+  font-size: var(--wv-progress-percent-font-size) !important;
+  line-height: var(--wv-progress-percent-line-height) !important;
+}
+
+/* ========================================================================== */
+/* Search input                                                               */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input {
+  top: var(--wv-search-input-y) !important;
+  left: var(--wv-search-input-x) !important;
+  width: var(--wv-search-input-width) !important;
+  height: var(--wv-search-input-height) !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--wv-search-input-color) !important;
+  font-family: var(--wv-search-input-font-family) !important;
+  font-size: var(--wv-search-input-font-size) !important;
+  font-weight: var(--wv-search-input-font-weight) !important;
+  line-height: var(--wv-search-input-line-height) !important;
+  letter-spacing: var(--wv-search-input-letter-spacing) !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input:focus,
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input:focus-visible,
+#root .application-frame--word-valley-final-search .vocabulary-search .field__control:focus-within {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input::placeholder {
+  color: var(--wv-search-placeholder-color) !important;
+  font: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search .field__leading-icon {
+  top: var(--wv-search-icon-y) !important;
+  left: var(--wv-search-icon-x) !important;
+  width: var(--wv-search-icon-width) !important;
+  height: var(--wv-search-icon-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search .field__leading-icon svg {
+  width: var(--wv-search-icon-width) !important;
+  height: var(--wv-search-icon-height) !important;
+  stroke-width: var(--wv-search-icon-stroke-width) !important;
+}
+
+/* Exact visual-size button hit area. The transparent PNG canvas lives in ::before. */
+#root .application-frame--word-valley-final-search .vocabulary-search__button {
+  top: var(--wv-search-button-hit-y) !important;
+  left: var(--wv-search-button-hit-x) !important;
+  width: var(--wv-search-button-hit-width) !important;
+  height: var(--wv-search-button-hit-height) !important;
+  min-width: var(--wv-search-button-hit-width) !important;
+  min-height: var(--wv-search-button-hit-height) !important;
+  overflow: visible !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search__button::before {
+  position: absolute !important;
+  top: var(--wv-search-button-asset-y) !important;
+  left: var(--wv-search-button-asset-x) !important;
+  z-index: -1 !important;
+  display: block !important;
+  width: var(--wv-search-button-asset-width) !important;
+  height: var(--wv-search-button-asset-height) !important;
+  background: url("../assets/home/home-search-button.png") 0 0 / 100% 100% no-repeat !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search__button .button__label {
+  top: var(--wv-search-button-label-y) !important;
+  left: var(--wv-search-button-label-x) !important;
+  width: var(--wv-search-button-label-width) !important;
+  height: var(--wv-search-button-label-height) !important;
+  font-size: var(--wv-search-button-label-font-size) !important;
+  line-height: var(--wv-search-button-label-line-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search__button:focus-visible {
+  outline: 2px solid #f5d67c !important;
+  outline-offset: 3px !important;
+  border-radius: 10px !important;
+}
+
+/* ========================================================================== */
+/* Theme control                                                              */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control {
+  top: var(--wv-theme-control-y) !important;
+  left: var(--wv-theme-control-x) !important;
+  width: var(--wv-theme-control-width) !important;
+  height: var(--wv-theme-control-height) !important;
+  background-size: var(--wv-theme-control-width) var(--wv-theme-control-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option {
+  width: var(--wv-theme-icon-width) !important;
+  height: var(--wv-theme-icon-height) !important;
+  min-width: var(--wv-theme-icon-width) !important;
+  min-height: var(--wv-theme-icon-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[data-theme-option="day"] {
+  top: calc(var(--wv-theme-icons-start-y) + var(--wv-theme-icons-group-y)) !important;
+  left: calc(var(--wv-theme-icons-start-x) + var(--wv-theme-icons-group-x)) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option[data-theme-option="night"] {
+  top: calc(var(--wv-theme-icons-start-y) + var(--wv-theme-icons-group-y)) !important;
+  left: calc(
+    var(--wv-theme-icons-start-x) + var(--wv-theme-icons-group-x) +
+      var(--wv-theme-icon-width) + var(--wv-theme-icon-gap)
+  ) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-theme-control__option svg {
+  width: var(--wv-theme-icon-width) !important;
+  height: var(--wv-theme-icon-height) !important;
+}
+
+/* ========================================================================== */
+/* Assistant                                                                  */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search .assistant-panel {
+  top: var(--wv-assistant-panel-y) !important;
+  left: var(--wv-assistant-panel-x) !important;
+  width: var(--wv-assistant-panel-width) !important;
+  height: var(--wv-assistant-panel-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading {
+  top: var(--wv-wordie-y) !important;
+  left: var(--wv-wordie-x) !important;
+  width: var(--wv-wordie-width) !important;
+  height: var(--wv-wordie-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__heading h2 {
+  width: var(--wv-wordie-width) !important;
+  height: var(--wv-wordie-height) !important;
+  font-size: var(--wv-wordie-font-size) !important;
+  line-height: var(--wv-wordie-line-height) !important;
+  letter-spacing: var(--wv-wordie-letter-spacing) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] {
+  top: var(--wv-assistant-user-bubble-y) !important;
+  left: var(--wv-assistant-user-bubble-x) !important;
+  display: flex !important;
+  width: var(--wv-assistant-user-bubble-width) !important;
+  height: auto !important;
+  min-height: var(--wv-assistant-user-bubble-min-height) !important;
+  align-items: center !important;
+  padding: var(--wv-assistant-user-bubble-padding-y) var(--wv-assistant-user-bubble-padding-x) !important;
+  overflow: visible !important;
+  border-color: var(--wv-assistant-user-bubble-border) !important;
+  border-radius: var(--wv-assistant-user-bubble-radius) !important;
+  background: var(--wv-assistant-user-bubble-background) !important;
+  box-shadow: 0 8px 20px rgb(6 18 23 / 18%) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] p {
+  position: static !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  font-size: var(--wv-assistant-user-bubble-font-size) !important;
+  line-height: var(--wv-assistant-user-bubble-line-height) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"] {
+  top: var(--wv-assistant-reply-y) !important;
+  left: var(--wv-assistant-reply-x) !important;
+  width: var(--wv-assistant-reply-width) !important;
+  padding: var(--wv-assistant-reply-padding-y) var(--wv-assistant-reply-padding-x) !important;
+  border-radius: var(--wv-assistant-reply-radius) !important;
+  font-size: var(--wv-assistant-reply-font-size) !important;
+  line-height: var(--wv-assistant-reply-line-height) !important;
+  box-shadow: 0 10px 24px rgb(6 18 23 / 14%) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close {
+  top: var(--wv-assistant-close-y) !important;
+  left: var(--wv-assistant-close-x) !important;
+  z-index: 200 !important;
+  display: grid !important;
+  width: var(--wv-assistant-close-width) !important;
+  height: var(--wv-assistant-close-height) !important;
+  min-width: var(--wv-assistant-close-width) !important;
+  min-height: var(--wv-assistant-close-height) !important;
+  place-items: center !important;
+  border: 1px solid var(--wv-assistant-close-border) !important;
+  border-radius: var(--wv-assistant-close-radius) !important;
+  background: var(--wv-assistant-close-background) !important;
+  color: var(--wv-assistant-close-color) !important;
+  box-shadow: 0 5px 14px rgb(5 16 21 / 25%) !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close svg {
+  width: var(--wv-assistant-close-icon-width) !important;
+  height: var(--wv-assistant-close-icon-height) !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close:hover {
+  border-color: #f2d887 !important;
+  background: rgb(38 57 46 / 96%) !important;
+  color: #fffaf0 !important;
+  transform: translateY(-1px) !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-panel__close:focus-visible {
+  outline: 2px solid #f5d67c !important;
+  outline-offset: 3px !important;
+}
+
+/* ========================================================================== */
+/* 16. Best possible browser-side asset rendering                             */
+/* ========================================================================== */
+
+#root .application-frame--word-valley-final-search img,
+#root .application-frame--word-valley-final-search video {
+  image-rendering: auto !important;
+  backface-visibility: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
