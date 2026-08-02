@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 
-import sidebarFrame from "../../assets/shell/sidebar-frame.png";
+import sidebarPanel from "../../assets/shell/sidebar-panel.png";
 import wordValleyLogo from "../../assets/shell/word-valley-logo.png";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
@@ -30,9 +30,9 @@ function FinalWordValleySidebar() {
       <img
         alt=""
         aria-hidden="true"
-        className="app-sidebar__frame-final"
+        className="app-sidebar__panel-final"
         draggable={false}
-        src={sidebarFrame}
+        src={sidebarPanel}
       />
 
       <Link
