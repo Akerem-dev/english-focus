@@ -1,7 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 
-import sidebarPanel from "../../assets/shell/sidebar-panel.png";
-import wordValleyLogo from "../../assets/shell/word-valley-logo.png";
+import sidebarFrame from "../../assets/shell/sidebar-frame.png";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
 import { dispatchAppCommand } from "../command-bar";
@@ -32,19 +31,8 @@ function FinalWordValleySidebar() {
         aria-hidden="true"
         className="app-sidebar__panel-final"
         draggable={false}
-        src={sidebarPanel}
+        src={sidebarFrame}
       />
-
-      <Link
-        aria-label="Word Valley search home"
-        className="app-sidebar__brand"
-        onClick={() => {
-          dispatchAppCommand("open-vocabulary-home");
-        }}
-        to={ROUTE_PATHS.vocabulary}
-      >
-        <img alt="Word Valley" className="app-sidebar__brand-final-logo" src={wordValleyLogo} />
-      </Link>
 
       <nav aria-label="Primary navigation" className="app-sidebar__nav">
         {FINAL_SIDEBAR_ITEMS.map((item) =>
