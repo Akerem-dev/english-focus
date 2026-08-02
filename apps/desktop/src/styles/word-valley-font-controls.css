@@ -1,96 +1,106 @@
 /*
- * Word Valley typography controls.
- * Loaded last so these font choices override the older Figma sheets without
- * changing any of the screenshot-tuning position and size variables.
+ * Word Valley typography — final override.
+ *
+ * These selectors intentionally include the full stage path so older
+ * screenshot-tuning rules that use !important cannot win by specificity.
  */
 
 #root .application-frame--word-valley-final-search {
   --wv-font-inria: "Inria Serif", Georgia, "Times New Roman", serif;
-  --wv-font-interface: Inter, "Segoe UI", sans-serif;
 }
 
-/* Main title, section titles and the main word inside the assistant card. */
-#root .application-frame--word-valley-final-search .vocabulary-hero h1,
-#root .application-frame--word-valley-final-search .word-list-card__header h2,
-#root .application-frame--word-valley-final-search .assistant-preview__title-row h3 {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .vocabulary-hero h1 {
   font-family: var(--wv-font-inria) !important;
+  font-size: 86px !important;
   font-weight: 400 !important;
+  line-height: 94px !important;
+  font-synthesis: none !important;
 }
 
-/* Main subtitle. */
-#root .application-frame--word-valley-final-search .vocabulary-hero__description {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .vocabulary-hero__description {
   font-family: var(--wv-font-inria) !important;
+  font-size: 26px !important;
   font-weight: 300 !important;
+  line-height: 34px !important;
+  font-synthesis: none !important;
 }
 
-/* Sidebar menu labels. */
-#root .application-frame--word-valley-final-search .sidebar-nav-item__label {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .app-sidebar--word-valley-final .sidebar-nav-item__label {
   font-family: var(--wv-font-inria) !important;
   font-size: var(--wv-nav-text-font-size) !important;
   font-weight: 400 !important;
   line-height: var(--wv-nav-text-line-height) !important;
+  font-synthesis: none !important;
 }
 
-/* Search field and placeholder. */
-#root .application-frame--word-valley-final-search .vocabulary-search .field__input,
-#root .application-frame--word-valley-final-search .vocabulary-search .field__input::placeholder {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .vocabulary-search .field__input,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .vocabulary-search .field__input::placeholder {
   font-family: var(--wv-font-inria) !important;
+  font-size: var(--wv-search-input-font-size, 23px) !important;
   font-weight: 400 !important;
+  line-height: var(--wv-search-input-line-height, 32px) !important;
+  font-synthesis: none !important;
 }
 
-#root .application-frame--word-valley-final-search .vocabulary-search .field__input::placeholder {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .vocabulary-search .field__input::placeholder {
   font-weight: 300 !important;
 }
 
-/* Main search button. */
-#root .application-frame--word-valley-final-search .vocabulary-search__button .button__label {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .vocabulary-search__button .button__label {
   font-family: var(--wv-font-inria) !important;
+  font-size: var(--wv-search-button-label-font-size, 22px) !important;
   font-weight: 700 !important;
+  line-height: var(--wv-search-button-label-line-height, 30px) !important;
+  font-synthesis: none !important;
 }
 
-/* Recent Searches / Recently Viewed words. */
-#root .application-frame--word-valley-final-search .word-list-row__word {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-list-card__header h2 {
+  font-family: var(--wv-font-inria) !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 30px !important;
+  font-synthesis: none !important;
+}
+
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-list-row__word,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-list-card__empty {
   font-family: var(--wv-font-inria) !important;
   font-weight: 400 !important;
+  font-synthesis: none !important;
 }
 
-/* Progress panel. */
-#root .application-frame--word-valley-final-search .word-valley-progress__eyebrow,
-#root .application-frame--word-valley-final-search .word-valley-progress__streak,
-#root .application-frame--word-valley-final-search .word-valley-progress__streak strong,
-#root .application-frame--word-valley-final-search .word-valley-progress__streak span,
-#root .application-frame--word-valley-final-search .word-valley-progress__collected,
-#root .application-frame--word-valley-final-search .word-valley-progress__percent {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__eyebrow,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__streak,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__streak strong,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__streak span,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__collected,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__percent {
   font-family: var(--wv-font-inria) !important;
+  font-synthesis: none !important;
 }
 
-#root .application-frame--word-valley-final-search .word-valley-progress__eyebrow {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .word-valley-progress__eyebrow {
   font-weight: 700 !important;
 }
 
-/* Assistant question and answer typography. WORDIE intentionally keeps its
- * Irish Grover display face. */
-#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] p,
-#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"],
-#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"] p,
-#root .application-frame--word-valley-final-search .assistant-preview__content p,
-#root .application-frame--word-valley-final-search .assistant-preview__content h4,
-#root .application-frame--word-valley-final-search .assistant-preview__eyebrow,
-#root .application-frame--word-valley-final-search .assistant-preview__metadata {
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-launcher__prompt,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-panel__heading p,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-message[data-author="user"] p,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-message[data-author="assistant"] p,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-preview__title-row h3,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-preview__content h4,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-preview__content p,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-preview__eyebrow,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-preview__metadata,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-preview__actions .button,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-shortcuts button,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-composer input,
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-composer .button {
   font-family: var(--wv-font-inria) !important;
+  font-synthesis: none !important;
 }
 
-/* Assistant actions and composer. */
-#root .application-frame--word-valley-final-search .assistant-preview__actions .button,
-#root .application-frame--word-valley-final-search .assistant-shortcuts button,
-#root .application-frame--word-valley-final-search .assistant-composer input,
-#root .application-frame--word-valley-final-search .assistant-composer .button {
-  font-family: var(--wv-font-inria) !important;
-}
-
-/* Keep compact utility labels readable with Inter. */
-#root .application-frame--word-valley-final-search .assistant-preview__eyebrow,
-#root .application-frame--word-valley-final-search .assistant-preview__metadata,
-#root .application-frame--word-valley-final-search .assistant-preview__content h4 {
-  font-weight: 700 !important;
+html body #root .application-frame--word-valley-final-search .word-valley-stage .assistant-panel__heading h2 {
+  font-family: "Irish Grover", var(--wv-font-inria) !important;
+  font-weight: 400 !important;
 }
