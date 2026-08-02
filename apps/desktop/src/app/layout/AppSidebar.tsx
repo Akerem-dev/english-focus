@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 
+import sidebarFrame from "../../assets/shell/sidebar-frame.png";
 import wordValleyLogo from "../../assets/shell/word-valley-logo.png";
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
@@ -26,6 +27,14 @@ const FINAL_SIDEBAR_ITEMS: readonly FinalSidebarItem[] = Object.freeze([
 function FinalWordValleySidebar() {
   return (
     <aside className="app-sidebar app-sidebar--word-valley-final">
+      <img
+        alt=""
+        aria-hidden="true"
+        className="app-sidebar__frame-final"
+        draggable={false}
+        src={sidebarFrame}
+      />
+
       <Link
         aria-label="Word Valley search home"
         className="app-sidebar__brand"
