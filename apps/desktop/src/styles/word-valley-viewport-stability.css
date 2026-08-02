@@ -1,0 +1,39 @@
+/*
+ * Keep the authored 1920×1080 Word Valley stage stationary while Wordie opens
+ * and closes. Focus restoration must not make the browser scroll the document.
+ */
+
+html:has(.application-frame--word-valley-final-search),
+body:has(.application-frame--word-valley-final-search) {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  scroll-behavior: auto !important;
+}
+
+body:has(.application-frame--word-valley-final-search) {
+  position: fixed !important;
+  inset: 0 !important;
+  margin: 0 !important;
+}
+
+#root:has(.application-frame--word-valley-final-search),
+#root .application-frame--word-valley-final-search,
+#root .application-frame--word-valley-final-search .word-valley-stage-viewport {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  scroll-behavior: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .assistant-launcher,
+#root .application-frame--word-valley-final-search .assistant-panel,
+#root .application-frame--word-valley-final-search .assistant-panel__close,
+#root .application-frame--word-valley-final-search .assistant-composer input {
+  scroll-margin: 0 !important;
+  scroll-padding: 0 !important;
+}
