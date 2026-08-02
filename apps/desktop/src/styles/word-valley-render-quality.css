@@ -1,0 +1,116 @@
+/*
+ * Word Valley rendering-quality pass.
+ *
+ * This does not invent new source pixels. It removes avoidable WebView blur,
+ * uses Chromium's higher-contrast downsampling for foreground UI PNGs, keeps
+ * the scenic background on smooth interpolation, and prevents inherited
+ * filters/opacity/transforms from softening exported Figma assets.
+ */
+
+#root .application-frame--word-valley-final-search {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: geometricPrecision !important;
+}
+
+/* Scenic art must remain smoothly interpolated; edge-enhancement creates
+ * banding in skies and gradients. */
+#root
+  .application-frame--word-valley-final-search
+  .word-valley-backdrop__static,
+#root
+  .application-frame--word-valley-final-search
+  .word-valley-backdrop__video {
+  image-rendering: auto !important;
+  filter: none !important;
+  opacity: 1 !important;
+  backface-visibility: visible !important;
+}
+
+/* Foreground exported UI artwork benefits from Chromium's sharper
+ * downsampling when the 1920×1080 stage is displayed at a smaller window. */
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar__panel-final,
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar__brand-final-logo,
+#root
+  .application-frame--word-valley-final-search
+  .assistant-launcher__frame,
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel__mascot,
+#root
+  .application-frame--word-valley-final-search
+  .assistant-launcher__mascot {
+  image-rendering: -webkit-optimize-contrast !important;
+  object-position: 0 0 !important;
+  filter: none !important;
+  opacity: 1 !important;
+  backface-visibility: visible !important;
+  -webkit-backface-visibility: visible !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  will-change: auto !important;
+}
+
+/* Prevent generic legacy rules from adding blur/brightness/drop-shadow to any
+ * remaining Word Valley image element. */
+#root
+  .application-frame--word-valley-final-search
+  img:not(.word-valley-backdrop__static) {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* SVG icons and borders remain crisp when the desktop stage is scaled. */
+#root .application-frame--word-valley-final-search svg {
+  shape-rendering: geometricPrecision !important;
+  text-rendering: geometricPrecision !important;
+}
+
+/* Exported assets rendered as CSS backgrounds. Keep their source image at a
+ * single, exact background layer and disable effects that trigger an extra
+ * softened raster pass. */
+#root
+  .application-frame--word-valley-final-search
+  .sidebar-nav-item::before,
+#root
+  .application-frame--word-valley-final-search
+  .word-valley-progress::before,
+#root
+  .application-frame--word-valley-final-search
+  .vocabulary-hero__ornament,
+#root
+  .application-frame--word-valley-final-search
+  .vocabulary-search > .field,
+#root
+  .application-frame--word-valley-final-search
+  .vocabulary-search__button::before,
+#root
+  .application-frame--word-valley-final-search
+  .word-list-card,
+#root
+  .application-frame--word-valley-final-search
+  .word-valley-theme-control,
+#root
+  .application-frame--word-valley-final-search
+  .assistant-panel {
+  background-repeat: no-repeat !important;
+  background-blend-mode: normal !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* Do not force GPU layers on static decorative PNGs. Chromium can otherwise
+ * cache a low-resolution intermediate surface after window resizing. */
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar__panel-final,
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar__brand-final-logo {
+  translate: none !important;
+  contain: none !important;
+}
