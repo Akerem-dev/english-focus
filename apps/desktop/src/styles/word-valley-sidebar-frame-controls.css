@@ -1,19 +1,21 @@
 /*
- * Word Valley main sidebar-frame controls.
+ * Word Valley main sidebar-panel controls.
+ *
+ * Figma reference: node 55:6
+ * Layer box: 908 × 1384 at x:-256 / y:-157.
  * Imported after word-valley-tuning-controls.css so these values win.
- * Edit only the variables in the first block for screenshot tuning.
+ * Edit only the variables in the first block while tuning screenshots.
  */
 
 #root .application-frame--word-valley-final-search {
-  --wv-sidebar-frame-x: -256px;
-  --wv-sidebar-frame-y: -157px;
-  --wv-sidebar-frame-width: 908px;
-  --wv-sidebar-frame-height: 1384px;
-  --wv-sidebar-frame-opacity: 1;
+  --wv-sidebar-panel-x: -256px;
+  --wv-sidebar-panel-y: -157px;
+  --wv-sidebar-panel-width: 908px;
+  --wv-sidebar-panel-height: 1384px;
+  --wv-sidebar-panel-opacity: 1;
 }
 
-/* The old pseudo-element background is disabled. The real PNG is rendered
- * as an img element so WebView scaling is more predictable and adjustable. */
+/* The older CSS-drawn/background panel is disabled. */
 #root
   .application-frame--word-valley-final-search
   .app-sidebar--word-valley-final::before {
@@ -22,21 +24,34 @@
   background: none !important;
 }
 
+/*
+ * Figma clips this large image only at the 1920×1080 desktop frame, not at
+ * the narrow navigation column. Keeping overflow visible preserves the
+ * panel's right-hand and bottom ornament details.
+ */
 #root
   .application-frame--word-valley-final-search
-  .app-sidebar__frame-final {
+  .app-sidebar--word-valley-final {
+  overflow: visible !important;
+  border-right: 0 !important;
+  background: transparent !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .app-sidebar__panel-final {
   position: absolute !important;
-  top: var(--wv-sidebar-frame-y) !important;
-  left: var(--wv-sidebar-frame-x) !important;
+  top: var(--wv-sidebar-panel-y) !important;
+  left: var(--wv-sidebar-panel-x) !important;
   z-index: 0 !important;
   display: block !important;
-  width: var(--wv-sidebar-frame-width) !important;
-  height: var(--wv-sidebar-frame-height) !important;
+  width: var(--wv-sidebar-panel-width) !important;
+  height: var(--wv-sidebar-panel-height) !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: fill !important;
   object-position: 0 0 !important;
-  opacity: var(--wv-sidebar-frame-opacity) !important;
+  opacity: var(--wv-sidebar-panel-opacity) !important;
   image-rendering: auto !important;
   backface-visibility: hidden !important;
   transform: translate3d(0, 0, 0) !important;
