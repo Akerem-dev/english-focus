@@ -4,28 +4,29 @@
  * The logo remains a child of the sidebar in the React tree, but its tuning
  * variables represent absolute 1920×1080 stage coordinates. Subtracting the
  * parent sidebar offset prevents sidebar movement from dragging the logo.
- *
- * Keep editing these existing variables in word-valley-tuning-controls.css:
- *   --wv-logo-x
- *   --wv-logo-y
- *   --wv-logo-width
- *   --wv-logo-height
  */
 
-#root
-  .application-frame--word-valley-final-search
-  .app-sidebar--word-valley-final
-  .app-sidebar__brand {
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__brand {
+  position: absolute !important;
   top: calc(var(--wv-logo-y) - var(--wv-sidebar-y)) !important;
   left: calc(var(--wv-logo-x) - var(--wv-sidebar-x)) !important;
+  z-index: 200 !important;
+  display: block !important;
   width: var(--wv-logo-width) !important;
   height: var(--wv-logo-height) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   transform: none !important;
+  pointer-events: auto !important;
 }
 
-#root
-  .application-frame--word-valley-final-search
-  .app-sidebar__brand-final-logo {
+#root .application-frame--word-valley-final-search .app-sidebar__brand-final-logo {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
   display: block !important;
   width: var(--wv-logo-width) !important;
   height: var(--wv-logo-height) !important;
@@ -33,9 +34,17 @@
   max-height: none !important;
   object-fit: fill !important;
   object-position: 0 0 !important;
-  image-rendering: auto !important;
-  backface-visibility: hidden !important;
-  transform: translate3d(0, 0, 0) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  backface-visibility: visible !important;
+  transform: none !important;
   transform-origin: top left !important;
   filter: none !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+#root .application-frame--word-valley-final-search .app-sidebar__panel-final {
+  z-index: 0 !important;
 }
