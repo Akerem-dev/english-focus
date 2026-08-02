@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 
 import "@fontsource/cormorant-garamond/400.css";
 import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/inria-serif/300.css";
+import "@fontsource/inria-serif/400.css";
+import "@fontsource/inria-serif/700.css";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
