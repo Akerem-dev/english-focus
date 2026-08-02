@@ -1,48 +1,61 @@
 /*
  * Word Valley logo positioning — independent from the sidebar shell.
  *
- * The logo remains a child of the sidebar in the React tree, but its tuning
- * variables represent absolute 1920×1080 stage coordinates. Subtracting the
- * parent sidebar offset prevents sidebar movement from dragging the logo.
+ * The logo is rendered as a direct child of the 1920×1080 stage. Sidebar
+ * clipping, panel replacement and assistant state changes therefore cannot
+ * hide or move it.
  */
 
-#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__brand {
+#root .application-frame--word-valley-final-search .word-valley-stage-logo {
   position: absolute !important;
-  top: calc(var(--wv-logo-y) - var(--wv-sidebar-y)) !important;
-  left: calc(var(--wv-logo-x) - var(--wv-sidebar-x)) !important;
-  z-index: 200 !important;
+  top: var(--wv-logo-y, -52px) !important;
+  left: var(--wv-logo-x, -89px) !important;
+  z-index: 500 !important;
   display: block !important;
-  width: var(--wv-logo-width) !important;
-  height: var(--wv-logo-height) !important;
+  width: var(--wv-logo-width, 514.5px) !important;
+  height: var(--wv-logo-height, 343px) !important;
   min-width: 0 !important;
   min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   visibility: visible !important;
   opacity: 1 !important;
   transform: none !important;
   pointer-events: auto !important;
+  user-select: none !important;
 }
 
-#root .application-frame--word-valley-final-search .app-sidebar__brand-final-logo {
+#root .application-frame--word-valley-final-search .word-valley-stage-logo__image {
   position: absolute !important;
   inset: 0 !important;
   z-index: 1 !important;
   display: block !important;
-  width: var(--wv-logo-width) !important;
-  height: var(--wv-logo-height) !important;
+  width: 100% !important;
+  height: 100% !important;
   max-width: none !important;
   max-height: none !important;
   object-fit: fill !important;
   object-position: 0 0 !important;
   visibility: visible !important;
   opacity: 1 !important;
-  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: auto !important;
   backface-visibility: visible !important;
-  transform: none !important;
+  transform: translateZ(0) !important;
   transform-origin: top left !important;
   filter: none !important;
   pointer-events: none !important;
   user-select: none !important;
+}
+
+/* The old sidebar-owned logo slot is no longer used on this screen. */
+#root .application-frame--word-valley-final-search .app-sidebar--word-valley-final .app-sidebar__brand,
+#root .application-frame--word-valley-final-search .app-sidebar__brand-final-logo {
+  display: none !important;
 }
 
 #root .application-frame--word-valley-final-search .app-sidebar__panel-final {
