@@ -49,3 +49,4 @@
 
 /* Import last: centralized screenshot-by-screenshot fine-tuning controls. */
 @import "./word-valley-tuning-controls.css";
+@import "./word-valley-sidebar-frame-controls.css";
