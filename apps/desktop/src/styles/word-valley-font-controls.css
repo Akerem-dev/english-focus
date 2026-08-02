@@ -1,0 +1,96 @@
+/*
+ * Word Valley typography controls.
+ * Loaded last so these font choices override the older Figma sheets without
+ * changing any of the screenshot-tuning position and size variables.
+ */
+
+#root .application-frame--word-valley-final-search {
+  --wv-font-inria: "Inria Serif", Georgia, "Times New Roman", serif;
+  --wv-font-interface: Inter, "Segoe UI", sans-serif;
+}
+
+/* Main title, section titles and the main word inside the assistant card. */
+#root .application-frame--word-valley-final-search .vocabulary-hero h1,
+#root .application-frame--word-valley-final-search .word-list-card__header h2,
+#root .application-frame--word-valley-final-search .assistant-preview__title-row h3 {
+  font-family: var(--wv-font-inria) !important;
+  font-weight: 400 !important;
+}
+
+/* Main subtitle. */
+#root .application-frame--word-valley-final-search .vocabulary-hero__description {
+  font-family: var(--wv-font-inria) !important;
+  font-weight: 300 !important;
+}
+
+/* Sidebar menu labels. */
+#root .application-frame--word-valley-final-search .sidebar-nav-item__label {
+  font-family: var(--wv-font-inria) !important;
+  font-size: var(--wv-nav-text-font-size) !important;
+  font-weight: 400 !important;
+  line-height: var(--wv-nav-text-line-height) !important;
+}
+
+/* Search field and placeholder. */
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input,
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input::placeholder {
+  font-family: var(--wv-font-inria) !important;
+  font-weight: 400 !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-search .field__input::placeholder {
+  font-weight: 300 !important;
+}
+
+/* Main search button. */
+#root .application-frame--word-valley-final-search .vocabulary-search__button .button__label {
+  font-family: var(--wv-font-inria) !important;
+  font-weight: 700 !important;
+}
+
+/* Recent Searches / Recently Viewed words. */
+#root .application-frame--word-valley-final-search .word-list-row__word {
+  font-family: var(--wv-font-inria) !important;
+  font-weight: 400 !important;
+}
+
+/* Progress panel. */
+#root .application-frame--word-valley-final-search .word-valley-progress__eyebrow,
+#root .application-frame--word-valley-final-search .word-valley-progress__streak,
+#root .application-frame--word-valley-final-search .word-valley-progress__streak strong,
+#root .application-frame--word-valley-final-search .word-valley-progress__streak span,
+#root .application-frame--word-valley-final-search .word-valley-progress__collected,
+#root .application-frame--word-valley-final-search .word-valley-progress__percent {
+  font-family: var(--wv-font-inria) !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-progress__eyebrow {
+  font-weight: 700 !important;
+}
+
+/* Assistant question and answer typography. WORDIE intentionally keeps its
+ * Irish Grover display face. */
+#root .application-frame--word-valley-final-search .assistant-message[data-author="user"] p,
+#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"],
+#root .application-frame--word-valley-final-search .assistant-messages:not([data-has-preview]) .assistant-message[data-author="assistant"] p,
+#root .application-frame--word-valley-final-search .assistant-preview__content p,
+#root .application-frame--word-valley-final-search .assistant-preview__content h4,
+#root .application-frame--word-valley-final-search .assistant-preview__eyebrow,
+#root .application-frame--word-valley-final-search .assistant-preview__metadata {
+  font-family: var(--wv-font-inria) !important;
+}
+
+/* Assistant actions and composer. */
+#root .application-frame--word-valley-final-search .assistant-preview__actions .button,
+#root .application-frame--word-valley-final-search .assistant-shortcuts button,
+#root .application-frame--word-valley-final-search .assistant-composer input,
+#root .application-frame--word-valley-final-search .assistant-composer .button {
+  font-family: var(--wv-font-inria) !important;
+}
+
+/* Keep compact utility labels readable with Inter. */
+#root .application-frame--word-valley-final-search .assistant-preview__eyebrow,
+#root .application-frame--word-valley-final-search .assistant-preview__metadata,
+#root .application-frame--word-valley-final-search .assistant-preview__content h4 {
+  font-weight: 700 !important;
+}
