@@ -2,9 +2,11 @@ import type { FormEvent, RefObject } from "react";
 
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon, type AppIconName } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant";
 import type { VocabularySearchState } from "../../search/state";
 import {
   VocabularyInvalidSearchState,
+  VocabularyNotFoundState,
   VocabularySearchResultsState,
   VocabularySearchingState
 } from "../components";
@@ -192,18 +194,22 @@ export function VocabularyLookupView({
             ))}
           </div>
         </div>
-
-        {state.kind === "not-found" ? (
-          <div aria-live="polite" className="wv84-empty-result" role="status">
-            <AppIcon name="search" size={16} />
-            <span>
-              <strong>No results found</strong>
-              <span>“{state.normalizedQuery}” is not in your Wordbook.</span>
-            </span>
-          </div>
-        ) : null}
       </section>
 
+      {state.kind === "not-found" ? (
+        <div className="wv84-not-found">
+          <VocabularyNotFoundState
+            canCreateEntry={state.canCreateEntry}
+            normalizedQuery={state.normalizedQuery}
+            onEditSearch={onEditSearch}
+            onOpenAssistant={() =>
+              dispatchAssistantRequest({ kind: "open", word: state.normalizedQuery })
+            }
+            onSelectSuggestion={onSearch}
+            suggestions={state.suggestions}
+          />
+        </div>
+      ) : null}
       {state.kind === "searching" ? <VocabularySearchingState query={state.query} /> : null}
       {state.kind === "matches" ? (
         <VocabularySearchResultsState
