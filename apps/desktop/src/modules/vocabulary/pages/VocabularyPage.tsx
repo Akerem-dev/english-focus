@@ -399,6 +399,7 @@ export function VocabularyPage() {
             dedupeKey: "study-details-saved"
           });
         }}
+        onToggleFavorite={() => void toggleCurrentFavorite()}
         state={searchState}
       />
     );
