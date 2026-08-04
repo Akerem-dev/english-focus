@@ -126,7 +126,7 @@ export function VocabularyFoundState({
         </section>
       </section>
 
-      <div aria-hidden="true" className="wv84-found-legacy">
+      <div className="wv84-found-legacy">
         <VocabularyHeader
           backLabel={backLabel}
           entry={entry}
