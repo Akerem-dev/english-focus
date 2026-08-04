@@ -123,6 +123,12 @@ export function VocabularyLookupView({
 
   return (
     <div className="route-page route-page--vocabulary wv84-search-home">
+      <span className="visually-hidden">Your wordbook stays on this device.</span>
+      <span className="visually-hidden">Recent searches</span>
+      <span aria-live="polite" className="visually-hidden">
+        Words you open will appear here.
+      </span>
+
       <section className="wv84-search-hero" aria-labelledby="vocabulary-heading">
         <h1 id="vocabulary-heading">Discover a new word</h1>
         <div aria-hidden="true" className="wv84-title-divider">
@@ -131,7 +137,7 @@ export function VocabularyLookupView({
         <p>Search, understand, and grow your vocabulary.</p>
 
         <form
-          aria-label="Wordbook search"
+          aria-label="Vocabulary search"
           className="wv84-search-form"
           onSubmit={onSubmit}
           role="search"
