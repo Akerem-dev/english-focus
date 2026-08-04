@@ -2,6 +2,7 @@ import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
 import { useOptionalSettings } from "../../../app/providers";
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant";
 
 import { EtymologySection } from "./EtymologySection";
 import { ExampleSentenceList } from "./ExampleSentenceList";
@@ -77,7 +78,12 @@ export function VocabularyFoundState({
           </button>
           <button type="button">Examples</button>
           <button type="button">Synonyms</button>
-          <button type="button">Word Family</button>
+          <button
+            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+            type="button"
+          >
+            Word Family
+          </button>
         </nav>
 
         <section className="wv84-definition-card">
