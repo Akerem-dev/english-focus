@@ -38,7 +38,3 @@
 @import "./interface-polish.css";
 @import "./phase-1-ui-polish.css";
 @import "./phase-3-health-backup.css";
-
-/* Figma 84:2 / 84:181 final Search implementation. */
-@import "./word-valley-figma-84-shell.css";
-@import "./word-valley-figma-84.css";
