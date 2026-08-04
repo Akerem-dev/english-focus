@@ -18,10 +18,7 @@ import {
   AssistantPanelMascot,
   type AssistantMascotState
 } from "./AssistantMascot";
-import {
-  createAssistantWordPreview,
-  type AssistantWordPreviewModel
-} from "./AssistantWordPreview";
+import { createAssistantWordPreview, type AssistantWordPreviewModel } from "./AssistantWordPreview";
 
 type AssistantSavePlan = Extract<VocabularyPersistencePlan, { readonly kind: "save" }>;
 type QuickAction = "simple" | "examples" | "compare" | "breakdown" | "quiz";
@@ -142,7 +139,9 @@ export function AssistantDock() {
         setPreview(undefined);
         setSavePlan(undefined);
         setSaveError(undefined);
-        setAssistantMessage(`“${detail.word}” is ready in the input. Press the arrow to prepare it.`);
+        setAssistantMessage(
+          `“${detail.word}” is ready in the input. Press the arrow to prepare it.`
+        );
       }
 
       setMascotState("ready");
@@ -399,13 +398,15 @@ export function AssistantDock() {
                 ) : null}
                 {(preview?.state === "existing" || preview?.state === "saved") &&
                 preview.complete ? (
-                  <button className="wv84-answer-action" onClick={openExistingPreview} type="button">
+                  <button
+                    className="wv84-answer-action"
+                    onClick={openExistingPreview}
+                    type="button"
+                  >
                     Open in Wordbook
                   </button>
                 ) : null}
-                {saveError === undefined ? null : (
-                  <p className="wv84-answer-error">{saveError}</p>
-                )}
+                {saveError === undefined ? null : <p className="wv84-answer-error">{saveError}</p>}
               </article>
             </div>
 
