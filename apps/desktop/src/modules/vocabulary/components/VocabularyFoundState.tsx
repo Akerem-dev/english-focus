@@ -114,7 +114,7 @@ export function VocabularyFoundState({
             <h2>Example Sentence</h2>
             <p>{exampleSentence}</p>
           </div>
-          <AppIcon aria-label="Read example aloud" name="volume" size={30} />
+          <AppIcon label="Read example aloud" name="volume" size={30} />
         </section>
       </section>
 
