@@ -145,7 +145,7 @@ export function VocabularyLookupView({
           <AppIcon className="wv84-search-form__icon" name="search" size={34} />
           <SearchInput
             ref={searchInputRef}
-            aria-label="Search your wordbook"
+            aria-label="Search vocabulary"
             label="Search your wordbook"
             onChange={(event) => onQueryChange(event.currentTarget.value)}
             onClear={onClear}
@@ -170,7 +170,7 @@ export function VocabularyLookupView({
           ) : null}
 
           <Button
-            aria-label="Search your wordbook"
+            aria-label="Search vocabulary"
             className="wv84-search-form__button"
             isLoading={state.kind === "searching"}
             size="large"
