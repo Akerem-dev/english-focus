@@ -321,9 +321,10 @@ export function AssistantDock() {
       {open ? (
         <>
           <section
-            aria-label="Wordie word helper"
+            aria-label="Word helper"
             className="assistant-panel wv84-assistant-panel"
             data-state={mascotState}
+            role="dialog"
           >
             <header className="wv84-assistant-panel__header">
               <AssistantPanelMascot state={mascotState} />
@@ -334,7 +335,7 @@ export function AssistantDock() {
               <IconButton
                 className="wv84-assistant-panel__close"
                 icon={<AppIcon name="close" size={18} />}
-                label="Close Wordie"
+                label="Close word helper"
                 onClick={closeAssistant}
                 size="small"
               />
@@ -466,11 +467,11 @@ export function AssistantDock() {
         </>
       ) : (
         <button
-          aria-label="Open Wordie"
+          aria-label="Open word helper"
           className="assistant-launcher wv84-assistant-launcher"
           onClick={() => setOpen(true)}
           ref={launcherRef}
-          title="Open Wordie"
+          title="Open word helper"
           type="button"
         >
           <AssistantLauncherMascot awake={false} />
