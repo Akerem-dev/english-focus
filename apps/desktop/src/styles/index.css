@@ -11,7 +11,6 @@
 @import "./assistant-preview.css";
 @import "./assistant-layout-polish.css";
 @import "./route-pages.css";
-@import "./vocabulary-search-results.css";
 @import "./instruction.css";
 @import "./json-import.css";
 @import "./vocabulary-pack.css";
@@ -26,7 +25,6 @@
 @import "./local-data-controls.css";
 @import "./shortcuts.css";
 @import "./toasts.css";
-@import "./vocabulary-detail.css";
 @import "./advanced-vocabulary-tools.css";
 @import "./vocabulary-editor.css";
 @import "./release-hardening.css";
