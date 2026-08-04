@@ -36,7 +36,7 @@ function FinalWordValleySidebar() {
               title={`${item.label} — coming soon`}
               type="button"
             >
-              <AppIcon aria-hidden="true" name={item.icon} size={26} />
+              <AppIcon name={item.icon} size={26} />
               <span>{item.label}</span>
             </button>
           ) : (
@@ -49,7 +49,7 @@ function FinalWordValleySidebar() {
               title={item.label}
               to={item.to}
             >
-              <AppIcon aria-hidden="true" name={item.icon} size={26} />
+              <AppIcon name={item.icon} size={26} />
               <span>{item.label}</span>
             </NavLink>
           )
@@ -82,14 +82,14 @@ function FinalWordValleySidebar() {
           </div>
           <div className="wv84-progress__rule" />
           <div className="wv84-progress__metric">
-            <AppIcon aria-hidden="true" name="bookmark" size={24} />
+            <AppIcon name="bookmark" size={24} />
             <div>
               <strong>1,147</strong>
               <span>Collected words</span>
             </div>
           </div>
           <div className="wv84-progress__metric wv84-progress__metric--streak">
-            <AppIcon aria-hidden="true" name="star" size={22} />
+            <AppIcon name="star" size={22} />
             <strong>12 days</strong>
           </div>
         </div>
