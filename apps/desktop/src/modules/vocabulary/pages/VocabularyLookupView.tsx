@@ -1,5 +1,7 @@
 import type { FormEvent, RefObject } from "react";
+import { Link } from "react-router-dom";
 
+import { ROUTE_PATHS } from "../../../app/router";
 import { Button, ErrorState, SearchInput } from "../../../components";
 import { AppIcon, type AppIconName } from "../../../design-system";
 import { dispatchAssistantRequest } from "../../assistant";
@@ -11,19 +13,52 @@ import {
   VocabularySearchingState
 } from "../components";
 
-const POPULAR_SEARCHES = Object.freeze([
-  "serendipity",
-  "ephemeral",
-  "luminous",
-  "eloquent",
-  "melancholy"
-]);
+export interface VocabularyActivityItem {
+  readonly word: string;
+  readonly normalizedWord: string;
+  readonly occurredAt: string;
+}
+
+function formatRelativeTime(value: string): string {
+  const occurredAt = new Date(value);
+  const elapsedMs = Date.now() - occurredAt.getTime();
+
+  if (Number.isNaN(elapsedMs) || elapsedMs < 0) {
+    return "Recently";
+  }
+
+  const elapsedMinutes = Math.floor(elapsedMs / 60_000);
+  if (elapsedMinutes < 1) {
+    return "Just now";
+  }
+  if (elapsedMinutes < 60) {
+    return `${elapsedMinutes}m ago`;
+  }
+
+  const elapsedHours = Math.floor(elapsedMinutes / 60);
+  if (elapsedHours < 24) {
+    return `${elapsedHours}h ago`;
+  }
+
+  const elapsedDays = Math.floor(elapsedHours / 24);
+  if (elapsedDays === 1) {
+    return "Yesterday";
+  }
+  if (elapsedDays < 7) {
+    return `${elapsedDays}d ago`;
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    day: "numeric",
+    month: "short"
+  }).format(occurredAt);
+}
 
 function createRecentSearchSuggestions(
   query: string,
-  recentWords: readonly string[],
-  recentAdditions: readonly string[]
-): readonly string[] {
+  recentSearches: readonly VocabularyActivityItem[],
+  recentAdditions: readonly VocabularyActivityItem[]
+): readonly VocabularyActivityItem[] {
   const normalizedQuery = query.trim().toLocaleLowerCase("en");
 
   if (normalizedQuery.length === 0) {
@@ -32,16 +67,18 @@ function createRecentSearchSuggestions(
 
   const seen = new Set<string>();
 
-  return [...recentWords, ...recentAdditions]
-    .filter((word) => word.toLocaleLowerCase("en").includes(normalizedQuery))
-    .filter((word) => {
-      const normalizedWord = word.toLocaleLowerCase("en");
-
-      if (seen.has(normalizedWord)) {
+  return [...recentSearches, ...recentAdditions]
+    .filter(
+      (item) =>
+        item.normalizedWord.includes(normalizedQuery) ||
+        item.word.toLocaleLowerCase("en").includes(normalizedQuery)
+    )
+    .filter((item) => {
+      if (seen.has(item.normalizedWord)) {
         return false;
       }
 
-      seen.add(normalizedWord);
+      seen.add(item.normalizedWord);
       return true;
     })
     .slice(0, 6);
@@ -50,43 +87,57 @@ function createRecentSearchSuggestions(
 interface ActivityCardProps {
   readonly title: string;
   readonly icon: AppIconName;
-  readonly words: readonly string[];
-  readonly fallbackWords: readonly string[];
+  readonly items: readonly VocabularyActivityItem[];
+  readonly emptyMessage: string;
   readonly onOpenWord: (word: string) => void;
+  readonly footer?: "library" | undefined;
 }
 
-function ActivityCard({ fallbackWords, icon, onOpenWord, title, words }: ActivityCardProps) {
-  const visibleWords = (words.length > 0 ? words : fallbackWords).slice(0, 5);
-  const timeLabels = ["Just now", "1h ago", "Yesterday", "2d ago", "3d ago"];
+function ActivityCard({ emptyMessage, footer, icon, items, onOpenWord, title }: ActivityCardProps) {
+  const visibleItems = items.slice(0, 5);
 
   return (
     <section className="wv84-activity-card">
       <header className="wv84-activity-card__header">
         <AppIcon name={icon} size={24} />
         <h2>{title}</h2>
-        <span className="wv84-activity-card__clear">Clear</span>
       </header>
-      <div className="wv84-activity-card__rows">
-        {visibleWords.map((word, index) => (
-          <button
-            className="wv84-activity-row"
-            key={`${title}-${word}`}
-            onClick={() => onOpenWord(word)}
-            type="button"
-          >
-            <AppIcon name="search" size={20} />
-            <span className="wv84-activity-row__word">{word}</span>
-            <span className="wv84-activity-row__time">{timeLabels[index]}</span>
-            <span aria-hidden="true" className="wv84-activity-row__chevron">
-              ›
-            </span>
-          </button>
-        ))}
-      </div>
-      <button className="wv84-activity-card__view-all" type="button">
-        <span>View all</span>
-        <span aria-hidden="true">›</span>
-      </button>
+
+      {visibleItems.length === 0 ? (
+        <div className="wv84-activity-card__empty">
+          <span aria-hidden="true" className="wv84-leaf-mark" />
+          <p>{emptyMessage}</p>
+        </div>
+      ) : (
+        <div className="wv84-activity-card__rows">
+          {visibleItems.map((item) => (
+            <button
+              className="wv84-activity-row"
+              key={`${title}-${item.normalizedWord}`}
+              onClick={() => onOpenWord(item.normalizedWord)}
+              type="button"
+            >
+              <AppIcon name="search" size={20} />
+              <span className="wv84-activity-row__word">{item.word}</span>
+              <span className="wv84-activity-row__time">
+                {formatRelativeTime(item.occurredAt)}
+              </span>
+              <span aria-hidden="true" className="wv84-activity-row__chevron">
+                ›
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {footer === "library" ? (
+        <Link className="wv84-activity-card__view-all" to={ROUTE_PATHS.library}>
+          <span>Open Library</span>
+          <span aria-hidden="true">›</span>
+        </Link>
+      ) : (
+        <p className="wv84-activity-card__footer-note">Stored locally on this device</p>
+      )}
     </section>
   );
 }
@@ -95,8 +146,9 @@ interface VocabularyLookupViewProps {
   readonly query: string;
   readonly state: Exclude<VocabularySearchState, { kind: "found" }>;
   readonly searchInputRef: RefObject<HTMLInputElement | null>;
-  readonly recentWords: readonly string[];
-  readonly recentAdditions: readonly string[];
+  readonly recentSearches: readonly VocabularyActivityItem[];
+  readonly recentAdditions: readonly VocabularyActivityItem[];
+  readonly popularSearches: readonly string[];
   readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   readonly onQueryChange: (query: string) => void;
   readonly onClear: () => void;
@@ -110,9 +162,10 @@ export function VocabularyLookupView({
   onQueryChange,
   onSearch,
   onSubmit,
+  popularSearches,
   query,
   recentAdditions,
-  recentWords,
+  recentSearches,
   searchInputRef,
   state
 }: VocabularyLookupViewProps) {
@@ -120,13 +173,13 @@ export function VocabularyLookupView({
     state.kind === "initial" || state.kind === "typing" || state.kind === "not-found";
   const recentSearchSuggestions =
     state.kind === "typing"
-      ? createRecentSearchSuggestions(query, recentWords, recentAdditions)
+      ? createRecentSearchSuggestions(query, recentSearches, recentAdditions)
       : [];
 
   return (
     <div className="route-page route-page--vocabulary wv84-search-home">
       <span className="visually-hidden">Your wordbook stays on this device.</span>
-      <span className="visually-hidden">Recent searches</span>
+      <span className="visually-hidden">Recently viewed words</span>
       <span aria-live="polite" className="visually-hidden">
         Words you open will appear here.
       </span>
@@ -162,10 +215,15 @@ export function VocabularyLookupView({
               role="listbox"
             >
               <p>Recent matches</p>
-              {recentSearchSuggestions.map((word) => (
-                <button key={word} onClick={() => onSearch(word)} role="option" type="button">
+              {recentSearchSuggestions.map((item) => (
+                <button
+                  key={item.normalizedWord}
+                  onClick={() => onSearch(item.normalizedWord)}
+                  role="option"
+                  type="button"
+                >
                   <AppIcon name="book-open" size={16} />
-                  <span>{word}</span>
+                  <span>{item.word}</span>
                 </button>
               ))}
             </div>
@@ -183,17 +241,19 @@ export function VocabularyLookupView({
           </Button>
         </form>
 
-        <div className="wv84-popular-searches">
-          <p>POPULAR SEARCHES</p>
-          <div>
-            {POPULAR_SEARCHES.map((word) => (
-              <button key={word} onClick={() => onSearch(word)} type="button">
-                <span aria-hidden="true" className="wv84-leaf-mark" />
-                <span>{word}</span>
-              </button>
-            ))}
+        {popularSearches.length > 0 ? (
+          <div className="wv84-popular-searches">
+            <p>POPULAR SEARCHES</p>
+            <div>
+              {popularSearches.map((word) => (
+                <button key={word} onClick={() => onSearch(word)} type="button">
+                  <span aria-hidden="true" className="wv84-leaf-mark" />
+                  <span>{word}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : null}
       </section>
 
       {state.kind === "not-found" ? (
@@ -236,18 +296,19 @@ export function VocabularyLookupView({
       {isHomeState ? (
         <aside aria-label="Vocabulary activity" className="wv84-activity-column">
           <ActivityCard
-            fallbackWords={POPULAR_SEARCHES}
+            emptyMessage="Open a word to build your recent history."
             icon="clock"
+            items={recentSearches}
             onOpenWord={onSearch}
-            title="RECENT SEARCHES"
-            words={recentWords}
+            title="RECENTLY VIEWED"
           />
           <ActivityCard
-            fallbackWords={POPULAR_SEARCHES}
-            icon="clock"
+            emptyMessage="Words you add locally will appear here."
+            footer="library"
+            icon="bookmark"
+            items={recentAdditions}
             onOpenWord={onSearch}
             title="RECENT ADDITIONS"
-            words={recentAdditions}
           />
         </aside>
       ) : null}
