@@ -20,10 +20,7 @@ import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
 import type { VocabularySearchState } from "../../search/state";
 import { createVocabularyUserMetadata, resolveVocabularyEditLayer } from "../application";
 import { VocabularyFoundRoute } from "./VocabularyFoundRoute";
-import {
-  VocabularyLookupView,
-  type VocabularyActivityItem
-} from "./VocabularyLookupView";
+import { VocabularyLookupView, type VocabularyActivityItem } from "./VocabularyLookupView";
 
 const PREFERRED_POPULAR_SEARCHES = Object.freeze([
   "serendipity",
@@ -150,9 +147,7 @@ export function VocabularyPage() {
 
   const popularSearches = useMemo(() => {
     const entriesByWord = new Map(
-      contentSource
-        .listEntries()
-        .map((entry) => [entry.normalizedWord, entry.word] as const)
+      contentSource.listEntries().map((entry) => [entry.normalizedWord, entry.word] as const)
     );
 
     return PREFERRED_POPULAR_SEARCHES.map((word) => entriesByWord.get(word)).filter(
