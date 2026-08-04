@@ -88,7 +88,7 @@ function FinalWordValleySidebar() {
               <span>Collected words</span>
             </div>
           </div>
-          <div className="wv84-progress__metric wv84-progress__metric--streak">
+          <div className="wv84-progress__metric wv84-progress__metric--days">
             <AppIcon name="star" size={22} />
             <strong>12 days</strong>
           </div>
