@@ -5,7 +5,7 @@ import type { ActivityRecord } from "@platform/domain";
 
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
-import { useActivity, useVocabularyMetadata, useVocabularyRepository } from "../providers";
+import { useActivity, useVocabularyRepository } from "../providers";
 import { dispatchAppCommand } from "../command-bar";
 import { APP_ROUTES } from "../router/routes";
 import { ROUTE_PATHS } from "../router/routeIds";
@@ -82,8 +82,7 @@ function countConsecutiveActivityDays(activity: readonly ActivityRecord[]): numb
 
 function FinalWordValleySidebar() {
   const { activity, status: activityStatus } = useActivity();
-  const { metadata, status: metadataStatus } = useVocabularyMetadata();
-  const { status: vocabularyStatus, storedEntries } = useVocabularyRepository();
+  const { contentSource, status: vocabularyStatus } = useVocabularyRepository();
 
   const progress = useMemo(() => {
     const today = localDayKey(new Date());
@@ -93,10 +92,7 @@ function FinalWordValleySidebar() {
         .filter((record) => localDayKey(record.occurredAt) === today)
         .map((record) => record.target as string)
     ).size;
-    const collectedWords = new Set([
-      ...metadata.map((record) => record.normalizedWord),
-      ...storedEntries.map((record) => record.entry.normalizedWord)
-    ]).size;
+    const collectedWords = contentSource.listEntries().length;
     const consecutiveDays = countConsecutiveActivityDays(activity);
     const percentage = Math.min(100, Math.round((wordsExploredToday / DAILY_WORD_GOAL) * 100));
 
@@ -106,10 +102,9 @@ function FinalWordValleySidebar() {
       consecutiveDays,
       percentage
     });
-  }, [activity, metadata, storedEntries]);
+  }, [activity, contentSource]);
 
-  const loading =
-    activityStatus === "loading" || metadataStatus === "loading" || vocabularyStatus === "loading";
+  const loading = activityStatus === "loading" || vocabularyStatus === "loading";
   const progressStyle = {
     "--wv84-progress": `${progress.percentage}%`
   } as CSSProperties;
