@@ -200,7 +200,7 @@ export function VocabularyFoundState({
               {entry.morphology.inflectedForms.length > 0 ? (
                 <div className="wv84-family-forms">
                   {entry.morphology.inflectedForms.slice(0, 8).map((form) => (
-                    <span key={`${form.form}-${form.label}`}>{form.form}</span>
+                    <span key={`${form.form}-${form.type}`}>{form.form}</span>
                   ))}
                 </div>
               ) : (
