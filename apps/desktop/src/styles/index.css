@@ -55,3 +55,6 @@
 @import "./word-valley-render-quality.css";
 @import "./word-valley-font-controls.css";
 @import "./word-valley-viewport-stability.css";
+
+/* Figma 84:2 / 84:181 final Search implementation. Keep this last. */
+@import "./word-valley-figma-84.css";
