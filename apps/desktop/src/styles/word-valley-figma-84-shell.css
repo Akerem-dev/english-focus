@@ -1,0 +1,43 @@
+/* Minimal fixed-canvas shell for the final Figma 84 Search screen. */
+
+#root .application-frame--word-valley-final-search {
+  position: relative !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #071820 !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage-viewport {
+  --wv-stage-scale-x: 1;
+  --wv-stage-scale-y: 1;
+  position: absolute !important;
+  inset: 0 !important;
+  overflow: hidden !important;
+  background: #071820 !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  transform: translate(-50%, -50%) scaleX(var(--wv-stage-scale-x))
+    scaleY(var(--wv-stage-scale-y)) !important;
+  transform-origin: center center !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage > .application-main {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 10 !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
