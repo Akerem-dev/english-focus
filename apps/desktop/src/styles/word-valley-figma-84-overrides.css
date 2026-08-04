@@ -1,0 +1,91 @@
+/* Final integration overrides: viewport containment and compact local-import access. */
+
+html,
+body,
+#root {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+#root .application-frame--word-valley-final-search {
+  position: relative !important;
+  inset: auto !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage-viewport {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage {
+  position: absolute !important;
+  inset: auto !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  transform: translate(-50%, -50%) scaleX(var(--wv-stage-scale-x))
+    scaleY(var(--wv-stage-scale-y)) !important;
+  transform-origin: center center !important;
+}
+
+#root .application-frame--word-valley-final-search .app-topbar {
+  position: absolute !important;
+  left: 1396px !important;
+  top: 31px !important;
+  z-index: 70 !important;
+  display: block !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .app-topbar__route,
+#root .application-frame--word-valley-final-search .app-topbar__keycap {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .app-topbar__actions {
+  display: block !important;
+  width: 48px !important;
+  height: 48px !important;
+}
+
+#root .application-frame--word-valley-final-search .app-topbar__actions .button {
+  display: grid !important;
+  place-items: center !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 12px !important;
+  background: rgba(251, 248, 239, 0.96) !important;
+  color: var(--wv84-ink-700) !important;
+  box-shadow: 0 8px 20px rgba(13, 26, 18, 0.16) !important;
+  font-size: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .app-topbar__actions .button svg {
+  width: 20px !important;
+  height: 20px !important;
+}
