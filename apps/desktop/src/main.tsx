@@ -9,6 +9,7 @@ import "@fontsource/inter/600.css";
 import "@fontsource/irish-grover/400.css";
 
 import { App } from "./app/App";
+import { connectToRuntime } from "./app/runtime/runtimeBridge";
 import "./styles/index.css";
 
 const rootElement = document.getElementById("root");
@@ -16,6 +17,10 @@ const rootElement = document.getElementById("root");
 if (rootElement === null) {
   throw new Error("Application root element was not found.");
 }
+
+void connectToRuntime().then((connection) => {
+  rootElement.dataset.runtime = connection.kind;
+});
 
 createRoot(rootElement).render(
   <StrictMode>
