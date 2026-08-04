@@ -89,3 +89,94 @@ body,
   width: 20px !important;
   height: 20px !important;
 }
+
+#root .application-frame--word-valley-final-search .wv84-not-found {
+  position: absolute !important;
+  left: 545px !important;
+  top: 650px !important;
+  z-index: 28 !important;
+  width: 790px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-not-found .vocabulary-result-state {
+  box-sizing: border-box !important;
+  width: 790px !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 20px 24px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 16px !important;
+  background: rgba(251, 248, 239, 0.97) !important;
+  box-shadow: 0 12px 28px rgba(13, 26, 18, 0.18) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy {
+  position: absolute !important;
+  left: 545px !important;
+  top: 31px !important;
+  z-index: 35 !important;
+  width: 790px !important;
+  height: 814px !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy > :not(.vocabulary-detail-header) {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 790px !important;
+  height: 814px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__back,
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__title-row > div:first-child,
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__source > span,
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__metadata,
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__actions > .button {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__title-row,
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__source,
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__actions {
+  position: static !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-advanced-menu {
+  position: absolute !important;
+  right: 78px !important;
+  top: 18px !important;
+  z-index: 90 !important;
+  display: block !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-advanced-menu > .button {
+  display: inline-flex !important;
+  min-height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 10px !important;
+  background: var(--wv84-paper-50) !important;
+  color: var(--wv84-ink-700) !important;
+  box-shadow: 0 4px 12px rgba(13, 26, 18, 0.1) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-advanced-menu__surface {
+  z-index: 95 !important;
+  pointer-events: auto !important;
+}
