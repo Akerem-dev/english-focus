@@ -39,22 +39,6 @@
 @import "./phase-1-ui-polish.css";
 @import "./phase-3-health-backup.css";
 
-/* Figma 39:2 / 55:2 Search-screen layers. */
-@import "./word-valley-figma-stage.css";
-@import "./word-valley-figma-hero.css";
-@import "./word-valley-figma-panels.css";
-@import "./word-valley-figma-launcher.css";
-@import "./word-valley-figma-assistant.css";
-@import "./word-valley-figma-state.css";
-
-/* Import last: centralized screenshot-by-screenshot fine-tuning controls. */
-@import "./word-valley-tuning-controls.css";
-@import "./word-valley-sidebar-frame-controls.css";
-@import "./word-valley-logo-independent-controls.css";
-@import "./word-valley-assistant-interaction-polish.css";
-@import "./word-valley-render-quality.css";
-@import "./word-valley-font-controls.css";
-@import "./word-valley-viewport-stability.css";
-
-/* Figma 84:2 / 84:181 final Search implementation. Keep this last. */
+/* Figma 84:2 / 84:181 final Search implementation. */
+@import "./word-valley-figma-84-shell.css";
 @import "./word-valley-figma-84.css";
