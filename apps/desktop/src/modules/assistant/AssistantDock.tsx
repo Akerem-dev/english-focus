@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import launcherFrame from "../../assets/assistant/assistant-launcher-closed.png";
 import {
   useAssistant,
   useInstructionPreferences,
@@ -9,7 +8,7 @@ import {
   useVocabularyRepository
 } from "../../app/providers";
 import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
-import { Button, IconButton } from "../../components";
+import { IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
 import type { VocabularyPersistencePlan } from "../import-export/application";
 import { inspectAssistantCandidate } from "./application";
@@ -20,12 +19,12 @@ import {
   type AssistantMascotState
 } from "./AssistantMascot";
 import {
-  AssistantWordPreview,
   createAssistantWordPreview,
   type AssistantWordPreviewModel
 } from "./AssistantWordPreview";
 
 type AssistantSavePlan = Extract<VocabularyPersistencePlan, { readonly kind: "save" }>;
+type QuickAction = "simple" | "examples" | "compare" | "breakdown" | "quiz";
 
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 
@@ -95,6 +94,12 @@ export function AssistantDock() {
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking" && !isSaving;
   const isBusy = isPreparing || isSaving;
+  const simpleExplanation =
+    preview?.translationsTr[0] ??
+    (preview?.definitionEn === undefined ? assistantMessage : preview.definitionEn);
+  const comparison =
+    preview?.definitionEn ?? "Think about the word in the situation where you found it.";
+  const keyIdea = preview?.exampleEn ?? "Use the word in a short sentence to make it memorable.";
 
   useEffect(() => {
     if (visible) {
@@ -137,9 +142,7 @@ export function AssistantDock() {
         setPreview(undefined);
         setSavePlan(undefined);
         setSaveError(undefined);
-        setAssistantMessage(
-          `“${detail.word}” is ready in the input. Press the arrow to prepare it.`
-        );
+        setAssistantMessage(`“${detail.word}” is ready in the input. Press the arrow to prepare it.`);
       }
 
       setMascotState("ready");
@@ -255,7 +258,7 @@ export function AssistantDock() {
     }
 
     if (!HEADWORD_PATTERN.test(word)) {
-      setQuestion(`What does “${word}” mean?`);
+      setQuestion(`Can you explain “${word}” in simpler words?`);
       setPreview(undefined);
       setSavePlan(undefined);
       setAssistantMessage("Please enter one English word or a short phrasal verb.");
@@ -266,7 +269,7 @@ export function AssistantDock() {
 
     requestSequence.current += 1;
     const sequence = requestSequence.current;
-    setQuestion(`What does “${word}” mean?`);
+    setQuestion(`Can you explain “${word}” in simpler words?`);
     setPreview(undefined);
     setSavePlan(undefined);
     setSaveError(undefined);
@@ -322,95 +325,163 @@ export function AssistantDock() {
     setOpen(false);
   }
 
+  function applyQuickAction(action: QuickAction) {
+    const word = preview?.word ?? "this word";
+    const messages: Record<QuickAction, string> = {
+      simple: `Here is the simplest useful meaning of “${word}”.`,
+      examples: preview?.exampleEn ?? `Try using “${word}” in a short sentence of your own.`,
+      compare: `Compare “${word}” with a word that feels similar, then notice the context.`,
+      breakdown: `Break “${word}” into sound, meaning, and one memorable example.`,
+      quiz: `Quick check: can you explain “${word}” without looking at the definition?`
+    };
+    setAssistantMessage(messages[action]);
+  }
+
   return (
-    <aside className="assistant-dock" data-open={open || undefined}>
+    <aside className="assistant-dock wv84-assistant" data-open={open || undefined}>
       {open ? (
-        <section aria-label="Wordie word helper" className="assistant-panel" data-state={mascotState}>
-          <header className="assistant-panel__header">
-            <AssistantPanelMascot state={mascotState} />
-            <div className="assistant-panel__heading">
-              <h2>WORDIE</h2>
-              <p aria-live="polite">{assistantMessage}</p>
-            </div>
-            <IconButton
-              className="assistant-panel__close"
-              icon={<AppIcon name="close" size={18} />}
-              label="Close Wordie"
-              onClick={closeAssistant}
-              size="small"
-            />
-          </header>
-
-          <div className="assistant-messages" data-has-preview={preview !== undefined || undefined}>
-            {question === undefined ? null : (
-              <div className="assistant-message" data-author="user">
-                <p>{question}</p>
+        <>
+          <section aria-label="Wordie word helper" className="assistant-panel wv84-assistant-panel" data-state={mascotState}>
+            <header className="wv84-assistant-panel__header">
+              <AssistantPanelMascot state={mascotState} />
+              <div>
+                <h2>Wordie AI</h2>
+                <p>Your learning companion</p>
               </div>
-            )}
-
-            {preview === undefined ? (
-              <div className="assistant-message" data-author="assistant">
-                <p>{assistantMessage}</p>
-              </div>
-            ) : (
-              <AssistantWordPreview
-                isSaving={isSaving}
-                onAdd={savePlan === undefined ? undefined : () => void addPreviewToLibrary()}
-                onEdit={resetForAnotherWord}
-                onOpenExisting={openExistingPreview}
-                preview={preview}
-                saveError={saveError}
+              <IconButton
+                className="wv84-assistant-panel__close"
+                icon={<AppIcon name="close" size={18} />}
+                label="Close Wordie"
+                onClick={closeAssistant}
+                size="small"
               />
-            )}
-          </div>
+            </header>
 
-          <form aria-busy={isBusy || undefined} className="assistant-composer" onSubmit={handleSubmit}>
-            <label className="visually-hidden" htmlFor="assistant-word-input">
-              English word
-            </label>
-            <input
-              autoComplete="off"
-              disabled={isBusy}
-              id="assistant-word-input"
-              maxLength={80}
-              onChange={(event) => {
-                setInput(event.currentTarget.value);
-                if (mascotState === "confused") {
-                  setMascotState("ready");
-                  setSaveError(undefined);
-                }
-              }}
-              placeholder="Ask about a word…"
-              ref={inputRef}
-              spellCheck="false"
-              value={input}
-            />
-            <Button
-              disabled={input.trim().length === 0 || isBusy}
-              isLoading={isPreparing}
-              size="small"
-              type="submit"
-              variant="primary"
-            >
-              Send
-            </Button>
-          </form>
-        </section>
+            <div className="wv84-assistant-panel__conversation">
+              {question === undefined ? null : (
+                <div className="wv84-user-message">
+                  <span>YOU</span>
+                  <p>{question}</p>
+                </div>
+              )}
+
+              <article className="wv84-wordie-answer" aria-live="polite">
+                <header>
+                  <AssistantPanelMascot state={mascotState} />
+                  <div>
+                    <strong>Wordie AI</strong>
+                    <span>{assistantMessage}</span>
+                  </div>
+                </header>
+                <section>
+                  <span aria-hidden="true" className="wv84-leaf-mark" />
+                  <div>
+                    <h3>In simple words</h3>
+                    <p>{simpleExplanation}</p>
+                  </div>
+                </section>
+                <section>
+                  <span aria-hidden="true" className="wv84-leaf-mark" />
+                  <div>
+                    <h3>Think of it like</h3>
+                    <p>{comparison}</p>
+                  </div>
+                </section>
+                <section>
+                  <span aria-hidden="true" className="wv84-leaf-mark" />
+                  <div>
+                    <h3>Key idea</h3>
+                    <p>{keyIdea}</p>
+                  </div>
+                </section>
+
+                {preview?.state === "ready" && savePlan !== undefined ? (
+                  <button
+                    className="wv84-answer-action"
+                    disabled={isSaving}
+                    onClick={() => void addPreviewToLibrary()}
+                    type="button"
+                  >
+                    {isSaving ? "Saving…" : "Save to Library"}
+                  </button>
+                ) : null}
+                {(preview?.state === "existing" || preview?.state === "saved") && preview.complete ? (
+                  <button className="wv84-answer-action" onClick={openExistingPreview} type="button">
+                    Open in Wordbook
+                  </button>
+                ) : null}
+                {saveError === undefined ? null : <p className="wv84-answer-error">{saveError}</p>}
+              </article>
+            </div>
+
+            <div className="wv84-quick-actions">
+              <button onClick={() => applyQuickAction("simple")} type="button">
+                <span aria-hidden="true" className="wv84-leaf-mark" />
+                Explain simply
+              </button>
+              <button onClick={() => applyQuickAction("examples")} type="button">
+                <AppIcon name="book-open" size={20} />
+                More examples
+              </button>
+              <button onClick={() => applyQuickAction("compare")} type="button">
+                <AppIcon name="star" size={20} />
+                Compare words
+              </button>
+              <button onClick={() => applyQuickAction("breakdown")} type="button">
+                <AppIcon name="edit" size={20} />
+                Break it down
+              </button>
+              <button onClick={() => applyQuickAction("quiz")} type="button">
+                <AppIcon name="bookmark" size={20} />
+                Quiz me
+              </button>
+            </div>
+
+            <form aria-busy={isBusy || undefined} className="wv84-assistant-composer" onSubmit={handleSubmit}>
+              <label className="visually-hidden" htmlFor="assistant-word-input">
+                English word
+              </label>
+              <input
+                autoComplete="off"
+                disabled={isBusy}
+                id="assistant-word-input"
+                maxLength={80}
+                onChange={(event) => {
+                  setInput(event.currentTarget.value);
+                  if (mascotState === "confused") {
+                    setMascotState("ready");
+                    setSaveError(undefined);
+                  }
+                }}
+                placeholder="Ask Wordie anything…"
+                ref={inputRef}
+                spellCheck="false"
+                value={input}
+              />
+              <button
+                aria-label="Send"
+                disabled={input.trim().length === 0 || isBusy}
+                type="submit"
+              >
+                <AppIcon name="chevron-right" size={24} />
+              </button>
+            </form>
+          </section>
+
+          <div aria-hidden="true" className="wv84-assistant__ready-mascot">
+            <AssistantLauncherMascot awake />
+          </div>
+        </>
       ) : (
         <button
           aria-label="Open Wordie"
-          className="assistant-launcher"
+          className="assistant-launcher wv84-assistant-launcher"
           onClick={() => setOpen(true)}
           ref={launcherRef}
           title="Open Wordie"
           type="button"
         >
-          <span aria-hidden="true" className="assistant-launcher__glow" />
-          <img alt="" className="assistant-launcher__frame" src={launcherFrame} />
           <AssistantLauncherMascot awake={false} />
-          <span aria-hidden="true" className="assistant-launcher__prompt">
-            Need help with a word?
-          </span>
         </button>
       )}
     </aside>
