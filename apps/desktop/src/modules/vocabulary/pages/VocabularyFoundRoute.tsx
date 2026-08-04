@@ -33,6 +33,7 @@ interface VocabularyFoundRouteProps {
   readonly onOpenMetadata: () => void;
   readonly onCloseMetadata: () => void;
   readonly onSaveMetadata: (input: SaveVocabularyUserMetadataInput) => Promise<void>;
+  readonly onToggleFavorite: () => void;
   readonly onExport: () => void;
   readonly onOpenImport: () => void;
   readonly onCloseImport: () => void;
@@ -59,6 +60,7 @@ export function VocabularyFoundRoute({
   onOpenSavedEntry,
   onSaveEntry,
   onSaveMetadata,
+  onToggleFavorite,
   state
 }: VocabularyFoundRouteProps) {
   return (
@@ -72,6 +74,7 @@ export function VocabularyFoundRoute({
         onEditMetadata={onOpenMetadata}
         onExport={onExport}
         onImportReplacement={onOpenImport}
+        onToggleFavorite={onToggleFavorite}
       />
       {editorOpen ? (
         <VocabularyEntryEditorDialog
