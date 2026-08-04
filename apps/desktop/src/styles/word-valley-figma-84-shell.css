@@ -1,6 +1,7 @@
 /* Shared fixed-canvas shell for Word Valley Search and Library routes. */
 
 #root .application-frame--word-valley-stage {
+  --wv84-progress: 0%;
   position: relative !important;
   display: block !important;
   width: 100vw !important;
