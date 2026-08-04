@@ -1,7 +1,11 @@
+import { useMemo, type CSSProperties } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
+
+import type { ActivityRecord } from "@platform/domain";
 
 import { SidebarNavItem } from "../../components/navigation";
 import { AppIcon, type AppIconName } from "../../design-system";
+import { useActivity, useVocabularyMetadata, useVocabularyRepository } from "../providers";
 import { dispatchAppCommand } from "../command-bar";
 import { APP_ROUTES } from "../router/routes";
 import { ROUTE_PATHS } from "../router/routeIds";
@@ -13,6 +17,7 @@ interface FinalSidebarItem {
   readonly end?: boolean;
 }
 
+const DAILY_WORD_GOAL = 16;
 const FINAL_SIDEBAR_ITEMS: readonly FinalSidebarItem[] = Object.freeze([
   { label: "Search", icon: "search", to: ROUTE_PATHS.vocabulary, end: true },
   { label: "Grammar", icon: "book-open" },
@@ -22,7 +27,98 @@ const FINAL_SIDEBAR_ITEMS: readonly FinalSidebarItem[] = Object.freeze([
   { label: "Settings", icon: "settings", to: ROUTE_PATHS.settings }
 ]);
 
+function localDayKey(value: string | Date): string | undefined {
+  const date = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0")
+  ].join("-");
+}
+
+function vocabularyActivity(record: ActivityRecord): boolean {
+  return (
+    record.target !== undefined &&
+    (record.kind === "vocabulary-viewed" ||
+      record.kind === "vocabulary-saved" ||
+      record.kind === "study-details-saved" ||
+      record.kind === "favorite-changed" ||
+      record.kind === "entry-kept")
+  );
+}
+
+function countConsecutiveActivityDays(activity: readonly ActivityRecord[]): number {
+  const activeDays = new Set(
+    activity
+      .filter(vocabularyActivity)
+      .map((record) => localDayKey(record.occurredAt))
+      .filter((value): value is string => value !== undefined)
+  );
+  const cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+
+  const today = localDayKey(cursor);
+  if (today !== undefined && !activeDays.has(today)) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  let count = 0;
+  while (true) {
+    const key = localDayKey(cursor);
+    if (key === undefined || !activeDays.has(key)) {
+      break;
+    }
+
+    count += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return count;
+}
+
 function FinalWordValleySidebar() {
+  const { activity, status: activityStatus } = useActivity();
+  const { metadata, status: metadataStatus } = useVocabularyMetadata();
+  const { status: vocabularyStatus, storedEntries } = useVocabularyRepository();
+
+  const progress = useMemo(() => {
+    const today = localDayKey(new Date());
+    const wordsExploredToday = new Set(
+      activity
+        .filter((record) => record.kind === "vocabulary-viewed" && record.target !== undefined)
+        .filter((record) => localDayKey(record.occurredAt) === today)
+        .map((record) => record.target as string)
+    ).size;
+    const collectedWords = new Set([
+      ...metadata.map((record) => record.normalizedWord),
+      ...storedEntries.map((record) => record.entry.normalizedWord)
+    ]).size;
+    const consecutiveDays = countConsecutiveActivityDays(activity);
+    const percentage = Math.min(
+      100,
+      Math.round((wordsExploredToday / DAILY_WORD_GOAL) * 100)
+    );
+
+    return Object.freeze({
+      wordsExploredToday,
+      collectedWords,
+      consecutiveDays,
+      percentage
+    });
+  }, [activity, metadata, storedEntries]);
+
+  const loading =
+    activityStatus === "loading" ||
+    metadataStatus === "loading" ||
+    vocabularyStatus === "loading";
+  const progressStyle = {
+    "--wv84-progress": `${progress.percentage}%`
+  } as CSSProperties;
+
   return (
     <aside className="app-sidebar app-sidebar--word-valley-final wv84-sidebar">
       <span className="visually-hidden">Your Wordbook</span>
@@ -68,31 +164,38 @@ function FinalWordValleySidebar() {
           <p className="wv84-progress__label">Daily goal</p>
           <div className="wv84-progress__goal-row">
             <div
-              aria-label="Daily goal progress: 72 percent"
+              aria-label={`Daily goal progress: ${progress.percentage} percent`}
               aria-valuemax={100}
               aria-valuemin={0}
-              aria-valuenow={72}
+              aria-valuenow={progress.percentage}
               className="wv84-progress__ring"
               role="progressbar"
+              style={progressStyle}
             >
-              <span>72%</span>
+              <span>{loading ? "—" : `${progress.percentage}%`}</span>
             </div>
             <div className="wv84-progress__goal-copy">
-              <strong>12 / 16</strong>
-              <span>words learned</span>
+              <strong>
+                {loading ? "—" : progress.wordsExploredToday} / {DAILY_WORD_GOAL}
+              </strong>
+              <span>words explored</span>
             </div>
           </div>
           <div className="wv84-progress__rule" />
           <div className="wv84-progress__metric">
             <AppIcon name="bookmark" size={24} />
             <div>
-              <strong>1,147</strong>
+              <strong>{loading ? "—" : progress.collectedWords.toLocaleString()}</strong>
               <span>Collected words</span>
             </div>
           </div>
           <div className="wv84-progress__metric wv84-progress__metric--days">
             <AppIcon name="star" size={22} />
-            <strong>12 days</strong>
+            <strong>
+              {loading
+                ? "Loading…"
+                : `${progress.consecutiveDays} ${progress.consecutiveDays === 1 ? "day" : "days"}`}
+            </strong>
           </div>
         </div>
       </section>
