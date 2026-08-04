@@ -32,7 +32,10 @@ describe("VocabularyPage search states", () => {
 
     expect(markup).toContain(">Search<");
     expect(markup).toContain("Your wordbook stays on this device.");
-    expect(markup).toContain("Recent searches");
+    expect(markup).toContain("Recently viewed words");
+    expect(markup).toContain("Open a word to build your recent history.");
+    expect(markup).toContain("Words you add locally will appear here.");
+    expect(markup).not.toContain("Just now");
   });
 
   it("renders the searching state", () => {
