@@ -1,4 +1,4 @@
-/* Final integration overrides: viewport containment and compact local-import access. */
+/* Final integration overrides for the production Word Valley Search screen. */
 
 html,
 body,
@@ -41,55 +41,126 @@ body,
   transform-origin: center center !important;
 }
 
-#root .application-frame--word-valley-final-search .app-topbar {
-  position: absolute !important;
-  left: 1396px !important;
-  top: 31px !important;
-  z-index: 70 !important;
-  display: block !important;
-  width: 48px !important;
-  height: 48px !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  pointer-events: auto !important;
-}
-
-#root .application-frame--word-valley-final-search .app-topbar__route,
-#root .application-frame--word-valley-final-search .app-topbar__keycap {
-  display: none !important;
-}
-
-#root .application-frame--word-valley-final-search .app-topbar__actions {
-  display: block !important;
-  width: 48px !important;
-  height: 48px !important;
-}
-
-#root .application-frame--word-valley-final-search .app-topbar__actions .button {
+/* Use the complete logo asset. The previous percentage crop removed letters. */
+#root .application-frame--word-valley-final-search .word-valley-stage-logo {
+  left: 26px !important;
+  top: 18px !important;
+  width: 278px !important;
+  height: 164px !important;
   display: grid !important;
   place-items: center !important;
-  width: 48px !important;
-  min-width: 48px !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  padding: 0 !important;
-  gap: 0 !important;
-  border: 1px solid var(--wv84-line) !important;
-  border-radius: 12px !important;
-  background: rgba(251, 248, 239, 0.96) !important;
-  color: var(--wv84-ink-700) !important;
-  box-shadow: 0 8px 20px rgba(13, 26, 18, 0.16) !important;
-  font-size: 0 !important;
+  overflow: visible !important;
 }
 
-#root .application-frame--word-valley-final-search .app-topbar__actions .button svg {
-  width: 20px !important;
-  height: 20px !important;
+#root .application-frame--word-valley-final-search .word-valley-stage-logo__image {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.22)) !important;
+  transform: none !important;
 }
 
+/* Progress values are supplied by local activity and repository providers. */
+#root .application-frame--word-valley-final-search .wv84-progress__ring {
+  background: conic-gradient(
+    var(--wv84-moss-500) 0 var(--wv84-progress, 0%),
+    rgba(126, 152, 90, 0.25) var(--wv84-progress, 0%) 100%
+  ) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric--days {
+  align-items: center !important;
+  margin-top: 16px !important;
+  color: var(--wv84-brass-400) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric--days strong {
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
+
+/* Honest empty states and real timestamps for activity cards. */
+#root .application-frame--word-valley-final-search .wv84-activity-card__header {
+  grid-template-columns: 24px 1fr !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__empty {
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  min-height: 244px !important;
+  padding: 56px 28px 24px !important;
+  gap: 14px !important;
+  border-top: 1px solid var(--wv84-line-soft) !important;
+  color: var(--wv84-ink-600) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__empty p {
+  max-width: 230px !important;
+  margin: 0 !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 18px !important;
+  line-height: 26px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__footer-note {
+  box-sizing: border-box !important;
+  width: 336px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  padding: 11px 2px 0 !important;
+  border-top: 1px solid var(--wv84-line-soft) !important;
+  color: var(--wv84-ink-600) !important;
+  font-size: 12px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__view-all {
+  box-sizing: border-box !important;
+  text-decoration: none !important;
+  border-top: 1px solid transparent !important;
+}
+
+/* The mascot files are wide launcher scenes. Crop toward the character on the right. */
+#root .application-frame--word-valley-final-search
+  .wv84-assistant-panel__header
+  .assistant-panel__mascot-stage,
+#root .application-frame--word-valley-final-search
+  .wv84-wordie-answer
+  > header
+  .assistant-panel__mascot-stage {
+  position: relative !important;
+  display: block !important;
+  overflow: hidden !important;
+  background: linear-gradient(145deg, #f8f1df, #e9dcc2) !important;
+}
+
+#root .application-frame--word-valley-final-search
+  .wv84-assistant-panel__header
+  .assistant-panel__mascot,
+#root .application-frame--word-valley-final-search
+  .wv84-wordie-answer
+  > header
+  .assistant-panel__mascot {
+  position: absolute !important;
+  inset: -18% -24% -18% -24% !important;
+  width: 148% !important;
+  height: 136% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+  object-position: 84% 52% !important;
+  filter: saturate(1.04) contrast(1.02) !important;
+  transform: none !important;
+}
+
+/* Missing-word and advanced-entry tools remain functional. */
 #root .application-frame--word-valley-final-search .wv84-not-found {
   position: absolute !important;
   left: 545px !important;
@@ -140,10 +211,22 @@ body,
 }
 
 #root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__back,
-#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__title-row > div:first-child,
-#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__source > span,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-found-legacy
+  .vocabulary-detail-header__title-row
+  > div:first-child,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-found-legacy
+  .vocabulary-detail-header__source
+  > span,
 #root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__metadata,
-#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-detail-header__actions > .button {
+#root
+  .application-frame--word-valley-final-search
+  .wv84-found-legacy
+  .vocabulary-detail-header__actions
+  > .button {
   display: none !important;
 }
 
@@ -165,7 +248,11 @@ body,
   pointer-events: auto !important;
 }
 
-#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-advanced-menu > .button {
+#root
+  .application-frame--word-valley-final-search
+  .wv84-found-legacy
+  .vocabulary-advanced-menu
+  > .button {
   display: inline-flex !important;
   min-height: 36px !important;
   padding: 0 12px !important;
@@ -176,7 +263,168 @@ body,
   box-shadow: 0 4px 12px rgba(13, 26, 18, 0.1) !important;
 }
 
-#root .application-frame--word-valley-final-search .wv84-found-legacy .vocabulary-advanced-menu__surface {
+#root
+  .application-frame--word-valley-final-search
+  .wv84-found-legacy
+  .vocabulary-advanced-menu__surface {
   z-index: 95 !important;
   pointer-events: auto !important;
+}
+
+/* Strong, visible interaction feedback. */
+#root .application-frame--word-valley-final-search button,
+#root .application-frame--word-valley-final-search a {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item:not(:disabled),
+#root .application-frame--word-valley-final-search .wv84-popular-searches button,
+#root .application-frame--word-valley-final-search .wv84-activity-row,
+#root .application-frame--word-valley-final-search .wv84-activity-card__view-all,
+#root .application-frame--word-valley-final-search .wv84-search-form__button,
+#root .application-frame--word-valley-final-search .wv84-primary-action,
+#root .application-frame--word-valley-final-search .wv84-secondary-action,
+#root .application-frame--word-valley-final-search .wv84-result-tabs button,
+#root .application-frame--word-valley-final-search .wv84-result-card__back,
+#root .application-frame--word-valley-final-search .wv84-result-card__favorite,
+#root .application-frame--word-valley-final-search .wv84-quick-actions button,
+#root .application-frame--word-valley-final-search .wv84-answer-action,
+#root .application-frame--word-valley-final-search .wv84-assistant-composer > button,
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__close,
+#root .application-frame--word-valley-final-search .wv84-assistant-launcher {
+  cursor: pointer !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item:not(:disabled):hover {
+  border-color: rgba(205, 182, 111, 0.95) !important;
+  background: #1a4635 !important;
+  box-shadow: inset 3px 0 0 var(--wv84-brass-400), 0 8px 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item:not(:disabled):hover svg {
+  color: #f4dd91 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form:hover,
+#root .application-frame--word-valley-final-search .wv84-search-form:focus-within {
+  border-color: var(--wv84-brass-500) !important;
+  box-shadow: 0 12px 30px rgba(13, 26, 18, 0.23), 0 0 0 3px rgba(205, 182, 111, 0.2) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form__button:hover,
+#root .application-frame--word-valley-final-search .wv84-primary-action:hover,
+#root .application-frame--word-valley-final-search .wv84-assistant-composer > button:hover {
+  border-color: #e1c878 !important;
+  background: #174836 !important;
+  box-shadow: 0 8px 18px rgba(13, 26, 18, 0.26) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form__button:active,
+#root .application-frame--word-valley-final-search .wv84-primary-action:active,
+#root .application-frame--word-valley-final-search .wv84-assistant-composer > button:active {
+  background: #09271d !important;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.28) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-popular-searches button:hover,
+#root .application-frame--word-valley-final-search .wv84-quick-actions button:hover,
+#root .application-frame--word-valley-final-search .wv84-secondary-action:hover,
+#root .application-frame--word-valley-final-search .wv84-answer-action:hover {
+  border-color: var(--wv84-brass-500) !important;
+  background: #fffaf0 !important;
+  color: var(--wv84-forest-950) !important;
+  box-shadow: 0 7px 16px rgba(13, 26, 18, 0.15) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-row:hover {
+  background: rgba(233, 222, 202, 0.58) !important;
+  color: var(--wv84-forest-950) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-row:hover .wv84-activity-row__chevron {
+  color: var(--wv84-moss-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__view-all:hover {
+  border-top-color: var(--wv84-line) !important;
+  color: var(--wv84-forest-950) !important;
+  background: rgba(245, 239, 226, 0.62) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-tabs button:hover {
+  color: var(--wv84-forest-950) !important;
+  background: linear-gradient(transparent 75%, rgba(126, 152, 90, 0.18) 75%) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__back:hover,
+#root .application-frame--word-valley-final-search .wv84-result-card__favorite:hover,
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__close:hover {
+  color: var(--wv84-forest-950) !important;
+  background: rgba(233, 222, 202, 0.72) !important;
+  border-radius: 9px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-launcher:hover {
+  filter: drop-shadow(0 14px 18px rgba(13, 26, 18, 0.3)) !important;
+}
+
+#root .application-frame--word-valley-final-search button:disabled {
+  cursor: not-allowed !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #root .application-frame--word-valley-final-search .word-valley-stage-logo,
+  #root .application-frame--word-valley-final-search .wv84-nav-item,
+  #root .application-frame--word-valley-final-search .wv84-search-form,
+  #root .application-frame--word-valley-final-search .wv84-search-form__button,
+  #root .application-frame--word-valley-final-search .wv84-popular-searches button,
+  #root .application-frame--word-valley-final-search .wv84-activity-row,
+  #root .application-frame--word-valley-final-search .wv84-activity-row__chevron,
+  #root .application-frame--word-valley-final-search .wv84-activity-card__view-all,
+  #root .application-frame--word-valley-final-search .wv84-primary-action,
+  #root .application-frame--word-valley-final-search .wv84-secondary-action,
+  #root .application-frame--word-valley-final-search .wv84-quick-actions button,
+  #root .application-frame--word-valley-final-search .wv84-answer-action,
+  #root .application-frame--word-valley-final-search .wv84-assistant-composer > button,
+  #root .application-frame--word-valley-final-search .wv84-assistant-launcher {
+    transition:
+      transform 150ms ease,
+      border-color 150ms ease,
+      background-color 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease,
+      filter 150ms ease !important;
+  }
+
+  #root .application-frame--word-valley-final-search .word-valley-stage-logo:hover {
+    transform: translateY(-2px) !important;
+  }
+
+  #root .application-frame--word-valley-final-search .wv84-nav-item:not(:disabled):hover {
+    transform: translateX(4px) !important;
+  }
+
+  #root .application-frame--word-valley-final-search .wv84-search-form__button:hover,
+  #root .application-frame--word-valley-final-search .wv84-popular-searches button:hover,
+  #root .application-frame--word-valley-final-search .wv84-primary-action:hover,
+  #root .application-frame--word-valley-final-search .wv84-secondary-action:hover,
+  #root .application-frame--word-valley-final-search .wv84-quick-actions button:hover,
+  #root .application-frame--word-valley-final-search .wv84-answer-action:hover {
+    transform: translateY(-2px) !important;
+  }
+
+  #root .application-frame--word-valley-final-search .wv84-activity-row:hover {
+    transform: translateX(4px) !important;
+  }
+
+  #root
+    .application-frame--word-valley-final-search
+    .wv84-activity-row:hover
+    .wv84-activity-row__chevron {
+    transform: translateX(3px) !important;
+  }
+
+  #root .application-frame--word-valley-final-search .wv84-assistant-launcher:hover {
+    transform: translateY(-5px) scale(1.025) !important;
+  }
 }
