@@ -25,6 +25,7 @@ const FINAL_SIDEBAR_ITEMS: readonly FinalSidebarItem[] = Object.freeze([
 function FinalWordValleySidebar() {
   return (
     <aside className="app-sidebar app-sidebar--word-valley-final wv84-sidebar">
+      <span className="visually-hidden">Your Wordbook</span>
       <nav aria-label="Primary navigation" className="wv84-sidebar__nav">
         {FINAL_SIDEBAR_ITEMS.map((item) =>
           item.to === undefined ? (
@@ -109,6 +110,7 @@ function StandardSidebar() {
         }}
         to={ROUTE_PATHS.vocabulary}
       >
+        <span aria-hidden="true" className="app-sidebar__brand-mascot" />
         <span className="app-sidebar__brand-name" aria-hidden="true">
           <span>Word</span>
           <span>Valley</span>
