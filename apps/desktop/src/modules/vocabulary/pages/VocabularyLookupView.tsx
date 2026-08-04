@@ -119,9 +119,7 @@ function ActivityCard({ emptyMessage, footer, icon, items, onOpenWord, title }: 
             >
               <AppIcon name="search" size={20} />
               <span className="wv84-activity-row__word">{item.word}</span>
-              <span className="wv84-activity-row__time">
-                {formatRelativeTime(item.occurredAt)}
-              </span>
+              <span className="wv84-activity-row__time">{formatRelativeTime(item.occurredAt)}</span>
               <span aria-hidden="true" className="wv84-activity-row__chevron">
                 ›
               </span>
