@@ -98,10 +98,7 @@ function FinalWordValleySidebar() {
       ...storedEntries.map((record) => record.entry.normalizedWord)
     ]).size;
     const consecutiveDays = countConsecutiveActivityDays(activity);
-    const percentage = Math.min(
-      100,
-      Math.round((wordsExploredToday / DAILY_WORD_GOAL) * 100)
-    );
+    const percentage = Math.min(100, Math.round((wordsExploredToday / DAILY_WORD_GOAL) * 100));
 
     return Object.freeze({
       wordsExploredToday,
@@ -112,9 +109,7 @@ function FinalWordValleySidebar() {
   }, [activity, metadata, storedEntries]);
 
   const loading =
-    activityStatus === "loading" ||
-    metadataStatus === "loading" ||
-    vocabularyStatus === "loading";
+    activityStatus === "loading" || metadataStatus === "loading" || vocabularyStatus === "loading";
   const progressStyle = {
     "--wv84-progress": `${progress.percentage}%`
   } as CSSProperties;
