@@ -165,18 +165,6 @@ export function AssistantDock() {
     window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
 
-  function resetForAnotherWord() {
-    requestSequence.current += 1;
-    setInput("");
-    setQuestion(undefined);
-    setPreview(undefined);
-    setSavePlan(undefined);
-    setSaveError(undefined);
-    setAssistantMessage("Type one English word. I will prepare its Turkish meaning and an example.");
-    setMascotState("ready");
-    window.requestAnimationFrame(() => inputRef.current?.focus());
-  }
-
   async function prepareSubmittedWord(word: string, sequence: number): Promise<void> {
     const normalizedWord = word.toLocaleLowerCase("en-US");
     const existing = contentSource.getEntryByNormalizedWord(normalizedWord);
@@ -341,7 +329,11 @@ export function AssistantDock() {
     <aside className="assistant-dock wv84-assistant" data-open={open || undefined}>
       {open ? (
         <>
-          <section aria-label="Wordie word helper" className="assistant-panel wv84-assistant-panel" data-state={mascotState}>
+          <section
+            aria-label="Wordie word helper"
+            className="assistant-panel wv84-assistant-panel"
+            data-state={mascotState}
+          >
             <header className="wv84-assistant-panel__header">
               <AssistantPanelMascot state={mascotState} />
               <div>
@@ -365,7 +357,7 @@ export function AssistantDock() {
                 </div>
               )}
 
-              <article className="wv84-wordie-answer" aria-live="polite">
+              <article aria-live="polite" className="wv84-wordie-answer">
                 <header>
                   <AssistantPanelMascot state={mascotState} />
                   <div>
@@ -405,12 +397,15 @@ export function AssistantDock() {
                     {isSaving ? "Saving…" : "Save to Library"}
                   </button>
                 ) : null}
-                {(preview?.state === "existing" || preview?.state === "saved") && preview.complete ? (
+                {(preview?.state === "existing" || preview?.state === "saved") &&
+                preview.complete ? (
                   <button className="wv84-answer-action" onClick={openExistingPreview} type="button">
                     Open in Wordbook
                   </button>
                 ) : null}
-                {saveError === undefined ? null : <p className="wv84-answer-error">{saveError}</p>}
+                {saveError === undefined ? null : (
+                  <p className="wv84-answer-error">{saveError}</p>
+                )}
               </article>
             </div>
 
@@ -437,7 +432,11 @@ export function AssistantDock() {
               </button>
             </div>
 
-            <form aria-busy={isBusy || undefined} className="wv84-assistant-composer" onSubmit={handleSubmit}>
+            <form
+              aria-busy={isBusy || undefined}
+              className="wv84-assistant-composer"
+              onSubmit={handleSubmit}
+            >
               <label className="visually-hidden" htmlFor="assistant-word-input">
                 English word
               </label>
