@@ -155,12 +155,7 @@ export function VocabularyLookupView({
             >
               <p>Recent matches</p>
               {recentSearchSuggestions.map((word) => (
-                <button
-                  key={word}
-                  onClick={() => onSearch(word)}
-                  role="option"
-                  type="button"
-                >
+                <button key={word} onClick={() => onSearch(word)} role="option" type="button">
                   <AppIcon name="book-open" size={16} />
                   <span>{word}</span>
                 </button>
