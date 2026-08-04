@@ -42,6 +42,7 @@ function FinalWordValleySidebar() {
             </button>
           ) : (
             <NavLink
+              aria-label={item.to === ROUTE_PATHS.library ? "Library" : item.label}
               className={({ isActive }) =>
                 `wv84-nav-item${isActive ? " wv84-nav-item--active" : ""}`
               }
