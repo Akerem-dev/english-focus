@@ -67,7 +67,9 @@ export function VocabularyFoundState({
             <h1>{entry.word}</h1>
             <span className="wv84-result-card__cefr">{entry.cefr}</span>
             {pronunciation === undefined ? null : (
-              <p className="wv84-result-card__pronunciation">/{pronunciation.replaceAll("/", "")}/</p>
+              <p className="wv84-result-card__pronunciation">
+                /{pronunciation.replaceAll("/", "")}/
+              </p>
             )}
           </div>
         </header>
