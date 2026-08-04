@@ -99,14 +99,6 @@ export function AssistantDock() {
   const keyIdea = preview?.exampleEn ?? "Use the word in a short sentence to make it memorable.";
 
   useEffect(() => {
-    if (visible) {
-      return;
-    }
-
-    setOpen(false);
-  }, [visible]);
-
-  useEffect(() => {
     if (!open) {
       return;
     }
