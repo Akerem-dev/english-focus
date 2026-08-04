@@ -74,7 +74,7 @@ export function VocabularyFoundState({
           </div>
         </header>
 
-        <nav aria-label="Vocabulary details" className="wv84-result-tabs">
+        <nav aria-label="Vocabulary entry sections" className="wv84-result-tabs">
           <button aria-current="page" type="button">
             Definition
           </button>
