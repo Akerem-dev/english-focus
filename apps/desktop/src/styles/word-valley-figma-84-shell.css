@@ -49,3 +49,9 @@
   min-height: 0 !important;
   overflow: visible !important;
 }
+
+#root .application-frame--word-valley-stage .word-valley-stage > .app-sidebar {
+  position: absolute !important;
+  z-index: 40 !important;
+  pointer-events: auto !important;
+}
