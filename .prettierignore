@@ -5,3 +5,7 @@ target
 src-tauri/gen
 package-lock.json
 PROJECT_TREE.txt
+
+# Pixel-tuned Word Valley CSS is generated from fixed Figma coordinates and is
+# intentionally kept stable instead of being reflowed with each Prettier update.
+apps/desktop/src/styles/word-valley-*.css
