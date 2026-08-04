@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.2.7",
-    "@fontsource/inria-serif": "^5.3.0",
     "@fontsource/inter": "^5.2.7",
     "@fontsource/irish-grover": "^5.2.7",
     "@platform/domain": "*",
