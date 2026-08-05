@@ -28,18 +28,6 @@ interface VocabularyFoundStateProps {
   readonly onExport: () => void;
 }
 
-function speakEnglish(text: string): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-    return;
-  }
-
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  utterance.rate = 0.92;
-  window.speechSynthesis.speak(utterance);
-}
-
 export function VocabularyFoundState({
   backLabel = "Back to vocabulary",
   entry,
@@ -235,14 +223,6 @@ export function VocabularyFoundState({
             <h2>Example Sentence</h2>
             <p>{exampleSentence}</p>
           </div>
-          <button
-            aria-label="Read example aloud"
-            disabled={primaryExample === undefined}
-            onClick={() => speakEnglish(exampleSentence)}
-            type="button"
-          >
-            <AppIcon name="volume" size={30} />
-          </button>
         </section>
       </section>
 
