@@ -121,7 +121,10 @@ function quickActionMessage(
         ? `Open a word first, then I can help you compare its meaning and context.`
         : `“${word}” means ${definition} Compare it with a nearby word by checking which situations each one naturally fits.`;
     case "breakdown": {
-      const details = [preview?.partOfSpeech, preview?.cefr === undefined ? undefined : `CEFR ${preview.cefr}`]
+      const details = [
+        preview?.partOfSpeech,
+        preview?.cefr === undefined ? undefined : `CEFR ${preview.cefr}`
+      ]
         .filter((value): value is string => value !== undefined)
         .join(" · ");
       return details.length === 0
