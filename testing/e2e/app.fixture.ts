@@ -10,7 +10,7 @@ export async function searchVocabulary(page: Page, word: string): Promise<void> 
 }
 
 export async function openImportSource(page: Page): Promise<void> {
-  await page.goto("/");
+  await page.goto("/library");
   await page.keyboard.press("Control+I");
   await expect(page.getByRole("dialog", { name: "Import vocabulary" })).toBeVisible();
 }
