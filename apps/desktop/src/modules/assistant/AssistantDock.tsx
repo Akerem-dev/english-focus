@@ -24,9 +24,115 @@ type AssistantSavePlan = Extract<VocabularyPersistencePlan, { readonly kind: "sa
 type QuickAction = "simple" | "examples" | "compare" | "breakdown" | "quiz";
 
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
+const QUOTED_TERM_PATTERN = /["“”']([^"“”']{1,72})["“”']/u;
 
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
+}
+
+function cleanHeadwordCandidate(value: string): string | undefined {
+  const candidate = value
+    .trim()
+    .replace(/^["“”']+|["“”'?.!,;:]+$/gu, "")
+    .trim();
+  return HEADWORD_PATTERN.test(candidate) ? candidate : undefined;
+}
+
+function detectQuickAction(prompt: string): QuickAction | undefined {
+  const normalized = prompt.toLocaleLowerCase("en-US");
+
+  if (/\b(compare|difference|similar|synonym|karşılaştır|fark)\b/u.test(normalized)) {
+    return "compare";
+  }
+  if (/\b(break down|breakdown|pronounce|syllable|spell|parçala|telaffuz)\b/u.test(normalized)) {
+    return "breakdown";
+  }
+  if (/\b(quiz|test me|question me|beni test|soru sor)\b/u.test(normalized)) {
+    return "quiz";
+  }
+  if (/\b(example|examples|sentence|sentences|örnek|cümle)\b/u.test(normalized)) {
+    return "examples";
+  }
+  if (/\b(explain|define|meaning|simpler|simple|ne demek|açıkla|anlamı)\b/u.test(normalized)) {
+    return "simple";
+  }
+
+  return undefined;
+}
+
+function extractHeadword(prompt: string): string | undefined {
+  const quoted = prompt.match(QUOTED_TERM_PATTERN)?.[1];
+  if (quoted !== undefined) {
+    const candidate = cleanHeadwordCandidate(quoted);
+    if (candidate !== undefined) {
+      return candidate;
+    }
+  }
+
+  const direct = cleanHeadwordCandidate(prompt);
+  if (direct !== undefined) {
+    return direct;
+  }
+
+  const patterns = [
+    /(?:can you\s+)?(?:explain|define)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})(?:\s+in\s+(?:simple|simpler)\s+words)?[?.!]*$/iu,
+    /what does\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+mean[?.!]*$/iu,
+    /(?:meaning of|examples?\s+(?:for|of|with)|compare|break down|quiz me on)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
+    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+ne demek[?.!]*$/iu,
+    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+(?:kelimesini\s+)?açıkla[?.!]*$/iu
+  ];
+
+  for (const pattern of patterns) {
+    const candidate = prompt.match(pattern)?.[1];
+    if (candidate !== undefined) {
+      const cleaned = cleanHeadwordCandidate(candidate);
+      if (cleaned !== undefined) {
+        return cleaned;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function quickActionMessage(
+  action: QuickAction,
+  preview: AssistantWordPreviewModel | undefined
+): string {
+  const word = preview?.word ?? "this word";
+  const definition = preview?.definitionEn;
+  const translation = preview?.translationsTr[0];
+
+  switch (action) {
+    case "simple":
+      if (translation !== undefined && definition !== undefined) {
+        return `“${word}” means “${translation}”. In simple English: ${definition}`;
+      }
+      return definition ?? `Open a word first and I will explain it without using the API.`;
+    case "examples":
+      if (preview?.exampleEn !== undefined) {
+        return preview.exampleTr === undefined
+          ? `Example: ${preview.exampleEn}`
+          : `Example: ${preview.exampleEn} — ${preview.exampleTr}`;
+      }
+      return `No verified example is stored for “${word}” yet.`;
+    case "compare":
+      return definition === undefined
+        ? `Open a word first, then I can help you compare its meaning and context.`
+        : `“${word}” means ${definition} Compare it with a nearby word by checking which situations each one naturally fits.`;
+    case "breakdown": {
+      const details = [preview?.partOfSpeech, preview?.cefr === undefined ? undefined : `CEFR ${preview.cefr}`]
+        .filter((value): value is string => value !== undefined)
+        .join(" · ");
+      return details.length === 0
+        ? `Open a word first and I will break it into meaning, form, and a memory cue.`
+        : `“${word}” — ${details}. Connect its meaning to the example sentence, then say the word once from memory.`;
+    }
+    case "quiz":
+      return translation === undefined
+        ? `Open a word first and I will create a quick recall question.`
+        : `Quick check: without looking above, what does “${word}” mean in Turkish, and can you use it in one English sentence?`;
+  }
 }
 
 function userFacingPreparationError(cause: unknown): string {
@@ -80,7 +186,7 @@ export function AssistantDock() {
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState<string | undefined>();
   const [assistantMessage, setAssistantMessage] = useState(
-    "Type one English word. I will prepare its Turkish meaning and an example."
+    "Type a word, or ask for an example, comparison, breakdown, or quiz."
   );
   const [mascotState, setMascotState] = useState<AssistantMascotState>("ready");
   const [preview, setPreview] = useState<AssistantWordPreviewModel | undefined>();
@@ -131,9 +237,7 @@ export function AssistantDock() {
         setPreview(undefined);
         setSavePlan(undefined);
         setSaveError(undefined);
-        setAssistantMessage(
-          `“${detail.word}” is ready in the input. Press the arrow to prepare it.`
-        );
+        setAssistantMessage(`“${detail.word}” is ready. Press the arrow to open it.`);
       }
 
       setMascotState("ready");
@@ -156,7 +260,11 @@ export function AssistantDock() {
     window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
 
-  async function prepareSubmittedWord(word: string, sequence: number): Promise<void> {
+  async function prepareSubmittedWord(
+    word: string,
+    sequence: number,
+    requestedAction?: QuickAction
+  ): Promise<void> {
     const normalizedWord = word.toLocaleLowerCase("en-US");
     const existing = contentSource.getEntryByNormalizedWord(normalizedWord);
 
@@ -165,9 +273,14 @@ export function AssistantDock() {
         return;
       }
 
-      setPreview(createAssistantWordPreview(word, existing, "existing"));
+      const nextPreview = createAssistantWordPreview(word, existing, "existing");
+      setPreview(nextPreview);
       setSavePlan(undefined);
-      setAssistantMessage(`I found “${existing.word}” in your local library.`);
+      setAssistantMessage(
+        requestedAction === undefined
+          ? `I found “${existing.word}” in your Wordbook.`
+          : quickActionMessage(requestedAction, nextPreview)
+      );
       setMascotState("ready");
       return;
     }
@@ -183,7 +296,7 @@ export function AssistantDock() {
         const text =
           preparation.reason === "desktop-required"
             ? "Open the desktop app to prepare a missing word."
-            : "Save a Gemini API key in Settings before preparing a missing word.";
+            : "Add a Gemini API key in Settings to prepare a word that is not in the Wordbook.";
         setAssistantMessage(text);
         setMascotState("confused");
         return;
@@ -198,16 +311,26 @@ export function AssistantDock() {
       }
 
       if (review.kind === "existing") {
-        setPreview(createAssistantWordPreview(word, review.entry, "existing"));
+        const nextPreview = createAssistantWordPreview(word, review.entry, "existing");
+        setPreview(nextPreview);
         setSavePlan(undefined);
-        setAssistantMessage(`“${review.entry.word}” is already available locally.`);
+        setAssistantMessage(
+          requestedAction === undefined
+            ? `“${review.entry.word}” is already in your Wordbook.`
+            : quickActionMessage(requestedAction, nextPreview)
+        );
         setMascotState("ready");
         return;
       }
 
-      setPreview(createAssistantWordPreview(word, review.entry, "ready"));
+      const nextPreview = createAssistantWordPreview(word, review.entry, "ready");
+      setPreview(nextPreview);
       setSavePlan(review.plan);
-      setAssistantMessage(`“${review.entry.word}” is ready to review.`);
+      setAssistantMessage(
+        requestedAction === undefined
+          ? `“${review.entry.word}” is ready to review.`
+          : quickActionMessage(requestedAction, nextPreview)
+      );
       setMascotState("ready");
     } catch (cause) {
       if (requestSequence.current !== sequence) {
@@ -229,33 +352,43 @@ export function AssistantDock() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const word = input.trim();
+    const prompt = input.trim();
 
-    if (word.length === 0) {
+    if (prompt.length === 0) {
       inputRef.current?.focus();
       return;
     }
 
-    if (!HEADWORD_PATTERN.test(word)) {
-      setQuestion(`Can you explain “${word}” in simpler words?`);
-      setPreview(undefined);
+    const requestedAction = detectQuickAction(prompt);
+    const word = extractHeadword(prompt);
+    setQuestion(prompt);
+    setSaveError(undefined);
+    setInput("");
+
+    if (word === undefined) {
       setSavePlan(undefined);
-      setAssistantMessage("Please enter one English word or a short phrasal verb.");
-      setMascotState("confused");
-      inputRef.current?.focus();
+      if (requestedAction !== undefined && preview !== undefined) {
+        setAssistantMessage(quickActionMessage(requestedAction, preview));
+        setMascotState("ready");
+        return;
+      }
+
+      setAssistantMessage(
+        preview === undefined
+          ? "I can explain a word, give a verified example, compare meanings, break it down, or quiz you — these shortcuts do not use Gemini. Try “Explain allocate” or “Examples for spreadsheet”."
+          : `Ask about “${preview.word}” with “explain simply”, “more examples”, “compare”, “break it down”, or “quiz me”.`
+      );
+      setMascotState("ready");
       return;
     }
 
     requestSequence.current += 1;
     const sequence = requestSequence.current;
-    setQuestion(`Can you explain “${word}” in simpler words?`);
     setPreview(undefined);
     setSavePlan(undefined);
-    setSaveError(undefined);
-    setAssistantMessage("Preparing a reliable entry…");
+    setAssistantMessage("Checking the Wordbook…");
     setMascotState("thinking");
-    setInput("");
-    void prepareSubmittedWord(word, sequence);
+    void prepareSubmittedWord(word, sequence, requestedAction);
   }
 
   async function addPreviewToLibrary(): Promise<void> {
@@ -271,11 +404,11 @@ export function AssistantDock() {
       const record = await saveEntry({ entry: savePlan.entry, layer: savePlan.layer });
       setPreview(createAssistantWordPreview(record.entry.word, record.entry, "saved"));
       setSavePlan(undefined);
-      setAssistantMessage(`I added “${record.entry.word}” to your library.`);
+      setAssistantMessage(`I added “${record.entry.word}” to your Valley.`);
       setMascotState("success");
       showToast({
-        title: "Word added",
-        message: `“${record.entry.word}” is now in your local library.`,
+        title: "Added to your Valley",
+        message: `“${record.entry.word}” is ready in your Wordbook.`,
         tone: "success",
         dedupeKey: "assistant-vocabulary-save"
       });
@@ -305,15 +438,7 @@ export function AssistantDock() {
   }
 
   function applyQuickAction(action: QuickAction) {
-    const word = preview?.word ?? "this word";
-    const messages: Record<QuickAction, string> = {
-      simple: `Here is the simplest useful meaning of “${word}”.`,
-      examples: preview?.exampleEn ?? `Try using “${word}” in a short sentence of your own.`,
-      compare: `Compare “${word}” with a word that feels similar, then notice the context.`,
-      breakdown: `Break “${word}” into sound, meaning, and one memorable example.`,
-      quiz: `Quick check: can you explain “${word}” without looking at the definition?`
-    };
-    setAssistantMessage(messages[action]);
+    setAssistantMessage(quickActionMessage(action, preview));
   }
 
   return (
@@ -386,7 +511,7 @@ export function AssistantDock() {
                     onClick={() => void addPreviewToLibrary()}
                     type="button"
                   >
-                    {isSaving ? "Saving…" : "Save to Library"}
+                    {isSaving ? "Saving…" : "Save to Valley"}
                   </button>
                 ) : null}
                 {(preview?.state === "existing" || preview?.state === "saved") &&
@@ -432,13 +557,13 @@ export function AssistantDock() {
               onSubmit={handleSubmit}
             >
               <label className="visually-hidden" htmlFor="assistant-word-input">
-                English word
+                Ask Wordie
               </label>
               <input
                 autoComplete="off"
                 disabled={isBusy}
                 id="assistant-word-input"
-                maxLength={80}
+                maxLength={120}
                 onChange={(event) => {
                   setInput(event.currentTarget.value);
                   if (mascotState === "confused") {
@@ -446,7 +571,7 @@ export function AssistantDock() {
                     setSaveError(undefined);
                   }
                 }}
-                placeholder="Ask Wordie anything…"
+                placeholder="Ask about a word…"
                 ref={inputRef}
                 spellCheck="false"
                 value={input}
