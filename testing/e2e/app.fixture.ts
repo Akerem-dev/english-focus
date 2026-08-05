@@ -11,6 +11,7 @@ export async function searchVocabulary(page: Page, word: string): Promise<void> 
 
 export async function openImportSource(page: Page): Promise<void> {
   await page.goto("/library");
+  await expect(page.getByRole("heading", { name: "Library", level: 1 })).toBeVisible();
   await page.keyboard.press("Control+I");
   await expect(page.getByRole("dialog", { name: "Import vocabulary" })).toBeVisible();
 }
