@@ -11,7 +11,6 @@
 @import "./assistant-preview.css";
 @import "./assistant-layout-polish.css";
 @import "./route-pages.css";
-@import "./vocabulary-search-results.css";
 @import "./instruction.css";
 @import "./json-import.css";
 @import "./vocabulary-pack.css";
@@ -26,7 +25,6 @@
 @import "./local-data-controls.css";
 @import "./shortcuts.css";
 @import "./toasts.css";
-@import "./vocabulary-detail.css";
 @import "./advanced-vocabulary-tools.css";
 @import "./vocabulary-editor.css";
 @import "./release-hardening.css";
@@ -38,20 +36,4 @@
 @import "./interface-polish.css";
 @import "./phase-1-ui-polish.css";
 @import "./phase-3-health-backup.css";
-
-/* Figma 39:2 / 55:2 Search-screen layers. */
-@import "./word-valley-figma-stage.css";
-@import "./word-valley-figma-hero.css";
-@import "./word-valley-figma-panels.css";
-@import "./word-valley-figma-launcher.css";
-@import "./word-valley-figma-assistant.css";
-@import "./word-valley-figma-state.css";
-
-/* Import last: centralized screenshot-by-screenshot fine-tuning controls. */
-@import "./word-valley-tuning-controls.css";
-@import "./word-valley-sidebar-frame-controls.css";
-@import "./word-valley-logo-independent-controls.css";
-@import "./word-valley-assistant-interaction-polish.css";
-@import "./word-valley-render-quality.css";
-@import "./word-valley-font-controls.css";
-@import "./word-valley-viewport-stability.css";
+@import "./word-valley-figma-84-shell.css";

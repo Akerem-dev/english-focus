@@ -1,4 +1,5 @@
 import mascotConfused from "../../assets/assistant/assistant-confused.png";
+import mascotLauncherClosed from "../../assets/assistant/assistant-launcher-closed.png";
 import mascotReady from "../../assets/assistant/assistant-ready.png";
 import mascotSleeping from "../../assets/assistant/assistant-sleeping.png";
 import mascotSuccess from "../../assets/assistant/assistant-success.png";
@@ -53,8 +54,8 @@ export function AssistantLauncherMascot({ awake }: AssistantLauncherMascotProps)
     <img
       alt=""
       className="assistant-launcher__mascot"
-      key={`launcher-${awake ? "awake" : "sleeping"}`}
-      src={awake ? mascotReady : mascotSleeping}
+      key={`launcher-${awake ? "awake" : "closed"}`}
+      src={awake ? mascotReady : mascotLauncherClosed}
     />
   );
 }

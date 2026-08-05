@@ -1,0 +1,171 @@
+/* Functional result-card states backed by the vocabulary entry model. */
+
+#root .application-frame--word-valley-final-search .wv84-tab-content {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: auto !important;
+  color: var(--wv84-ink-900) !important;
+  scrollbar-width: thin !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--examples {
+  display: grid !important;
+  align-content: start !important;
+  gap: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-example {
+  display: grid !important;
+  gap: 5px !important;
+  padding: 12px 4px !important;
+  border-bottom: 1px solid var(--wv84-line-soft) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-example:first-child {
+  padding-top: 2px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-example:last-child {
+  border-bottom: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-example strong {
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  line-height: 23px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-example span {
+  color: var(--wv84-ink-700) !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--empty {
+  display: grid !important;
+  grid-template-columns: 24px 1fr !important;
+  align-content: center !important;
+  min-height: 220px !important;
+  padding: 28px 42px !important;
+  gap: 14px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--empty h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--empty p {
+  max-width: 560px !important;
+  margin: 9px 0 15px !important;
+  color: var(--wv84-ink-700) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 17px !important;
+  line-height: 24px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--empty button {
+  min-height: 38px !important;
+  padding: 0 15px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 19px !important;
+  background: var(--wv84-paper-50) !important;
+  color: var(--wv84-forest-950) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--empty button:hover {
+  border-color: var(--wv84-brass-500) !important;
+  background: #fffaf0 !important;
+  box-shadow: 0 7px 16px rgba(13, 26, 18, 0.14) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-tab-content--family {
+  display: grid !important;
+  align-content: start !important;
+  gap: 22px !important;
+  padding: 4px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-family-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-family-grid > div {
+  display: grid !important;
+  gap: 4px !important;
+  padding: 12px 14px !important;
+  border: 1px solid var(--wv84-line-soft) !important;
+  border-radius: 10px !important;
+  background: rgba(251, 248, 239, 0.72) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-family-grid span {
+  color: var(--wv84-ink-600) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-family-grid strong {
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 19px !important;
+  line-height: 22px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-family-forms {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 9px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-family-forms > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 34px !important;
+  padding: 0 13px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 17px !important;
+  background: var(--wv84-paper-50) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 15px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__favorite[aria-pressed="true"] {
+  color: var(--wv84-brass-500) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-primary-action[aria-pressed="true"] {
+  background: var(--wv84-moss-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-example-card > button {
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  border: 1px solid transparent !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  color: var(--wv84-moss-700) !important;
+  cursor: pointer !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-example-card > button:hover {
+  border-color: var(--wv84-line) !important;
+  background: var(--wv84-paper-50) !important;
+  box-shadow: 0 6px 14px rgba(13, 26, 18, 0.14) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-example-card > button:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}

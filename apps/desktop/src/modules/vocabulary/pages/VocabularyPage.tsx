@@ -20,7 +20,15 @@ import { SearchVocabulary, type SearchVocabularyResult } from "../../search";
 import type { VocabularySearchState } from "../../search/state";
 import { createVocabularyUserMetadata, resolveVocabularyEditLayer } from "../application";
 import { VocabularyFoundRoute } from "./VocabularyFoundRoute";
-import { VocabularyLookupView } from "./VocabularyLookupView";
+import { VocabularyLookupView, type VocabularyActivityItem } from "./VocabularyLookupView";
+
+const PREFERRED_POPULAR_SEARCHES = Object.freeze([
+  "serendipity",
+  "ephemeral",
+  "luminous",
+  "eloquent",
+  "melancholy"
+]);
 
 function toPageState(result: SearchVocabularyResult): VocabularySearchState {
   switch (result.kind) {
@@ -93,30 +101,59 @@ export function VocabularyPage() {
     [contentSource, metadata]
   );
 
-  const recentWords = useMemo(() => {
+  const recentSearches = useMemo<readonly VocabularyActivityItem[]>(() => {
     const seen = new Set<string>();
-    return activity
+
+    return [...activity]
       .filter((record) => record.kind === "vocabulary-viewed" && record.target !== undefined)
-      .map((record) => record.target as string)
-      .filter((word) => contentSource.getEntryByNormalizedWord(word) !== undefined)
-      .filter((word) => {
-        if (seen.has(word)) {
-          return false;
+      .sort((left, right) => right.occurredAt.localeCompare(left.occurredAt))
+      .flatMap((record) => {
+        const normalizedWord = record.target as string;
+        if (seen.has(normalizedWord)) {
+          return [];
         }
-        seen.add(word);
-        return true;
+
+        const entry = contentSource.getEntryByNormalizedWord(normalizedWord);
+        if (entry === undefined) {
+          return [];
+        }
+
+        seen.add(normalizedWord);
+        return [
+          Object.freeze({
+            word: entry.word,
+            normalizedWord: entry.normalizedWord,
+            occurredAt: record.occurredAt
+          })
+        ];
       })
       .slice(0, 12);
   }, [activity, contentSource]);
 
-  const recentAdditions = useMemo(
+  const recentAdditions = useMemo<readonly VocabularyActivityItem[]>(
     () =>
       [...storedEntries]
         .sort((left, right) => right.entry.createdAt.localeCompare(left.entry.createdAt))
         .slice(0, 12)
-        .map((record) => record.entry.normalizedWord),
+        .map((record) =>
+          Object.freeze({
+            word: record.entry.word,
+            normalizedWord: record.entry.normalizedWord,
+            occurredAt: record.entry.createdAt
+          })
+        ),
     [storedEntries]
   );
+
+  const popularSearches = useMemo(() => {
+    const entriesByWord = new Map(
+      contentSource.listEntries().map((entry) => [entry.normalizedWord, entry.word] as const)
+    );
+
+    return PREFERRED_POPULAR_SEARCHES.map((word) => entriesByWord.get(word)).filter(
+      (word): word is string => word !== undefined
+    );
+  }, [contentSource]);
 
   function executeSearch(nextQuery: string, options: ExecuteSearchOptions = {}) {
     const requestId = searchSequence.current + 1;
@@ -362,6 +399,7 @@ export function VocabularyPage() {
             dedupeKey: "study-details-saved"
           });
         }}
+        onToggleFavorite={() => void toggleCurrentFavorite()}
         state={searchState}
       />
     );
@@ -388,9 +426,10 @@ export function VocabularyPage() {
         event.preventDefault();
         executeSearch(query);
       }}
+      popularSearches={popularSearches}
       query={query}
       recentAdditions={recentAdditions}
-      recentWords={recentWords}
+      recentSearches={recentSearches}
       searchInputRef={searchInputRef}
       state={searchState}
     />

@@ -1,0 +1,94 @@
+/* Keep Wordie truthful: teaching sections appear only after a verified word is ready. */
+
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel:not(:has(.wv84-user-message))
+  .wv84-wordie-answer
+  > section,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="thinking"]
+  .wv84-wordie-answer
+  > section,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="confused"]
+  .wv84-wordie-answer
+  > section {
+  display: none !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel:not(:has(.wv84-user-message))
+  .wv84-quick-actions,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="thinking"]
+  .wv84-quick-actions,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="confused"]
+  .wv84-quick-actions {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel:not(:has(.wv84-user-message))
+  .wv84-wordie-answer,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="thinking"]
+  .wv84-wordie-answer,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="confused"]
+  .wv84-wordie-answer {
+  height: 154px !important;
+  padding: 22px 18px !important;
+  overflow: hidden !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel:not(:has(.wv84-user-message))
+  .wv84-wordie-answer
+  > header,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="thinking"]
+  .wv84-wordie-answer
+  > header,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="confused"]
+  .wv84-wordie-answer
+  > header {
+  min-height: 108px !important;
+  align-items: center !important;
+}
+
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel:not(:has(.wv84-user-message))
+  .wv84-wordie-answer
+  > header
+  span,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="thinking"]
+  .wv84-wordie-answer
+  > header
+  span,
+#root
+  .application-frame--word-valley-final-search
+  .wv84-assistant-panel[data-state="confused"]
+  .wv84-wordie-answer
+  > header
+  span {
+  max-width: 248px !important;
+  font-size: 14px !important;
+  line-height: 21px !important;
+}

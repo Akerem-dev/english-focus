@@ -32,7 +32,10 @@ interface AssistantCandidatePayload {
   readonly model: unknown;
 }
 
-type CachedAssistantCandidate = Extract<AssistantWordPreparationResult, { readonly kind: "candidate" }>;
+type CachedAssistantCandidate = Extract<
+  AssistantWordPreparationResult,
+  { readonly kind: "candidate" }
+>;
 
 const PREPARATION_CACHE_LIMIT = 500;
 const preparationCache = new Map<string, CachedAssistantCandidate>();

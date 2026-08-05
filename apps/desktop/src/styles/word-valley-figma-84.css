@@ -1,0 +1,1371 @@
+/*
+ * Figma 84:2 / 84:181 — Word Valley Search, production implementation.
+ * Imported last and scoped to the vocabulary route so no other screen changes.
+ */
+
+#root .application-frame--word-valley-final-search {
+  --wv84-forest-950: #0b251c;
+  --wv84-forest-900: #103126;
+  --wv84-moss-700: #506a3e;
+  --wv84-moss-600: #667f4b;
+  --wv84-moss-500: #7e985a;
+  --wv84-sage-400: #9fb776;
+  --wv84-brass-500: #b89a4d;
+  --wv84-brass-400: #cdb66f;
+  --wv84-paper-50: #fbf8ef;
+  --wv84-paper-100: #f5efe2;
+  --wv84-paper-200: #e9deca;
+  --wv84-line: #d7c8aa;
+  --wv84-line-soft: #e8e0d2;
+  --wv84-ink-900: #183027;
+  --wv84-ink-700: #3e5148;
+  --wv84-ink-600: #657069;
+  color: var(--wv84-ink-900);
+  font-family: "Inter", sans-serif;
+}
+
+#root .application-frame--word-valley-final-search,
+#root .application-frame--word-valley-final-search .word-valley-stage,
+#root .application-frame--word-valley-final-search .application-main,
+#root .application-frame--word-valley-final-search .app-content {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  min-width: 1920px !important;
+  min-height: 1080px !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .application-main {
+  z-index: 5 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .app-top-bar {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-backdrop,
+#root .application-frame--word-valley-final-search .word-valley-backdrop__static,
+#root .application-frame--word-valley-final-search .word-valley-backdrop__video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  image-rendering: auto !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-backdrop {
+  z-index: 0 !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage-logo {
+  position: absolute !important;
+  left: 35px !important;
+  top: 18px !important;
+  z-index: 50 !important;
+  display: block !important;
+  width: 260px !important;
+  height: 163px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#root .application-frame--word-valley-final-search .word-valley-stage-logo__image {
+  position: absolute !important;
+  left: -36.95% !important;
+  top: -29.15% !important;
+  width: 181.35% !important;
+  height: 180.92% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: fill !important;
+  image-rendering: auto !important;
+  filter: none !important;
+  transform: translateZ(0) !important;
+}
+
+/* Sidebar */
+#root .application-frame--word-valley-final-search .wv84-sidebar {
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  z-index: 40 !important;
+  display: block !important;
+  width: 330px !important;
+  height: 1080px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 2px solid rgba(184, 154, 77, 0.7) !important;
+  border-radius: 0 !important;
+  background: var(--wv84-forest-950) !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-sidebar__nav {
+  position: absolute !important;
+  left: 24px !important;
+  top: 204px !important;
+  display: grid !important;
+  width: 282px !important;
+  gap: 12px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 26px 1fr !important;
+  align-items: center !important;
+  width: 282px !important;
+  height: 62px !important;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  gap: 8px !important;
+  border: 1px solid rgba(80, 106, 62, 0.45) !important;
+  border-radius: 12px !important;
+  background: var(--wv84-forest-900) !important;
+  color: var(--wv84-paper-50) !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item svg {
+  color: var(--wv84-brass-400) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item span {
+  display: block !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 20px !important;
+  font-weight: 400 !important;
+  line-height: 24px !important;
+  text-align: left !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item--active {
+  border-color: rgba(184, 154, 77, 0.85) !important;
+  background: var(--wv84-moss-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item--active svg {
+  color: var(--wv84-paper-50) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item--unavailable {
+  opacity: 1 !important;
+  cursor: default !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-nav-item:focus-visible,
+#root .application-frame--word-valley-final-search .wv84-search-form:focus-within,
+#root .application-frame--word-valley-final-search button:focus-visible,
+#root .application-frame--word-valley-final-search a:focus-visible {
+  outline: 3px solid #f6d980 !important;
+  outline-offset: 3px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-sidebar__divider {
+  position: absolute !important;
+  left: 44px !important;
+  top: 665px !important;
+  width: 242px !important;
+  height: 11px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-sidebar__divider::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 5px !important;
+  height: 1px !important;
+  background: var(--wv84-brass-500) !important;
+  opacity: 0.75 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-sidebar__divider span {
+  position: absolute !important;
+  left: 116px !important;
+  top: 0 !important;
+  width: 10px !important;
+  height: 10px !important;
+  border: 2px solid var(--wv84-brass-500) !important;
+  background: var(--wv84-forest-950) !important;
+  transform: rotate(45deg) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress {
+  position: absolute !important;
+  left: 28px !important;
+  top: 695px !important;
+  width: 274px !important;
+  height: 307px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__eyebrow {
+  width: 100% !important;
+  margin: 0 0 19px !important;
+  color: var(--wv84-brass-400) !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 16px !important;
+  letter-spacing: 1.4px !important;
+  text-align: center !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__card {
+  box-sizing: border-box !important;
+  width: 274px !important;
+  height: 272px !important;
+  padding: 18px !important;
+  border: 1px solid rgba(80, 106, 62, 0.75) !important;
+  border-radius: 14px !important;
+  background: var(--wv84-forest-900) !important;
+  color: var(--wv84-paper-50) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__label {
+  margin: 0 !important;
+  color: var(--wv84-paper-200) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 17px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__goal-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  margin-top: 17px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__ring {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 64px !important;
+  height: 64px !important;
+  flex: 0 0 64px !important;
+  border-radius: 50% !important;
+  background: conic-gradient(var(--wv84-moss-500) 0 72%, rgba(126, 152, 90, 0.25) 72% 100%) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__ring::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 8px !important;
+  border-radius: 50% !important;
+  background: var(--wv84-forest-900) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__ring span {
+  position: relative !important;
+  z-index: 1 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__goal-copy {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__goal-copy strong {
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  line-height: 31px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__goal-copy span {
+  color: var(--wv84-paper-200) !important;
+  font-size: 14px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__rule {
+  width: 238px !important;
+  height: 1px !important;
+  margin: 16px 0 13px !important;
+  background: var(--wv84-moss-700) !important;
+  opacity: 0.6 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  color: var(--wv84-sage-400) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric div {
+  display: grid !important;
+  gap: 1px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric strong {
+  color: var(--wv84-paper-50) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  line-height: 27px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric span {
+  color: var(--wv84-paper-200) !important;
+  font-size: 13px !important;
+  line-height: 16px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric--streak {
+  align-items: center !important;
+  margin-top: 16px !important;
+  color: var(--wv84-brass-400) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-progress__metric--streak strong {
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
+
+/* Closed search state */
+#root .application-frame--word-valley-final-search .wv84-search-home {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-hero {
+  position: absolute !important;
+  inset: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-hero > h1 {
+  position: absolute !important;
+  left: 540px !important;
+  top: 238px !important;
+  width: 850px !important;
+  height: 72px !important;
+  margin: 0 !important;
+  color: var(--wv84-forest-950) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 64px !important;
+  font-weight: 600 !important;
+  line-height: 72px !important;
+  text-align: center !important;
+  text-shadow: 0 1px 0 rgba(251, 248, 239, 0.2) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-title-divider {
+  position: absolute !important;
+  left: 795px !important;
+  top: 323px !important;
+  width: 340px !important;
+  height: 11px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-title-divider::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 5px !important;
+  width: 340px !important;
+  height: 1px !important;
+  background: var(--wv84-brass-500) !important;
+  opacity: 0.75 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-title-divider span {
+  position: absolute !important;
+  left: 165px !important;
+  top: 0 !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: var(--wv84-brass-500) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-hero > p {
+  position: absolute !important;
+  left: 610px !important;
+  top: 352px !important;
+  width: 710px !important;
+  margin: 0 !important;
+  color: var(--wv84-ink-700) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 22px !important;
+  line-height: 27px !important;
+  text-align: center !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form {
+  position: absolute !important;
+  left: 570px !important;
+  top: 430px !important;
+  z-index: 10 !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 760px !important;
+  height: 84px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1.5px solid rgba(184, 154, 77, 0.75) !important;
+  border-radius: 16px !important;
+  background: var(--wv84-paper-50) !important;
+  box-shadow: 0 9px 24px rgba(13, 26, 18, 0.18) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form__icon {
+  position: absolute !important;
+  left: 26px !important;
+  top: 25px !important;
+  z-index: 4 !important;
+  color: var(--wv84-ink-600) !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form > .field {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 594px !important;
+  height: 84px !important;
+  margin: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form .field__control {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 594px !important;
+  height: 84px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form .field__leading-icon {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form .field__input {
+  box-sizing: border-box !important;
+  width: 594px !important;
+  height: 84px !important;
+  margin: 0 !important;
+  padding: 0 54px 0 80px !important;
+  border: 0 !important;
+  border-radius: 16px 0 0 16px !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--wv84-ink-900) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 22px !important;
+  line-height: 27px !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form .field__input::placeholder {
+  color: var(--wv84-ink-600) !important;
+  opacity: 1 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form .field__trailing-action {
+  position: absolute !important;
+  right: 10px !important;
+  top: 25px !important;
+  z-index: 5 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-form__button {
+  position: absolute !important;
+  left: 594px !important;
+  top: 10px !important;
+  z-index: 4 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 154px !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--wv84-brass-500) !important;
+  border-radius: 12px !important;
+  background: var(--wv84-forest-900) !important;
+  color: var(--wv84-paper-50) !important;
+  box-shadow: 0 4px 12px rgba(13, 26, 18, 0.12) !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.03em !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-suggestions {
+  position: absolute !important;
+  left: 16px !important;
+  top: 78px !important;
+  z-index: 30 !important;
+  box-sizing: border-box !important;
+  width: 560px !important;
+  padding: 12px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 14px !important;
+  background: rgba(251, 248, 239, 0.98) !important;
+  box-shadow: 0 12px 28px rgba(13, 26, 18, 0.18) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-suggestions > p {
+  margin: 0 0 8px !important;
+  color: var(--wv84-ink-600) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-suggestions button {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-height: 40px !important;
+  padding: 8px 10px !important;
+  gap: 10px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--wv84-ink-900) !important;
+  text-align: left !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-suggestions button:hover {
+  background: var(--wv84-paper-100) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-popular-searches {
+  position: absolute !important;
+  left: 585px !important;
+  top: 548px !important;
+  width: 736px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-popular-searches > p {
+  margin: 0 0 14px 1px !important;
+  color: var(--wv84-ink-700) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 16px !important;
+  letter-spacing: 1.1px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-popular-searches > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-popular-searches button {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 44px !important;
+  min-width: 126px !important;
+  padding: 0 14px !important;
+  gap: 7px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 22px !important;
+  background: var(--wv84-paper-50) !important;
+  color: var(--wv84-ink-900) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 15px !important;
+  box-shadow: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-leaf-mark {
+  display: inline-block !important;
+  width: 12px !important;
+  height: 18px !important;
+  flex: 0 0 12px !important;
+  border: 1.7px solid var(--wv84-moss-600) !important;
+  border-radius: 100% 0 100% 0 !important;
+  transform: rotate(35deg) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-empty-result {
+  position: absolute !important;
+  left: 700px !important;
+  top: 650px !important;
+  display: flex !important;
+  width: 520px !important;
+  padding: 12px 16px !important;
+  gap: 12px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 12px !important;
+  background: rgba(251, 248, 239, 0.94) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-empty-result > span {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+/* Activity cards */
+#root .application-frame--word-valley-final-search .wv84-activity-column {
+  position: absolute !important;
+  left: 1525px !important;
+  top: 29px !important;
+  z-index: 12 !important;
+  display: grid !important;
+  width: 372px !important;
+  gap: 15px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card {
+  box-sizing: border-box !important;
+  width: 372px !important;
+  height: 366px !important;
+  padding: 0 18px !important;
+  border: 1.5px solid var(--wv84-line) !important;
+  border-radius: 20px !important;
+  background: var(--wv84-paper-50) !important;
+  box-shadow: 0 12px 28px rgba(13, 26, 18, 0.18) !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__header {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 24px 1fr auto !important;
+  align-items: center !important;
+  height: 64px !important;
+  gap: 12px !important;
+  color: var(--wv84-ink-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__header h2 {
+  margin: 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 18px !important;
+  letter-spacing: 0.8px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__clear {
+  color: var(--wv84-moss-700) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__rows {
+  display: grid !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-row {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 20px 1fr 72px 24px !important;
+  align-items: center !important;
+  width: 336px !important;
+  height: 52px !important;
+  padding: 0 !important;
+  gap: 14px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--wv84-line-soft) !important;
+  background: transparent !important;
+  color: var(--wv84-ink-600) !important;
+  text-align: left !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-row__word {
+  color: var(--wv84-ink-900) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 17px !important;
+  line-height: 21px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-row__time {
+  color: var(--wv84-ink-600) !important;
+  font-size: 12px !important;
+  text-align: right !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-row__chevron {
+  color: var(--wv84-ink-600) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 24px !important;
+  text-align: center !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__view-all {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 336px !important;
+  height: 40px !important;
+  padding: 0 2px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--wv84-moss-700) !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-activity-card__view-all span:last-child {
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 22px !important;
+}
+
+/* Result card */
+#root .application-frame--word-valley-final-search .wv84-result-page {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card {
+  position: absolute !important;
+  left: 545px !important;
+  top: 31px !important;
+  z-index: 15 !important;
+  box-sizing: border-box !important;
+  width: 790px !important;
+  height: 814px !important;
+  padding: 0 !important;
+  border: 1.5px solid var(--wv84-line) !important;
+  border-radius: 20px !important;
+  background: var(--wv84-paper-50) !important;
+  box-shadow: 0 13px 30px rgba(13, 26, 18, 0.2) !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__header {
+  position: relative !important;
+  height: 204px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__back,
+#root .application-frame--word-valley-final-search .wv84-result-card__favorite {
+  position: absolute !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--wv84-ink-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__back {
+  left: 26px !important;
+  top: 26px !important;
+  padding: 0 !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__favorite {
+  right: 35px !important;
+  top: 23px !important;
+  padding: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__identity h1 {
+  position: absolute !important;
+  left: 26px !important;
+  top: 72px !important;
+  width: 570px !important;
+  margin: 0 !important;
+  color: var(--wv84-forest-950) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 72px !important;
+  font-weight: 600 !important;
+  line-height: 78px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__cefr {
+  position: absolute !important;
+  left: 600px !important;
+  top: 94px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 54px !important;
+  height: 38px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 9px !important;
+  background: var(--wv84-paper-100) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-card__pronunciation {
+  position: absolute !important;
+  left: 28px !important;
+  top: 162px !important;
+  margin: 0 !important;
+  color: var(--wv84-ink-600) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-tabs {
+  position: absolute !important;
+  left: 26px !important;
+  top: 220px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, 160px) !important;
+  gap: 14px !important;
+  width: 738px !important;
+  height: 42px !important;
+  border-bottom: 1px solid var(--wv84-line) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-tabs button {
+  position: relative !important;
+  height: 42px !important;
+  padding: 0 0 20px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--wv84-ink-700) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 17px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-tabs button[aria-current="page"] {
+  color: var(--wv84-forest-950) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-tabs button[aria-current="page"]::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  bottom: -1px !important;
+  width: 160px !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+  background: var(--wv84-moss-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-definition-card {
+  position: absolute !important;
+  left: 26px !important;
+  top: 286px !important;
+  box-sizing: border-box !important;
+  width: 738px !important;
+  height: 270px !important;
+  padding: 20px !important;
+  border: 1px solid rgba(215, 200, 170, 0.65) !important;
+  border-radius: 14px !important;
+  background: rgba(245, 239, 226, 0.62) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-definition-block {
+  display: grid !important;
+  grid-template-columns: 22px 1fr !important;
+  gap: 12px !important;
+  min-height: 110px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-definition-block .wv84-leaf-mark {
+  width: 13px !important;
+  height: 20px !important;
+  margin-top: 4px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-definition-block h2,
+#root .application-frame--word-valley-final-search .wv84-example-card h2 {
+  margin: 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  line-height: 21px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-definition-block p {
+  max-width: 620px !important;
+  margin: 12px 0 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 20px !important;
+  line-height: 30px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-definition-card__rule {
+  height: 1px !important;
+  margin: 1px 0 15px !important;
+  background: var(--wv84-line) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-result-actions {
+  position: absolute !important;
+  left: 26px !important;
+  top: 580px !important;
+  display: flex !important;
+  gap: 18px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-primary-action,
+#root .application-frame--word-valley-final-search .wv84-secondary-action {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 62px !important;
+  gap: 10px !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-primary-action {
+  width: 280px !important;
+  border: 1px solid var(--wv84-brass-500) !important;
+  background: var(--wv84-forest-900) !important;
+  color: var(--wv84-paper-50) !important;
+  box-shadow: 0 4px 12px rgba(13, 26, 18, 0.12) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-primary-action .wv84-leaf-mark {
+  border-color: var(--wv84-brass-400) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-secondary-action {
+  width: 210px !important;
+  border: 1px solid var(--wv84-line) !important;
+  background: var(--wv84-paper-50) !important;
+  color: var(--wv84-ink-900) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-example-card {
+  position: absolute !important;
+  left: 26px !important;
+  top: 662px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 1fr 30px !important;
+  align-items: center !important;
+  width: 620px !important;
+  height: 116px !important;
+  padding: 16px 28px 14px 20px !important;
+  gap: 18px !important;
+  border: 1px solid rgba(215, 200, 170, 0.65) !important;
+  border-radius: 14px !important;
+  background: rgba(245, 239, 226, 0.56) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-example-card p {
+  margin: 12px 0 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 18px !important;
+  line-height: 27px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-example-card > svg {
+  color: var(--wv84-moss-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-found-legacy {
+  position: absolute !important;
+  left: -10000px !important;
+  top: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+}
+
+/* Wordie assistant */
+#root .application-frame--word-valley-final-search .wv84-assistant {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 60 !important;
+  width: 1920px !important;
+  height: 1080px !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel {
+  position: absolute !important;
+  left: 1477px !important;
+  top: 31px !important;
+  box-sizing: border-box !important;
+  width: 420px !important;
+  height: 816px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1.5px solid var(--wv84-line) !important;
+  border-radius: 20px !important;
+  background: var(--wv84-paper-50) !important;
+  box-shadow: 0 13px 30px rgba(13, 26, 18, 0.2) !important;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__header {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: 58px 1fr 34px !important;
+  align-items: center !important;
+  width: 420px !important;
+  height: 86px !important;
+  padding: 14px 16px 12px 18px !important;
+  gap: 12px !important;
+  border-bottom: 1px solid var(--wv84-line) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__header .assistant-panel__mascot-stage {
+  width: 58px !important;
+  height: 58px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 50% !important;
+  background: var(--wv84-paper-100) !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__header .assistant-panel__mascot {
+  width: 90px !important;
+  height: 60px !important;
+  max-width: none !important;
+  margin: -3px 0 0 -15px !important;
+  object-fit: cover !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__header h2 {
+  margin: 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-family: "Cormorant Garamond", serif !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  line-height: 27px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__header p {
+  margin: 2px 0 0 !important;
+  color: var(--wv84-ink-600) !important;
+  font-size: 13px !important;
+  line-height: 16px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__close {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--wv84-ink-700) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-panel__conversation {
+  position: absolute !important;
+  left: 24px !important;
+  top: 112px !important;
+  width: 368px !important;
+  height: 432px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-user-message {
+  box-sizing: border-box !important;
+  width: 262px !important;
+  min-height: 94px !important;
+  margin-left: auto !important;
+  padding: 12px 16px !important;
+  border-radius: 14px !important;
+  background: rgba(245, 239, 226, 0.85) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-user-message span {
+  color: var(--wv84-ink-700) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.8px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-user-message p {
+  margin: 10px 0 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-size: 16px !important;
+  line-height: 23px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer {
+  box-sizing: border-box !important;
+  width: 368px !important;
+  height: 318px !important;
+  margin-top: 20px !important;
+  padding: 10px 16px !important;
+  border: 1px solid rgba(215, 200, 170, 0.7) !important;
+  border-radius: 14px !important;
+  background: rgba(245, 239, 226, 0.62) !important;
+  overflow: auto !important;
+  scrollbar-width: thin !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > header {
+  display: grid !important;
+  grid-template-columns: 42px 1fr !important;
+  align-items: start !important;
+  gap: 10px !important;
+  min-height: 58px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > header .assistant-panel__mascot-stage {
+  width: 42px !important;
+  height: 42px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 50% !important;
+  background: var(--wv84-paper-100) !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > header .assistant-panel__mascot {
+  width: 66px !important;
+  height: 44px !important;
+  max-width: none !important;
+  margin: -2px 0 0 -10px !important;
+  object-fit: cover !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > header div {
+  display: grid !important;
+  gap: 3px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > header strong {
+  font-size: 15px !important;
+  line-height: 18px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > header span {
+  color: var(--wv84-ink-700) !important;
+  font-size: 13px !important;
+  line-height: 17px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > section {
+  display: grid !important;
+  grid-template-columns: 20px 1fr !important;
+  gap: 12px !important;
+  padding: 10px 0 !important;
+  border-bottom: 1px solid var(--wv84-line-soft) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > section:last-of-type {
+  border-bottom: 0 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer > section .wv84-leaf-mark {
+  width: 11px !important;
+  height: 16px !important;
+  margin: 2px 0 0 2px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer h3 {
+  margin: 0 !important;
+  color: var(--wv84-ink-900) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 18px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-wordie-answer section p {
+  margin: 5px 0 0 !important;
+  color: var(--wv84-ink-700) !important;
+  font-size: 13px !important;
+  line-height: 19px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-answer-action {
+  min-height: 34px !important;
+  margin: 8px 8px 0 0 !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 17px !important;
+  background: var(--wv84-paper-50) !important;
+  color: var(--wv84-ink-900) !important;
+  font-size: 12px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-answer-error {
+  color: #8a2c2c !important;
+  font-size: 12px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-quick-actions {
+  position: absolute !important;
+  left: 24px !important;
+  top: 568px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, 174px) !important;
+  grid-auto-rows: 44px !important;
+  gap: 10px 12px !important;
+  width: 360px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-quick-actions button {
+  display: grid !important;
+  grid-template-columns: 20px 1fr !important;
+  align-items: center !important;
+  width: 174px !important;
+  height: 44px !important;
+  padding: 0 10px 0 14px !important;
+  gap: 8px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 22px !important;
+  background: var(--wv84-paper-50) !important;
+  color: var(--wv84-ink-900) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-quick-actions button:nth-child(5) {
+  grid-column: 1 !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-composer {
+  position: absolute !important;
+  left: 24px !important;
+  top: 744px !important;
+  box-sizing: border-box !important;
+  width: 368px !important;
+  height: 52px !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 14px !important;
+  background: var(--wv84-paper-50) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-composer input {
+  box-sizing: border-box !important;
+  width: 314px !important;
+  height: 50px !important;
+  padding: 0 16px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--wv84-ink-900) !important;
+  font-size: 14px !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-composer input::placeholder {
+  color: var(--wv84-ink-600) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-composer > button {
+  position: absolute !important;
+  right: 5px !important;
+  top: 5px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 48px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  border: 1px solid var(--wv84-brass-500) !important;
+  border-radius: 12px !important;
+  background: var(--wv84-forest-900) !important;
+  color: var(--wv84-paper-50) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-launcher,
+#root .application-frame--word-valley-final-search .wv84-assistant__ready-mascot {
+  position: absolute !important;
+  left: 1618px !important;
+  top: 847px !important;
+  width: 298px !important;
+  height: 199px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-assistant-launcher .assistant-launcher__mascot,
+#root .application-frame--word-valley-final-search .wv84-assistant__ready-mascot .assistant-launcher__mascot {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 298px !important;
+  height: 199px !important;
+  max-width: none !important;
+  object-fit: cover !important;
+  image-rendering: auto !important;
+  filter: none !important;
+  transform: translateZ(0) !important;
+}
+
+/* Hide superseded Word Valley layers and keep route-specific fallback states above the background. */
+#root .application-frame--word-valley-final-search .word-valley-theme-control,
+#root .application-frame--word-valley-final-search .app-sidebar__panel-final,
+#root .application-frame--word-valley-final-search .assistant-launcher__frame,
+#root .application-frame--word-valley-final-search .assistant-launcher__prompt,
+#root .application-frame--word-valley-final-search .assistant-launcher__glow {
+  display: none !important;
+}
+
+#root .application-frame--word-valley-final-search .vocabulary-searching-state,
+#root .application-frame--word-valley-final-search .vocabulary-search-results,
+#root .application-frame--word-valley-final-search .invalid-search-state,
+#root .application-frame--word-valley-final-search .error-state {
+  position: absolute !important;
+  left: 545px !important;
+  top: 670px !important;
+  z-index: 25 !important;
+  width: 790px !important;
+  max-height: 330px !important;
+  overflow: auto !important;
+  border: 1px solid var(--wv84-line) !important;
+  border-radius: 16px !important;
+  background: rgba(251, 248, 239, 0.97) !important;
+  box-shadow: 0 12px 28px rgba(13, 26, 18, 0.18) !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #root .application-frame--word-valley-final-search .wv84-nav-item,
+  #root .application-frame--word-valley-final-search .wv84-popular-searches button,
+  #root .application-frame--word-valley-final-search .wv84-activity-row,
+  #root .application-frame--word-valley-final-search .wv84-quick-actions button,
+  #root .application-frame--word-valley-final-search .wv84-primary-action,
+  #root .application-frame--word-valley-final-search .wv84-secondary-action {
+    transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease !important;
+  }
+
+  #root .application-frame--word-valley-final-search .wv84-nav-item:not(:disabled):hover,
+  #root .application-frame--word-valley-final-search .wv84-popular-searches button:hover,
+  #root .application-frame--word-valley-final-search .wv84-quick-actions button:hover,
+  #root .application-frame--word-valley-final-search .wv84-primary-action:hover,
+  #root .application-frame--word-valley-final-search .wv84-secondary-action:hover {
+    transform: translateY(-1px) !important;
+  }
+}
