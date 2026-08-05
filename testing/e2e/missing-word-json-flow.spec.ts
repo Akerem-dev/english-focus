@@ -8,9 +8,10 @@ test("a missing word opens the review-first word helper", async ({ page }) => {
 
   const dialog = page.getByRole("dialog", { name: "Word helper" });
   const launcher = page.getByRole("button", { name: "Open word helper" });
+  const input = page.getByRole("textbox", { name: "Ask Wordie" });
 
   await expect(dialog).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "English word" })).toHaveValue("allocate");
+  await expect(input).toHaveValue("allocate");
 
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
@@ -18,5 +19,5 @@ test("a missing word opens the review-first word helper", async ({ page }) => {
 
   await launcher.click();
   await expect(dialog).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "English word" })).toHaveValue("allocate");
+  await expect(input).toHaveValue("allocate");
 });
