@@ -10,7 +10,7 @@ import {
 } from "./ToastContext";
 import { resolveToastActivity } from "./toastActivityPolicy";
 
-const MAX_VISIBLE_TOASTS = 4;
+const MAX_VISIBLE_TOASTS = 2;
 let fallbackToastSequence = 0;
 
 function createToastId(): string {
@@ -44,7 +44,7 @@ export function ToastProvider({ children }: PropsWithChildren) {
       ...input,
       id,
       tone: input.tone ?? "info",
-      durationMs: input.durationMs ?? (input.action === undefined ? 4_800 : 8_000),
+      durationMs: input.durationMs ?? (input.action === undefined ? 3_800 : 6_500),
       createdAt: Date.now()
     });
 
