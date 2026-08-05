@@ -13,9 +13,36 @@ function iconName(tone: ToastRecord["tone"]) {
   return tone === "error" || tone === "warning" ? "warning" : "check";
 }
 
+function quotedSubject(message: string | undefined): string | undefined {
+  return message?.match(/“([^”]+)”/u)?.[1];
+}
+
+function notificationMessage(toast: ToastRecord): string | undefined {
+  const subject = quotedSubject(toast.message);
+
+  if (toast.title === "Added to favorites" && subject !== undefined) {
+    return `“${subject}” is now easy to find in Favorites.`;
+  }
+  if (toast.title === "Removed from favorites" && subject !== undefined) {
+    return `“${subject}” was removed from Favorites.`;
+  }
+  if (toast.message === undefined) {
+    return undefined;
+  }
+
+  return toast.message
+    .replace("study metadata was updated locally.", "was updated.")
+    .replace("returned to its previous favorite state.", "is back to its previous state.")
+    .replace("is now in your local library.", "is ready in your Wordbook.")
+    .replace("is stored locally.", "was updated.")
+    .replace("local SQLite storage", "your Wordbook")
+    .replace("A local override", "Your edited version");
+}
+
 export function Toast({ onDismiss, toast }: ToastProps) {
   const [actionPending, setActionPending] = useState(false);
   const [paused, setPaused] = useState(false);
+  const message = notificationMessage(toast);
 
   useEffect(() => {
     if (toast.durationMs === undefined || toast.durationMs <= 0 || paused || actionPending) {
@@ -65,11 +92,11 @@ export function Toast({ onDismiss, toast }: ToastProps) {
       role={toast.tone === "error" || toast.tone === "warning" ? "alert" : "status"}
     >
       <span aria-hidden="true" className="toast__icon">
-        <AppIcon name={iconName(toast.tone)} size={18} />
+        <AppIcon name={iconName(toast.tone)} size={17} />
       </span>
       <div className="toast__copy">
         <strong>{toast.title}</strong>
-        {toast.message === undefined ? null : <p>{toast.message}</p>}
+        {message === undefined ? null : <p>{message}</p>}
       </div>
       <div className="toast__actions">
         {toast.action === undefined ? null : (
@@ -85,7 +112,7 @@ export function Toast({ onDismiss, toast }: ToastProps) {
           </Button>
         )}
         <IconButton
-          icon={<AppIcon name="close" size={15} />}
+          icon={<AppIcon name="close" size={14} />}
           label={`Dismiss ${toast.title}`}
           onClick={onDismiss}
           size="small"
