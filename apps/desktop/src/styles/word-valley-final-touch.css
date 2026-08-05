@@ -1,0 +1,29 @@
+/* Small final alignment and legibility refinements for the Word Valley route. */
+
+/* Lift only the collected-word row by two pixels; the streak row keeps its current baseline. */
+#root
+  .application-frame--word-valley-final-search
+  .wv84-progress__rule
+  + .wv84-progress__metric {
+  transform: translateY(-2px) !important;
+}
+
+/* Keep the bright sky from washing out the hero copy without adding a visible panel. */
+#root .application-frame--word-valley-final-search .wv84-search-hero > h1 {
+  text-shadow:
+    0 1px 0 rgba(255, 252, 242, 0.5),
+    0 3px 12px rgba(251, 248, 239, 0.16) !important;
+}
+
+#root .application-frame--word-valley-final-search .wv84-search-hero > p {
+  text-shadow: 0 1px 5px rgba(251, 248, 239, 0.28) !important;
+}
+
+/* The filled state must remain obvious at a glance and at smaller window scales. */
+#root
+  .application-frame--word-valley-final-search
+  .wv84-result-card__favorite[aria-pressed="true"]
+  svg {
+  fill: #dcae37 !important;
+  stroke: #75500d !important;
+}
