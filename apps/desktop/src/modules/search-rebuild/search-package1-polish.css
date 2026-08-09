@@ -1,0 +1,170 @@
+/* Package 1: persistent detail rail, stronger branding, and closed-assistant cleanup. */
+
+#root .application-frame--search-cleanroom .wvclean-topbar__brand {
+  left: 16px;
+  gap: 8px;
+  font-size: 16px;
+}
+
+#root .application-frame--search-cleanroom .wvclean-topbar__brand img {
+  width: 36px;
+  height: 24px;
+}
+
+#root .application-frame--search-cleanroom .wvclean-sidebar__brand {
+  top: 24px;
+}
+
+#root .application-frame--search-cleanroom .wvclean-sidebar__brand img {
+  width: 144px;
+  height: 90px;
+}
+
+#root .application-frame--search-cleanroom .wvclean-sidebar__brand strong {
+  margin-top: -2px;
+}
+
+#root .application-frame--search-cleanroom .assistant-dock.wv84-assistant:not([data-open]) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-dock.wv84-assistant[data-open] {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card__copy {
+  max-width: 188px;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card__mascot {
+  top: 11px;
+  right: 2px;
+  width: 136px;
+  height: 144px;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 382px !important;
+  transition: grid-template-columns 180ms ease;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root.wvsr-detail-root--rail-collapsed {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-canvas {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: visible;
+  isolation: isolate;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root__wash {
+  z-index: 0;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-card {
+  z-index: 2;
+  top: 42px !important;
+  left: 50% !important;
+  width: min(955px, calc(100% - 24px)) !important;
+  transform: translateX(-50%) !important;
+  transition: width 180ms ease, left 180ms ease, transform 180ms ease;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--rail-collapsed .wvsr-detail-card {
+  width: min(1120px, calc(100% - 96px)) !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail {
+  z-index: 8;
+  width: 382px !important;
+  min-width: 382px;
+  padding: 39px 26px 22px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail .wvsr-activity {
+  margin-right: 9px;
+  margin-left: 9px;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail .wvsr-activity__row {
+  min-height: 40px;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail .wvsr-rail__divider {
+  margin-right: 9px;
+  margin-left: 9px;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail .wvsr-wordie-card {
+  margin-top: auto;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 20;
+  display: grid;
+  width: 30px;
+  height: 58px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px 0 0 9px;
+  background: rgba(251, 248, 241, .98);
+  color: #102d27;
+  box-shadow: 0 8px 22px rgba(16, 45, 39, .08);
+  cursor: pointer;
+  transform: translate(50%, -50%);
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail-toggle:hover {
+  background: #fffdf8;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail-toggle:focus-visible {
+  outline: 2px solid #c69a3a;
+  outline-offset: 2px;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-rail-toggle span {
+  font: 400 28px/1 "Cormorant Garamond", Georgia, serif;
+  transform: translateY(-1px);
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--rail-collapsed .wvsr-detail-rail-toggle {
+  right: 18px;
+  border-radius: 9px;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 1180px) {
+  #root .application-frame--search-cleanroom .wvsr-detail-root {
+    grid-template-columns: minmax(0, 1fr) 342px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-rail {
+    width: 342px !important;
+    min-width: 342px;
+    padding-right: 18px !important;
+    padding-left: 18px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-card {
+    width: min(900px, calc(100% - 18px)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--search-cleanroom .wvsr-detail-root,
+  #root .application-frame--search-cleanroom .wvsr-detail-card {
+    transition: none !important;
+  }
+}
