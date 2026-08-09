@@ -451,7 +451,7 @@
 }
 
 .application-frame--search-cleanroom .wvsr-hero > p {
-  margin-top: 10px !important;
+  margin-top: 19px !important;
   font-size: 18px !important;
   line-height: 22px !important;
 }
@@ -570,11 +570,21 @@
 
 .application-frame--search-cleanroom .wvsr-rail {
   width: 382px !important;
-  padding: 38px 26px 22px !important;
+  padding: 39px 26px 22px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-activity {
+  margin-right: 9px !important;
+  margin-left: 9px !important;
 }
 
 .application-frame--search-cleanroom .wvsr-activity__row {
   min-height: 40px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-rail__divider {
+  margin-right: 9px !important;
+  margin-left: 9px !important;
 }
 
 .application-frame--search-cleanroom .wvsr-wordie-card {
