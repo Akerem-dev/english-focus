@@ -1,0 +1,295 @@
+/*
+ * Word Valley search runtime sizing / Figma parity overrides.
+ * Reference canvas: Figma 1664 × 936, node 84:823.
+ *
+ * Important: the application itself is fluid. We keep the Figma component
+ * measurements at 1 CSS px instead of scaling the whole canvas up/down.
+ * This prevents oversized controls at 1920×1080 and avoids clipped content
+ * when the Tauri window is resized.
+ */
+
+#root .application-frame--search-cleanroom .word-valley-stage-viewport {
+  --wv-stage-scale-x: 1 !important;
+  --wv-stage-scale-y: 1 !important;
+  position: absolute !important;
+  inset: 0 !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--search-cleanroom .word-valley-stage {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  transform-origin: top left !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-main {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Keep the custom title bar attached to the actual window edges. */
+#root .application-frame--search-cleanroom .wvclean-topbar {
+  width: 100% !important;
+}
+
+/* Figma desktop shell: 318 sidebar + fluid scene + 382 context rail. */
+#root .application-frame--search-cleanroom .wvsr-root,
+#root .application-frame--search-cleanroom .wvsr-detail-root {
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 318px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-root {
+  grid-template-columns: minmax(0, 1fr) 382px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-scene {
+  width: auto !important;
+  min-width: 0 !important;
+}
+
+/* Keep the designed search module size, but allow it to contract cleanly. */
+#root .application-frame--search-cleanroom .wvsr-hero {
+  width: min(713px, calc(100% - 48px)) !important;
+  max-width: 713px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-search {
+  width: 100% !important;
+  max-width: 713px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-popular {
+  max-width: 621px !important;
+}
+
+/* The old language footer is intentionally removed from the end-user UI. */
+#root .application-frame--search-cleanroom .wvsr-language,
+#root .application-frame--search-cleanroom .wvsr-detail-language {
+  display: none !important;
+}
+
+/* Removing the 36 px language bar must not move the quote/card artwork. */
+#root .application-frame--search-cleanroom .wvsr-quote {
+  bottom: 119px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card {
+  margin-bottom: 36px !important;
+}
+
+/* Slightly enlarge the book/leaves mark without pushing the wordmark down. */
+#root .application-frame--search-cleanroom .wvclean-sidebar__brand img {
+  width: 142px !important;
+  height: 89px !important;
+  margin-bottom: -10px !important;
+}
+
+/* Detail pages retain the Figma card width but never overflow the scene. */
+#root .application-frame--search-cleanroom .wvsr-detail-card {
+  width: min(955px, calc(100% - 48px)) !important;
+  max-width: 955px !important;
+}
+
+/* Wordie occupies the exact 382 px Figma rail and now extends to the window bottom. */
+#root .application-frame--search-cleanroom .assistant-dock.wv84-assistant {
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 382px !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
+  width: 382px !important;
+  height: 100% !important;
+  max-height: none !important;
+}
+
+/* Answer-state visual parity with FINAL · 05 — Wordie / Answer. */
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(2) {
+  display: none !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3 {
+  font-size: 0 !important;
+  line-height: 20px !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3::before {
+  content: "Quick example";
+  color: #173b34;
+  font: 600 15px/20px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+  padding: 14px 25px 18px !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(1),
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(4) {
+  display: none !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 34px 0 42px !important;
+  text-align: left !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button::after {
+  position: absolute;
+  top: 50%;
+  right: 13px;
+  content: "›";
+  color: #102d27;
+  font: 400 18px/1 "Inter", system-ui, sans-serif;
+  transform: translateY(-52%);
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button::before {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  width: 17px;
+  color: #8b682e;
+  font: 600 13px/1 "Inter", system-ui, sans-serif;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(2)::before {
+  content: "↗";
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(3)::before {
+  content: "⇄";
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(5)::before {
+  content: "☆";
+}
+
+/* Prevent long generated assistant text from stretching the rail. */
+#root .application-frame--search-cleanroom .wv84-wordie-answer > header span,
+#root .application-frame--search-cleanroom .wv84-wordie-answer p,
+#root .application-frame--search-cleanroom .wv84-user-message p {
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+
+/* Medium windows: remove the passive activity rail before squeezing the learning surface. */
+@media (max-width: 1180px) {
+  #root .application-frame--search-cleanroom .wvsr-root {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-rail {
+    display: none !important;
+  }
+
+  #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant {
+    width: min(382px, calc(100vw - 318px)) !important;
+    box-shadow: -18px 0 42px rgba(8, 47, 41, .12) !important;
+  }
+
+  #root .application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
+    width: 100% !important;
+  }
+}
+
+/* Compact desktop window: preserve navigation as an icon rail instead of crushing content. */
+@media (max-width: 1050px) {
+  #root .application-frame--search-cleanroom .wvclean-sidebar {
+    width: 72px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvclean-sidebar__brand,
+  #root .application-frame--search-cleanroom .wvclean-sidebar__divider,
+  #root .application-frame--search-cleanroom .wvclean-progress {
+    display: none !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvclean-nav {
+    top: 24px !important;
+    left: 8px !important;
+    width: 56px !important;
+    gap: 8px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvclean-nav__item {
+    width: 56px !important;
+    height: 48px !important;
+    grid-template-columns: 21px !important;
+    justify-items: center !important;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvclean-nav__item > span {
+    display: none !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-root,
+  #root .application-frame--search-cleanroom .wvsr-detail-root {
+    left: 72px !important;
+  }
+
+  #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant {
+    width: min(360px, calc(100vw - 72px)) !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-card {
+    left: 24px !important;
+    width: calc(100% - 48px) !important;
+    max-width: 955px !important;
+  }
+}
+
+/* Short windows: remove non-essential decoration and keep interactive regions visible. */
+@media (max-height: 760px) {
+  #root .application-frame--search-cleanroom .wvclean-progress,
+  #root .application-frame--search-cleanroom .wvclean-sidebar__divider,
+  #root .application-frame--search-cleanroom .wvsr-quote {
+    display: none !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-hero {
+    top: 72px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-search {
+    margin-top: 26px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-popular {
+    margin-top: 20px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wv84-wordie-welcome {
+    min-height: 180px !important;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wv84-quick-actions--welcome {
+    gap: 8px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button {
+    height: 72px !important;
+  }
+}
