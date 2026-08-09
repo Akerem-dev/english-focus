@@ -37,6 +37,9 @@ describe("application routes", () => {
     expect(markup).toContain("YOUR PROGRESS");
     expect(markup).toContain("application-frame--search-cleanroom");
     expect(markup).toContain("wvclean-sidebar");
+    expect(markup).toContain('aria-label="Notifications"');
+    expect(markup).toContain('aria-label="Window controls"');
+    expect(markup).toContain('aria-label="Toggle full screen"');
     expect(markup).toContain('href="#main-content"');
     expect(markup).not.toContain("word-valley-backdrop__static");
   });
@@ -46,6 +49,7 @@ describe("application routes", () => {
 
     expect(markup).toContain("Loading Library");
     expect(markup).toContain("Library page loaded");
+    expect(markup).toContain('aria-label="Window controls"');
   });
 
   it("renders the settings route loading boundary", () => {
@@ -53,5 +57,6 @@ describe("application routes", () => {
 
     expect(markup).toContain("Loading Settings");
     expect(markup).toContain("Settings page loaded");
+    expect(markup).toContain('aria-label="Window controls"');
   });
 });
