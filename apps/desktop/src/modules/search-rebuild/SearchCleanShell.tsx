@@ -1,12 +1,13 @@
-import { useMemo, type CSSProperties, type PropsWithChildren } from "react";
+import { useMemo, useState, type CSSProperties, type FocusEvent, type PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import type { ActivityRecord } from "@platform/domain";
 
-import brandMark from "../../assets/brand/word-valley-mark.png";
-import { AppIcon, type AppIconName } from "../../design-system";
 import { useActivity, useVocabularyRepository } from "../../app/providers";
 import { ROUTE_PATHS } from "../../app/router";
+import { WindowControls } from "../../app/layout/WindowControls";
+import brandMark from "../../assets/brand/word-valley-mark.png";
+import { AppIcon, type AppIconName } from "../../design-system";
 
 import "./search-cleanroom.css";
 import "./search-cleanroom-assistant.css";
@@ -101,15 +102,47 @@ function countConsecutiveActivityDays(activity: readonly ActivityRecord[]): numb
 }
 
 function SearchCleanTopBar() {
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  function handleNotificationBlur(event: FocusEvent<HTMLDivElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setNotificationsOpen(false);
+    }
+  }
+
   return (
-    <header className="wvclean-topbar">
+    <header className="wvclean-topbar" data-tauri-drag-region="">
       <Link className="wvclean-topbar__brand" to={ROUTE_PATHS.vocabulary}>
         <img alt="" draggable={false} src={brandMark} />
         <span>Word Valley</span>
       </Link>
-      <button aria-label="Notifications" className="wvclean-topbar__icon" type="button">
-        <BellGlyph />
-      </button>
+
+      <div className="wvclean-topbar__actions">
+        <div className="wvclean-notifications" onBlur={handleNotificationBlur}>
+          <button
+            aria-expanded={notificationsOpen}
+            aria-haspopup="dialog"
+            aria-label="Notifications"
+            className="wvclean-topbar__icon"
+            onClick={() => setNotificationsOpen((current) => !current)}
+            type="button"
+          >
+            <BellGlyph />
+          </button>
+          {notificationsOpen ? (
+            <section aria-label="Notifications" className="wvclean-notifications__popover">
+              <div className="wvclean-notifications__icon" aria-hidden="true">
+                <BellGlyph />
+              </div>
+              <div>
+                <strong>You’re all caught up</strong>
+                <p>Updates about your words and practice will appear here.</p>
+              </div>
+            </section>
+          ) : null}
+        </div>
+        <WindowControls className="wvclean-topbar__window-controls" />
+      </div>
     </header>
   );
 }
@@ -150,7 +183,7 @@ function SearchCleanSidebar() {
         {NAV_ITEMS.map((item) =>
           item.to === undefined ? (
             <button className="wvclean-nav__item" disabled key={item.label} type="button">
-              <AppIcon name={item.icon} size={24} />
+              <AppIcon name={item.icon} size={21} />
               <span>{item.label}</span>
             </button>
           ) : (
@@ -162,7 +195,7 @@ function SearchCleanSidebar() {
               key={item.label}
               to={item.to}
             >
-              <AppIcon name={item.icon} size={24} />
+              <AppIcon name={item.icon} size={21} />
               <span>{item.label}</span>
             </NavLink>
           )
@@ -184,14 +217,14 @@ function SearchCleanSidebar() {
             </div>
           </div>
           <div className="wvclean-progress__metric">
-            <AppIcon name="bookmark" size={22} />
+            <AppIcon name="bookmark" size={20} />
             <div>
               <strong>{loading ? "—" : progress.collectedWords.toLocaleString()}</strong>
               <span>collected words</span>
             </div>
           </div>
           <div className="wvclean-progress__metric">
-            <AppIcon name="star" size={21} />
+            <AppIcon name="star" size={20} />
             <div>
               <strong>{loading ? "—" : progress.consecutiveDays}</strong>
               <span>day streak</span>
