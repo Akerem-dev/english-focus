@@ -1,0 +1,175 @@
+/*
+ * Package 3 — vocabulary detail polish.
+ * Human-friendly detail labels, clearer empty states and word-form presentation.
+ * Also fixes the Package 2 compact Wordie scale regression in the detail rail.
+ */
+
+/* Package 2 visual follow-up: the compact Wordie should read as an assistant, not a tiny sticker. */
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card {
+  min-height: 252px !important;
+  padding: 21px 20px 18px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card h2 {
+  font-size: 25px !important;
+  line-height: 1 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card__subtitle {
+  margin-top: 6px !important;
+  font-size: 13px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card__copy {
+  width: 57% !important;
+  margin-top: 29px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
+  top: 61px !important;
+  right: -8px !important;
+  width: 154px !important;
+  height: 150px !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  transform: none !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card > button {
+  height: 52px !important;
+  font-size: 19px !important;
+}
+
+/* Friendlier word options. */
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-menu__popover {
+  width: 228px !important;
+  padding: 7px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-menu__popover button {
+  min-height: 42px !important;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+}
+
+/* Empty/guided states should feel intentional rather than unfinished. */
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-empty {
+  min-height: 198px !important;
+  gap: 10px !important;
+  padding: 26px 34px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-empty strong {
+  font-size: 24px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-empty > span:not(.wvsr-detail-empty__mark) {
+  max-width: 560px !important;
+  color: #59655f !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-empty button {
+  min-height: 42px !important;
+  margin-top: 3px !important;
+  padding: 0 19px !important;
+  border-color: #082f29 !important;
+  background: #082f29 !important;
+  color: #fbf8f1 !important;
+  font: 600 16px/20px "Cormorant Garamond", Georgia, serif !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-empty button:hover {
+  background: #0d4037 !important;
+}
+
+/* Word forms: show the form and its meaning instead of raw schema enum values. */
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family {
+  gap: 20px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__heading {
+  display: grid !important;
+  gap: 4px !important;
+  margin-bottom: -2px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__heading h2 {
+  margin: 0 !important;
+  color: #102d27 !important;
+  font: 600 22px/26px "Cormorant Garamond", Georgia, serif !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__heading p {
+  margin: 0 !important;
+  color: #59655f !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__grid > div {
+  min-height: 72px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__forms {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__form {
+  display: grid !important;
+  min-height: 58px !important;
+  align-content: center !important;
+  gap: 2px !important;
+  padding: 9px 13px !important;
+  border: 1px solid #d9cfbd !important;
+  border-radius: 8px !important;
+  background: rgba(255, 253, 248, .74) !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__form strong {
+  overflow: hidden !important;
+  color: #102d27 !important;
+  font: 600 18px/22px "Cormorant Garamond", Georgia, serif !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__form small {
+  color: #59655f !important;
+  font: 500 10px/14px "Inter", system-ui, sans-serif !important;
+  letter-spacing: .045em !important;
+  text-transform: uppercase !important;
+}
+
+@media (max-height: 900px) and (min-width: 1361px) {
+  #root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card {
+    min-height: 232px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card__copy {
+    margin-top: 22px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
+    top: 58px !important;
+    width: 138px !important;
+    height: 134px !important;
+  }
+}
+
+@media (max-width: 1540px) and (min-width: 1361px) {
+  #root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__forms,
+  #root .application-frame--search-cleanroom .wvsr-detail-root--package-three .wvsr-detail-family__grid {
+    grid-template-columns: 1fr !important;
+  }
+}
