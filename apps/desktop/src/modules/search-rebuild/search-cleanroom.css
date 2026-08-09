@@ -1,4 +1,4 @@
-/* Search visual clean-room. No legacy Word Valley visual assets are referenced here. */
+/* Word Valley Search clean-room shell. Canonical reference: Figma 1664 × 936. */
 
 #root .application-frame--search-cleanroom {
   position: relative !important;
@@ -17,18 +17,19 @@
   position: absolute !important;
   inset: 0 !important;
   overflow: hidden !important;
+  background: #082f29 !important;
 }
 
 #root .application-frame--search-cleanroom .word-valley-stage {
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;
-  width: 1920px !important;
-  height: 1080px !important;
+  width: 1664px !important;
+  height: 936px !important;
   overflow: hidden !important;
   isolation: isolate !important;
   transform: translate(-50%, -50%) scaleX(var(--wv-stage-scale-x)) scaleY(var(--wv-stage-scale-y)) !important;
-  transform-origin: center !important;
+  transform-origin: center center !important;
   background: #082f29 !important;
 }
 
@@ -41,67 +42,171 @@
   box-sizing: border-box;
 }
 
+/* ───────────────────────── Window chrome ───────────────────────── */
 .wvclean-topbar {
   position: absolute;
-  inset: 0 0 auto 0;
-  z-index: 80;
-  display: flex;
-  height: 53px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 22px 0 25px;
-  border-bottom: 1px solid rgba(229, 217, 190, .12);
+  inset: 0 0 auto;
+  z-index: 150;
+  height: 46px;
+  border-bottom: 1px solid rgba(247, 242, 232, .08);
   background: #082f29;
-  color: #fbf8f1;
+  color: #f7f2e8;
+  user-select: none;
 }
 
 .wvclean-topbar__brand {
-  display: inline-flex;
+  position: absolute;
+  top: 0;
+  left: 18px;
+  display: flex;
+  height: 46px;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
   color: inherit;
-  font: 600 18px/1 "Cormorant Garamond", Georgia, serif;
+  font: 600 15px/18px "Cormorant Garamond", Georgia, serif;
   text-decoration: none;
 }
 
 .wvclean-topbar__brand img {
-  width: 23px;
-  height: 23px;
+  width: 28px;
+  height: 18px;
   object-fit: contain;
+}
+
+.wvclean-topbar__actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  height: 46px;
+  align-items: stretch;
+}
+
+.wvclean-notifications {
+  position: relative;
+  display: grid;
+  width: 44px;
+  place-items: center;
 }
 
 .wvclean-topbar__icon {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
+  align-self: center;
   padding: 0;
   place-items: center;
   border: 0;
-  border-radius: 8px;
+  border-radius: 7px;
   background: transparent;
-  color: #e9e0cc;
+  color: #f4f0e6;
+  cursor: pointer;
 }
 
-.wvclean-topbar__icon:hover { background: rgba(255,255,255,.06); }
+.wvclean-topbar__icon:hover,
+.wvclean-topbar__icon[aria-expanded="true"] {
+  background: rgba(255, 255, 255, .07);
+}
 
+.wvclean-topbar__icon:focus-visible,
+.window-controls__button:focus-visible {
+  outline: 2px solid #c69a3a;
+  outline-offset: -2px;
+}
+
+.wvclean-notifications__popover {
+  position: absolute;
+  top: 42px;
+  right: 5px;
+  z-index: 300;
+  display: grid;
+  width: 292px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid #d9cfbd;
+  border-radius: 10px;
+  background: #fbf8f1;
+  color: #102d27;
+  box-shadow: 0 18px 40px rgba(8, 47, 41, .18);
+  user-select: text;
+}
+
+.wvclean-notifications__icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 1px solid #d9cfbd;
+  border-radius: 50%;
+  color: #8b682e;
+}
+
+.wvclean-notifications__popover strong {
+  display: block;
+  font: 600 18px/22px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvclean-notifications__popover p {
+  margin: 4px 0 0;
+  color: #59655f;
+  font: 400 12px/17px "Inter", system-ui, sans-serif;
+}
+
+.wvclean-topbar__window-controls {
+  height: 46px;
+}
+
+.wvclean-topbar__window-controls .window-controls__button {
+  width: 37px;
+  height: 46px;
+  border-radius: 0;
+  color: #f7f2e8;
+}
+
+.wvclean-topbar__window-controls .window-controls__button:last-child {
+  width: 45px;
+}
+
+.wvclean-topbar__window-controls .window-controls__button:hover {
+  background: rgba(255, 255, 255, .07);
+}
+
+.wvclean-topbar__window-controls .window-controls__button--close:hover {
+  background: #b74646;
+}
+
+/* ───────────────────────── Sidebar ───────────────────────── */
 .wvclean-sidebar {
   position: absolute;
-  top: 53px;
+  top: 46px;
   bottom: 0;
   left: 0;
-  z-index: 70;
-  display: flex;
-  width: 367px;
-  flex-direction: column;
-  padding: 34px 31px 26px;
-  border-right: 1px solid rgba(217, 207, 189, .18);
-  background: #082f29;
-  color: #fbf8f1;
+  z-index: 80;
+  width: 318px;
+  overflow: hidden;
+  border-right: 1px solid rgba(217, 207, 189, .13);
+  background: #0c3b33;
+  color: #f7f2e8;
   font-family: "Inter", system-ui, sans-serif;
 }
 
+.wvclean-sidebar::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 25% 8%, rgba(247,242,232,.035), transparent 38%);
+  content: "";
+  opacity: .7;
+}
+
 .wvclean-sidebar__brand {
+  position: absolute;
+  top: 32px;
+  left: 37px;
+  z-index: 2;
   display: flex;
+  width: 244px;
   flex-direction: column;
   align-items: center;
   color: inherit;
@@ -109,174 +214,403 @@
 }
 
 .wvclean-sidebar__brand img {
-  width: 96px;
-  height: 77px;
+  width: 126px;
+  height: 79px;
   object-fit: contain;
 }
 
 .wvclean-sidebar__brand strong {
-  margin-top: 7px;
-  font: 600 34px/1 "Cormorant Garamond", Georgia, serif;
-  letter-spacing: .015em;
+  margin-top: 1px;
+  font: 600 31px/38px "Cormorant Garamond", Georgia, serif;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .wvclean-sidebar__brand span {
-  margin-top: 10px;
-  color: #d0a643;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .16em;
+  margin-top: 2px;
+  color: #c69a3a;
+  font: 600 10px/12px "Inter", system-ui, sans-serif;
+  letter-spacing: .08em;
 }
 
 .wvclean-sidebar__brand i {
-  width: 154px;
-  height: 11px;
-  margin-top: 15px;
-  background:
-    linear-gradient(90deg, transparent 0 18%, rgba(198,154,58,.62) 18% 45%, transparent 45% 55%, rgba(198,154,58,.62) 55% 82%, transparent 82%),
-    radial-gradient(circle at 50% 50%, #c69a3a 0 2px, transparent 3px);
-  opacity: .9;
+  position: relative;
+  width: 162px;
+  height: 9px;
+  margin-top: 8px;
+  background: linear-gradient(90deg, rgba(198,154,58,.45) 0 44%, transparent 44% 56%, rgba(198,154,58,.45) 56% 100%) center / 100% 1px no-repeat;
+}
+
+.wvclean-sidebar__brand i::after {
+  position: absolute;
+  top: 3px;
+  left: calc(50% - 2px);
+  width: 4px;
+  height: 4px;
+  background: #c69a3a;
+  content: "";
+  transform: rotate(45deg);
 }
 
 .wvclean-nav {
+  position: absolute;
+  top: 203px;
+  left: 20px;
+  z-index: 2;
   display: grid;
-  gap: 9px;
-  margin-top: 30px;
+  width: 278px;
+  gap: 6px;
 }
 
 .wvclean-nav__item {
   position: relative;
   display: grid;
-  min-height: 59px;
-  grid-template-columns: 34px minmax(0,1fr);
+  width: 278px;
+  height: 48px;
+  grid-template-columns: 21px minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
-  padding: 0 18px;
+  gap: 15px;
+  padding: 0 23px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 8px;
   background: transparent;
-  color: #f6f0e3;
+  color: #f7f2e8;
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  font: 500 20px/1 "Cormorant Garamond", Georgia, serif;
+  font: 400 18px/22px "Cormorant Garamond", Georgia, serif;
 }
 
-.wvclean-nav__item:hover:not(:disabled) { background: rgba(255,255,255,.045); }
-.wvclean-nav__item:disabled { cursor: default; opacity: .86; }
+.wvclean-nav__item:hover:not(:disabled) {
+  background: rgba(255, 255, 255, .045);
+}
+
+.wvclean-nav__item:disabled {
+  cursor: default;
+  opacity: .72;
+}
 
 .wvclean-nav__item--active {
-  border-color: rgba(198,154,58,.16);
-  background: rgba(255,255,255,.075);
+  border-color: #526a43;
+  background: #174a3f;
 }
 
 .wvclean-nav__item--active::before {
   position: absolute;
-  top: 10px;
-  bottom: 10px;
+  top: -1px;
+  bottom: -1px;
   left: -1px;
   width: 2px;
   border-radius: 2px;
-  background: #d4ac4c;
+  background: #c69a3a;
   content: "";
 }
 
-.wvclean-nav__item svg { color: #d4ac4c; }
+.wvclean-nav__item svg {
+  color: #c69a3a;
+}
 
 .wvclean-sidebar__divider {
+  position: absolute;
+  top: 537px;
+  left: 28px;
+  z-index: 2;
+  width: 262px;
   height: 1px;
-  margin: 30px 2px 24px;
-  background: rgba(229,217,190,.18);
+  background: rgba(247, 242, 232, .17);
+}
+
+.wvclean-progress {
+  position: absolute;
+  top: 598px;
+  left: 28px;
+  z-index: 2;
+  width: 262px;
 }
 
 .wvclean-progress h2 {
-  margin: 0 0 15px;
-  color: #d5aa47;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .13em;
+  margin: 0 0 7px;
+  color: #c69a3a;
+  font: 600 12px/16px "Inter", system-ui, sans-serif;
+  letter-spacing: .2px;
   text-align: center;
 }
 
 .wvclean-progress__card {
-  padding: 22px 20px 18px;
-  border: 1px solid rgba(229,217,190,.18);
-  border-radius: 12px;
-  background: rgba(255,255,255,.025);
+  position: relative;
+  width: 262px;
+  height: 194px;
+  padding: 10px 10px 8px;
+  border: 1px solid #2a5a4d;
+  border-radius: 10px;
+  background: #0c3b33;
 }
 
 .wvclean-progress__goal {
   display: grid;
-  grid-template-columns: 74px minmax(0,1fr);
+  min-height: 78px;
+  grid-template-columns: 64px minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid rgba(229,217,190,.13);
+  gap: 10px;
+  padding: 0 0 8px;
+  border-bottom: 1px solid rgba(247, 242, 232, .12);
 }
 
 .wvclean-progress__ring {
   display: grid;
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   place-items: center;
   border-radius: 50%;
   background:
-    radial-gradient(circle at center, #082f29 0 54%, transparent 56%),
-    conic-gradient(#d5aa47 var(--wvclean-progress, 0%), rgba(255,255,255,.14) 0);
+    radial-gradient(circle at center, #0c3b33 0 54%, transparent 56%),
+    conic-gradient(#c69a3a var(--wvclean-progress, 0%), #667b68 0);
 }
 
 .wvclean-progress__ring span {
-  font-size: 15px;
-  font-weight: 600;
+  color: #f7f2e8;
+  font: 600 15px/18px "Cormorant Garamond", Georgia, serif;
 }
 
 .wvclean-progress__goal > div:last-child,
 .wvclean-progress__metric > div {
   display: grid;
-  gap: 4px;
+  gap: 1px;
 }
 
 .wvclean-progress__goal strong,
 .wvclean-progress__metric strong {
-  font: 600 20px/1 "Cormorant Garamond", Georgia, serif;
+  color: #f7f2e8;
+  font: 600 18px/22px "Cormorant Garamond", Georgia, serif;
 }
 
 .wvclean-progress__goal span,
 .wvclean-progress__metric span {
-  color: #d5d3ca;
-  font-size: 12px;
+  color: #f7f2e8;
+  font: 400 12px/15px "Inter", system-ui, sans-serif;
 }
 
 .wvclean-progress__metric {
   display: grid;
-  grid-template-columns: 30px minmax(0,1fr);
+  height: 49px;
+  grid-template-columns: 24px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  padding-top: 16px;
-  color: #f7f2e8;
+  gap: 8px;
+  padding: 5px 7px 0;
 }
 
-.wvclean-progress__metric svg { color: #d5aa47; }
+.wvclean-progress__metric svg {
+  color: #c69a3a;
+}
 
+/* ───────────────────────── Search content ───────────────────────── */
 .wvclean-main {
   position: absolute;
   inset: 0;
   z-index: 10;
-  width: 1920px;
-  height: 1080px;
+  width: 1664px;
+  height: 936px;
   overflow: hidden;
 }
 
-/* The new Search module owns all visible content inside this geometry. */
 .application-frame--search-cleanroom .wvsr-root,
 .application-frame--search-cleanroom .wvsr-detail-root {
-  top: 53px;
-  right: 0;
-  bottom: 42px;
-  left: 367px;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 36px !important;
+  left: 318px !important;
 }
 
-/* Legacy assistant logic stays mounted, but its old launcher/extra mascots never render visually on Search. */
+.application-frame--search-cleanroom .wvsr-root {
+  grid-template-columns: minmax(0, 1fr) 382px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-scene {
+  width: 964px;
+}
+
+.application-frame--search-cleanroom .wvsr-hero {
+  top: 143px !important;
+  width: 713px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-hero > h1 {
+  font-size: 58px !important;
+  line-height: 66px !important;
+  letter-spacing: 0 !important;
+}
+
+.application-frame--search-cleanroom .wvsr-hero__ornament {
+  width: 226px !important;
+  margin-top: 13px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-hero__ornament b {
+  font-size: 22px !important;
+  line-height: 27px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-hero > p {
+  margin-top: 10px !important;
+  font-size: 18px !important;
+  line-height: 22px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-search {
+  position: relative !important;
+  display: block !important;
+  width: 713px !important;
+  height: 78px !important;
+  margin-top: 40px !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-search__icon {
+  position: absolute !important;
+  top: 24px !important;
+  left: 20px !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-search__input {
+  position: absolute !important;
+  top: 9px !important;
+  right: 132px !important;
+  left: 68px !important;
+  width: auto !important;
+  height: 60px !important;
+  font-size: 19px !important;
+  line-height: 23px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-search__clear {
+  position: absolute !important;
+  top: 23px !important;
+  right: 126px !important;
+  z-index: 3 !important;
+}
+
+.application-frame--search-cleanroom .wvsr-search__shortcut {
+  display: none !important;
+}
+
+.application-frame--search-cleanroom .wvsr-search__submit {
+  position: absolute !important;
+  top: 15px !important;
+  right: 12px !important;
+  width: 110px !important;
+  height: 46px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  line-height: 19px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-popular {
+  width: 576px !important;
+  margin: 28px 0 0 82px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-popular > span {
+  margin-bottom: 10px !important;
+  font-size: 12px !important;
+  line-height: 16px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-popular__chips {
+  gap: 10px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-popular__chips button {
+  min-height: 34px !important;
+  height: 34px !important;
+  padding: 0 20px !important;
+  font-size: 14px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-popular__chips .wvsr-popular__refresh {
+  width: 34px !important;
+  padding: 0 !important;
+}
+
+.application-frame--search-cleanroom .wvsr-quote {
+  bottom: 83px !important;
+  left: 30px !important;
+  width: 390px !important;
+  min-width: 390px !important;
+  min-height: 102px !important;
+  padding: 18px 20px 16px 51px !important;
+  border-radius: 18px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-quote::before {
+  top: 7px !important;
+  left: 18px !important;
+  font-size: 43px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-quote p {
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-quote cite {
+  margin-top: 5px !important;
+  font-size: 14px !important;
+  line-height: 17px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-language,
+.application-frame--search-cleanroom .wvsr-detail-language {
+  height: 36px !important;
+  padding-left: 15px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-rail {
+  width: 382px !important;
+  padding: 38px 26px 22px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-activity__row {
+  min-height: 40px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card {
+  margin-top: auto !important;
+}
+
+/* Detail uses the same Figma shell, without the activity rail. */
+.application-frame--search-cleanroom .wvsr-detail-card {
+  top: 42px !important;
+  left: 138px !important;
+  width: 955px !important;
+  min-height: 762px !important;
+  padding: 34px 38px 30px !important;
+  transform: none !important;
+  border-radius: 16px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-detail-identity h1 {
+  font-size: 65px !important;
+  line-height: 79px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-detail-tabs {
+  margin-top: 12px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-detail-content {
+  min-height: 242px !important;
+  margin-top: 23px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-detail-actions button {
+  height: 52px !important;
+}
+
+/* Assistant logic stays mounted but occupies the exact Figma rail. */
 .application-frame--search-cleanroom .assistant-launcher.wv84-assistant-launcher,
 .application-frame--search-cleanroom .wv84-assistant__ready-mascot {
   display: none !important;
@@ -284,12 +618,12 @@
 
 .application-frame--search-cleanroom .assistant-dock.wv84-assistant {
   position: absolute !important;
-  top: 53px !important;
+  top: 46px !important;
   right: 0 !important;
-  bottom: 42px !important;
+  bottom: 36px !important;
   left: auto !important;
-  z-index: 120 !important;
-  width: 441px !important;
+  z-index: 130 !important;
+  width: 382px !important;
   height: auto !important;
   pointer-events: none !important;
 }
@@ -301,59 +635,16 @@
 .application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
   position: absolute !important;
   inset: 0 !important;
-  width: 441px !important;
+  width: 382px !important;
   max-width: none !important;
-  height: 100% !important;
+  height: 854px !important;
   max-height: none !important;
   margin: 0 !important;
   border: 0 !important;
-  border-left: 1px solid #d9cfbd !important;
+  border-left: 1px solid rgba(217, 207, 189, .8) !important;
   border-radius: 0 !important;
   background: #fbf8f1 !important;
-  box-shadow: -18px 0 42px rgba(8,47,41,.10) !important;
-}
-
-.application-frame--search-cleanroom .wv84-assistant-panel__header {
-  min-height: 92px !important;
-  padding: 22px 24px !important;
-  border-bottom: 1px solid rgba(217,207,189,.78) !important;
-  background: #fbf8f1 !important;
-}
-
-.application-frame--search-cleanroom .wv84-assistant-panel__header h2,
-.application-frame--search-cleanroom .wv84-wordie-answer strong,
-.application-frame--search-cleanroom .wv84-wordie-answer h3 {
-  color: #102d27 !important;
-  font-family: "Cormorant Garamond", Georgia, serif !important;
-}
-
-.application-frame--search-cleanroom .wv84-assistant-panel__header p,
-.application-frame--search-cleanroom .wv84-wordie-answer p,
-.application-frame--search-cleanroom .wv84-wordie-answer span,
-.application-frame--search-cleanroom .wv84-user-message,
-.application-frame--search-cleanroom .wv84-quick-actions,
-.application-frame--search-cleanroom .wv84-assistant-composer {
-  color: #59655f !important;
-  font-family: "Inter", system-ui, sans-serif !important;
-}
-
-.application-frame--search-cleanroom .wv84-assistant-panel__conversation {
-  background: #fbf8f1 !important;
-}
-
-.application-frame--search-cleanroom .wv84-wordie-answer,
-.application-frame--search-cleanroom .wv84-user-message,
-.application-frame--search-cleanroom .wv84-quick-actions button,
-.application-frame--search-cleanroom .wv84-assistant-composer {
-  border-color: #ddd3c0 !important;
-  background: #fdfaf4 !important;
   box-shadow: none !important;
-}
-
-.application-frame--search-cleanroom .wv84-assistant-composer button,
-.application-frame--search-cleanroom .wv84-answer-action {
-  background: #082f29 !important;
-  color: #fbf8f1 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
