@@ -35,53 +35,52 @@ const markup = renderToStaticMarkup(
 );
 
 describe("VocabularyFoundState", () => {
-  it("renders the route-aware back action", () => {
-    expect(markup).toContain("← Back to Library");
+  it("keeps the route-aware back label while presenting the rebuilt back action", () => {
+    expect(markup).toContain('aria-label="Back to Library"');
+    expect(markup).toContain("Back to results");
   });
 
-  it("makes direct editing primary while keeping JSON tools advanced", () => {
+  it("keeps editing and data actions available from the compact entry menu", () => {
     expect(markup).toContain("maintain");
+    expect(markup).toContain('aria-label="Entry options"');
     expect(markup).toContain("Edit entry");
-    expect(markup).toContain("Advanced");
-    expect(markup).toContain("Advanced JSON tools");
-    expect(markup).toContain("Export entry JSON");
-    expect(markup).toContain("Replace from JSON");
-    expect(markup).not.toContain(">Export JSON<");
-    expect(markup).not.toContain(">Import JSON<");
+    expect(markup).toContain("Edit personal data");
+    expect(markup).toContain("Import replacement");
+    expect(markup).toContain("Export entry");
+    expect(markup).not.toContain("Advanced JSON tools");
   });
 
-  it("renders essential vocabulary identity without review or learning-status chips", () => {
+  it("renders the essential vocabulary identity without legacy review metadata chips", () => {
     expect(markup).toContain("sürdürmek");
-    expect(markup).toContain("CEFR B2");
-    expect(markup).toContain("IELTS");
+    expect(markup).toContain('class="wvsr-detail-cefr">B2</span>');
+    expect(markup).toContain("/meɪnˈteɪn/");
     expect(markup).not.toContain("Editorially reviewed");
     expect(markup).not.toContain(">Known<");
     expect(markup).not.toContain(">Reviewed<");
+    expect(markup).not.toContain(">IELTS<");
   });
 
-  it("renders only the simplified vocabulary sections", () => {
-    expect(markup).toContain("Usage overview");
-    expect(markup).toContain("Meanings");
-    expect(markup).toContain("Example sentences");
-    expect(markup).toContain("Pronunciation");
-    expect(markup).toContain("Word forms");
-    expect(markup).toContain("Etymology");
+  it("renders the rebuilt detail tabs and definition-first content model", () => {
+    expect(markup).toContain('aria-label="Vocabulary entry sections"');
+    expect(markup).toContain(">Definition<");
+    expect(markup).toContain(">Examples<");
+    expect(markup).toContain(">Synonyms<");
+    expect(markup).toContain(">Word Family<");
+    expect(markup).toContain("English Definition");
+    expect(markup).toContain("Türkçe Anlamı");
+    expect(markup).toContain("Example Sentence");
 
     expect(markup).not.toContain("Grammar patterns");
     expect(markup).not.toContain("Tense examples");
     expect(markup).not.toContain("Sentence forms");
     expect(markup).not.toContain("Preposition patterns");
-    expect(markup).not.toContain("Collocations");
-    expect(markup).not.toContain("Word family");
-    expect(markup).not.toContain("Related words");
     expect(markup).not.toContain("Common mistakes");
   });
 
-  it("renders the first three primary examples without a count chip", () => {
-    expect(markup.match(/class="example-sentence-row"/g)).toHaveLength(3);
+  it("shows the verified primary example on the definition tab", () => {
     expect(markup).toContain("The hospital must maintain high standards of hygiene at all times.");
     expect(markup).toContain("Hastane her zaman yüksek hijyen standartlarını korumalıdır.");
-    expect(markup).toContain("The technicians maintain the machines every three months.");
+    expect(markup).not.toContain("The technicians maintain the machines every three months.");
     expect(markup).not.toContain("Exactly 10");
   });
 
