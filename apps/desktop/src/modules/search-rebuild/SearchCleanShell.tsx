@@ -4,7 +4,7 @@ import { Link, NavLink } from "react-router-dom";
 import type { ActivityRecord } from "@platform/domain";
 
 import { useActivity, useVocabularyRepository } from "../../app/providers";
-import { ROUTE_PATHS } from "../../app/router";
+import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
 import { WindowControls } from "../../app/layout/WindowControls";
 import brandMark from "../../assets/brand/word-valley-mark.png";
 import { AppIcon, type AppIconName } from "../../design-system";
@@ -16,6 +16,11 @@ interface CleanNavItem {
   readonly label: string;
   readonly icon: AppIconName;
   readonly to?: string;
+}
+
+interface ContinueWord {
+  readonly normalizedWord: string;
+  readonly word: string;
 }
 
 const DAILY_WORD_GOAL = 25;
@@ -167,6 +172,35 @@ function SearchCleanSidebar() {
     return { collectedWords, consecutiveDays, percentage, wordsExploredToday };
   }, [activity, contentSource]);
 
+  const continueWord = useMemo<ContinueWord | undefined>(() => {
+    let latestRecord: ActivityRecord | undefined;
+    let latestTimestamp = Number.NEGATIVE_INFINITY;
+
+    for (const record of activity) {
+      if (record.kind !== "vocabulary-viewed" || record.target === undefined) {
+        continue;
+      }
+
+      const timestamp = new Date(record.occurredAt).getTime();
+      if (!Number.isFinite(timestamp) || timestamp <= latestTimestamp) {
+        continue;
+      }
+
+      latestTimestamp = timestamp;
+      latestRecord = record;
+    }
+
+    if (latestRecord?.target === undefined) {
+      return undefined;
+    }
+
+    const entry = contentSource.getEntryByNormalizedWord(latestRecord.target);
+    return {
+      normalizedWord: latestRecord.target,
+      word: entry?.word ?? latestRecord.target
+    };
+  }, [activity, contentSource]);
+
   const loading = activityStatus === "loading" || vocabularyStatus === "loading";
   const ringStyle = { "--wvclean-progress": `${progress.percentage}%` } as CSSProperties;
 
@@ -230,6 +264,19 @@ function SearchCleanSidebar() {
               <span>day streak</span>
             </div>
           </div>
+          {continueWord === undefined ? null : (
+            <Link
+              className="wvclean-progress__continue"
+              to={buildVocabularyEntryPath(continueWord.normalizedWord)}
+            >
+              <AppIcon name="book-open" size={18} />
+              <span>
+                <small>CONTINUE LEARNING</small>
+                <strong>{continueWord.word}</strong>
+              </span>
+              <span aria-hidden="true">→</span>
+            </Link>
+          )}
         </div>
       </section>
     </aside>
