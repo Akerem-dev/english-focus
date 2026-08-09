@@ -12,8 +12,11 @@ import { dispatchAssistantRequest } from "../assistant";
 
 import "./search-rebuild.css";
 import "./search-package-1-context-rail.css";
+import "./search-package-3-detail-polish.css";
 
 type SearchRebuildDetailTab = "definition" | "examples" | "synonyms" | "word-family";
+
+type InflectionType = VocabularyEntry["morphology"]["inflectedForms"][number]["type"];
 
 interface DetailActivityItem {
   readonly word: string;
@@ -66,6 +69,29 @@ function formatRelativeTime(value: string): string {
   }
 
   return new Intl.DateTimeFormat("en", { day: "numeric", month: "short" }).format(occurredAt);
+}
+
+function formatInflectionType(type: InflectionType): string {
+  switch (type) {
+    case "base":
+      return "Main form";
+    case "plural":
+      return "Plural";
+    case "past":
+      return "Past tense";
+    case "past-participle":
+      return "Past participle";
+    case "present-participle":
+      return "-ing form";
+    case "third-person-singular":
+      return "He / she / it form";
+    case "comparative":
+      return "Comparative";
+    case "superlative":
+      return "Superlative";
+    case "other":
+      return "Related form";
+  }
 }
 
 function RailChevron({ pointsRight }: { readonly pointsRight: boolean }) {
@@ -149,8 +175,8 @@ export function SearchRebuildFoundView({
     primaryMeaning?.translationsTr.join(", ") ?? "Türkçe açıklama henüz mevcut değil.";
   const examples = entry.examples.slice(0, 3);
   const morphologyParts = [
-    ["Base form", entry.morphology.baseForm],
-    ["Root", entry.morphology.root],
+    ["Main form", entry.morphology.baseForm],
+    ["Word root", entry.morphology.root],
     ["Prefix", entry.morphology.prefix],
     ["Suffix", entry.morphology.suffix]
   ].filter((item): item is [string, string] => item[1] !== undefined && item[1].length > 0);
@@ -212,7 +238,7 @@ export function SearchRebuildFoundView({
   return (
     <article
       aria-label={`${entry.word} vocabulary entry`}
-      className={`wvsr-detail-root wvsr-detail-root--package-one ${
+      className={`wvsr-detail-root wvsr-detail-root--package-one wvsr-detail-root--package-three ${
         contextOpen ? "wvsr-detail-root--context-open" : "wvsr-detail-root--context-closed"
       }`}
       data-search-ui="rebuild-detail-v1"
@@ -233,12 +259,12 @@ export function SearchRebuildFoundView({
             </button>
 
             <details className="wvsr-detail-menu">
-              <summary aria-label="Entry options">•••</summary>
+              <summary aria-label="Word options">•••</summary>
               <div className="wvsr-detail-menu__popover">
-                <button onClick={onEditEntry} type="button">Edit entry</button>
-                <button onClick={onEditMetadata} type="button">Edit personal data</button>
-                <button onClick={onImportReplacement} type="button">Import replacement</button>
-                <button onClick={onExport} type="button">Export entry</button>
+                <button onClick={onEditEntry} type="button">Edit word details</button>
+                <button onClick={onEditMetadata} type="button">Notes & learning status</button>
+                <button onClick={onImportReplacement} type="button">Replace word data</button>
+                <button onClick={onExport} type="button">Download word data</button>
               </div>
             </details>
 
@@ -257,8 +283,8 @@ export function SearchRebuildFoundView({
             {([
               ["definition", "Definition"],
               ["examples", "Examples"],
-              ["synonyms", "Synonyms"],
-              ["word-family", "Word Family"]
+              ["synonyms", "Similar words"],
+              ["word-family", "Word forms"]
             ] as const).map(([tab, label]) => (
               <button
                 aria-current={activeTab === tab ? "page" : undefined}
@@ -290,13 +316,13 @@ export function SearchRebuildFoundView({
               <div className="wvsr-detail-examples">
                 {examples.length === 0 ? (
                   <div className="wvsr-detail-empty">
-                    <strong>No examples are available for this word yet.</strong>
-                    <span>Wordie can help you explore how this word is used.</span>
+                    <strong>No examples are saved for this word yet.</strong>
+                    <span>Wordie can show you a natural sentence and explain how the word fits into it.</span>
                     <button
                       onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
                       type="button"
                     >
-                      Ask Wordie
+                      Ask Wordie for an example
                     </button>
                   </div>
                 ) : (
@@ -313,22 +339,29 @@ export function SearchRebuildFoundView({
             {activeTab === "synonyms" ? (
               <div className="wvsr-detail-empty">
                 <span className="wvsr-detail-empty__mark" aria-hidden="true">⌁</span>
-                <strong>Compare similar words with Wordie</strong>
+                <strong>Similar words aren’t saved for this entry yet.</strong>
                 <span>
-                  This word doesn’t have a synonym list yet. Wordie can help you compare similar
-                  words and their nuances.
+                  Wordie can compare nearby words and explain the difference in meaning, tone, and
+                  everyday usage without pretending they are exact synonyms.
                 </span>
                 <button
                   onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
                   type="button"
                 >
-                  Compare words
+                  Compare with Wordie
                 </button>
               </div>
             ) : null}
 
             {activeTab === "word-family" ? (
               <div className="wvsr-detail-family">
+                {morphologyParts.length > 0 || inflectedForms.length > 0 ? (
+                  <div className="wvsr-detail-family__heading">
+                    <h2>Forms of {entry.word}</h2>
+                    <p>Useful forms already stored with this word.</p>
+                  </div>
+                ) : null}
+
                 {morphologyParts.length > 0 ? (
                   <div className="wvsr-detail-family__grid">
                     {morphologyParts.map(([label, value]) => (
@@ -343,12 +376,22 @@ export function SearchRebuildFoundView({
                 {inflectedForms.length > 0 ? (
                   <div className="wvsr-detail-family__forms">
                     {inflectedForms.map((form) => (
-                      <span key={`${form.form}-${form.type}`}>{form.form}</span>
+                      <div className="wvsr-detail-family__form" key={`${form.form}-${form.type}`}>
+                        <strong>{form.form}</strong>
+                        <small>{formatInflectionType(form.type)}</small>
+                      </div>
                     ))}
                   </div>
                 ) : morphologyParts.length === 0 ? (
                   <div className="wvsr-detail-empty">
-                    <strong>No additional word-family details are available yet.</strong>
+                    <strong>No extra word forms are saved yet.</strong>
+                    <span>Wordie can help you explore common forms of this word in real sentences.</span>
+                    <button
+                      onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+                      type="button"
+                    >
+                      Explore forms with Wordie
+                    </button>
                   </div>
                 ) : null}
               </div>
