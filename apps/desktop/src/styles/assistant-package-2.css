@@ -1,0 +1,152 @@
+/*
+ * Package 2 — Wordie assistant UX.
+ * Keeps the assistant quiet, readable, contextual and visibly part of Word Valley.
+ */
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__body {
+  display: grid;
+  gap: 0;
+  margin-top: 14px;
+  border-top: 1px solid rgba(217, 207, 189, .76);
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__section {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 10px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(217, 207, 189, .64);
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__section:last-of-type {
+  border-bottom: 0;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__section h3 {
+  margin: 0 0 6px;
+  color: #102d27;
+  font: 600 16px/1.2 "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__section p {
+  margin: 0;
+  color: #243c36;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__translation {
+  display: block;
+  margin-top: 6px;
+  color: #6d746f;
+  font: italic 13px/1.45 "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-top: 10px;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__meta span {
+  display: inline-flex;
+  min-height: 25px;
+  align-items: center;
+  padding: 0 9px;
+  border: 1px solid rgba(198, 154, 58, .32);
+  border-radius: 999px;
+  background: rgba(247, 242, 232, .78);
+  color: #5d583f;
+  font-size: 11px;
+  letter-spacing: .02em;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-typo {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(198, 154, 58, .34);
+  border-radius: 10px;
+  background: rgba(247, 242, 232, .74);
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-typo > span {
+  color: #6b655a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-typo > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-typo button {
+  min-height: 31px;
+  padding: 0 12px;
+  border: 1px solid #d8ccb6;
+  border-radius: 999px;
+  background: #fffdf8;
+  color: #173a32;
+  cursor: pointer;
+  font: 600 13px/1 "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-typo button:hover {
+  border-color: #c69a3a;
+  background: #f8f1e3;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions--contextual {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions--contextual button {
+  min-height: 38px !important;
+  padding: 0 10px !important;
+  border-radius: 8px !important;
+  white-space: normal !important;
+  line-height: 1.2 !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-assistant-composer input::placeholder {
+  color: #7a7f79 !important;
+  opacity: 1 !important;
+}
+
+/* The compact Wordie card should read as a real product feature, not a tiny sticker. */
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card {
+  min-height: 222px !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__copy {
+  width: 49% !important;
+  max-width: 155px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
+  top: 16px !important;
+  right: -2px !important;
+  width: 148px !important;
+  height: 158px !important;
+  object-fit: contain !important;
+}
+
+@media (max-height: 820px) {
+  #root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card {
+    min-height: 198px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
+    width: 132px !important;
+    height: 140px !important;
+  }
+}
