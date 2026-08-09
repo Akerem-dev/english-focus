@@ -27,6 +27,25 @@ const NAV_ITEMS: readonly CleanNavItem[] = Object.freeze([
   { label: "Settings", icon: "settings", to: ROUTE_PATHS.settings }
 ]);
 
+function BellGlyph() {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height="18"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.7"
+      viewBox="0 0 24 24"
+      width="18"
+    >
+      <path d="M6.5 17.5h11l-1.4-2.1V10a4.1 4.1 0 0 0-8.2 0v5.4l-1.4 2.1Z" />
+      <path d="M10 19.5a2.2 2.2 0 0 0 4 0" />
+    </svg>
+  );
+}
+
 function localDayKey(value: string | Date): string | undefined {
   const date = typeof value === "string" ? new Date(value) : value;
   if (Number.isNaN(date.getTime())) {
@@ -88,7 +107,7 @@ function SearchCleanTopBar() {
         <span>Word Valley</span>
       </Link>
       <button aria-label="Notifications" className="wvclean-topbar__icon" type="button">
-        <AppIcon name="bell" size={18} />
+        <BellGlyph />
       </button>
     </header>
   );
@@ -174,7 +193,7 @@ function SearchCleanSidebar() {
             <AppIcon name="star" size={21} />
             <div>
               <strong>{loading ? "—" : progress.consecutiveDays}</strong>
-              <span>{progress.consecutiveDays === 1 ? "day streak" : "day streak"}</span>
+              <span>day streak</span>
             </div>
           </div>
         </div>
