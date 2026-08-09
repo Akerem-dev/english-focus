@@ -4,6 +4,9 @@ import mascotReady from "../../assets/assistant/assistant-ready.png";
 import mascotSleeping from "../../assets/assistant/assistant-sleeping.png";
 import mascotSuccess from "../../assets/assistant/assistant-success.png";
 import mascotThinking from "../../assets/assistant/assistant-thinking.png";
+import wordieAvatarConfused from "../../assets/wordie/wordie-avatar-confused.png";
+import wordieAvatarDefault from "../../assets/wordie/wordie-avatar-default.png";
+import wordieCutoutReading from "../../assets/wordie/wordie-cutout-reading.png";
 
 export type AssistantMascotState = "ready" | "thinking" | "success" | "confused" | "sleeping";
 
@@ -11,7 +14,25 @@ interface MascotVisual {
   readonly mascot: string;
 }
 
+function isCleanSearchRoute(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const rawHash = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  const pathname = rawHash.split("?", 1)[0] ?? "";
+  return pathname === "/" || pathname === "";
+}
+
 function getPanelVisual(state: AssistantMascotState): MascotVisual {
+  if (isCleanSearchRoute()) {
+    return {
+      mascot: state === "confused" ? wordieAvatarConfused : wordieAvatarDefault
+    };
+  }
+
   switch (state) {
     case "thinking":
       return { mascot: mascotThinking };
@@ -50,12 +71,20 @@ interface AssistantLauncherMascotProps {
 }
 
 export function AssistantLauncherMascot({ awake }: AssistantLauncherMascotProps) {
+  const cleanSearchRoute = isCleanSearchRoute();
+
   return (
     <img
       alt=""
       className="assistant-launcher__mascot"
       key={`launcher-${awake ? "awake" : "closed"}`}
-      src={awake ? mascotReady : mascotLauncherClosed}
+      src={
+        cleanSearchRoute
+          ? wordieCutoutReading
+          : awake
+            ? mascotReady
+            : mascotLauncherClosed
+      }
     />
   );
 }
