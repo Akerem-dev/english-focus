@@ -38,7 +38,7 @@ export function SearchRebuildFoundView({
   const pronunciation = entry.pronunciations[0]?.ipa;
   const favorite = metadata?.favorite === true;
   const englishDefinition =
-    primaryMeaning?.definitionEn ?? "A verified English definition is not available for this entry.";
+    primaryMeaning?.definitionEn ?? "An English definition isn’t available for this word yet.";
   const turkishDefinition =
     primaryMeaning?.translationsTr.join(", ") ?? "Türkçe açıklama henüz mevcut değil.";
   const examples = entry.examples.slice(0, 3);
@@ -127,8 +127,8 @@ export function SearchRebuildFoundView({
             <div className="wvsr-detail-examples">
               {examples.length === 0 ? (
                 <div className="wvsr-detail-empty">
-                  <strong>No verified examples are stored for this word.</strong>
-                  <span>Wordie can help explain usage without changing your saved entry.</span>
+                  <strong>No examples are available for this word yet.</strong>
+                  <span>Wordie can help you explore how this word is used.</span>
                   <button
                     onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
                     type="button"
@@ -152,8 +152,8 @@ export function SearchRebuildFoundView({
               <span className="wvsr-detail-empty__mark" aria-hidden="true">⌁</span>
               <strong>Compare similar words with Wordie</strong>
               <span>
-                Synonyms are not stored on this vocabulary entry, so Word Valley will not invent a
-                local list.
+                This word doesn’t have a synonym list yet. Wordie can help you compare similar
+                words and their nuances.
               </span>
               <button
                 onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
@@ -185,7 +185,7 @@ export function SearchRebuildFoundView({
                 </div>
               ) : morphologyParts.length === 0 ? (
                 <div className="wvsr-detail-empty">
-                  <strong>No additional word-family data is stored for this entry.</strong>
+                  <strong>No additional word-family details are available yet.</strong>
                 </div>
               ) : null}
             </div>
@@ -215,7 +215,7 @@ export function SearchRebuildFoundView({
         <section className="wvsr-detail-example-card" aria-label="Example sentence">
           <h2>Example Sentence</h2>
           {entry.examples[0] === undefined ? (
-            <p className="wvsr-detail-example-card__empty">No verified example is stored yet.</p>
+            <p className="wvsr-detail-example-card__empty">No example is available yet.</p>
           ) : (
             <>
               <p>{entry.examples[0].sentenceEn}</p>
