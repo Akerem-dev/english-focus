@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import type { VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
 
+import { useActivity, useVocabularyRepository } from "../../app/providers";
+import { buildVocabularyEntryPath } from "../../app/router";
 import { AppIcon } from "../../design-system";
 import { dispatchAssistantRequest } from "../assistant";
+import { SearchActivityRail, type SearchActivityRailItem } from "./SearchActivityRail";
 
 import "./search-rebuild.css";
 
@@ -32,7 +36,55 @@ export function SearchRebuildFoundView({
   onImportReplacement,
   onExport
 }: SearchRebuildFoundViewProps) {
+  const navigate = useNavigate();
+  const { activity } = useActivity();
+  const { contentSource, storedEntries } = useVocabularyRepository();
   const [activeTab, setActiveTab] = useState<SearchRebuildDetailTab>("definition");
+  const [railCollapsed, setRailCollapsed] = useState(false);
+
+  const recentSearches = useMemo<readonly SearchActivityRailItem[]>(() => {
+    const seen = new Set<string>();
+
+    return [...activity]
+      .filter((record) => record.kind === "vocabulary-viewed" && record.target !== undefined)
+      .sort((left, right) => right.occurredAt.localeCompare(left.occurredAt))
+      .flatMap((record) => {
+        const normalizedWord = record.target as string;
+        if (seen.has(normalizedWord)) {
+          return [];
+        }
+
+        const recentEntry = contentSource.getEntryByNormalizedWord(normalizedWord);
+        if (recentEntry === undefined) {
+          return [];
+        }
+
+        seen.add(normalizedWord);
+        return [
+          Object.freeze({
+            word: recentEntry.word,
+            normalizedWord: recentEntry.normalizedWord,
+            occurredAt: record.occurredAt
+          })
+        ];
+      })
+      .slice(0, 12);
+  }, [activity, contentSource]);
+
+  const recentAdditions = useMemo<readonly SearchActivityRailItem[]>(
+    () =>
+      [...storedEntries]
+        .sort((left, right) => right.entry.createdAt.localeCompare(left.entry.createdAt))
+        .slice(0, 12)
+        .map((record) =>
+          Object.freeze({
+            word: record.entry.word,
+            normalizedWord: record.entry.normalizedWord,
+            occurredAt: record.entry.createdAt
+          })
+        ),
+    [storedEntries]
+  );
 
   const primaryMeaning = entry.meanings[0];
   const pronunciation = entry.pronunciations[0]?.ipa;
@@ -66,186 +118,202 @@ export function SearchRebuildFoundView({
   return (
     <article
       aria-label={`${entry.word} vocabulary entry`}
-      className="wvsr-detail-root"
+      className={`wvsr-detail-root${railCollapsed ? " wvsr-detail-root--rail-collapsed" : ""}`}
+      data-rail-collapsed={railCollapsed ? "true" : "false"}
       data-search-ui="rebuild-detail-v1"
     >
-      <div className="wvsr-detail-root__wash" aria-hidden="true" />
+      <div className="wvsr-detail-canvas">
+        <div className="wvsr-detail-root__wash" aria-hidden="true" />
 
-      <section className="wvsr-detail-card">
-        <header className="wvsr-detail-header">
-          <button
-            aria-label={backLabel}
-            className="wvsr-detail-back"
-            onClick={onBack}
-            type="button"
-          >
-            <span aria-hidden="true">←</span>
-            <span>Back to results</span>
-          </button>
+        <button
+          aria-expanded={!railCollapsed}
+          aria-label={railCollapsed ? "Show side panel" : "Hide side panel"}
+          className="wvsr-detail-rail-toggle"
+          onClick={() => setRailCollapsed((current) => !current)}
+          type="button"
+        >
+          <span aria-hidden="true">{railCollapsed ? "‹" : "›"}</span>
+        </button>
 
-          <details className="wvsr-detail-menu">
-            <summary aria-label="Entry options">•••</summary>
-            <div className="wvsr-detail-menu__popover">
-              <button onClick={onEditEntry} type="button">Edit entry</button>
-              <button onClick={onEditMetadata} type="button">Edit personal data</button>
-              <button onClick={onImportReplacement} type="button">Import replacement</button>
-              <button onClick={onExport} type="button">Export entry</button>
-            </div>
-          </details>
-
-          <div className="wvsr-detail-identity">
-            <h1>{entry.word}</h1>
-            {pronunciation === undefined ? null : (
-              <span className="wvsr-detail-pronunciation">
-                /{pronunciation.replaceAll("/", "")}/
-              </span>
-            )}
-            <span className="wvsr-detail-cefr">{entry.cefr}</span>
-          </div>
-        </header>
-
-        <nav aria-label="Vocabulary entry sections" className="wvsr-detail-tabs">
-          {([
-            ["definition", "Definition"],
-            ["examples", "Examples"],
-            ["synonyms", "Synonyms"],
-            ["word-family", "Word Family"]
-          ] as const).map(([tab, label]) => (
+        <section className="wvsr-detail-card">
+          <header className="wvsr-detail-header">
             <button
-              aria-current={activeTab === tab ? "page" : undefined}
-              key={tab}
-              onClick={() => setActiveTab(tab)}
+              aria-label={backLabel}
+              className="wvsr-detail-back"
+              onClick={onBack}
               type="button"
             >
-              {label}
+              <span aria-hidden="true">←</span>
+              <span>Back to results</span>
             </button>
-          ))}
-        </nav>
 
-        <section className="wvsr-detail-content">
-          {activeTab === "definition" ? (
-            <div className="wvsr-detail-definition">
-              <div className="wvsr-detail-definition__block">
-                <h2>English Definition</h2>
-                <p>{englishDefinition}</p>
+            <details className="wvsr-detail-menu">
+              <summary aria-label="Entry options">•••</summary>
+              <div className="wvsr-detail-menu__popover">
+                <button onClick={onEditEntry} type="button">Edit entry</button>
+                <button onClick={onEditMetadata} type="button">Edit personal data</button>
+                <button onClick={onImportReplacement} type="button">Import replacement</button>
+                <button onClick={onExport} type="button">Export entry</button>
               </div>
-              <div className="wvsr-detail-rule" />
-              <div className="wvsr-detail-definition__block">
-                <h2>Türkçe Anlamı</h2>
-                <p>{turkishDefinition}</p>
-              </div>
-            </div>
-          ) : null}
+            </details>
 
-          {activeTab === "examples" ? (
-            <div className="wvsr-detail-examples">
-              {examples.length === 0 ? (
-                <div className="wvsr-detail-empty">
-                  <strong>No examples are available for this word yet.</strong>
-                  <span>Wordie can help you explore how this word is used.</span>
-                  <button
-                    onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
-                    type="button"
-                  >
-                    Ask Wordie
-                  </button>
-                </div>
-              ) : (
-                examples.map((example) => (
-                  <article className="wvsr-detail-example-row" key={example.id}>
-                    <strong>{example.sentenceEn}</strong>
-                    <span>{example.translationTr}</span>
-                  </article>
-                ))
+            <div className="wvsr-detail-identity">
+              <h1>{entry.word}</h1>
+              {pronunciation === undefined ? null : (
+                <span className="wvsr-detail-pronunciation">
+                  /{pronunciation.replaceAll("/", "")}/
+                </span>
               )}
+              <span className="wvsr-detail-cefr">{entry.cefr}</span>
             </div>
-          ) : null}
+          </header>
 
-          {activeTab === "synonyms" ? (
-            <div className="wvsr-detail-empty">
-              <span className="wvsr-detail-empty__mark" aria-hidden="true">⌁</span>
-              <strong>Compare similar words with Wordie</strong>
-              <span>
-                This word doesn’t have a synonym list yet. Wordie can help you compare similar
-                words and their nuances.
-              </span>
+          <nav aria-label="Vocabulary entry sections" className="wvsr-detail-tabs">
+            {([
+              ["definition", "Definition"],
+              ["examples", "Examples"],
+              ["synonyms", "Synonyms"],
+              ["word-family", "Word Family"]
+            ] as const).map(([tab, label]) => (
               <button
-                onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+                aria-current={activeTab === tab ? "page" : undefined}
+                key={tab}
+                onClick={() => setActiveTab(tab)}
                 type="button"
               >
-                Compare words
+                {label}
               </button>
-            </div>
-          ) : null}
+            ))}
+          </nav>
 
-          {activeTab === "word-family" ? (
-            <div className="wvsr-detail-family">
-              {morphologyParts.length > 0 ? (
-                <div className="wvsr-detail-family__grid">
-                  {morphologyParts.map(([label, value]) => (
-                    <div key={label}>
-                      <span>{label}</span>
-                      <strong>{value}</strong>
-                    </div>
-                  ))}
+          <section className="wvsr-detail-content">
+            {activeTab === "definition" ? (
+              <div className="wvsr-detail-definition">
+                <div className="wvsr-detail-definition__block">
+                  <h2>English Definition</h2>
+                  <p>{englishDefinition}</p>
                 </div>
-              ) : null}
+                <div className="wvsr-detail-rule" />
+                <div className="wvsr-detail-definition__block">
+                  <h2>Türkçe Anlamı</h2>
+                  <p>{turkishDefinition}</p>
+                </div>
+              </div>
+            ) : null}
 
-              {inflectedForms.length > 0 ? (
-                <div className="wvsr-detail-family__forms">
-                  {inflectedForms.map((form) => (
-                    <span key={`${form.form}-${form.type}`}>{form.form}</span>
-                  ))}
-                </div>
-              ) : morphologyParts.length === 0 ? (
-                <div className="wvsr-detail-empty">
-                  <strong>No additional word-family details are available yet.</strong>
-                </div>
-              ) : null}
-            </div>
+            {activeTab === "examples" ? (
+              <div className="wvsr-detail-examples">
+                {examples.length === 0 ? (
+                  <div className="wvsr-detail-empty">
+                    <strong>No examples are available for this word yet.</strong>
+                    <span>Wordie can help you explore how this word is used.</span>
+                    <button
+                      onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+                      type="button"
+                    >
+                      Ask Wordie
+                    </button>
+                  </div>
+                ) : (
+                  examples.map((example) => (
+                    <article className="wvsr-detail-example-row" key={example.id}>
+                      <strong>{example.sentenceEn}</strong>
+                      <span>{example.translationTr}</span>
+                    </article>
+                  ))
+                )}
+              </div>
+            ) : null}
+
+            {activeTab === "synonyms" ? (
+              <div className="wvsr-detail-empty">
+                <span className="wvsr-detail-empty__mark" aria-hidden="true">⌁</span>
+                <strong>Compare similar words with Wordie</strong>
+                <span>
+                  This word doesn’t have a synonym list yet. Wordie can help you compare similar
+                  words and their nuances.
+                </span>
+                <button
+                  onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+                  type="button"
+                >
+                  Compare words
+                </button>
+              </div>
+            ) : null}
+
+            {activeTab === "word-family" ? (
+              <div className="wvsr-detail-family">
+                {morphologyParts.length > 0 ? (
+                  <div className="wvsr-detail-family__grid">
+                    {morphologyParts.map(([label, value]) => (
+                      <div key={label}>
+                        <span>{label}</span>
+                        <strong>{value}</strong>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+
+                {inflectedForms.length > 0 ? (
+                  <div className="wvsr-detail-family__forms">
+                    {inflectedForms.map((form) => (
+                      <span key={`${form.form}-${form.type}`}>{form.form}</span>
+                    ))}
+                  </div>
+                ) : morphologyParts.length === 0 ? (
+                  <div className="wvsr-detail-empty">
+                    <strong>No additional word-family details are available yet.</strong>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+          </section>
+
+          <div className="wvsr-detail-actions">
+            <button
+              aria-pressed={favorite}
+              className="wvsr-detail-save"
+              onClick={onToggleFavorite}
+              type="button"
+            >
+              <AppIcon name="bookmark" size={21} />
+              <span>{favorite ? "Saved to Valley" : "Save to Valley"}</span>
+            </button>
+            <button
+              className="wvsr-detail-practice"
+              onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+              type="button"
+            >
+              <AppIcon name="book-open" size={21} />
+              <span>Practice</span>
+            </button>
+          </div>
+
+          {activeTab === "definition" ? (
+            <section className="wvsr-detail-example-card" aria-label="Example sentence">
+              <h2>Example Sentence</h2>
+              {entry.examples[0] === undefined ? (
+                <p className="wvsr-detail-example-card__empty">No example is available yet.</p>
+              ) : (
+                <>
+                  <p>{entry.examples[0].sentenceEn}</p>
+                  <span>{entry.examples[0].translationTr}</span>
+                </>
+              )}
+            </section>
           ) : null}
         </section>
-
-        <div className="wvsr-detail-actions">
-          <button
-            aria-pressed={favorite}
-            className="wvsr-detail-save"
-            onClick={onToggleFavorite}
-            type="button"
-          >
-            <AppIcon name="bookmark" size={21} />
-            <span>{favorite ? "Saved to Valley" : "Save to Valley"}</span>
-          </button>
-          <button
-            className="wvsr-detail-practice"
-            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
-            type="button"
-          >
-            <AppIcon name="book-open" size={21} />
-            <span>Practice</span>
-          </button>
-        </div>
-
-        {activeTab === "definition" ? (
-          <section className="wvsr-detail-example-card" aria-label="Example sentence">
-            <h2>Example Sentence</h2>
-            {entry.examples[0] === undefined ? (
-              <p className="wvsr-detail-example-card__empty">No example is available yet.</p>
-            ) : (
-              <>
-                <p>{entry.examples[0].sentenceEn}</p>
-                <span>{entry.examples[0].translationTr}</span>
-              </>
-            )}
-          </section>
-        ) : null}
-      </section>
-
-      <div className="wvsr-detail-language" aria-label="Current language">
-        <span aria-hidden="true">◎</span>
-        <span>English</span>
-        <span aria-hidden="true">⌄</span>
       </div>
+
+      {railCollapsed ? null : (
+        <SearchActivityRail
+          className="wvsr-detail-rail"
+          onOpenWord={(normalizedWord) => navigate(buildVocabularyEntryPath(normalizedWord))}
+          recentAdditions={recentAdditions}
+          recentSearches={recentSearches}
+        />
+      )}
     </article>
   );
 }
