@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import wordValleyBackgroundStatic from "../../assets/background/home-background-static.png";
-import wordValleyLogo from "../../assets/shell/word-valley-logo.png";
 import { AssistantDock } from "../../modules/assistant";
+import { SearchCleanShell } from "../../modules/search-rebuild/SearchCleanShell";
 import {
   CommandBar,
   createCommandRegistry,
@@ -25,14 +24,6 @@ const WORD_VALLEY_STAGE_HEIGHT = 1080;
 function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
   return commands.some(
     (command) => command.target.kind === "action" && command.target.action === action
-  );
-}
-
-function WordValleyBackdrop() {
-  return (
-    <div aria-hidden="true" className="word-valley-backdrop">
-      <img alt="" className="word-valley-backdrop__static" src={wordValleyBackgroundStatic} />
-    </div>
   );
 }
 
@@ -154,12 +145,45 @@ export function AppLayout({ children }: PropsWithChildren) {
     }
   });
 
+  if (isWordValleySearch) {
+    return (
+      <div className="application-frame application-frame--search-cleanroom">
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
+
+        <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
+          <div className="word-valley-stage">
+            <SearchCleanShell>
+              <RouteAccessibilityManager />
+              {children}
+            </SearchCleanShell>
+            <AssistantDock />
+          </div>
+        </div>
+
+        <CommandBar
+          commands={commands}
+          onClose={commandBar.closeCommandBar}
+          onExecute={executeCommand}
+          open={commandBar.open}
+        />
+        <KeyboardShortcutsDialog
+          onClose={() => {
+            setShortcutsOpen(false);
+          }}
+          open={shortcutsOpen}
+        />
+      </div>
+    );
+  }
+
   const applicationShell = (
     <>
       <AppSidebar />
       <div className="application-main">
         <RouteAccessibilityManager />
-        {isWordValleySearch ? null : <AppTopBar onOpenCommandBar={commandBar.openCommandBar} />}
+        <AppTopBar onOpenCommandBar={commandBar.openCommandBar} />
         <AppContent>{children}</AppContent>
       </div>
       <AssistantDock />
@@ -168,36 +192,15 @@ export function AppLayout({ children }: PropsWithChildren) {
 
   return (
     <div
-      className={`application-frame${isWordValleyRoute ? " application-frame--word-valley-stage" : ""}${isWordValleyLibrary ? " application-frame--word-valley-library" : ""}${isWordValleySearch ? " application-frame--word-valley-final-search" : ""}`}
+      className={`application-frame${isWordValleyLibrary ? " application-frame--word-valley-stage application-frame--word-valley-library" : ""}`}
     >
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
 
-      {isWordValleyRoute ? (
+      {isWordValleyLibrary ? (
         <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
-          <div className="word-valley-stage">
-            {isWordValleySearch ? <WordValleyBackdrop /> : null}
-            {isWordValleySearch ? (
-              <Link
-                aria-label="Word Valley search home"
-                className="word-valley-stage-logo"
-                onClick={(event) => {
-                  event.preventDefault();
-                  openVocabularyHome();
-                }}
-                to={ROUTE_PATHS.vocabulary}
-              >
-                <img
-                  alt="Word Valley"
-                  className="word-valley-stage-logo__image"
-                  draggable={false}
-                  src={wordValleyLogo}
-                />
-              </Link>
-            ) : null}
-            {applicationShell}
-          </div>
+          <div className="word-valley-stage">{applicationShell}</div>
         </div>
       ) : (
         applicationShell
