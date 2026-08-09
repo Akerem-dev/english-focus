@@ -131,7 +131,7 @@ function SearchNotice({ onEditSearch, onSearch, state }: SearchNoticeProps) {
         <span className="wvsr-spinner" aria-hidden="true" />
         <div>
           <strong>Searching your Wordbook…</strong>
-          <span>Checking verified local entries and related forms.</span>
+          <span>Looking through your words and related forms.</span>
         </div>
       </div>
     );
@@ -155,10 +155,10 @@ function SearchNotice({ onEditSearch, onSearch, state }: SearchNoticeProps) {
       <div className="wvsr-notice wvsr-notice--warning" role="status">
         <span className="wvsr-notice__symbol" aria-hidden="true">?</span>
         <div>
-          <strong>No verified entry for “{state.query}”.</strong>
+          <strong>No match for “{state.query}”.</strong>
           <span>
             {state.suggestions.length > 0
-              ? "Try a nearby stored word or ask Wordie for help."
+              ? "Try a similar word or ask Wordie for help."
               : "Check the spelling or ask Wordie for help."}
           </span>
           {state.suggestions.length > 0 ? (
@@ -187,8 +187,8 @@ function SearchNotice({ onEditSearch, onSearch, state }: SearchNoticeProps) {
       <div className="wvsr-notice wvsr-notice--error" role="alert">
         <span className="wvsr-notice__symbol" aria-hidden="true">!</span>
         <div>
-          <strong>Wordbook unavailable.</strong>
-          <span>{state.message}</span>
+          <strong>Search is unavailable right now.</strong>
+          <span>Please try again in a moment.</span>
         </div>
         <button onClick={() => onSearch(state.query)} type="button">Try again</button>
       </div>
@@ -269,16 +269,34 @@ export function SearchRebuildView({
       }));
   }, [query, recentAdditions, recentSearches, state]);
 
+  const starterSearches = useMemo(() => {
+    const seen = new Set<string>();
+    const candidates = [
+      ...popularSearches,
+      ...recentAdditions.map((item) => item.word),
+      ...recentSearches.map((item) => item.word)
+    ];
+
+    return candidates.filter((word) => {
+      const normalized = word.trim().toLocaleLowerCase("en");
+      if (normalized.length === 0 || seen.has(normalized)) {
+        return false;
+      }
+      seen.add(normalized);
+      return true;
+    });
+  }, [popularSearches, recentAdditions, recentSearches]);
+
   const visiblePopularSearches = useMemo(() => {
-    if (popularSearches.length <= 5) {
-      return popularSearches.slice(0, 5);
+    if (starterSearches.length <= 5) {
+      return starterSearches.slice(0, 5);
     }
 
     return Array.from({ length: 5 }, (_, index) => {
-      const item = popularSearches[(popularOffset + index) % popularSearches.length];
+      const item = starterSearches[(popularOffset + index) % starterSearches.length];
       return item;
     }).filter((item): item is string => item !== undefined);
-  }, [popularOffset, popularSearches]);
+  }, [popularOffset, starterSearches]);
 
   const showSuggestionPanel =
     (state.kind === "typing" || state.kind === "matches") && suggestions.length > 0;
@@ -380,11 +398,6 @@ export function SearchRebuildView({
               </button>
             ) : null}
 
-            <span className="wvsr-search__shortcut" aria-hidden="true">
-              <kbd>Ctrl</kbd>
-              <kbd>K</kbd>
-            </span>
-
             <button className="wvsr-search__submit" type="submit">
               <AppIcon name="search" size={16} />
               <span>Search</span>
@@ -411,7 +424,7 @@ export function SearchRebuildView({
                     >
                       <span className="wvsr-suggestion__leaf" aria-hidden="true">⌁</span>
                       <strong>{suggestion.word}</strong>
-                      <span>{suggestion.definitionEn ?? "Open the entry to see its verified definition."}</span>
+                      <span>{suggestion.definitionEn ?? "Open this word to see its definition."}</span>
                       <b aria-hidden="true">→</b>
                     </button>
                   ))}
@@ -436,18 +449,18 @@ export function SearchRebuildView({
                   {word}
                 </button>
               ))}
-              <button
-                aria-label="Refresh suggested searches"
-                className="wvsr-popular__refresh"
-                onClick={() =>
-                  setPopularOffset((current) =>
-                    popularSearches.length === 0 ? 0 : (current + 1) % popularSearches.length
-                  )
-                }
-                type="button"
-              >
-                ↻
-              </button>
+              {starterSearches.length > 0 ? (
+                <button
+                  aria-label="Refresh suggested searches"
+                  className="wvsr-popular__refresh"
+                  onClick={() =>
+                    setPopularOffset((current) => (current + 1) % starterSearches.length)
+                  }
+                  type="button"
+                >
+                  ↻
+                </button>
+              ) : null}
             </div>
           </div>
 
