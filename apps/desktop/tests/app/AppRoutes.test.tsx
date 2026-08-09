@@ -28,13 +28,17 @@ describe("application routes", () => {
     ]);
   });
 
-  it("renders the wordbook route loading boundary inside the persistent shell", () => {
+  it("renders the wordbook route loading boundary inside the clean search shell", () => {
     const markup = renderRoute(ROUTE_PATHS.vocabulary);
 
     expect(markup).toContain("Loading Wordbook");
     expect(markup).toContain("Primary navigation");
-    expect(markup).toContain("Your Wordbook");
+    expect(markup).toContain("WORD VALLEY");
+    expect(markup).toContain("YOUR PROGRESS");
+    expect(markup).toContain("application-frame--search-cleanroom");
+    expect(markup).toContain("wvclean-sidebar");
     expect(markup).toContain('href="#main-content"');
+    expect(markup).not.toContain("word-valley-backdrop__static");
   });
 
   it("renders the library route loading boundary", () => {
