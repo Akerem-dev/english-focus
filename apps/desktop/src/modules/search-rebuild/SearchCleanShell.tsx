@@ -9,6 +9,7 @@ import { useActivity, useVocabularyRepository } from "../../app/providers";
 import { ROUTE_PATHS } from "../../app/router";
 
 import "./search-cleanroom.css";
+import "./search-cleanroom-assistant.css";
 
 interface CleanNavItem {
   readonly label: string;
