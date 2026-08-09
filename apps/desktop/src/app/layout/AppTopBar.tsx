@@ -7,6 +7,7 @@ import type { SingleEntryFileImportPayload } from "../../modules/import-export/o
 import { APP_COMMAND_EVENT, type AppCommandEventDetail } from "../command-bar";
 import { ROUTE_PATHS } from "../router/routeIds";
 import { getRouteByPath } from "../router/routeLookup";
+import { WindowControls } from "./WindowControls";
 
 const ImportSourceDialog = lazy(async () => {
   const module = await import("../../modules/import-export/overlays/ImportSourceDialog");
@@ -35,7 +36,7 @@ interface AppTopBarProps {
 function OverlayLoadingStatus() {
   return (
     <div aria-live="polite" className="visually-hidden" role="status">
-      Preparing local import tools
+      Preparing import tools
     </div>
   );
 }
@@ -67,7 +68,7 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
 
   return (
     <>
-      <header className="app-topbar">
+      <header className="app-topbar" data-tauri-drag-region="">
         <span aria-live="polite" className="app-topbar__route">
           {route.title}
         </span>
@@ -92,6 +93,7 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
           >
             Ctrl+K
           </button>
+          <WindowControls className="app-topbar__window-controls" />
         </div>
       </header>
 
