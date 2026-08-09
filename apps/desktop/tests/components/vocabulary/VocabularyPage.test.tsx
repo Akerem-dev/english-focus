@@ -17,7 +17,7 @@ import {
 import { VocabularyPage } from "../../../src/modules/vocabulary/pages";
 
 describe("VocabularyPage search states", () => {
-  it("renders the initial wordbook-search experience", () => {
+  it("renders the rebuilt initial search experience", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
         <ActivityProvider>
@@ -30,11 +30,15 @@ describe("VocabularyPage search states", () => {
       </MemoryRouter>
     );
 
-    expect(markup).toContain(">Search<");
-    expect(markup).toContain("Your wordbook stays on this device.");
-    expect(markup).toContain("Recently viewed words");
-    expect(markup).toContain("Open a word to build your recent history.");
-    expect(markup).toContain("Words you add locally will appear here.");
+    expect(markup).toContain("Discover a new word.");
+    expect(markup).toContain("Search, understand, and grow your vocabulary.");
+    expect(markup).toContain("RECENTLY VIEWED");
+    expect(markup).toContain("Words you open will appear here.");
+    expect(markup).toContain("RECENT ADDITIONS");
+    expect(markup).toContain("Saved words will appear here.");
+    expect(markup).toContain("Wordie");
+    expect(markup).toContain('data-search-ui="rebuild-v1"');
+    expect(markup).not.toContain("Your wordbook stays on this device.");
     expect(markup).not.toContain("Just now");
   });
 
