@@ -1,0 +1,150 @@
+/*
+ * Package 1 — persistent detail context rail.
+ * Keeps the activity/Wordie rail available on vocabulary detail pages,
+ * adds an explicit rail toggle, and lets the learning card use the freed space.
+ */
+
+#root .application-frame--search-cleanroom .wvsr-detail-root.wvsr-detail-root--package-one {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 382px !important;
+  background:
+    linear-gradient(180deg, rgba(251, 248, 241, .74), rgba(251, 248, 241, .08) 38%),
+    url("../../assets/backgrounds/valley-search-master.png") center / cover no-repeat !important;
+  transition: grid-template-columns 180ms ease !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root.wvsr-detail-root--package-one.wvsr-detail-root--context-closed {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-main {
+  position: relative !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  overflow: auto !important;
+  scrollbar-gutter: stable !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-main > .wvsr-detail-card {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: min(955px, calc(100% - 64px)) !important;
+  max-width: 955px !important;
+  min-height: 0 !important;
+  margin: 42px auto 46px !important;
+  transform: none !important;
+  transition: width 180ms ease, max-width 180ms ease !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--context-closed .wvsr-detail-main > .wvsr-detail-card {
+  width: min(1120px, calc(100% - 96px)) !important;
+  max-width: 1120px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-toggle {
+  position: absolute !important;
+  top: 50% !important;
+  right: 370px !important;
+  z-index: 28 !important;
+  display: grid !important;
+  width: 30px !important;
+  height: 54px !important;
+  padding: 0 !important;
+  place-items: center !important;
+  border: 1px solid rgba(198, 154, 58, .48) !important;
+  border-radius: 10px 0 0 10px !important;
+  background: rgba(251, 248, 241, .98) !important;
+  box-shadow: -6px 0 18px rgba(16, 45, 39, .08) !important;
+  color: #76572d !important;
+  cursor: pointer !important;
+  transform: translateY(-50%) !important;
+  transition: right 180ms ease, background 120ms ease !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-toggle:hover {
+  background: #fffdf8 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-toggle svg {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-root--context-closed .wvsr-detail-context-toggle {
+  right: 10px !important;
+  border-radius: 10px 0 0 10px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail {
+  position: relative !important;
+  z-index: 7 !important;
+  display: flex !important;
+  width: 382px !important;
+  min-width: 382px !important;
+  height: 100% !important;
+  flex-direction: column !important;
+  padding: 42px 31px 28px !important;
+  border-left: 1px solid rgba(217, 207, 189, .82) !important;
+  background: #fbf8f1 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card {
+  margin-top: auto !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-activity__row {
+  color: #102d27 !important;
+  text-decoration: none !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-activity__row:focus-visible {
+  outline: 2px solid #c69a3a !important;
+  outline-offset: 2px !important;
+}
+
+/* Asset presence: make the two brand marks and Wordie read clearly at runtime. */
+#root .application-frame--search-cleanroom .wvclean-topbar__brand img {
+  width: 42px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-sidebar__brand img {
+  width: 174px !important;
+  height: 110px !important;
+  margin-bottom: -23px !important;
+  object-fit: contain !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card__mascot {
+  width: 78px !important;
+  height: 98px !important;
+  object-fit: contain !important;
+}
+
+/* Do not squeeze the word card into an unusable column in a smaller desktop window. */
+@media (max-width: 1360px) {
+  #root .application-frame--search-cleanroom .wvsr-detail-root.wvsr-detail-root--package-one {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-context-rail,
+  #root .application-frame--search-cleanroom .wvsr-detail-context-toggle {
+    display: none !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-detail-main > .wvsr-detail-card {
+    width: min(955px, calc(100% - 48px)) !important;
+    max-width: 955px !important;
+    margin-top: 28px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--search-cleanroom .wvsr-detail-root.wvsr-detail-root--package-one,
+  #root .application-frame--search-cleanroom .wvsr-detail-main > .wvsr-detail-card,
+  #root .application-frame--search-cleanroom .wvsr-detail-context-toggle {
+    transition: none !important;
+  }
+}
