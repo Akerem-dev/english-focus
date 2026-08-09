@@ -1,0 +1,471 @@
+/*
+ * Word Valley overlay polish.
+ *
+ * Vocabulary editing, personal metadata, JSON/import and review dialogs used
+ * the pre-Word-Valley surface language. This late stylesheet keeps their
+ * existing behaviour and validation logic, while giving every overlay the
+ * same cream / forest / gold visual system as Search.
+ */
+
+.modal-backdrop {
+  background: rgba(8, 47, 41, .34) !important;
+  backdrop-filter: blur(5px) saturate(.92) !important;
+}
+
+.modal {
+  overflow: hidden !important;
+  border: 1px solid #d9cfbd !important;
+  border-radius: 16px !important;
+  background: #fbf8f1 !important;
+  color: #102d27 !important;
+  box-shadow: 0 26px 76px rgba(8, 47, 41, .24) !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+}
+
+.modal[data-size="large"] {
+  width: min(1040px, calc(100vw - 64px)) !important;
+  max-width: 1040px !important;
+  max-height: calc(100vh - 64px) !important;
+}
+
+.modal__header {
+  padding: 21px 24px 18px !important;
+  border-bottom: 1px solid #e1d8c8 !important;
+  background:
+    radial-gradient(circle at 94% 8%, rgba(198, 154, 58, .055), transparent 24%),
+    #fbf8f1 !important;
+}
+
+.modal__header > div:first-child {
+  min-width: 0 !important;
+}
+
+.modal__header h2 {
+  margin: 0 !important;
+  color: #102d27 !important;
+  font: 600 30px/34px "Cormorant Garamond", Georgia, serif !important;
+  letter-spacing: -.012em !important;
+}
+
+.modal__header p {
+  max-width: 760px !important;
+  margin: 5px 0 0 !important;
+  color: #59655f !important;
+  font: 400 13px/19px "Inter", system-ui, sans-serif !important;
+}
+
+.modal__header button {
+  color: #59655f !important;
+}
+
+.modal__header button:hover {
+  background: #efe8da !important;
+  color: #102d27 !important;
+}
+
+.modal__body {
+  padding: 22px 24px 26px !important;
+  background: #fbf8f1 !important;
+  scrollbar-color: #c9bfad transparent !important;
+  scrollbar-width: thin !important;
+}
+
+.modal__footer {
+  gap: 10px !important;
+  padding: 15px 24px !important;
+  border-top: 1px solid #e1d8c8 !important;
+  background: #f7f2e8 !important;
+}
+
+.modal .button {
+  min-height: 40px !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  font-family: "Inter", system-ui, sans-serif !important;
+}
+
+.modal .button[data-variant="primary"],
+.modal__footer .button:last-child:not(:disabled) {
+  border-color: #082f29 !important;
+  background: #082f29 !important;
+  color: #fbf8f1 !important;
+}
+
+.modal .button[data-variant="primary"]:hover,
+.modal__footer .button:last-child:not(:disabled):hover {
+  background: #0d4037 !important;
+}
+
+.modal .button[data-variant="secondary"] {
+  border-color: #d9cfbd !important;
+  background: #fbf8f1 !important;
+  color: #102d27 !important;
+}
+
+.modal .button[data-variant="ghost"] {
+  color: #59655f !important;
+}
+
+.modal input:not([type="checkbox"]):not([type="radio"]),
+.modal textarea,
+.modal select {
+  border-color: #d9cfbd !important;
+  border-radius: 8px !important;
+  background: #fffdf8 !important;
+  color: #102d27 !important;
+  box-shadow: none !important;
+}
+
+.modal input:not([type="checkbox"]):not([type="radio"]):focus,
+.modal textarea:focus,
+.modal select:focus {
+  border-color: #c69a3a !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 3px rgba(198, 154, 58, .12) !important;
+}
+
+.modal input::placeholder,
+.modal textarea::placeholder {
+  color: #8c877e !important;
+}
+
+.modal label,
+.modal legend {
+  color: #253f39 !important;
+}
+
+.modal small,
+.modal .field__helper,
+.modal [class*="helper"] {
+  color: #7a7c76 !important;
+}
+
+/* ───────────────── Personal details ───────────────── */
+
+.vocabulary-metadata-dialog {
+  display: grid !important;
+  gap: 20px !important;
+}
+
+.vocabulary-metadata-dialog__summary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 22px !important;
+  padding: 22px 24px !important;
+  border: 1px solid #d9cfbd !important;
+  border-radius: 12px !important;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(198, 154, 58, .065), transparent 36%),
+    #f7f2e8 !important;
+}
+
+.vocabulary-metadata-dialog__summary .route-page__eyebrow {
+  margin: 0 0 7px !important;
+  color: #8b682e !important;
+  font: 600 10px/13px "Inter", system-ui, sans-serif !important;
+  letter-spacing: .09em !important;
+  text-transform: uppercase !important;
+}
+
+.vocabulary-metadata-dialog__summary h3 {
+  margin: 0 !important;
+  color: #102d27 !important;
+  font: 600 43px/45px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.vocabulary-metadata-dialog__summary h3 + p {
+  margin: 7px 0 0 !important;
+  color: #59655f !important;
+  font: 400 15px/20px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.vocabulary-metadata-dialog__favorite {
+  min-height: 42px !important;
+  padding: 0 16px !important;
+  border: 1px solid #bcae93 !important;
+  border-radius: 999px !important;
+  background: #fbf8f1 !important;
+  color: #173b34 !important;
+  box-shadow: none !important;
+  font: 600 13px/16px "Inter", system-ui, sans-serif !important;
+}
+
+.vocabulary-metadata-dialog__favorite:hover,
+.vocabulary-metadata-dialog__favorite[data-active] {
+  border-color: #526a43 !important;
+  background: #e9e0cc !important;
+  color: #102d27 !important;
+}
+
+.vocabulary-metadata-dialog__favorite svg {
+  color: #c69a3a !important;
+}
+
+.vocabulary-metadata-dialog__fields {
+  gap: 18px !important;
+}
+
+.vocabulary-metadata-dialog__activity {
+  margin-top: 0 !important;
+  padding-top: 16px !important;
+  border-top: 1px solid #d9cfbd !important;
+}
+
+.vocabulary-metadata-dialog__activity span {
+  color: #7a7c76 !important;
+  font-size: 11px !important;
+}
+
+.vocabulary-metadata-dialog__activity strong {
+  color: #102d27 !important;
+}
+
+.vocabulary-metadata-dialog__error {
+  border-left-color: #9a5d4e !important;
+  border-radius: 8px !important;
+  background: #f4ebe5 !important;
+}
+
+/* ───────────────── Vocabulary editor ───────────────── */
+
+.vocabulary-entry-editor {
+  gap: 22px !important;
+  color: #102d27 !important;
+}
+
+.vocabulary-entry-editor__status {
+  border-color: #d9cfbd !important;
+  background: #f7f2e8 !important;
+  color: #59655f !important;
+}
+
+.vocabulary-entry-editor__section {
+  gap: 16px !important;
+  padding-bottom: 23px !important;
+  border-bottom-color: #ded5c5 !important;
+}
+
+.vocabulary-entry-editor__section > header {
+  grid-template-columns: 31px minmax(0, 1fr) !important;
+  gap: 12px !important;
+}
+
+.vocabulary-entry-editor__section > header > span {
+  width: 31px !important;
+  height: 31px !important;
+  border: 1px solid rgba(198, 154, 58, .22) !important;
+  background: #f1e9da !important;
+  color: #8b682e !important;
+  font: 600 11px/1 "Inter", system-ui, sans-serif !important;
+}
+
+.vocabulary-entry-editor__section > header h3 {
+  color: #102d27 !important;
+  font: 600 22px/26px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.vocabulary-entry-editor__section > header p {
+  color: #69736e !important;
+  font: 400 12px/18px "Inter", system-ui, sans-serif !important;
+}
+
+.vocabulary-entry-editor__card,
+.vocabulary-entry-editor__inline-card {
+  border-color: #d9cfbd !important;
+  border-radius: 11px !important;
+  background: #f7f2e8 !important;
+  box-shadow: none !important;
+}
+
+.vocabulary-entry-editor__card-header h4,
+.vocabulary-entry-editor__card h4,
+.vocabulary-entry-editor__inline-card h4 {
+  color: #102d27 !important;
+}
+
+.vocabulary-entry-editor__choices > div {
+  gap: 7px !important;
+}
+
+.vocabulary-entry-editor__choices label,
+.vocabulary-entry-editor__toggle {
+  min-height: 36px !important;
+  border-color: #d9cfbd !important;
+  background: #fffdf8 !important;
+  color: #59655f !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+}
+
+.vocabulary-entry-editor__choices label:hover,
+.vocabulary-entry-editor__choices label:has(input:checked),
+.vocabulary-entry-editor__toggle:hover,
+.vocabulary-entry-editor__toggle:has(input:checked) {
+  border-color: #9f8b62 !important;
+  background: #eee5d5 !important;
+  color: #102d27 !important;
+}
+
+.vocabulary-entry-editor__choices input,
+.vocabulary-entry-editor__toggle input {
+  accent-color: #526a43 !important;
+}
+
+.vocabulary-entry-editor__error {
+  border-left-color: #9a5d4e !important;
+  background: #f4ebe5 !important;
+}
+
+.vocabulary-entry-editor__shortcut {
+  color: #7a7c76 !important;
+}
+
+.vocabulary-entry-editor__shortcut kbd {
+  border-color: #d9cfbd !important;
+  background: #f7f2e8 !important;
+}
+
+/* ───────────────── JSON / import flow ───────────────── */
+
+.modal:has(.json-paste-dialog__metadata) .modal__header p {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__header p::after {
+  display: block !important;
+  content: "Paste Wordie-generated vocabulary JSON. Word Valley cleans common wrappers and validates the entry locally before anything is saved.";
+  color: #59655f !important;
+  font: 400 13px/19px "Inter", system-ui, sans-serif !important;
+}
+
+.json-paste-dialog__metadata,
+.validation-result-dialog__metadata,
+.vocabulary-preview__metadata {
+  gap: 7px !important;
+  margin-bottom: 16px !important;
+}
+
+.modal .status-badge,
+.modal [class*="status-badge"] {
+  border-color: #d9cfbd !important;
+  background: #f3ede1 !important;
+  color: #59655f !important;
+  box-shadow: none !important;
+}
+
+.json-paste-dialog__privacy {
+  margin-bottom: 18px !important;
+  padding: 13px 15px !important;
+  border-left: 3px solid #c69a3a !important;
+  border-radius: 0 8px 8px 0 !important;
+  background: #f3ede1 !important;
+  color: #59655f !important;
+}
+
+.json-paste-dialog__toolbar {
+  margin-bottom: 12px !important;
+  color: #7a7c76 !important;
+}
+
+.json-paste-dialog__text textarea,
+textarea.json-paste-dialog__text {
+  min-height: 320px !important;
+  border-color: #d9cfbd !important;
+  background: #fdfaf4 !important;
+  color: #173b34 !important;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace !important;
+}
+
+.json-paste-result,
+.validation-result-dialog__success,
+.vocabulary-preview__panel,
+.vocabulary-preview__header,
+.validation-issue-list {
+  border-color: #d9cfbd !important;
+  background: #f7f2e8 !important;
+  box-shadow: none !important;
+}
+
+.json-paste-result__icon,
+.validation-result-dialog__success > span,
+.vocabulary-preview__checklist li > span {
+  background: #e6ebdf !important;
+  color: #526a43 !important;
+}
+
+.json-paste-result__warning,
+.validation-result-dialog__next-stage {
+  border-left-color: #c69a3a !important;
+  background: #f3ede1 !important;
+  color: #59655f !important;
+}
+
+.validation-issue-list__header,
+.validation-issue-list li[data-severity="warning"] .validation-issue-list__icon {
+  background: #f3ede1 !important;
+}
+
+.validation-issue-list__header span,
+.validation-issue-list li[data-severity="warning"] .validation-issue-list__icon {
+  color: #8b682e !important;
+}
+
+.vocabulary-preview__header {
+  background:
+    radial-gradient(circle at 12% 5%, rgba(198,154,58,.07), transparent 32%),
+    #f7f2e8 !important;
+}
+
+.vocabulary-preview__word {
+  color: #102d27 !important;
+  font-family: "Cormorant Garamond", Georgia, serif !important;
+}
+
+.vocabulary-preview__translation {
+  color: #526a43 !important;
+}
+
+.vocabulary-preview__tabs {
+  border-color: #ded5c5 !important;
+  background: #fbf8f1 !important;
+}
+
+.vocabulary-preview__tab:hover,
+.vocabulary-preview__tab[data-active] {
+  background: #eee5d5 !important;
+  color: #102d27 !important;
+}
+
+.vocabulary-preview__tab[data-active] {
+  box-shadow: inset 0 -2px #c69a3a !important;
+}
+
+@media (max-width: 760px) {
+  .modal[data-size="large"] {
+    width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+  }
+
+  .modal__header,
+  .modal__body,
+  .modal__footer {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+  }
+
+  .vocabulary-metadata-dialog__summary {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  .vocabulary-entry-editor__grid--two,
+  .vocabulary-entry-editor__grid--three,
+  .vocabulary-entry-editor__inline-card,
+  .vocabulary-preview__overview,
+  .vocabulary-preview__grammar-grid,
+  .vocabulary-preview__supporting-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
