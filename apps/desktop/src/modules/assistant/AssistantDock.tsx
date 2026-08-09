@@ -95,6 +95,8 @@ function extractHeadword(prompt: string): string | undefined {
     /(?:what\s+is\s+the\s+)?meaning\s+of\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
     /(?:give\s+me\s+)?examples?\s+(?:for|of|with)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
     /use\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+in\s+(?:a\s+)?sentence[?.!]*$/iu,
+    /use\s+in\s+(?:a\s+)?sentence\s*:\s*([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
+    /compare\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
     /(?:break\s+down|quiz\s+me\s+on)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
     /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+ne\s+demek[?.!]*$/iu,
     /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+(?:kelimesini\s+)?açıkla[?.!]*$/iu,
@@ -280,8 +282,8 @@ export function AssistantDock() {
       setOpen(false);
     }
 
-    document.addEventListener("click", handleDetailRailToggle);
-    return () => document.removeEventListener("click", handleDetailRailToggle);
+    document.addEventListener("click", handleDetailRailToggle, true);
+    return () => document.removeEventListener("click", handleDetailRailToggle, true);
   }, []);
 
   useEffect(() => {
