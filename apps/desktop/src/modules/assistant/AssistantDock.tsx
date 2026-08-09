@@ -108,18 +108,18 @@ function quickActionMessage(
       if (translation !== undefined && definition !== undefined) {
         return `“${word}” means “${translation}”. In simple English: ${definition}`;
       }
-      return definition ?? `Open a word first and I will explain it without using the API.`;
+      return definition ?? "Choose a word first and I’ll explain it in plain language.";
     case "examples":
       if (preview?.exampleEn !== undefined) {
         return preview.exampleTr === undefined
           ? `Example: ${preview.exampleEn}`
           : `Example: ${preview.exampleEn} — ${preview.exampleTr}`;
       }
-      return `No verified example is stored for “${word}” yet.`;
+      return `I don’t have an example for “${word}” yet. Choose a word and I’ll help you explore its usage.`;
     case "compare":
       return definition === undefined
-        ? `Open a word first, then I can help you compare its meaning and context.`
-        : `“${word}” means ${definition} Compare it with a nearby word by checking which situations each one naturally fits.`;
+        ? "Choose a word first, then I’ll help you compare it with similar words."
+        : `“${word}” means ${definition} Compare it with a nearby word by noticing where each one sounds natural.`;
     case "breakdown": {
       const details = [
         preview?.partOfSpeech,
@@ -128,12 +128,12 @@ function quickActionMessage(
         .filter((value): value is string => value !== undefined)
         .join(" · ");
       return details.length === 0
-        ? `Open a word first and I will break it into meaning, form, and a memory cue.`
+        ? "Choose a word first and I’ll break it into meaning, form, and a memory cue."
         : `“${word}” — ${details}. Connect its meaning to the example sentence, then say the word once from memory.`;
     }
     case "quiz":
       return translation === undefined
-        ? `Open a word first and I will create a quick recall question.`
+        ? "Choose a word first and I’ll give you a quick recall question."
         : `Quick check: without looking above, what does “${word}” mean in Turkish, and can you use it in one English sentence?`;
   }
 }
@@ -151,27 +151,27 @@ function userFacingPreparationError(cause: unknown): string {
       .slice(0, 4);
 
     return alternatives.length > 0
-      ? `I could not verify “${word}”. Did you mean ${alternatives.map((item) => `“${item}”`).join(", ")}?`
-      : `I could not verify “${word}” as a standard English headword.`;
+      ? `I couldn’t find “${word}”. Did you mean ${alternatives.map((item) => `“${item}”`).join(", ")}?`
+      : `I couldn’t find “${word}”. Check the spelling and try again.`;
   }
 
   if (message.includes("assistant_quota_exhausted") || message.includes("usage limit")) {
-    return "The daily Gemini limit has been reached. Please try again after it resets.";
+    return "Wordie has reached today’s request limit. Please try again later.";
   }
 
   if (message.includes("assistant_api_key_rejected")) {
-    return "The saved Gemini API key was rejected. Replace it in Settings.";
+    return "Wordie needs a quick setup in Settings before it can help with new words.";
   }
 
   if (message.includes("assistant_dictionary_unavailable")) {
-    return "The dictionary check is unavailable right now. No AI entry was generated.";
+    return "Wordie can’t check that word right now. Please try again in a moment.";
   }
 
   if (message.includes("timed out") || message.includes("could not be reached")) {
-    return "The word helper could not reach Gemini. Check your connection and try again.";
+    return "Wordie couldn’t connect. Check your internet connection and try again.";
   }
 
-  return "I could not prepare a reliable entry for this word. Please try again.";
+  return "I couldn’t prepare that word right now. Please try again.";
 }
 
 export function AssistantDock() {
@@ -189,7 +189,7 @@ export function AssistantDock() {
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState<string | undefined>();
   const [assistantMessage, setAssistantMessage] = useState(
-    "Type a word, or ask for an example, comparison, breakdown, or quiz."
+    "Tell me a word you’d like to understand better."
   );
   const [mascotState, setMascotState] = useState<AssistantMascotState>("ready");
   const [preview, setPreview] = useState<AssistantWordPreviewModel | undefined>();
@@ -200,6 +200,7 @@ export function AssistantDock() {
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking" && !isSaving;
   const isBusy = isPreparing || isSaving;
+  const isWelcome = question === undefined && preview === undefined;
   const simpleExplanation =
     preview?.translationsTr[0] ??
     (preview?.definitionEn === undefined ? assistantMessage : preview.definitionEn);
@@ -240,7 +241,7 @@ export function AssistantDock() {
         setPreview(undefined);
         setSavePlan(undefined);
         setSaveError(undefined);
-        setAssistantMessage(`“${detail.word}” is ready. Press the arrow to open it.`);
+        setAssistantMessage(`“${detail.word}” is ready. Press the arrow when you’re ready.`);
       }
 
       setMascotState("ready");
@@ -296,11 +297,11 @@ export function AssistantDock() {
       }
 
       if (preparation.kind === "provider-unavailable") {
-        const text =
+        setAssistantMessage(
           preparation.reason === "desktop-required"
-            ? "Open the desktop app to prepare a missing word."
-            : "Add a Gemini API key in Settings to prepare a word that is not in the Wordbook.";
-        setAssistantMessage(text);
+            ? "Open Word Valley on desktop to explore a new word with Wordie."
+            : "Finish Wordie setup in Settings to explore words that aren’t in your Wordbook yet."
+        );
         setMascotState("confused");
         return;
       }
@@ -308,7 +309,7 @@ export function AssistantDock() {
       const review = inspectAssistantCandidate(preparation.value, word, contentSource);
 
       if (review.kind === "invalid") {
-        setAssistantMessage(`The entry prepared for “${word}” did not pass the app checks.`);
+        setAssistantMessage(`I couldn’t prepare a reliable explanation for “${word}”. Please try again.`);
         setMascotState("confused");
         return;
       }
@@ -331,7 +332,7 @@ export function AssistantDock() {
       setSavePlan(review.plan);
       setAssistantMessage(
         requestedAction === undefined
-          ? `“${review.entry.word}” is ready to review.`
+          ? `“${review.entry.word}” is ready to explore.`
           : quickActionMessage(requestedAction, nextPreview)
       );
       setMascotState("ready");
@@ -344,7 +345,7 @@ export function AssistantDock() {
       setAssistantMessage(message);
       setMascotState("confused");
       showToast({
-        title: "Word not prepared",
+        title: "Wordie needs another try",
         message,
         tone: "error",
         durationMs: 8_000,
@@ -378,7 +379,7 @@ export function AssistantDock() {
 
       setAssistantMessage(
         preview === undefined
-          ? "I can explain a word, give a verified example, compare meanings, break it down, or quiz you — these shortcuts do not use Gemini. Try “Explain allocate” or “Examples for spreadsheet”."
+          ? "Try a word on its own, or ask something like “Explain allocate” or “Examples for spreadsheet”."
           : `Ask about “${preview.word}” with “explain simply”, “more examples”, “compare”, “break it down”, or “quiz me”.`
       );
       setMascotState("ready");
@@ -389,7 +390,7 @@ export function AssistantDock() {
     const sequence = requestSequence.current;
     setPreview(undefined);
     setSavePlan(undefined);
-    setAssistantMessage("Checking the Wordbook…");
+    setAssistantMessage("Looking up the word…");
     setMascotState("thinking");
     void prepareSubmittedWord(word, sequence, requestedAction);
   }
@@ -415,8 +416,8 @@ export function AssistantDock() {
         tone: "success",
         dedupeKey: "assistant-vocabulary-save"
       });
-    } catch (cause) {
-      const message = cause instanceof Error ? cause.message : "This word could not be saved.";
+    } catch {
+      const message = "That word couldn’t be saved. Please try again.";
       setSaveError(message);
       setMascotState("confused");
       showToast({
@@ -458,101 +459,130 @@ export function AssistantDock() {
               <AssistantPanelMascot state={mascotState} />
               <div>
                 <h2>Wordie AI</h2>
-                <p>Your learning companion</p>
+                <p>Your vocabulary companion</p>
               </div>
               <IconButton
                 className="wv84-assistant-panel__close"
                 icon={<AppIcon name="close" size={18} />}
-                label="Close word helper"
+                label="Close Wordie"
                 onClick={closeAssistant}
                 size="small"
               />
             </header>
 
             <div className="wv84-assistant-panel__conversation">
-              {question === undefined ? null : (
-                <div className="wv84-user-message">
-                  <span>YOU</span>
-                  <p>{question}</p>
-                </div>
+              {isWelcome ? (
+                <article className="wv84-wordie-welcome">
+                  <h3>Welcome.</h3>
+                  <p>
+                    I’m Wordie, your vocabulary companion. I can help you understand meanings,
+                    see words in context, and remember what you learn.
+                  </p>
+                </article>
+              ) : (
+                <>
+                  {question === undefined ? null : (
+                    <div className="wv84-user-message">
+                      <span>YOU</span>
+                      <p>{question}</p>
+                    </div>
+                  )}
+
+                  <article aria-live="polite" className="wv84-wordie-answer">
+                    <header>
+                      <AssistantPanelMascot state={mascotState} />
+                      <div>
+                        <strong>Wordie</strong>
+                        <span>{assistantMessage}</span>
+                      </div>
+                    </header>
+
+                    {preview === undefined ? null : (
+                      <>
+                        <section>
+                          <span aria-hidden="true" className="wv84-leaf-mark" />
+                          <div>
+                            <h3>In simple words</h3>
+                            <p>{simpleExplanation}</p>
+                          </div>
+                        </section>
+                        <section>
+                          <span aria-hidden="true" className="wv84-leaf-mark" />
+                          <div>
+                            <h3>Think of it like</h3>
+                            <p>{comparison}</p>
+                          </div>
+                        </section>
+                        <section>
+                          <span aria-hidden="true" className="wv84-leaf-mark" />
+                          <div>
+                            <h3>Key idea</h3>
+                            <p>{keyIdea}</p>
+                          </div>
+                        </section>
+                      </>
+                    )}
+
+                    {preview?.state === "ready" && savePlan !== undefined ? (
+                      <button
+                        className="wv84-answer-action"
+                        disabled={isSaving}
+                        onClick={() => void addPreviewToLibrary()}
+                        type="button"
+                      >
+                        {isSaving ? "Saving…" : "Save to Valley"}
+                      </button>
+                    ) : null}
+                    {(preview?.state === "existing" || preview?.state === "saved") &&
+                    preview.complete ? (
+                      <button
+                        className="wv84-answer-action"
+                        onClick={openExistingPreview}
+                        type="button"
+                      >
+                        Open word
+                      </button>
+                    ) : null}
+                    {saveError === undefined ? null : <p className="wv84-answer-error">{saveError}</p>}
+                  </article>
+                </>
               )}
-
-              <article aria-live="polite" className="wv84-wordie-answer">
-                <header>
-                  <AssistantPanelMascot state={mascotState} />
-                  <div>
-                    <strong>Wordie AI</strong>
-                    <span>{assistantMessage}</span>
-                  </div>
-                </header>
-                <section>
-                  <span aria-hidden="true" className="wv84-leaf-mark" />
-                  <div>
-                    <h3>In simple words</h3>
-                    <p>{simpleExplanation}</p>
-                  </div>
-                </section>
-                <section>
-                  <span aria-hidden="true" className="wv84-leaf-mark" />
-                  <div>
-                    <h3>Think of it like</h3>
-                    <p>{comparison}</p>
-                  </div>
-                </section>
-                <section>
-                  <span aria-hidden="true" className="wv84-leaf-mark" />
-                  <div>
-                    <h3>Key idea</h3>
-                    <p>{keyIdea}</p>
-                  </div>
-                </section>
-
-                {preview?.state === "ready" && savePlan !== undefined ? (
-                  <button
-                    className="wv84-answer-action"
-                    disabled={isSaving}
-                    onClick={() => void addPreviewToLibrary()}
-                    type="button"
-                  >
-                    {isSaving ? "Saving…" : "Save to Valley"}
-                  </button>
-                ) : null}
-                {(preview?.state === "existing" || preview?.state === "saved") &&
-                preview.complete ? (
-                  <button
-                    className="wv84-answer-action"
-                    onClick={openExistingPreview}
-                    type="button"
-                  >
-                    Open in Wordbook
-                  </button>
-                ) : null}
-                {saveError === undefined ? null : <p className="wv84-answer-error">{saveError}</p>}
-              </article>
             </div>
 
-            <div className="wv84-quick-actions">
-              <button onClick={() => applyQuickAction("simple")} type="button">
-                <span aria-hidden="true" className="wv84-leaf-mark" />
-                Explain simply
-              </button>
-              <button onClick={() => applyQuickAction("examples")} type="button">
-                <AppIcon name="book-open" size={20} />
-                More examples
-              </button>
-              <button onClick={() => applyQuickAction("compare")} type="button">
-                <AppIcon name="star" size={20} />
-                Compare words
-              </button>
-              <button onClick={() => applyQuickAction("breakdown")} type="button">
-                <AppIcon name="edit" size={20} />
-                Break it down
-              </button>
-              <button onClick={() => applyQuickAction("quiz")} type="button">
-                <AppIcon name="bookmark" size={20} />
-                Quiz me
-              </button>
-            </div>
+            {isWelcome ? (
+              <div className="wv84-quick-actions wv84-quick-actions--welcome">
+                <span className="wv84-quick-actions__label">TRY ASKING ME</span>
+                <button onClick={() => applyQuickAction("simple")} type="button">
+                  <span className="wv84-quick-actions__icon"><AppIcon name="search" size={22} /></span>
+                  <span className="wv84-quick-actions__copy">
+                    <strong>Explain simply</strong>
+                    <small>Break down a meaning in clear, simple terms.</small>
+                  </span>
+                </button>
+                <button onClick={() => applyQuickAction("examples")} type="button">
+                  <span className="wv84-quick-actions__icon"><AppIcon name="book-open" size={22} /></span>
+                  <span className="wv84-quick-actions__copy">
+                    <strong>Give examples</strong>
+                    <small>See how a word is used in natural sentences.</small>
+                  </span>
+                </button>
+                <button onClick={() => applyQuickAction("quiz")} type="button">
+                  <span className="wv84-quick-actions__icon"><AppIcon name="star" size={22} /></span>
+                  <span className="wv84-quick-actions__copy">
+                    <strong>Quiz me</strong>
+                    <small>Check your understanding with a quick question.</small>
+                  </span>
+                </button>
+              </div>
+            ) : (
+              <div className="wv84-quick-actions">
+                <button onClick={() => applyQuickAction("simple")} type="button">Explain simply</button>
+                <button onClick={() => applyQuickAction("examples")} type="button">More examples</button>
+                <button onClick={() => applyQuickAction("compare")} type="button">Compare words</button>
+                <button onClick={() => applyQuickAction("breakdown")} type="button">Break it down</button>
+                <button onClick={() => applyQuickAction("quiz")} type="button">Quiz me</button>
+              </div>
+            )}
 
             <form
               aria-busy={isBusy || undefined}
@@ -576,7 +606,7 @@ export function AssistantDock() {
                 }}
                 placeholder="Ask about a word…"
                 ref={inputRef}
-                spellCheck="false"
+                spellCheck={false}
                 value={input}
               />
               <button
@@ -584,7 +614,7 @@ export function AssistantDock() {
                 disabled={input.trim().length === 0 || isBusy}
                 type="submit"
               >
-                <AppIcon name="chevron-right" size={24} />
+                <AppIcon name="chevron-right" size={22} />
               </button>
             </form>
           </section>
@@ -595,11 +625,11 @@ export function AssistantDock() {
         </>
       ) : (
         <button
-          aria-label="Open word helper"
+          aria-label="Open Wordie"
           className="assistant-launcher wv84-assistant-launcher"
           onClick={() => setOpen(true)}
           ref={launcherRef}
-          title="Open word helper"
+          title="Open Wordie"
           type="button"
         >
           <AssistantLauncherMascot awake={false} />
