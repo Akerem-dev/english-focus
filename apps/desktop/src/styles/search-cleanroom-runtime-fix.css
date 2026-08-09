@@ -2,10 +2,9 @@
  * Word Valley search runtime sizing / Figma parity overrides.
  * Reference canvas: Figma 1664 × 936, node 84:823.
  *
- * Important: the application itself is fluid. We keep the Figma component
- * measurements at 1 CSS px instead of scaling the whole canvas up/down.
- * This prevents oversized controls at 1920×1080 and avoids clipped content
- * when the Tauri window is resized.
+ * The application is fluid: Figma component measurements stay at 1 CSS px
+ * instead of scaling the entire canvas. This keeps the desktop UI stable at
+ * large and compact Tauri window sizes.
  */
 
 #root .application-frame--search-cleanroom .word-valley-stage-viewport {
@@ -30,9 +29,18 @@
   height: 100% !important;
 }
 
-/* Keep the custom title bar attached to the actual window edges. */
 #root .application-frame--search-cleanroom .wvclean-topbar {
   width: 100% !important;
+}
+
+/* Give the small title-bar mark as much presence as the 46 px chrome allows. */
+#root .application-frame--search-cleanroom .wvclean-topbar__brand {
+  gap: 9px !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-topbar__brand img {
+  width: 36px !important;
+  height: 24px !important;
 }
 
 /* Figma desktop shell: 318 sidebar + fluid scene + 382 context rail. */
@@ -53,7 +61,6 @@
   min-width: 0 !important;
 }
 
-/* Keep the designed search module size, but allow it to contract cleanly. */
 #root .application-frame--search-cleanroom .wvsr-hero {
   width: min(713px, calc(100% - 48px)) !important;
   max-width: 713px !important;
@@ -74,20 +81,132 @@
   display: none !important;
 }
 
-/* Removing the 36 px language bar must not move the quote/card artwork. */
 #root .application-frame--search-cleanroom .wvsr-quote {
   bottom: 119px !important;
 }
 
-#root .application-frame--search-cleanroom .wvsr-wordie-card {
-  margin-bottom: 36px !important;
+/* Brand mark: larger, while retaining the Figma wordmark/tagline positions. */
+#root .application-frame--search-cleanroom .wvclean-sidebar__brand img {
+  width: 156px !important;
+  height: 98px !important;
+  margin-bottom: -19px !important;
 }
 
-/* Slightly enlarge the book/leaves mark without pushing the wordmark down. */
-#root .application-frame--search-cleanroom .wvclean-sidebar__brand img {
-  width: 142px !important;
-  height: 89px !important;
-  margin-bottom: -10px !important;
+/* Anchor progress to the lower sidebar and use the empty area for a real continuation action. */
+#root .application-frame--search-cleanroom .wvclean-progress {
+  top: auto !important;
+  bottom: 28px !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__card {
+  height: auto !important;
+  min-height: 194px !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue {
+  display: grid !important;
+  min-height: 54px !important;
+  grid-template-columns: 22px minmax(0, 1fr) 18px !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 5px 4px 0 !important;
+  padding: 8px 5px 2px !important;
+  border-top: 1px solid rgba(247, 242, 232, .12) !important;
+  color: #f7f2e8 !important;
+  text-decoration: none !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue > svg {
+  color: #c69a3a !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue > span:nth-child(2) {
+  display: grid !important;
+  min-width: 0 !important;
+  gap: 1px !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue small {
+  color: #c69a3a !important;
+  font: 600 9px/12px "Inter", system-ui, sans-serif !important;
+  letter-spacing: .07em !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue strong {
+  overflow: hidden !important;
+  color: #f7f2e8 !important;
+  font: 600 16px/18px "Cormorant Garamond", Georgia, serif !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue > span:last-child {
+  color: #c69a3a !important;
+  font-size: 16px !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue:hover {
+  background: rgba(255, 255, 255, .035) !important;
+}
+
+#root .application-frame--search-cleanroom .wvclean-progress__continue:focus-visible {
+  outline: 2px solid #c69a3a !important;
+  outline-offset: 2px !important;
+}
+
+/* The compact Wordie card is a real grid, so the CTA can never collide with copy. */
+#root .application-frame--search-cleanroom .wvsr-wordie-card {
+  display: grid !important;
+  min-height: 238px !important;
+  grid-template-columns: minmax(0, 1fr) 66px !important;
+  grid-template-areas:
+    "header header"
+    "subtitle mascot"
+    "copy mascot"
+    "button button" !important;
+  grid-template-rows: auto auto 1fr 48px !important;
+  column-gap: 12px !important;
+  margin-top: auto !important;
+  margin-bottom: 22px !important;
+  padding: 18px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card > header {
+  grid-area: header !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card__subtitle {
+  grid-area: subtitle !important;
+  margin: 2px 0 0 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card__copy {
+  grid-area: copy !important;
+  max-width: none !important;
+  margin: 14px 0 14px !important;
+  align-self: end !important;
+  line-height: 1.45 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card__mascot {
+  position: static !important;
+  inset: auto !important;
+  grid-area: mascot !important;
+  width: 62px !important;
+  height: 78px !important;
+  align-self: center !important;
+  justify-self: center !important;
+  object-fit: contain !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-wordie-card > button {
+  position: static !important;
+  inset: auto !important;
+  grid-area: button !important;
+  width: 100% !important;
+  height: 48px !important;
+  margin: 0 !important;
+  align-self: end !important;
 }
 
 /* Detail pages retain the Figma card width but never overflow the scene. */
@@ -96,12 +215,13 @@
   max-width: 955px !important;
 }
 
-/* Wordie occupies the exact 382 px Figma rail and now extends to the window bottom. */
+/* Wordie occupies the exact 382 px Figma rail and extends to the window bottom. */
 #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant {
   top: 46px !important;
   right: 0 !important;
   bottom: 0 !important;
   width: 382px !important;
+  box-shadow: none !important;
 }
 
 #root .application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
@@ -110,80 +230,87 @@
   max-height: none !important;
 }
 
-/* Answer-state visual parity with FINAL · 05 — Wordie / Answer. */
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(2) {
-  display: none !important;
-}
-
+/*
+ * Wordie answers now expose the structured information already available:
+ * Turkish meaning, an English meaning/nuance explanation, then a natural example.
+ * The old canned action strip is intentionally removed.
+ */
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(1) h3,
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(2) h3,
 #root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3 {
   font-size: 0 !important;
   line-height: 20px !important;
 }
 
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3::before {
-  content: "Quick example";
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(1) h3::before {
+  content: "Türkçe karşılığı";
   color: #173b34;
   font: 600 15px/20px "Inter", system-ui, sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) {
-  display: grid !important;
-  grid-template-columns: 1fr !important;
-  gap: 6px !important;
-  padding: 14px 25px 18px !important;
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(2) h3::before {
+  content: "Meaning & nuance";
+  color: #173b34;
+  font: 600 15px/20px "Inter", system-ui, sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(1),
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(4) {
+#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3::before {
+  content: "Natural example";
+  color: #173b34;
+  font: 600 15px/20px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer > section {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer > section p {
+  color: #314943 !important;
+  font-size: 12.5px !important;
+  line-height: 18px !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) {
   display: none !important;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button {
-  position: relative !important;
-  display: flex !important;
-  width: 100% !important;
-  height: 34px !important;
-  min-height: 34px !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  padding: 0 34px 0 42px !important;
-  text-align: left !important;
+/* Welcome uses two useful entry points instead of a generic quiz card. */
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(3) {
+  display: none !important;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button::after {
-  position: absolute;
-  top: 50%;
-  right: 13px;
-  content: "›";
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy strong,
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy strong,
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy small,
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy small {
+  font-size: 0 !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy strong::before {
+  content: "Explain a word";
   color: #102d27;
-  font: 400 18px/1 "Inter", system-ui, sans-serif;
-  transform: translateY(-52%);
+  font: 600 19px/23px "Cormorant Garamond", Georgia, serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button::before {
-  position: absolute;
-  top: 50%;
-  left: 14px;
-  width: 17px;
-  color: #8b682e;
-  font: 600 13px/1 "Inter", system-ui, sans-serif;
-  text-align: center;
-  transform: translateY(-50%);
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy small::before {
+  content: "Meaning, Turkish equivalent, and nuance.";
+  color: #59655f;
+  font: 400 13px/17px "Inter", system-ui, sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(2)::before {
-  content: "↗";
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy strong::before {
+  content: "Explore in context";
+  color: #102d27;
+  font: 600 19px/23px "Cormorant Garamond", Georgia, serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(3)::before {
-  content: "⇄";
+#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy small::before {
+  content: "See how the word behaves in a natural sentence.";
+  color: #59655f;
+  font: 400 13px/17px "Inter", system-ui, sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions:not(.wv84-quick-actions--welcome) > button:nth-child(5)::before {
-  content: "☆";
-}
-
-/* Prevent long generated assistant text from stretching the rail. */
 #root .application-frame--search-cleanroom .wv84-wordie-answer > header span,
 #root .application-frame--search-cleanroom .wv84-wordie-answer p,
 #root .application-frame--search-cleanroom .wv84-user-message p {
@@ -191,7 +318,7 @@
   word-break: normal !important;
 }
 
-/* Medium windows: remove the passive activity rail before squeezing the learning surface. */
+/* Medium windows: remove passive activity rail before squeezing learning content. */
 @media (max-width: 1180px) {
   #root .application-frame--search-cleanroom .wvsr-root {
     grid-template-columns: minmax(0, 1fr) !important;
@@ -203,6 +330,11 @@
 
   #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant {
     width: min(382px, calc(100vw - 318px)) !important;
+    box-shadow: none !important;
+  }
+
+  /* The previous unconditional shadow caused the vertical seam while Wordie was closed. */
+  #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant[data-open] {
     box-shadow: -18px 0 42px rgba(8, 47, 41, .12) !important;
   }
 
@@ -259,7 +391,7 @@
   }
 }
 
-/* Short windows: remove non-essential decoration and keep interactive regions visible. */
+/* Short windows: remove secondary decoration and keep interactive regions visible. */
 @media (max-height: 760px) {
   #root .application-frame--search-cleanroom .wvclean-progress,
   #root .application-frame--search-cleanroom .wvclean-sidebar__divider,
