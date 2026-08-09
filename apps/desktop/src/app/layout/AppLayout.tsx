@@ -18,8 +18,10 @@ import { AppContent } from "./AppContent";
 import { AppSidebar } from "./AppSidebar";
 import { AppTopBar } from "./AppTopBar";
 
-const WORD_VALLEY_STAGE_WIDTH = 1920;
-const WORD_VALLEY_STAGE_HEIGHT = 1080;
+const SEARCH_STAGE_WIDTH = 1664;
+const SEARCH_STAGE_HEIGHT = 936;
+const LEGACY_WORD_VALLEY_STAGE_WIDTH = 1920;
+const LEGACY_WORD_VALLEY_STAGE_HEIGHT = 1080;
 
 function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
   return commands.some(
@@ -63,11 +65,25 @@ export function AppLayout({ children }: PropsWithChildren) {
           document.documentElement.clientHeight || window.innerHeight,
           1
         );
-        const scaleX = Math.max(viewportWidth / WORD_VALLEY_STAGE_WIDTH, 0.01);
-        const scaleY = Math.max(viewportHeight / WORD_VALLEY_STAGE_HEIGHT, 0.01);
 
-        viewport.style.setProperty("--wv-stage-scale-x", String(scaleX));
-        viewport.style.setProperty("--wv-stage-scale-y", String(scaleY));
+        if (isWordValleySearch) {
+          const scale = Math.max(
+            Math.min(viewportWidth / SEARCH_STAGE_WIDTH, viewportHeight / SEARCH_STAGE_HEIGHT),
+            0.01
+          );
+          viewport.style.setProperty("--wv-stage-scale-x", String(scale));
+          viewport.style.setProperty("--wv-stage-scale-y", String(scale));
+          return;
+        }
+
+        viewport.style.setProperty(
+          "--wv-stage-scale-x",
+          String(Math.max(viewportWidth / LEGACY_WORD_VALLEY_STAGE_WIDTH, 0.01))
+        );
+        viewport.style.setProperty(
+          "--wv-stage-scale-y",
+          String(Math.max(viewportHeight / LEGACY_WORD_VALLEY_STAGE_HEIGHT, 0.01))
+        );
       });
     };
 
@@ -78,7 +94,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", updateScale);
     };
-  }, [isWordValleyRoute]);
+  }, [isWordValleyRoute, isWordValleySearch]);
 
   function openVocabularyHome() {
     if (location.pathname === ROUTE_PATHS.vocabulary) {
