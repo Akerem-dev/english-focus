@@ -1,0 +1,43 @@
+/* Search-only assistant crop normalization for the new Wordie assets. */
+
+.application-frame--search-cleanroom .assistant-panel__mascot-stage {
+  display: grid !important;
+  width: 48px !important;
+  min-width: 48px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(217, 207, 189, .9) !important;
+  border-radius: 50% !important;
+  background: #efe8da !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.application-frame--search-cleanroom .assistant-panel__mascot {
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.application-frame--search-cleanroom .wv84-wordie-answer header .assistant-panel__mascot-stage {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+}
+
+.application-frame--search-cleanroom .assistant-launcher__mascot {
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  filter: none !important;
+}
