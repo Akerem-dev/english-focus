@@ -408,3 +408,61 @@
   transform: none !important;
   filter: none !important;
 }
+
+/* Package 2 finishing pass: make the persistent Wordie card a real visual anchor. */
+.application-frame--search-cleanroom .wvsr-wordie-card {
+  min-height: 270px !important;
+  padding: 23px 22px 20px !important;
+  border-radius: 13px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card header {
+  min-height: 32px !important;
+  gap: 10px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card__status {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 12px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card h2 {
+  font-size: 25px !important;
+  line-height: 30px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card__sparkle {
+  width: 21px !important;
+  height: 21px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card__subtitle {
+  margin-top: 5px !important;
+  font-size: 13px !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card__copy {
+  width: 55% !important;
+  margin-top: 35px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card__mascot {
+  top: 37px !important;
+  right: 10px !important;
+  width: 154px !important;
+  height: 162px !important;
+  object-fit: contain !important;
+}
+
+.application-frame--search-cleanroom .wvsr-wordie-card > button {
+  right: 22px !important;
+  bottom: 20px !important;
+  left: 22px !important;
+  height: 54px !important;
+  padding: 0 19px !important;
+  border-radius: 9px !important;
+  font-size: 19px !important;
+}
