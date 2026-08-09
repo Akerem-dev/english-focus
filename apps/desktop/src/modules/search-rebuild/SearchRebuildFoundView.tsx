@@ -48,6 +48,20 @@ export function SearchRebuildFoundView({
     ["Prefix", entry.morphology.prefix],
     ["Suffix", entry.morphology.suffix]
   ].filter((item): item is [string, string] => item[1] !== undefined && item[1].length > 0);
+  const normalizedBaseForm = (entry.morphology.baseForm ?? entry.word)
+    .trim()
+    .toLocaleLowerCase("en-US");
+  const inflectedForms = entry.morphology.inflectedForms
+    .filter((form) => form.form.trim().toLocaleLowerCase("en-US") !== normalizedBaseForm)
+    .filter(
+      (form, index, forms) =>
+        forms.findIndex(
+          (candidate) =>
+            candidate.form.trim().toLocaleLowerCase("en-US") ===
+              form.form.trim().toLocaleLowerCase("en-US") && candidate.type === form.type
+        ) === index
+    )
+    .slice(0, 8);
 
   return (
     <article
@@ -177,9 +191,9 @@ export function SearchRebuildFoundView({
                 </div>
               ) : null}
 
-              {entry.morphology.inflectedForms.length > 0 ? (
+              {inflectedForms.length > 0 ? (
                 <div className="wvsr-detail-family__forms">
-                  {entry.morphology.inflectedForms.slice(0, 8).map((form) => (
+                  {inflectedForms.map((form) => (
                     <span key={`${form.form}-${form.type}`}>{form.form}</span>
                   ))}
                 </div>
@@ -212,17 +226,19 @@ export function SearchRebuildFoundView({
           </button>
         </div>
 
-        <section className="wvsr-detail-example-card" aria-label="Example sentence">
-          <h2>Example Sentence</h2>
-          {entry.examples[0] === undefined ? (
-            <p className="wvsr-detail-example-card__empty">No example is available yet.</p>
-          ) : (
-            <>
-              <p>{entry.examples[0].sentenceEn}</p>
-              <span>{entry.examples[0].translationTr}</span>
-            </>
-          )}
-        </section>
+        {activeTab === "definition" ? (
+          <section className="wvsr-detail-example-card" aria-label="Example sentence">
+            <h2>Example Sentence</h2>
+            {entry.examples[0] === undefined ? (
+              <p className="wvsr-detail-example-card__empty">No example is available yet.</p>
+            ) : (
+              <>
+                <p>{entry.examples[0].sentenceEn}</p>
+                <span>{entry.examples[0].translationTr}</span>
+              </>
+            )}
+          </section>
+        ) : null}
       </section>
 
       <div className="wvsr-detail-language" aria-label="Current language">
