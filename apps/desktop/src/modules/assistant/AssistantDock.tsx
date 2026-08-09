@@ -26,6 +26,14 @@ type QuickAction = "simple" | "examples" | "compare" | "breakdown" | "quiz";
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 const QUOTED_TERM_PATTERN = /["“”']([^"“”']{1,72})["“”']/u;
 
+const QUICK_ACTION_STARTERS: Readonly<Record<QuickAction, string>> = Object.freeze({
+  simple: "Explain ",
+  examples: "Examples for ",
+  compare: "Compare ",
+  breakdown: "Break down ",
+  quiz: "Quiz me on "
+});
+
 function supportsAssistant(pathname: string): boolean {
   return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
 }
@@ -442,6 +450,20 @@ export function AssistantDock() {
   }
 
   function applyQuickAction(action: QuickAction) {
+    if (preview === undefined) {
+      const starter = QUICK_ACTION_STARTERS[action];
+      setInput(starter);
+      window.requestAnimationFrame(() => {
+        const composer = inputRef.current;
+        if (composer === null) {
+          return;
+        }
+        composer.focus();
+        composer.setSelectionRange(starter.length, starter.length);
+      });
+      return;
+    }
+
     setAssistantMessage(quickActionMessage(action, preview));
   }
 
