@@ -38,6 +38,8 @@ describe("VocabularyPage search states", () => {
     expect(markup).toContain("Saved words will appear here.");
     expect(markup).toContain("Wordie");
     expect(markup).toContain('data-search-ui="rebuild-v1"');
+    expect(markup).not.toContain("<kbd>Ctrl</kbd>");
+    expect(markup).not.toContain("verified local");
     expect(markup).not.toContain("Your wordbook stays on this device.");
     expect(markup).not.toContain("Just now");
   });
