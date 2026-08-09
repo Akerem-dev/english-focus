@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useMemo,
   useState,
   type FormEvent,
@@ -284,9 +283,20 @@ export function SearchRebuildView({
   const showSuggestionPanel =
     (state.kind === "typing" || state.kind === "matches") && suggestions.length > 0;
 
-  useEffect(() => {
+  function handleQueryChange(value: string) {
     setSelectedSuggestion(-1);
-  }, [query]);
+    onQueryChange(value);
+  }
+
+  function handleClear() {
+    setSelectedSuggestion(-1);
+    onClear();
+  }
+
+  function handleSearch(value: string) {
+    setSelectedSuggestion(-1);
+    onSearch(value);
+  }
 
   function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (!showSuggestionPanel) {
@@ -317,7 +327,7 @@ export function SearchRebuildView({
       const selected = suggestions[selectedSuggestion];
       if (selected !== undefined) {
         event.preventDefault();
-        onSearch(selected.normalizedWord);
+        handleSearch(selected.normalizedWord);
       }
     }
   }
@@ -351,7 +361,7 @@ export function SearchRebuildView({
               aria-label="Search vocabulary"
               autoComplete="off"
               className="wvsr-search__input"
-              onChange={(event) => onQueryChange(event.currentTarget.value)}
+              onChange={(event) => handleQueryChange(event.currentTarget.value)}
               onKeyDown={handleInputKeyDown}
               placeholder="Search for a word..."
               ref={searchInputRef}
@@ -363,7 +373,7 @@ export function SearchRebuildView({
               <button
                 aria-label="Clear search"
                 className="wvsr-search__clear"
-                onClick={onClear}
+                onClick={handleClear}
                 type="button"
               >
                 ×
@@ -395,7 +405,7 @@ export function SearchRebuildView({
                       className="wvsr-suggestion"
                       id={`wvsr-suggestion-${index}`}
                       key={`${suggestion.normalizedWord}-${suggestion.matchKind ?? "match"}`}
-                      onClick={() => onSearch(suggestion.normalizedWord)}
+                      onClick={() => handleSearch(suggestion.normalizedWord)}
                       role="option"
                       type="button"
                     >
@@ -408,7 +418,7 @@ export function SearchRebuildView({
                 </div>
                 <button
                   className="wvsr-suggestions__all"
-                  onClick={() => onSearch(query)}
+                  onClick={() => handleSearch(query)}
                   type="button"
                 >
                   <span>View all results for “{query.trim()}”</span>
@@ -422,7 +432,7 @@ export function SearchRebuildView({
             <span>TRY SEARCHING</span>
             <div className="wvsr-popular__chips">
               {visiblePopularSearches.map((word) => (
-                <button key={word} onClick={() => onSearch(word)} type="button">
+                <button key={word} onClick={() => handleSearch(word)} type="button">
                   {word}
                 </button>
               ))}
@@ -441,7 +451,7 @@ export function SearchRebuildView({
             </div>
           </div>
 
-          <SearchNotice onEditSearch={onEditSearch} onSearch={onSearch} state={state} />
+          <SearchNotice onEditSearch={onEditSearch} onSearch={handleSearch} state={state} />
         </div>
 
         <blockquote className="wvsr-quote">
@@ -461,14 +471,14 @@ export function SearchRebuildView({
         <ActivityList
           kind="viewed"
           items={recentSearches}
-          onSearch={onSearch}
+          onSearch={handleSearch}
           title="RECENTLY VIEWED"
         />
         <div className="wvsr-rail__divider" />
         <ActivityList
           kind="added"
           items={recentAdditions}
-          onSearch={onSearch}
+          onSearch={handleSearch}
           title="RECENT ADDITIONS"
         />
 
