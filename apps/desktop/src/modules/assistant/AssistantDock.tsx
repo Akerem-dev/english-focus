@@ -23,12 +23,17 @@ import { createAssistantWordPreview, type AssistantWordPreviewModel } from "./As
 type AssistantSavePlan = Extract<VocabularyPersistencePlan, { readonly kind: "save" }>;
 type QuickAction = "simple" | "examples" | "compare" | "breakdown" | "quiz";
 
+interface AssistantPreparationIssue {
+  readonly message: string;
+  readonly suggestions: readonly string[];
+}
+
 const HEADWORD_PATTERN = /^[A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2}$/u;
 const QUOTED_TERM_PATTERN = /["“”']([^"“”']{1,72})["“”']/u;
 
 const QUICK_ACTION_STARTERS: Readonly<Record<QuickAction, string>> = Object.freeze({
   simple: "Explain ",
-  examples: "Examples for ",
+  examples: "Use in a sentence: ",
   compare: "Compare ",
   breakdown: "Break down ",
   quiz: "Quiz me on "
@@ -42,6 +47,7 @@ function cleanHeadwordCandidate(value: string): string | undefined {
   const candidate = value
     .trim()
     .replace(/^["“”']+|["“”'?.!,;:]+$/gu, "")
+    .replace(/\s+(?:please|pls)$/iu, "")
     .trim();
   return HEADWORD_PATTERN.test(candidate) ? candidate : undefined;
 }
@@ -52,16 +58,16 @@ function detectQuickAction(prompt: string): QuickAction | undefined {
   if (/\b(compare|difference|similar|synonym|karşılaştır|fark)\b/u.test(normalized)) {
     return "compare";
   }
-  if (/\b(break down|breakdown|pronounce|syllable|spell|parçala|telaffuz)\b/u.test(normalized)) {
+  if (/\b(break down|breakdown|pronounce|pronunciation|syllable|spell|parçala|telaffuz)\b/u.test(normalized)) {
     return "breakdown";
   }
   if (/\b(quiz|test me|question me|beni test|soru sor)\b/u.test(normalized)) {
     return "quiz";
   }
-  if (/\b(example|examples|sentence|sentences|örnek|cümle)\b/u.test(normalized)) {
+  if (/\b(example|examples|sentence|sentences|use in a sentence|örnek|cümle)\b/u.test(normalized)) {
     return "examples";
   }
-  if (/\b(explain|define|meaning|simpler|simple|ne demek|açıkla|anlamı)\b/u.test(normalized)) {
+  if (/\b(explain|define|definition|meaning|simpler|simple|ne demek|açıkla|anlamı)\b/u.test(normalized)) {
     return "simple";
   }
 
@@ -83,11 +89,17 @@ function extractHeadword(prompt: string): string | undefined {
   }
 
   const patterns = [
-    /(?:can you\s+)?(?:explain|define)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})(?:\s+in\s+(?:simple|simpler)\s+words)?[?.!]*$/iu,
-    /what does\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+mean[?.!]*$/iu,
-    /(?:meaning of|examples?\s+(?:for|of|with)|compare|break down|quiz me on)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
-    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+ne demek[?.!]*$/iu,
-    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+(?:kelimesini\s+)?açıkla[?.!]*$/iu
+    /(?:can|could|would)\s+you\s+(?:please\s+)?(?:explain|define)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})(?:\s+in\s+(?:simple|simpler|plain)\s+(?:english|words))?[?.!]*$/iu,
+    /(?:please\s+)?(?:explain|define)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})(?:\s+in\s+(?:simple|simpler|plain)\s+(?:english|words))?[?.!]*$/iu,
+    /what\s+(?:does|is)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+(?:mean|meaning)[?.!]*$/iu,
+    /(?:what\s+is\s+the\s+)?meaning\s+of\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
+    /(?:give\s+me\s+)?examples?\s+(?:for|of|with)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
+    /use\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+in\s+(?:a\s+)?sentence[?.!]*$/iu,
+    /(?:break\s+down|quiz\s+me\s+on)\s+([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu,
+    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+ne\s+demek[?.!]*$/iu,
+    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+(?:kelimesini\s+)?açıkla[?.!]*$/iu,
+    /([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})\s+(?:için\s+)?(?:örnek|örnekler|cümle|cümleler)(?:\s+ver)?[?.!]*$/iu,
+    /(?:örnek|örnekler|cümle|cümleler)\s+(?:ver\s+)?(?:için\s+)?([A-Za-z]+(?:['’-][A-Za-z]+)*(?:\s+[A-Za-z]+(?:['’-][A-Za-z]+)*){0,2})[?.!]*$/iu
   ];
 
   for (const pattern of patterns) {
@@ -108,37 +120,25 @@ function quickActionMessage(
   preview: AssistantWordPreviewModel | undefined
 ): string {
   const word = preview?.word ?? "this word";
-  const definition = preview?.definitionEn;
   const translation = preview?.translationsTr[0];
 
   switch (action) {
     case "simple":
-      if (translation !== undefined && definition !== undefined) {
-        return `“${word}” means “${translation}”. In simple English: ${definition}`;
-      }
-      return definition ?? "Choose a word first and I’ll explain it in plain language.";
+      return preview === undefined
+        ? "Choose a word and I’ll explain it without dictionary jargon."
+        : `Here’s the clearest way to understand “${word}”.`;
     case "examples":
-      if (preview?.exampleEn !== undefined) {
-        return preview.exampleTr === undefined
-          ? `Example: ${preview.exampleEn}`
-          : `Example: ${preview.exampleEn} — ${preview.exampleTr}`;
-      }
-      return `I don’t have an example for “${word}” yet. Choose a word and I’ll help you explore its usage.`;
+      return preview?.exampleEn === undefined
+        ? `I don’t have a verified example for “${word}” yet.`
+        : `Here’s “${word}” in a natural sentence.`;
     case "compare":
-      return definition === undefined
-        ? "Choose a word first, then I’ll help you compare it with similar words."
-        : `“${word}” means ${definition} Compare it with a nearby word by noticing where each one sounds natural.`;
-    case "breakdown": {
-      const details = [
-        preview?.partOfSpeech,
-        preview?.cefr === undefined ? undefined : `CEFR ${preview.cefr}`
-      ]
-        .filter((value): value is string => value !== undefined)
-        .join(" · ");
-      return details.length === 0
-        ? "Choose a word first and I’ll break it into meaning, form, and a memory cue."
-        : `“${word}” — ${details}. Connect its meaning to the example sentence, then say the word once from memory.`;
-    }
+      return preview === undefined
+        ? "Choose a word first, then I’ll help you compare it with nearby words."
+        : `Start with the core meaning of “${word}”, then compare where nearby words sound natural.`;
+    case "breakdown":
+      return preview === undefined
+        ? "Choose a word first and I’ll break it into useful learning details."
+        : `Here’s “${word}” at a glance.`;
     case "quiz":
       return translation === undefined
         ? "Choose a word first and I’ll give you a quick recall question."
@@ -146,7 +146,7 @@ function quickActionMessage(
   }
 }
 
-function userFacingPreparationError(cause: unknown): string {
+function userFacingPreparationIssue(cause: unknown): AssistantPreparationIssue {
   const message = cause instanceof Error ? cause.message : String(cause);
 
   if (message.includes("assistant_word_not_found|")) {
@@ -158,28 +158,47 @@ function userFacingPreparationError(cause: unknown): string {
       .filter(Boolean)
       .slice(0, 4);
 
-    return alternatives.length > 0
-      ? `I couldn’t find “${word}”. Did you mean ${alternatives.map((item) => `“${item}”`).join(", ")}?`
-      : `I couldn’t find “${word}”. Check the spelling and try again.`;
+    return {
+      message:
+        alternatives.length > 0
+          ? `I couldn’t verify “${word}”. Pick the intended word below or edit your spelling.`
+          : `I couldn’t verify “${word}”. Check the spelling and try again.`,
+      suggestions: alternatives
+    };
   }
 
   if (message.includes("assistant_quota_exhausted") || message.includes("usage limit")) {
-    return "Wordie has reached today’s request limit. Please try again later.";
+    return {
+      message: "Wordie has reached today’s request limit. Please try again later.",
+      suggestions: []
+    };
   }
 
   if (message.includes("assistant_api_key_rejected")) {
-    return "Wordie needs a quick setup in Settings before it can help with new words.";
+    return {
+      message: "Wordie needs a quick setup in Settings before it can help with new words.",
+      suggestions: []
+    };
   }
 
   if (message.includes("assistant_dictionary_unavailable")) {
-    return "Wordie can’t check that word right now. Please try again in a moment.";
+    return {
+      message: "Wordie can’t check that word right now. Please try again in a moment.",
+      suggestions: []
+    };
   }
 
   if (message.includes("timed out") || message.includes("could not be reached")) {
-    return "Wordie couldn’t connect. Check your internet connection and try again.";
+    return {
+      message: "Wordie couldn’t connect. Check your internet connection and try again.",
+      suggestions: []
+    };
   }
 
-  return "I couldn’t prepare that word right now. Please try again.";
+  return {
+    message: "I couldn’t prepare that word right now. Please try again.",
+    suggestions: []
+  };
 }
 
 export function AssistantDock() {
@@ -204,17 +223,19 @@ export function AssistantDock() {
   const [savePlan, setSavePlan] = useState<AssistantSavePlan | undefined>();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | undefined>();
+  const [typoSuggestions, setTypoSuggestions] = useState<readonly string[]>([]);
+  const [activeAction, setActiveAction] = useState<QuickAction | undefined>();
 
   const visible = supportsAssistant(location.pathname);
   const isPreparing = mascotState === "thinking" && !isSaving;
   const isBusy = isPreparing || isSaving;
   const isWelcome = question === undefined && preview === undefined;
-  const simpleExplanation =
-    preview?.translationsTr[0] ??
-    (preview?.definitionEn === undefined ? assistantMessage : preview.definitionEn);
-  const comparison =
-    preview?.definitionEn ?? "Think about the word in the situation where you found it.";
-  const keyIdea = preview?.exampleEn ?? "Use the word in a short sentence to make it memorable.";
+  const meaningText = preview?.definitionEn ?? "A verified English definition isn’t available yet.";
+  const translationText = preview?.translationsTr.join(", ");
+  const learningMeta = [
+    preview?.partOfSpeech,
+    preview?.cefr === undefined ? undefined : `CEFR ${preview.cefr}`
+  ].filter((value): value is string => value !== undefined && value.length > 0);
 
   useEffect(() => {
     if (!open) {
@@ -240,6 +261,30 @@ export function AssistantDock() {
   }, [open]);
 
   useEffect(() => {
+    function handleDetailRailToggle(event: MouseEvent) {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const toggle = target.closest(".wvsr-detail-context-toggle");
+      if (!(toggle instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      if (toggle.getAttribute("aria-expanded") !== "true") {
+        return;
+      }
+
+      requestSequence.current += 1;
+      setOpen(false);
+    }
+
+    document.addEventListener("click", handleDetailRailToggle);
+    return () => document.removeEventListener("click", handleDetailRailToggle);
+  }, []);
+
+  useEffect(() => {
     function handleAssistantRequest(event: Event) {
       const detail = (event as CustomEvent<AssistantRequestDetail>).detail;
 
@@ -249,7 +294,9 @@ export function AssistantDock() {
         setPreview(undefined);
         setSavePlan(undefined);
         setSaveError(undefined);
-        setAssistantMessage(`“${detail.word}” is ready. Press the arrow when you’re ready.`);
+        setTypoSuggestions([]);
+        setActiveAction(undefined);
+        setAssistantMessage(`Ask me what you want to know about “${detail.word}”.`);
       }
 
       setMascotState("ready");
@@ -288,6 +335,7 @@ export function AssistantDock() {
       const nextPreview = createAssistantWordPreview(word, existing, "existing");
       setPreview(nextPreview);
       setSavePlan(undefined);
+      setTypoSuggestions([]);
       setAssistantMessage(
         requestedAction === undefined
           ? `I found “${existing.word}” in your Wordbook.`
@@ -310,6 +358,7 @@ export function AssistantDock() {
             ? "Open Word Valley on desktop to explore a new word with Wordie."
             : "Finish Wordie setup in Settings to explore words that aren’t in your Wordbook yet."
         );
+        setTypoSuggestions([]);
         setMascotState("confused");
         return;
       }
@@ -318,6 +367,7 @@ export function AssistantDock() {
 
       if (review.kind === "invalid") {
         setAssistantMessage(`I couldn’t prepare a reliable explanation for “${word}”. Please try again.`);
+        setTypoSuggestions([]);
         setMascotState("confused");
         return;
       }
@@ -326,6 +376,7 @@ export function AssistantDock() {
         const nextPreview = createAssistantWordPreview(word, review.entry, "existing");
         setPreview(nextPreview);
         setSavePlan(undefined);
+        setTypoSuggestions([]);
         setAssistantMessage(
           requestedAction === undefined
             ? `“${review.entry.word}” is already in your Wordbook.`
@@ -338,6 +389,7 @@ export function AssistantDock() {
       const nextPreview = createAssistantWordPreview(word, review.entry, "ready");
       setPreview(nextPreview);
       setSavePlan(review.plan);
+      setTypoSuggestions([]);
       setAssistantMessage(
         requestedAction === undefined
           ? `“${review.entry.word}” is ready to explore.`
@@ -349,16 +401,10 @@ export function AssistantDock() {
         return;
       }
 
-      const message = userFacingPreparationError(cause);
-      setAssistantMessage(message);
+      const issue = userFacingPreparationIssue(cause);
+      setAssistantMessage(issue.message);
+      setTypoSuggestions(issue.suggestions);
       setMascotState("confused");
-      showToast({
-        title: "Wordie needs another try",
-        message,
-        tone: "error",
-        durationMs: 8_000,
-        dedupeKey: "assistant-vocabulary-generation"
-      });
     }
   }
 
@@ -375,6 +421,8 @@ export function AssistantDock() {
     const word = extractHeadword(prompt);
     setQuestion(prompt);
     setSaveError(undefined);
+    setTypoSuggestions([]);
+    setActiveAction(requestedAction);
     setInput("");
 
     if (word === undefined) {
@@ -387,8 +435,8 @@ export function AssistantDock() {
 
       setAssistantMessage(
         preview === undefined
-          ? "Try a word on its own, or ask something like “Explain allocate” or “Examples for spreadsheet”."
-          : `Ask about “${preview.word}” with “explain simply”, “more examples”, “compare”, “break it down”, or “quiz me”.`
+          ? "You can ask naturally — for example: “What does allocate mean?”, “Use wreck in a sentence”, or “glorious ne demek?”."
+          : `Ask naturally about “${preview.word}” — explain it, use it in a sentence, break it down, or quiz yourself.`
       );
       setMascotState("ready");
       return;
@@ -398,9 +446,24 @@ export function AssistantDock() {
     const sequence = requestSequence.current;
     setPreview(undefined);
     setSavePlan(undefined);
-    setAssistantMessage("Looking up the word…");
+    setAssistantMessage(`Checking “${word}”…`);
     setMascotState("thinking");
     void prepareSubmittedWord(word, sequence, requestedAction);
+  }
+
+  function retrySuggestion(suggestion: string) {
+    requestSequence.current += 1;
+    const sequence = requestSequence.current;
+    setQuestion(suggestion);
+    setInput("");
+    setPreview(undefined);
+    setSavePlan(undefined);
+    setSaveError(undefined);
+    setTypoSuggestions([]);
+    setActiveAction(undefined);
+    setAssistantMessage(`Checking “${suggestion}”…`);
+    setMascotState("thinking");
+    void prepareSubmittedWord(suggestion, sequence);
   }
 
   async function addPreviewToLibrary(): Promise<void> {
@@ -449,18 +512,23 @@ export function AssistantDock() {
     setOpen(false);
   }
 
+  function focusStarter(starter: string) {
+    setInput(starter);
+    window.requestAnimationFrame(() => {
+      const composer = inputRef.current;
+      if (composer === null) {
+        return;
+      }
+      composer.focus();
+      composer.setSelectionRange(starter.length, starter.length);
+    });
+  }
+
   function applyQuickAction(action: QuickAction) {
+    setActiveAction(action);
+
     if (preview === undefined) {
-      const starter = QUICK_ACTION_STARTERS[action];
-      setInput(starter);
-      window.requestAnimationFrame(() => {
-        const composer = inputRef.current;
-        if (composer === null) {
-          return;
-        }
-        composer.focus();
-        composer.setSelectionRange(starter.length, starter.length);
-      });
+      focusStarter(QUICK_ACTION_STARTERS[action]);
       return;
     }
 
@@ -497,8 +565,8 @@ export function AssistantDock() {
                 <article className="wv84-wordie-welcome">
                   <h3>Welcome.</h3>
                   <p>
-                    I’m Wordie, your vocabulary companion. I can help you understand meanings,
-                    see words in context, and remember what you learn.
+                    Ask me the way you’d ask a teacher. I can explain a word, put it in context,
+                    catch likely spelling mistakes, and help you remember it.
                   </p>
                 </article>
               ) : (
@@ -519,30 +587,61 @@ export function AssistantDock() {
                       </div>
                     </header>
 
-                    {preview === undefined ? null : (
-                      <>
-                        <section>
+                    {typoSuggestions.length === 0 ? null : (
+                      <div className="wv84-wordie-typo" aria-label="Spelling suggestions">
+                        <span>Did you mean</span>
+                        <div>
+                          {typoSuggestions.map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              onClick={() => retrySuggestion(suggestion)}
+                              type="button"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {preview === undefined || activeAction === "quiz" ? null : (
+                      <div className="wv84-wordie-answer__body">
+                        <section className="wv84-wordie-answer__section">
                           <span aria-hidden="true" className="wv84-leaf-mark" />
                           <div>
-                            <h3>In simple words</h3>
-                            <p>{simpleExplanation}</p>
+                            <h3>Meaning</h3>
+                            <p>{meaningText}</p>
+                            {translationText === undefined || translationText.length === 0 ? null : (
+                              <small className="wv84-wordie-answer__translation">
+                                {translationText}
+                              </small>
+                            )}
                           </div>
                         </section>
-                        <section>
-                          <span aria-hidden="true" className="wv84-leaf-mark" />
-                          <div>
-                            <h3>Think of it like</h3>
-                            <p>{comparison}</p>
+
+                        {preview.exampleEn === undefined ? null : (
+                          <section className="wv84-wordie-answer__section">
+                            <span aria-hidden="true" className="wv84-leaf-mark" />
+                            <div>
+                              <h3>Natural example</h3>
+                              <p>{preview.exampleEn}</p>
+                              {preview.exampleTr === undefined ? null : (
+                                <small className="wv84-wordie-answer__translation">
+                                  {preview.exampleTr}
+                                </small>
+                              )}
+                            </div>
+                          </section>
+                        )}
+
+                        {learningMeta.length === 0 ? null : (
+                          <div className="wv84-wordie-answer__meta">
+                            {learningMeta.map((item) => (
+                              <span key={item}>{item}</span>
+                            ))}
                           </div>
-                        </section>
-                        <section>
-                          <span aria-hidden="true" className="wv84-leaf-mark" />
-                          <div>
-                            <h3>Key idea</h3>
-                            <p>{keyIdea}</p>
-                          </div>
-                        </section>
-                      </>
+                        )}
+                      </div>
                     )}
 
                     {preview?.state === "ready" && savePlan !== undefined ? (
@@ -577,32 +676,31 @@ export function AssistantDock() {
                 <button onClick={() => applyQuickAction("simple")} type="button">
                   <span className="wv84-quick-actions__icon"><AppIcon name="search" size={22} /></span>
                   <span className="wv84-quick-actions__copy">
-                    <strong>Explain simply</strong>
-                    <small>Break down a meaning in clear, simple terms.</small>
+                    <strong>Explain a word</strong>
+                    <small>Ask naturally and get the core meaning first.</small>
                   </span>
                 </button>
                 <button onClick={() => applyQuickAction("examples")} type="button">
                   <span className="wv84-quick-actions__icon"><AppIcon name="book-open" size={22} /></span>
                   <span className="wv84-quick-actions__copy">
-                    <strong>Give examples</strong>
-                    <small>See how a word is used in natural sentences.</small>
+                    <strong>Explore in context</strong>
+                    <small>See the word in a natural sentence.</small>
                   </span>
                 </button>
                 <button onClick={() => applyQuickAction("quiz")} type="button">
                   <span className="wv84-quick-actions__icon"><AppIcon name="star" size={22} /></span>
                   <span className="wv84-quick-actions__copy">
                     <strong>Quiz me</strong>
-                    <small>Check your understanding with a quick question.</small>
+                    <small>Check recall without revealing the answer first.</small>
                   </span>
                 </button>
               </div>
             ) : (
-              <div className="wv84-quick-actions">
-                <button onClick={() => applyQuickAction("simple")} type="button">Explain simply</button>
-                <button onClick={() => applyQuickAction("examples")} type="button">More examples</button>
-                <button onClick={() => applyQuickAction("compare")} type="button">Compare words</button>
+              <div className="wv84-quick-actions wv84-quick-actions--contextual">
+                <button onClick={() => applyQuickAction("examples")} type="button">Use in a sentence</button>
+                <button onClick={() => applyQuickAction("compare")} type="button">Compare a similar word</button>
                 <button onClick={() => applyQuickAction("breakdown")} type="button">Break it down</button>
-                <button onClick={() => applyQuickAction("quiz")} type="button">Quiz me</button>
+                <button onClick={() => applyQuickAction("quiz")} type="button">Quiz me on this</button>
               </div>
             )}
 
@@ -624,9 +722,10 @@ export function AssistantDock() {
                   if (mascotState === "confused") {
                     setMascotState("ready");
                     setSaveError(undefined);
+                    setTypoSuggestions([]);
                   }
                 }}
-                placeholder="Ask about a word…"
+                placeholder="Ask Wordie anything about a word…"
                 ref={inputRef}
                 spellCheck={false}
                 value={input}
