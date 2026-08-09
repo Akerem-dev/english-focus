@@ -1,11 +1,12 @@
 import { useEffect } from "react";
+import type { Window as TauriWindow } from "@tauri-apps/api/window";
 
 interface WindowControlsProps {
   readonly className?: string;
 }
 
 async function withCurrentWindow(
-  action: (window: Awaited<ReturnType<typeof import("@tauri-apps/api/window")>>["getCurrentWindow"] extends (...args: never[]) => infer T ? T : never) => Promise<void>
+  action: (window: TauriWindow) => Promise<void>
 ): Promise<void> {
   try {
     const { getCurrentWindow } = await import("@tauri-apps/api/window");
