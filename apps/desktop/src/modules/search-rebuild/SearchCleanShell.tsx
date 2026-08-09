@@ -11,6 +11,7 @@ import { AppIcon, type AppIconName } from "../../design-system";
 
 import "./search-cleanroom.css";
 import "./search-cleanroom-assistant.css";
+import "./search-package1-polish.css";
 
 interface CleanNavItem {
   readonly label: string;
