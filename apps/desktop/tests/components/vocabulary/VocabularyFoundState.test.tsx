@@ -40,14 +40,16 @@ describe("VocabularyFoundState", () => {
     expect(markup).toContain("Back to results");
   });
 
-  it("keeps editing and data actions available from the compact entry menu", () => {
+  it("keeps word management available without exposing technical JSON language", () => {
     expect(markup).toContain("maintain");
-    expect(markup).toContain('aria-label="Entry options"');
-    expect(markup).toContain("Edit entry");
-    expect(markup).toContain("Edit personal data");
-    expect(markup).toContain("Import replacement");
-    expect(markup).toContain("Export entry");
+    expect(markup).toContain('aria-label="Word options"');
+    expect(markup).toContain("Edit word details");
+    expect(markup).toContain("Notes &amp; learning status");
+    expect(markup).toContain("Replace word data");
+    expect(markup).toContain("Download word data");
     expect(markup).not.toContain("Advanced JSON tools");
+    expect(markup).not.toContain("Import replacement");
+    expect(markup).not.toContain("Export entry JSON");
   });
 
   it("renders the essential vocabulary identity without legacy review metadata chips", () => {
@@ -60,12 +62,13 @@ describe("VocabularyFoundState", () => {
     expect(markup).not.toContain(">IELTS<");
   });
 
-  it("renders the rebuilt detail tabs and definition-first content model", () => {
+  it("renders the package 3 detail tabs and definition-first content model", () => {
+    expect(markup).toContain('wvsr-detail-root--package-three');
     expect(markup).toContain('aria-label="Vocabulary entry sections"');
     expect(markup).toContain(">Definition<");
     expect(markup).toContain(">Examples<");
-    expect(markup).toContain(">Synonyms<");
-    expect(markup).toContain(">Word Family<");
+    expect(markup).toContain(">Similar words<");
+    expect(markup).toContain(">Word forms<");
     expect(markup).toContain("English Definition");
     expect(markup).toContain("Türkçe Anlamı");
     expect(markup).toContain("Example Sentence");
@@ -75,6 +78,17 @@ describe("VocabularyFoundState", () => {
     expect(markup).not.toContain("Sentence forms");
     expect(markup).not.toContain("Preposition patterns");
     expect(markup).not.toContain("Common mistakes");
+  });
+
+  it("keeps the context rail visible by default with an explicit collapse control", () => {
+    expect(markup).toContain('aria-controls="wvsr-detail-context-rail"');
+    expect(markup).toContain('aria-expanded="true"');
+    expect(markup).toContain('aria-label="Hide side panel"');
+    expect(markup).toContain('id="wvsr-detail-context-rail"');
+    expect(markup).toContain("RECENTLY VIEWED");
+    expect(markup).toContain("RECENT ADDITIONS");
+    expect(markup).toContain('aria-label="Wordie vocabulary assistant"');
+    expect(markup).toContain("Ask Wordie");
   });
 
   it("shows the verified primary example on the definition tab", () => {
