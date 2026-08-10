@@ -1,7 +1,12 @@
 import { createVocabularyUserMetadataBuilder } from "@platform/testing";
 import { renderToStaticMarkup } from "react-dom/server";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
+import {
+  ActivityProvider,
+  VocabularyRepositoryProvider
+} from "../../../src/app/providers";
 import { maintainVocabularyEntry } from "../../../src/content";
 import { VocabularyFoundState } from "../../../src/modules/vocabulary/components";
 
@@ -22,16 +27,22 @@ const metadata = createVocabularyUserMetadataBuilder()
   .build();
 
 const markup = renderToStaticMarkup(
-  <VocabularyFoundState
-    backLabel="Back to Library"
-    entry={maintainVocabularyEntry}
-    metadata={metadata}
-    onBack={() => undefined}
-    onEditEntry={() => undefined}
-    onEditMetadata={() => undefined}
-    onExport={() => undefined}
-    onImportReplacement={() => undefined}
-  />
+  <MemoryRouter>
+    <ActivityProvider>
+      <VocabularyRepositoryProvider>
+        <VocabularyFoundState
+          backLabel="Back to Library"
+          entry={maintainVocabularyEntry}
+          metadata={metadata}
+          onBack={() => undefined}
+          onEditEntry={() => undefined}
+          onEditMetadata={() => undefined}
+          onExport={() => undefined}
+          onImportReplacement={() => undefined}
+        />
+      </VocabularyRepositoryProvider>
+    </ActivityProvider>
+  </MemoryRouter>
 );
 
 describe("VocabularyFoundState", () => {
