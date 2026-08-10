@@ -58,7 +58,7 @@ export function VocabularyEntryEditorLanguageSections({
 
   return (
     <>
-      <section className="vocabulary-entry-editor__section">
+      <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--pronunciation">
         <header>
           <span>3</span>
           <div>
@@ -122,7 +122,7 @@ export function VocabularyEntryEditorLanguageSections({
         </div>
       </section>
 
-      <section className="vocabulary-entry-editor__section">
+      <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--forms">
         <header>
           <span>4</span>
           <div>
@@ -134,28 +134,30 @@ export function VocabularyEntryEditorLanguageSections({
           <TextField
             error={firstIssue(issues, "morphology.baseForm")}
             label="Base form"
-            onChange={(event) =>
+            onChange={(event) => {
+              const value = event.currentTarget.value;
               setDraft((current) => ({
                 ...current,
                 morphology: {
                   ...current.morphology,
-                  baseForm: event.currentTarget.value
+                  baseForm: value
                 }
-              }))
-            }
+              }));
+            }}
             value={draft.morphology.baseForm}
           />
           <TextField
             label="Root"
-            onChange={(event) =>
+            onChange={(event) => {
+              const value = event.currentTarget.value;
               setDraft((current) => ({
                 ...current,
                 morphology: {
                   ...current.morphology,
-                  root: event.currentTarget.value
+                  root: value
                 }
-              }))
-            }
+              }));
+            }}
             value={draft.morphology.root ?? ""}
           />
         </div>
@@ -180,12 +182,13 @@ export function VocabularyEntryEditorLanguageSections({
               <TextField
                 error={firstIssue(issues, `morphology.inflectedForms[${index}].form`)}
                 label={`Form ${index + 1}`}
-                onChange={(event) =>
+                onChange={(event) => {
+                  const value = event.currentTarget.value;
                   updateForm(index, {
-                    form: event.currentTarget.value,
-                    normalizedForm: event.currentTarget.value
-                  })
-                }
+                    form: value,
+                    normalizedForm: value
+                  });
+                }}
                 value={form.form}
               />
             </article>
