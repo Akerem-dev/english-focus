@@ -53,15 +53,15 @@ export function VocabularyEntryEditorIdentitySections({
         <header>
           <span>1</span>
           <div>
-            <h3>Identity and level</h3>
-            <p>The normalized identity is protected to prevent accidental duplicate records.</p>
+            <h3>Word details</h3>
+            <p>Keep the word, level, and word type up to date.</p>
           </div>
         </header>
         <div className="vocabulary-entry-editor__grid vocabulary-entry-editor__grid--three">
           <TextField
             data-autofocus="true"
             error={firstIssue(issues, "word")}
-            helperText={`Identity remains “${original.normalizedWord}”.`}
+            helperText={`Current word: “${original.word}”.`}
             label="Word"
             maxLength={120}
             onChange={(event) =>
@@ -74,7 +74,7 @@ export function VocabularyEntryEditorIdentitySections({
           />
           <SelectField
             error={firstIssue(issues, "cefr")}
-            label="CEFR level"
+            label="Level"
             onChange={(event) =>
               setDraft((current) => ({
                 ...current,
@@ -88,7 +88,7 @@ export function VocabularyEntryEditorIdentitySections({
             ))}
           </SelectField>
           <SelectField
-            label="Primary part of speech"
+            label="Word type"
             onChange={(event) =>
               updateMeaning(0, {
                 partOfSpeech: event.currentTarget.value as PartOfSpeech
@@ -103,38 +103,44 @@ export function VocabularyEntryEditorIdentitySections({
             ))}
           </SelectField>
         </div>
-        <fieldset className="vocabulary-entry-editor__choices">
-          <legend>Registers</legend>
-          <div>
-            {REGISTERS.map((register) => (
-              <label key={register}>
-                <input
-                  checked={draft.registers.includes(register)}
-                  onChange={() => toggleRegister(register)}
-                  type="checkbox"
-                />
-                <span>{formatPlainLabel(register)}</span>
-              </label>
-            ))}
+
+        <details className="vocabulary-entry-editor__advanced-inline">
+          <summary>Style and usage labels</summary>
+          <div className="vocabulary-entry-editor__advanced-body">
+            <fieldset className="vocabulary-entry-editor__choices">
+              <legend>Where this word is commonly used</legend>
+              <div>
+                {REGISTERS.map((register) => (
+                  <label key={register}>
+                    <input
+                      checked={draft.registers.includes(register)}
+                      onChange={() => toggleRegister(register)}
+                      type="checkbox"
+                    />
+                    <span>{formatPlainLabel(register)}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
           </div>
-        </fieldset>
+        </details>
       </section>
 
       <section className="vocabulary-entry-editor__section">
         <header>
           <span>2</span>
           <div>
-            <h3>Meanings and Turkish translations</h3>
-            <p>Separate multiple Turkish translations with commas.</p>
+            <h3>Meaning</h3>
+            <p>Edit the English meaning and Turkish equivalent.</p>
           </div>
         </header>
         <div className="vocabulary-entry-editor__stack">
           {draft.meanings.map((meaning, index) => (
             <article className="vocabulary-entry-editor__card" key={meaning.id}>
-              <strong>Meaning {index + 1}</strong>
+              <strong>{draft.meanings.length > 1 ? `Meaning ${index + 1}` : "Main meaning"}</strong>
               <div className="vocabulary-entry-editor__grid vocabulary-entry-editor__grid--two">
                 <SelectField
-                  label="Part of speech"
+                  label="Word type"
                   onChange={(event) =>
                     updateMeaning(index, {
                       partOfSpeech: event.currentTarget.value as PartOfSpeech
@@ -150,7 +156,7 @@ export function VocabularyEntryEditorIdentitySections({
                 </SelectField>
                 <TextField
                   error={firstIssue(issues, `meanings[${index}].translationsTr`)}
-                  label="Turkish translations"
+                  label="Turkish meaning"
                   onChange={(event) =>
                     updateMeaning(index, {
                       translationsTr: [event.currentTarget.value]
@@ -161,7 +167,7 @@ export function VocabularyEntryEditorIdentitySections({
               </div>
               <TextAreaField
                 error={firstIssue(issues, `meanings[${index}].definitionEn`)}
-                label="English definition"
+                label="English meaning"
                 onChange={(event) =>
                   updateMeaning(index, {
                     definitionEn: event.currentTarget.value
@@ -170,28 +176,34 @@ export function VocabularyEntryEditorIdentitySections({
                 rows={3}
                 value={meaning.definitionEn}
               />
-              <div className="vocabulary-entry-editor__grid vocabulary-entry-editor__grid--two">
-                <TextAreaField
-                  label="Turkish usage note"
-                  onChange={(event) =>
-                    updateMeaning(index, {
-                      usageNoteTr: event.currentTarget.value
-                    })
-                  }
-                  rows={3}
-                  value={meaning.usageNoteTr ?? ""}
-                />
-                <TextAreaField
-                  label="English usage note"
-                  onChange={(event) =>
-                    updateMeaning(index, {
-                      usageNoteEn: event.currentTarget.value
-                    })
-                  }
-                  rows={3}
-                  value={meaning.usageNoteEn ?? ""}
-                />
-              </div>
+
+              <details className="vocabulary-entry-editor__advanced-inline">
+                <summary>Extra notes for this meaning</summary>
+                <div className="vocabulary-entry-editor__advanced-body">
+                  <div className="vocabulary-entry-editor__grid vocabulary-entry-editor__grid--two">
+                    <TextAreaField
+                      label="Turkish note"
+                      onChange={(event) =>
+                        updateMeaning(index, {
+                          usageNoteTr: event.currentTarget.value
+                        })
+                      }
+                      rows={3}
+                      value={meaning.usageNoteTr ?? ""}
+                    />
+                    <TextAreaField
+                      label="English note"
+                      onChange={(event) =>
+                        updateMeaning(index, {
+                          usageNoteEn: event.currentTarget.value
+                        })
+                      }
+                      rows={3}
+                      value={meaning.usageNoteEn ?? ""}
+                    />
+                  </div>
+                </div>
+              </details>
             </article>
           ))}
         </div>
