@@ -22,6 +22,17 @@ interface VocabularyEntryEditorDialogProps {
   readonly onSave: (input: SaveVocabularyEntryInput) => Promise<StoredVocabularyEntry>;
 }
 
+function readableWordType(value: string | undefined): string {
+  if (value === undefined || value.length === 0) {
+    return "Other";
+  }
+
+  return value
+    .split("-")
+    .map((part) => part.charAt(0).toLocaleUpperCase("en-US") + part.slice(1))
+    .join(" ");
+}
+
 export function VocabularyEntryEditorDialog({
   entry,
   layer,
@@ -35,6 +46,8 @@ export function VocabularyEntryEditorDialog({
   const [saveError, setSaveError] = useState<string | undefined>();
 
   const dirty = useMemo(() => JSON.stringify(draft) !== JSON.stringify(entry), [draft, entry]);
+  const displayWord = draft.word.trim().length > 0 ? draft.word : entry.word;
+  const displayWordType = readableWordType(draft.meanings[0]?.partOfSpeech);
 
   function requestClose() {
     if (saving) {
@@ -108,7 +121,7 @@ export function VocabularyEntryEditorDialog({
   return (
     <Modal
       closeLabel="Close word editor"
-      description={`Update the meaning, level, and examples for “${entry.word}”.`}
+      description="Edit the learning essentials first. Pronunciation, forms, and less-used details stay tucked away until you need them."
       footer={
         <>
           <Button disabled={saving} onClick={requestClose} variant="ghost">
@@ -128,9 +141,22 @@ export function VocabularyEntryEditorDialog({
       onClose={requestClose}
       open={open}
       size="large"
-      title="Edit word"
+      title={`Edit “${entry.word}”`}
     >
       <div className="vocabulary-entry-editor vocabulary-entry-editor--package-four">
+        <section className="vocabulary-entry-editor__hero" aria-label="Word being edited">
+          <div>
+            <span>WORD ENTRY</span>
+            <strong>{displayWord}</strong>
+            <p>Keep the parts you actually study accurate and easy to scan.</p>
+          </div>
+          <div className="vocabulary-entry-editor__hero-meta" aria-label="Current word summary">
+            <span>{draft.cefr}</span>
+            <span>{displayWordType}</span>
+            <span>{draft.meanings.length} {draft.meanings.length === 1 ? "meaning" : "meanings"}</span>
+          </div>
+        </section>
+
         {saveError === undefined ? null : (
           <section className="vocabulary-entry-editor__error" role="alert">
             <strong>Check the highlighted fields</strong>
@@ -154,12 +180,11 @@ export function VocabularyEntryEditorDialog({
 
         <VocabularyEntryEditorContentSections draft={draft} issues={issues} setDraft={setDraft} />
 
-        <details className="vocabulary-entry-editor__advanced">
-          <summary>Advanced options</summary>
+        <details className="vocabulary-entry-editor__advanced vocabulary-entry-editor__advanced--language">
+          <summary>Advanced language details</summary>
           <div className="vocabulary-entry-editor__advanced-body">
             <p>
-              Pronunciation, word forms, and other study details live here so the everyday edit
-              flow stays simple.
+              Pronunciation and word forms live here so the everyday edit flow stays focused.
             </p>
             <VocabularyEntryEditorLanguageSections draft={draft} issues={issues} setDraft={setDraft} />
           </div>
