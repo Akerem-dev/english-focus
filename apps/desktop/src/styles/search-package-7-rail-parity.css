@@ -1,0 +1,65 @@
+/*
+ * Package 7 — right rail parity.
+ *
+ * The Search home and vocabulary detail view used two different right-column
+ * geometries. Keep the detail rail as the canonical layout so activity lists
+ * and the closed Wordie card do not resize or recompose when the center view
+ * changes state.
+ */
+
+/* Detail uses a 382px context rail. Search home now uses the exact same width. */
+#root .application-frame--search-cleanroom .wvsr-root {
+  grid-template-columns: minmax(0, 1fr) 382px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail {
+  width: 382px !important;
+  min-width: 382px !important;
+  max-width: 382px !important;
+  height: 100% !important;
+  padding: 42px 31px 28px !important;
+}
+
+/* Keep the compact Wordie surface visually identical to the detail state. */
+#root .application-frame--search-cleanroom .wvsr-root .wvsr-wordie-card {
+  min-height: 222px !important;
+  overflow: hidden !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-root .wvsr-wordie-card__copy {
+  width: 47% !important;
+  max-width: 148px !important;
+}
+
+/* The source cutout contains transparent padding. Reuse the detail card's
+   optical crop/scale instead of the oversized home-only treatment. */
+#root .application-frame--search-cleanroom .wvsr-root .wvsr-wordie-card__mascot {
+  top: 24px !important;
+  right: -12px !important;
+  bottom: auto !important;
+  width: 168px !important;
+  height: 176px !important;
+  object-fit: contain !important;
+  transform: scale(1.62) !important;
+  transform-origin: right top !important;
+}
+
+/* Explicitly keep both rails on the same card/button rhythm. */
+#root .application-frame--search-cleanroom
+  :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
+  .wvsr-wordie-card > button {
+  right: 18px !important;
+  bottom: 18px !important;
+  left: 18px !important;
+  height: 50px !important;
+}
+
+@media (max-width: 1120px) {
+  #root .application-frame--search-cleanroom .wvsr-root {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail {
+    display: none !important;
+  }
+}
