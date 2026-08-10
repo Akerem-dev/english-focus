@@ -1,0 +1,524 @@
+/*
+ * Package 6 — final Word Valley polish.
+ *
+ * Covers the last high-visibility inconsistencies in Search / Detail:
+ * - unmistakable Save vs Saved state;
+ * - larger closed Wordie presence;
+ * - a calmer, editorial word editor;
+ * - a replacement-data flow that feels like part of Word Valley instead of a raw JSON tool.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Detail action state                                                        */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--search-cleanroom .wvsr-detail-save {
+  position: relative !important;
+  border: 1px solid #082f29 !important;
+  background: #0a3a32 !important;
+  color: #fbf8f1 !important;
+  box-shadow:
+    0 6px 16px rgba(8, 47, 41, .10),
+    inset 0 1px rgba(255, 255, 255, .08) !important;
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-save:hover {
+  background: #0e473d !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"] {
+  border-color: #839573 !important;
+  background: linear-gradient(180deg, #eef1e5, #e5eadc) !important;
+  color: #173a32 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(82, 106, 67, .08),
+    0 3px 9px rgba(16, 45, 39, .05) !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"]:hover {
+  border-color: #6f8462 !important;
+  background: #dfe6d7 !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"] svg {
+  display: none !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"]::before {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  place-items: center;
+  border: 1px solid #718462;
+  border-radius: 50%;
+  background: #f8faef;
+  color: #526a43;
+  content: "✓";
+  font: 700 12px/1 "Inter", system-ui, sans-serif;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Closed Wordie presence                                                     */
+/* -------------------------------------------------------------------------- */
+
+/* The cutout PNG has generous transparent padding; scale optically, not by box size. */
+#root .application-frame--search-cleanroom .wvsr-root .wvsr-wordie-card {
+  min-height: 258px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-root .wvsr-wordie-card__copy {
+  width: 47% !important;
+  max-width: 146px !important;
+}
+
+#root .application-frame--search-cleanroom .wvsr-root .wvsr-wordie-card__mascot {
+  right: -18px !important;
+  bottom: 64px !important;
+  width: 202px !important;
+  height: 210px !important;
+  transform: translate3d(0, 0, 0) scale(2.15) !important;
+  transform-origin: right bottom !important;
+}
+
+/* Detail-context card uses the same visual weight when the assistant itself is closed. */
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__copy {
+  width: 47% !important;
+  max-width: 148px !important;
+}
+
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__mascot {
+  top: 24px !important;
+  right: -12px !important;
+  width: 168px !important;
+  height: 176px !important;
+  transform: scale(1.62) !important;
+  transform-origin: right top !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Word editor — editorial workspace                                          */
+/* -------------------------------------------------------------------------- */
+
+.modal:has(.vocabulary-entry-editor--package-four) {
+  width: min(1080px, calc(100vw - 52px)) !important;
+  max-width: 1080px !important;
+  max-height: calc(100vh - 44px) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 30px 82px rgba(8, 47, 41, .28) !important;
+}
+
+.modal:has(.vocabulary-entry-editor--package-four) .modal__header {
+  padding: 25px 30px 21px !important;
+  background:
+    radial-gradient(circle at 88% -10%, rgba(198, 154, 58, .14), transparent 34%),
+    linear-gradient(180deg, #fffdf8, #f8f3e9) !important;
+}
+
+.modal:has(.vocabulary-entry-editor--package-four) .modal__header h2 {
+  font-size: 33px !important;
+  line-height: 37px !important;
+}
+
+.modal:has(.vocabulary-entry-editor--package-four) .modal__header p {
+  max-width: 700px !important;
+  font-size: 13px !important;
+}
+
+.modal:has(.vocabulary-entry-editor--package-four) .modal__body {
+  padding: 20px 26px 26px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, .60), transparent 160px),
+    #f3eee4 !important;
+}
+
+.modal:has(.vocabulary-entry-editor--package-four) .modal__footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  padding: 14px 26px !important;
+  background: rgba(251, 248, 241, .96) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.vocabulary-entry-editor--package-four {
+  grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr) !important;
+  align-items: start !important;
+  gap: 16px !important;
+}
+
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__hero,
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__error,
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__section--identity,
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__advanced,
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__shortcut {
+  grid-column: 1 / -1 !important;
+}
+
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__section--meanings {
+  grid-column: 1 !important;
+}
+
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__section--examples {
+  grid-column: 2 !important;
+}
+
+.vocabulary-entry-editor__hero {
+  display: flex !important;
+  min-height: 106px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 24px !important;
+  padding: 19px 22px !important;
+  border: 1px solid #d7ccb8 !important;
+  border-radius: 15px !important;
+  background:
+    radial-gradient(circle at 9% 12%, rgba(198, 154, 58, .10), transparent 34%),
+    #fffdf8 !important;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .82) !important;
+}
+
+.vocabulary-entry-editor__hero > div:first-child {
+  display: grid !important;
+  gap: 3px !important;
+}
+
+.vocabulary-entry-editor__hero > div:first-child > span {
+  color: #8b682e !important;
+  font: 700 10px/13px "Inter", system-ui, sans-serif !important;
+  letter-spacing: .12em !important;
+}
+
+.vocabulary-entry-editor__hero > div:first-child > strong {
+  color: #102d27 !important;
+  font: 600 35px/39px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.vocabulary-entry-editor__hero > div:first-child > p {
+  margin: 1px 0 0 !important;
+  color: #65706b !important;
+  font-size: 12px !important;
+}
+
+.vocabulary-entry-editor__hero-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+.vocabulary-entry-editor__hero-meta span {
+  display: inline-flex !important;
+  min-height: 30px !important;
+  align-items: center !important;
+  padding: 0 11px !important;
+  border: 1px solid #d7ccb8 !important;
+  border-radius: 999px !important;
+  background: #f6f0e5 !important;
+  color: #40564f !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__section {
+  gap: 15px !important;
+  padding: 18px !important;
+  border: 1px solid #d8cebd !important;
+  border-radius: 14px !important;
+  background: rgba(255, 253, 248, .90) !important;
+  box-shadow: 0 5px 14px rgba(16, 45, 39, .035) !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__section--identity {
+  padding-bottom: 16px !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__section > header {
+  align-items: center !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__section > header > span {
+  width: 28px !important;
+  height: 28px !important;
+  border-color: rgba(198, 154, 58, .30) !important;
+  background: #f5eddc !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__section > header h3 {
+  font-size: 21px !important;
+  line-height: 24px !important;
+}
+
+.vocabulary-entry-editor--package-four .field {
+  gap: 6px !important;
+}
+
+.vocabulary-entry-editor--package-four .field__label {
+  color: #344b44 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.vocabulary-entry-editor--package-four input:not([type="checkbox"]):not([type="radio"]),
+.vocabulary-entry-editor--package-four select {
+  min-height: 43px !important;
+  background: #fffdf8 !important;
+}
+
+.vocabulary-entry-editor--package-four textarea {
+  min-height: 88px !important;
+  line-height: 1.45 !important;
+  background: #fffdf8 !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__card {
+  gap: 12px !important;
+  padding: 15px !important;
+  border-color: #ded3c1 !important;
+  border-radius: 12px !important;
+  background: #f8f3e9 !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__card > strong {
+  color: #173a32 !important;
+  font: 700 12px/16px "Inter", system-ui, sans-serif !important;
+  letter-spacing: .02em !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__advanced,
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__advanced-inline {
+  overflow: hidden !important;
+  border-color: #d8cebd !important;
+  background: #f9f4ea !important;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__advanced > summary,
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__advanced-inline > summary {
+  min-height: 46px !important;
+  color: #40564f !important;
+  font-size: 12px !important;
+}
+
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__advanced {
+  padding: 0 18px !important;
+  border-radius: 13px !important;
+}
+
+.vocabulary-entry-editor--package-four > .vocabulary-entry-editor__shortcut {
+  margin-top: -2px !important;
+  padding-right: 4px !important;
+  color: #86877f !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Replace word data — guided local review                                    */
+/* -------------------------------------------------------------------------- */
+
+.modal:has(.json-paste-dialog__metadata) {
+  width: min(1020px, calc(100vw - 56px)) !important;
+  max-width: 1020px !important;
+  max-height: calc(100vh - 48px) !important;
+  border-radius: 20px !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__header {
+  padding: 25px 28px 20px !important;
+  background:
+    radial-gradient(circle at 90% -4%, rgba(198, 154, 58, .12), transparent 32%),
+    linear-gradient(180deg, #fffdf8, #f8f3e9) !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__header h2 {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__header h2::after {
+  display: block !important;
+  color: #102d27 !important;
+  content: "Replace word data" !important;
+  font: 600 32px/36px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__header p {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__header p::after {
+  display: block !important;
+  max-width: 660px !important;
+  margin-top: 6px !important;
+  color: #59655f !important;
+  content: "Paste the replacement data below. Word Valley checks it locally, then lets you review everything before any existing word data changes." !important;
+  font: 400 13px/19px "Inter", system-ui, sans-serif !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__body {
+  display: grid !important;
+  grid-template-columns: 270px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  gap: 14px 20px !important;
+  padding: 20px 24px 24px !important;
+  background: #f3eee4 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__metadata {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 16px !important;
+  border: 1px solid #d8cebd !important;
+  border-radius: 13px !important;
+  background: #fffdf8 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__metadata .status-badge,
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__metadata [class*="status-badge"] {
+  width: fit-content !important;
+  min-height: 29px !important;
+  padding-inline: 10px !important;
+  border-radius: 999px !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__privacy {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  margin: 0 !important;
+  padding: 15px 15px 15px 17px !important;
+  border: 1px solid #d8cebd !important;
+  border-left: 3px solid #526a43 !important;
+  border-radius: 12px !important;
+  background: #eef1e5 !important;
+  color: #45554f !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+  display: block !important;
+  align-self: stretch !important;
+  margin: 0 !important;
+  padding: 17px !important;
+  border: 1px solid #d8cebd !important;
+  border-radius: 13px !important;
+  background: #f8f3e9 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar::before {
+  display: block !important;
+  margin-bottom: 9px !important;
+  color: #8b682e !important;
+  content: "REPLACEMENT FLOW" !important;
+  font: 700 10px/13px "Inter", system-ui, sans-serif !important;
+  letter-spacing: .11em !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar::after {
+  display: block !important;
+  margin-top: 12px !important;
+  color: #173a32 !important;
+  content: "Paste  →  Check locally  →  Review  →  Confirm" !important;
+  font: 600 13px/20px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar p {
+  margin: 0 !important;
+  color: #66706b !important;
+  font-size: 11px !important;
+  line-height: 1.55 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar .button {
+  display: none !important;
+}
+
+.modal:has(.json-paste-dialog__metadata)
+  .modal__body
+  > .field:has(.json-paste-dialog__text) {
+  grid-column: 2 !important;
+  grid-row: 1 / span 3 !important;
+  display: grid !important;
+  min-width: 0 !important;
+  align-content: start !important;
+  gap: 9px !important;
+  padding: 17px !important;
+  border: 1px solid #d8cebd !important;
+  border-radius: 14px !important;
+  background: #fffdf8 !important;
+  box-shadow: 0 6px 18px rgba(16, 45, 39, .04) !important;
+}
+
+.modal:has(.json-paste-dialog__metadata)
+  .modal__body
+  > .field:has(.json-paste-dialog__text)
+  .field__label {
+  color: #173a32 !important;
+  font: 700 12px/16px "Inter", system-ui, sans-serif !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) textarea.json-paste-dialog__text {
+  min-height: 390px !important;
+  height: 390px !important;
+  padding: 16px !important;
+  border-radius: 10px !important;
+  background:
+    linear-gradient(180deg, rgba(247, 242, 232, .34), transparent 70px),
+    #fdfaf4 !important;
+  font-size: 12px !important;
+  line-height: 1.55 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .json-paste-result,
+.modal:has(.json-paste-dialog__metadata) .validation-issue-list {
+  grid-column: 1 / -1 !important;
+}
+
+.modal:has(.json-paste-dialog__metadata) .modal__footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  padding: 14px 24px !important;
+  background: rgba(251, 248, 241, .96) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+@media (max-width: 1120px) {
+  .vocabulary-entry-editor--package-four {
+    grid-template-columns: 1fr !important;
+  }
+
+  .vocabulary-entry-editor--package-four > .vocabulary-entry-editor__section--meanings,
+  .vocabulary-entry-editor--package-four > .vocabulary-entry-editor__section--examples {
+    grid-column: 1 !important;
+  }
+
+  .modal:has(.json-paste-dialog__metadata) .modal__body {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+  }
+
+  .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__metadata,
+  .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__privacy,
+  .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar,
+  .modal:has(.json-paste-dialog__metadata)
+    .modal__body
+    > .field:has(.json-paste-dialog__text) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
