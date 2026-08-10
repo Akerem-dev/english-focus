@@ -41,7 +41,7 @@ export function VocabularyEntryEditorDialog({
       return;
     }
 
-    if (dirty && !window.confirm("Discard the unsaved vocabulary changes in this editor?")) {
+    if (dirty && !window.confirm("Discard your unsaved changes?")) {
       return;
     }
 
@@ -72,7 +72,7 @@ export function VocabularyEntryEditorDialog({
 
     if (prepared.kind === "failure") {
       setIssues(prepared.issues);
-      setSaveError(prepared.message);
+      setSaveError("A few fields need your attention before this word can be saved.");
       return;
     }
 
@@ -81,10 +81,8 @@ export function VocabularyEntryEditorDialog({
       setSaveError(undefined);
       await onSave(prepared.input);
       onClose();
-    } catch (cause) {
-      setSaveError(
-        cause instanceof Error ? cause.message : "The vocabulary entry could not be saved locally."
-      );
+    } catch {
+      setSaveError("We couldn’t save your changes. Please try again.");
     }
   }
 
@@ -109,8 +107,8 @@ export function VocabularyEntryEditorDialog({
 
   return (
     <Modal
-      closeLabel="Close vocabulary editor"
-      description={`Edit the essential learning content for “${entry.word}” without replacing JSON manually.`}
+      closeLabel="Close word editor"
+      description={`Update the meaning, level, and examples for “${entry.word}”.`}
       footer={
         <>
           <Button disabled={saving} onClick={requestClose} variant="ghost">
@@ -123,27 +121,27 @@ export function VocabularyEntryEditorDialog({
             onClick={() => void save()}
             variant="primary"
           >
-            Save entry
+            Save changes
           </Button>
         </>
       }
       onClose={requestClose}
       open={open}
       size="large"
-      title="Edit vocabulary entry"
+      title="Edit word"
     >
-      <div className="vocabulary-entry-editor">
+      <div className="vocabulary-entry-editor vocabulary-entry-editor--package-four">
         {saveError === undefined ? null : (
           <section className="vocabulary-entry-editor__error" role="alert">
-            <strong>Entry needs attention</strong>
+            <strong>Check the highlighted fields</strong>
             <p>{saveError}</p>
-            <ul>
-              {issues.slice(0, 8).map((issue) => (
-                <li key={`${issue.path}-${issue.message}`}>
-                  <code>{issue.path || "entry"}</code>: {issue.message}
-                </li>
-              ))}
-            </ul>
+            {issues.length === 0 ? null : (
+              <ul>
+                {issues.slice(0, 6).map((issue) => (
+                  <li key={`${issue.path}-${issue.message}`}>{issue.message}</li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
 
@@ -153,11 +151,22 @@ export function VocabularyEntryEditorDialog({
           original={entry}
           setDraft={setDraft}
         />
-        <VocabularyEntryEditorLanguageSections draft={draft} issues={issues} setDraft={setDraft} />
+
         <VocabularyEntryEditorContentSections draft={draft} issues={issues} setDraft={setDraft} />
 
+        <details className="vocabulary-entry-editor__advanced">
+          <summary>Advanced options</summary>
+          <div className="vocabulary-entry-editor__advanced-body">
+            <p>
+              Pronunciation, word forms, and other study details live here so the everyday edit
+              flow stays simple.
+            </p>
+            <VocabularyEntryEditorLanguageSections draft={draft} issues={issues} setDraft={setDraft} />
+          </div>
+        </details>
+
         <p className="vocabulary-entry-editor__shortcut">
-          Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> to validate and save.
+          Tip: <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>S</kbd> saves your changes.
         </p>
       </div>
     </Modal>
