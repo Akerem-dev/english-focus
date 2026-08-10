@@ -1,21 +1,16 @@
 /*
  * Package 8 — final Search / Detail consistency fixes.
  *
- * Word Valley Search renders on a fixed virtual desktop stage and scales that stage
- * to the real desktop window. Responsive rules inside Search must therefore not
- * reflow the virtual stage when the host window becomes narrow. This package also
- * gives Search home and Detail one canonical compact Wordie card and corrects the
- * misleading Valley/Favorites wording on the detail action.
+ * Word Valley Search is a fluid desktop shell with explicit compact-window rules.
+ * Keep those sidebar rules intact, but do not let older breakpoints remove the
+ * canonical 382px context rail. This package also gives Search home and Detail one
+ * compact Wordie card and corrects the misleading Valley/Favorites wording on the
+ * detail action.
  */
 
 /* -------------------------------------------------------------------------- */
-/* Fixed-stage geometry: never collapse the virtual desktop layout.            */
+/* Context rail geometry: keep it present without overriding sidebar breakpoints. */
 /* -------------------------------------------------------------------------- */
-
-#root .application-frame--search-cleanroom .wvsr-root,
-#root .application-frame--search-cleanroom .wvsr-detail-root {
-  left: 367px !important;
-}
 
 #root .application-frame--search-cleanroom .wvsr-root {
   display: grid !important;
@@ -61,19 +56,6 @@
   right: 10px !important;
 }
 
-/* Undo the narrow-window card reduction from the old responsive layer. */
-#root .application-frame--search-cleanroom .wvsr-detail-main > .wvsr-detail-card {
-  width: min(955px, calc(100% - 64px)) !important;
-  max-width: 955px !important;
-  margin: 42px auto 46px !important;
-}
-
-#root .application-frame--search-cleanroom
-  .wvsr-detail-root--context-closed .wvsr-detail-main > .wvsr-detail-card {
-  width: min(1120px, calc(100% - 96px)) !important;
-  max-width: 1120px !important;
-}
-
 /* -------------------------------------------------------------------------- */
 /* One compact Wordie card, independent of the center view.                    */
 /* -------------------------------------------------------------------------- */
@@ -82,11 +64,13 @@
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card {
   position: relative !important;
+  display: block !important;
   width: 100% !important;
   height: 222px !important;
   min-height: 222px !important;
   max-height: 222px !important;
   margin-top: auto !important;
+  margin-bottom: 0 !important;
   padding: 20px 18px 18px !important;
   overflow: hidden !important;
 }
@@ -94,7 +78,10 @@
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card header {
+  display: flex !important;
   min-height: 27px !important;
+  align-items: center !important;
+  gap: 9px !important;
 }
 
 #root .application-frame--search-cleanroom
@@ -103,7 +90,7 @@
   margin: 4px 0 0 !important;
 }
 
-/* Keep copy length from changing the card's geometry between Search and Detail. */
+/* Use one copy block so different center states cannot change wrapping/geometry. */
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__copy {
