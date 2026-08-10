@@ -6,7 +6,6 @@ import type {
 } from "@platform/domain";
 
 import { Button, Modal, TextAreaField, TextField } from "../../../components";
-import { AppIcon } from "../../../design-system";
 import { createVocabularyUserMetadata, parseVocabularyTags } from "../application";
 
 interface VocabularyMetadataDialogProps {
@@ -47,7 +46,6 @@ export function VocabularyMetadataDialog({
     () => metadata ?? createVocabularyUserMetadata(entry.normalizedWord, new Date().toISOString()),
     [entry.normalizedWord, metadata]
   );
-  const [favorite, setFavorite] = useState(initialMetadata.favorite);
   const [tagsInput, setTagsInput] = useState(
     initialMetadata.tags.map((tag) => tag.name).join(", ")
   );
@@ -62,7 +60,7 @@ export function VocabularyMetadataDialog({
       setError(undefined);
       await onSave({
         normalizedWord: entry.normalizedWord,
-        favorite,
+        favorite: initialMetadata.favorite,
         tags,
         note,
         learningStatus: initialMetadata.learningStatus,
@@ -104,7 +102,7 @@ export function VocabularyMetadataDialog({
 
   return (
     <Modal
-      description={`Personal notes, tags, and favorites for “${entry.word}” are stored separately from vocabulary content.`}
+      description={`Personal notes and tags for “${entry.word}” are stored separately from vocabulary content.`}
       footer={
         <>
           <Button disabled={saving} onClick={onClose} variant="ghost">
@@ -112,7 +110,6 @@ export function VocabularyMetadataDialog({
           </Button>
           <Button
             isLoading={saving}
-            leadingIcon={<AppIcon name="check" size={16} />}
             onClick={() => {
               void save();
             }}
@@ -134,18 +131,6 @@ export function VocabularyMetadataDialog({
             <h3>{entry.word}</h3>
             <p>{entry.meanings[0]?.translationsTr.slice(0, 3).join(", ")}</p>
           </div>
-          <button
-            aria-pressed={favorite}
-            className="vocabulary-metadata-dialog__favorite"
-            data-active={favorite || undefined}
-            onClick={() => {
-              setFavorite((current) => !current);
-            }}
-            type="button"
-          >
-            <AppIcon name="star" size={20} />
-            <span>{favorite ? "Favorited" : "Add to favorites"}</span>
-          </button>
         </section>
 
         {error === undefined ? null : (
