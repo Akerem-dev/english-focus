@@ -175,9 +175,9 @@
   transform: translate(0px, -29px) scale(2) !important;
 }
 
-/* WORD DETAIL BAYKUŞ */
+/* WORD DETAIL BAYKUŞ — mirror Search Home exactly without changing Home. */
 #root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
-  width: 100px !important;
-  height: 108px !important;
-  transform: translate(2px, -2px) scale(1) !important;
+  width: 150px !important;
+  height: 156px !important;
+  transform: translate(0px, -29px) scale(2) !important;
 }
