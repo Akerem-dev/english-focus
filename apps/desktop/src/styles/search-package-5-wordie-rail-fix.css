@@ -1,0 +1,91 @@
+/*
+ * Package 5 — Wordie response rail stability.
+ *
+ * Goals:
+ * - keep the response body on the same horizontal rhythm as the Wordie header;
+ * - keep metadata chips aligned with the response copy, not the card edge;
+ * - stop the composer from moving when a response replaces the welcome state;
+ * - remove the low-value contextual action row after a response so the input remains
+ *   the single, stable continuation control.
+ */
+
+/* The Package 2 body intentionally removed horizontal padding. Restore one shared
+   inset here so Meaning / Natural example no longer feel pulled toward the rail edge. */
+#root .application-frame--search-cleanroom .wv84-wordie-answer__body {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin-top: 12px !important;
+  padding: 0 14px 14px !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__section {
+  min-width: 0 !important;
+  padding: 15px 0 !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-wordie-answer__section > div {
+  min-width: 0 !important;
+}
+
+/* The text column starts after the 18px leaf + 10px gap. Line the chips up with it. */
+#root .application-frame--search-cleanroom .wv84-wordie-answer__meta {
+  box-sizing: border-box !important;
+  padding: 10px 0 0 28px !important;
+}
+
+/* Once a question has been asked, the composer is the continuation control.
+   Keeping a second auto-height action row here made the bottom edge feel unstable. */
+#root .application-frame--search-cleanroom .wv84-quick-actions--contextual {
+  display: none !important;
+}
+
+/* Response state: header + scrolling conversation + fixed composer row. */
+#root .application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
+  grid-template-rows: 92px minmax(0, 1fr) 63px !important;
+}
+
+/* Welcome state still owns its two discovery cards, so it gets the extra auto row.
+   :has() is already used by the Word Valley shell and is supported by the Tauri WebView. */
+#root .application-frame--search-cleanroom
+  .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
+  grid-template-rows: 92px minmax(0, 1fr) auto 63px !important;
+}
+
+/* Make the dock explicit: content scrolls; the composer never participates in that scroll. */
+#root .application-frame--search-cleanroom .wv84-assistant-panel__conversation {
+  min-height: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+#root .application-frame--search-cleanroom .wv84-assistant-composer {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  align-self: center !important;
+  justify-self: center !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+/* Prevent focus / busy / response states from introducing a vertical nudge. */
+#root .application-frame--search-cleanroom .wv84-assistant-composer,
+#root .application-frame--search-cleanroom .wv84-assistant-composer:focus-within,
+#root .application-frame--search-cleanroom .wv84-assistant-composer[aria-busy="true"] {
+  translate: none !important;
+}
+
+/* Keep narrow desktop windows on exactly the same response rhythm. */
+@media (max-width: 1360px) {
+  #root .application-frame--search-cleanroom .wv84-wordie-answer__body {
+    padding-right: 12px !important;
+    padding-left: 12px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wv84-wordie-answer__meta {
+    padding-left: 28px !important;
+  }
+}
