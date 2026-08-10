@@ -31,7 +31,7 @@ export function VocabularyEntryEditorContentSections({
 
   return (
     <>
-      <section className="vocabulary-entry-editor__section">
+      <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--examples">
         <header>
           <span>3</span>
           <div>
@@ -70,10 +70,10 @@ export function VocabularyEntryEditorContentSections({
         </div>
       </section>
 
-      <details className="vocabulary-entry-editor__advanced">
+      <details className="vocabulary-entry-editor__advanced vocabulary-entry-editor__advanced--study">
         <summary>Extra study details</summary>
         <div className="vocabulary-entry-editor__advanced-body">
-          <section className="vocabulary-entry-editor__section">
+          <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--usage">
             <header>
               <span>4</span>
               <div>
@@ -85,37 +85,39 @@ export function VocabularyEntryEditorContentSections({
               <TextAreaField
                 error={firstIssue(issues, "grammar.summaryTr")}
                 label="Turkish note"
-                onChange={(event) =>
+                onChange={(event) => {
+                  const value = event.currentTarget.value;
                   setDraft((current) => ({
                     ...current,
                     grammar: {
                       ...current.grammar,
-                      summaryTr: event.currentTarget.value
+                      summaryTr: value
                     }
-                  }))
-                }
+                  }));
+                }}
                 rows={4}
                 value={draft.grammar.summaryTr}
               />
               <TextAreaField
                 error={firstIssue(issues, "grammar.summaryEn")}
                 label="English note"
-                onChange={(event) =>
+                onChange={(event) => {
+                  const value = event.currentTarget.value;
                   setDraft((current) => ({
                     ...current,
                     grammar: {
                       ...current.grammar,
-                      summaryEn: event.currentTarget.value
+                      summaryEn: value
                     }
-                  }))
-                }
+                  }));
+                }}
                 rows={4}
                 value={draft.grammar.summaryEn}
               />
             </div>
           </section>
 
-          <section className="vocabulary-entry-editor__section">
+          <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--origin">
             <header>
               <span>5</span>
               <div>
@@ -126,18 +128,19 @@ export function VocabularyEntryEditorContentSections({
             <label className="vocabulary-entry-editor__toggle">
               <input
                 checked={draft.etymology !== undefined}
-                onChange={(event) =>
+                onChange={(event) => {
+                  const checked = event.currentTarget.checked;
                   setDraft((current) => ({
                     ...current,
-                    etymology: event.currentTarget.checked
+                    etymology: checked
                       ? (current.etymology ?? {
                           explanationEn: "",
                           explanationTr: "",
                           certainty: "medium"
                         })
                       : undefined
-                  }))
-                }
+                  }));
+                }}
                 type="checkbox"
               />
               <span>Include word origin</span>
@@ -147,7 +150,8 @@ export function VocabularyEntryEditorContentSections({
                 <div className="vocabulary-entry-editor__grid vocabulary-entry-editor__grid--three">
                   <SelectField
                     label="Confidence"
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const value = event.currentTarget.value as EtymologyCertainty;
                       setDraft((current) => ({
                         ...current,
                         etymology:
@@ -155,10 +159,10 @@ export function VocabularyEntryEditorContentSections({
                             ? undefined
                             : {
                                 ...current.etymology,
-                                certainty: event.currentTarget.value as EtymologyCertainty
+                                certainty: value
                               }
-                      }))
-                    }
+                      }));
+                    }}
                     value={draft.etymology.certainty}
                   >
                     {ETYMOLOGY_CERTAINTY_LEVELS.map((certainty) => (
@@ -169,7 +173,8 @@ export function VocabularyEntryEditorContentSections({
                   </SelectField>
                   <TextField
                     label="Origin language"
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
                       setDraft((current) => ({
                         ...current,
                         etymology:
@@ -177,15 +182,16 @@ export function VocabularyEntryEditorContentSections({
                             ? undefined
                             : {
                                 ...current.etymology,
-                                originLanguage: event.currentTarget.value
+                                originLanguage: value
                               }
-                      }))
-                    }
+                      }));
+                    }}
                     value={draft.etymology.originLanguage ?? ""}
                   />
                   <TextField
                     label="Original form"
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
                       setDraft((current) => ({
                         ...current,
                         etymology:
@@ -193,10 +199,10 @@ export function VocabularyEntryEditorContentSections({
                             ? undefined
                             : {
                                 ...current.etymology,
-                                originForm: event.currentTarget.value
+                                originForm: value
                               }
-                      }))
-                    }
+                      }));
+                    }}
                     value={draft.etymology.originForm ?? ""}
                   />
                 </div>
@@ -204,7 +210,8 @@ export function VocabularyEntryEditorContentSections({
                   <TextAreaField
                     error={firstIssue(issues, "etymology.explanationTr")}
                     label="Turkish explanation"
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
                       setDraft((current) => ({
                         ...current,
                         etymology:
@@ -212,17 +219,18 @@ export function VocabularyEntryEditorContentSections({
                             ? undefined
                             : {
                                 ...current.etymology,
-                                explanationTr: event.currentTarget.value
+                                explanationTr: value
                               }
-                      }))
-                    }
+                      }));
+                    }}
                     rows={3}
                     value={draft.etymology.explanationTr}
                   />
                   <TextAreaField
                     error={firstIssue(issues, "etymology.explanationEn")}
                     label="English explanation"
-                    onChange={(event) =>
+                    onChange={(event) => {
+                      const value = event.currentTarget.value;
                       setDraft((current) => ({
                         ...current,
                         etymology:
@@ -230,10 +238,10 @@ export function VocabularyEntryEditorContentSections({
                             ? undefined
                             : {
                                 ...current.etymology,
-                                explanationEn: event.currentTarget.value
+                                explanationEn: value
                               }
-                      }))
-                    }
+                      }));
+                    }}
                     rows={3}
                     value={draft.etymology.explanationEn}
                   />
