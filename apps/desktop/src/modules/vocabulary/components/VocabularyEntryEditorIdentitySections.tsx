@@ -13,6 +13,13 @@ interface IdentitySectionsProps extends VocabularyEditorSectionProps {
   readonly original: VocabularyEntry;
 }
 
+function splitTurkishMeanings(value: string): string[] {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
 export function VocabularyEntryEditorIdentitySections({
   draft,
   issues,
@@ -159,7 +166,7 @@ export function VocabularyEntryEditorIdentitySections({
                   label="Turkish meaning"
                   onChange={(event) =>
                     updateMeaning(index, {
-                      translationsTr: [event.currentTarget.value]
+                      translationsTr: splitTurkishMeanings(event.currentTarget.value)
                     })
                   }
                   value={meaning.translationsTr.join(", ")}
