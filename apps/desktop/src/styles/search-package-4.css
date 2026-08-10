@@ -1,0 +1,127 @@
+/* Package 4: empty-state Wordie parity + calmer end-user editing surfaces. */
+
+/* Home/search state: the mascot asset contains generous transparent padding, so give it
+   more optical scale without changing the detail-state card that is already correct. */
+.wvsr-root .wvsr-wordie-card {
+  min-height: 246px;
+  padding: 24px 18px 16px;
+}
+
+.wvsr-root .wvsr-wordie-card__copy {
+  max-width: 154px;
+}
+
+.wvsr-root .wvsr-wordie-card__mascot {
+  width: 182px !important;
+  height: 190px !important;
+  right: -2px !important;
+  bottom: 58px !important;
+  object-fit: contain;
+  transform: translate3d(0, 0, 0) scale(1.46) !important;
+  transform-origin: right bottom !important;
+}
+
+/* Keep the CTA visually anchored even with the larger mascot. */
+.wvsr-root .wvsr-wordie-card__cta,
+.wvsr-root .wvsr-wordie-card > button {
+  position: relative;
+  z-index: 3;
+}
+
+/* Package 4 editor hierarchy. */
+.vocabulary-entry-editor--package-four {
+  display: grid;
+  gap: 18px;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__section {
+  padding-block: 4px 18px;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__section > header p {
+  max-width: 640px;
+}
+
+.vocabulary-entry-editor__advanced,
+.vocabulary-entry-editor__advanced-inline {
+  border: 1px solid color-mix(in srgb, var(--border-default, #d9cfbd) 86%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-raised, #fbf8f1) 94%, transparent);
+}
+
+.vocabulary-entry-editor__advanced {
+  padding: 0 18px;
+}
+
+.vocabulary-entry-editor__advanced-inline {
+  margin-top: 14px;
+  padding: 0 14px;
+}
+
+.vocabulary-entry-editor__advanced > summary,
+.vocabulary-entry-editor__advanced-inline > summary {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  color: var(--text-primary, #102d27);
+  font-weight: 650;
+  list-style: none;
+}
+
+.vocabulary-entry-editor__advanced > summary::-webkit-details-marker,
+.vocabulary-entry-editor__advanced-inline > summary::-webkit-details-marker {
+  display: none;
+}
+
+.vocabulary-entry-editor__advanced > summary::after,
+.vocabulary-entry-editor__advanced-inline > summary::after {
+  content: "+";
+  color: #8f6a2f;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.vocabulary-entry-editor__advanced[open] > summary::after,
+.vocabulary-entry-editor__advanced-inline[open] > summary::after {
+  content: "−";
+}
+
+.vocabulary-entry-editor__advanced > .vocabulary-entry-editor__advanced-body,
+.vocabulary-entry-editor__advanced-inline > .vocabulary-entry-editor__advanced-body {
+  display: grid;
+  gap: 16px;
+  padding: 2px 0 18px;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__error code {
+  display: none;
+}
+
+.vocabulary-entry-editor--package-four .vocabulary-entry-editor__shortcut {
+  margin: 0;
+  color: var(--text-secondary, #66706b);
+  font-size: 12px;
+  text-align: right;
+}
+
+/* Make dense legacy fields quieter when they are intentionally placed under Advanced. */
+.vocabulary-entry-editor__advanced .vocabulary-entry-editor__section {
+  margin: 0;
+  padding: 12px 0;
+  border-top: 1px solid color-mix(in srgb, var(--border-default, #d9cfbd) 72%, transparent);
+}
+
+.vocabulary-entry-editor__advanced .vocabulary-entry-editor__section:first-child {
+  border-top: 0;
+}
+
+@media (max-width: 1180px) {
+  .wvsr-root .wvsr-wordie-card__mascot {
+    width: 166px !important;
+    height: 176px !important;
+    transform: translate3d(0, 0, 0) scale(1.38) !important;
+  }
+}
