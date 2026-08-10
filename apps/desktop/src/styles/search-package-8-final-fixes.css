@@ -1,145 +1,141 @@
 /*
  * Package 8 — final Search / Detail consistency fixes.
  *
- * Word Valley Search is a fluid desktop shell with explicit compact-window rules.
- * Keep those sidebar rules intact, but do not let older breakpoints remove the
- * canonical 382px context rail. This package also gives Search home and Detail one
- * compact Wordie card and corrects the misleading Valley/Favorites wording on the
- * detail action.
+ * Keep the existing responsive rail behavior intact. The previous version of this
+ * file forced the 382px context rail to stay visible in compact windows and also
+ * scaled the Wordie cutout aggressively. That combination squeezed the center
+ * scene and caused the mascot/copy/button to overlap.
+ *
+ * This layer now does only three things:
+ * 1) gives Search home and Detail the same compact Wordie card geometry;
+ * 2) prevents the closed assistant dock from reserving a wide strip in compact windows;
+ * 3) keeps the detail action wording aligned with its real Favorites behavior.
  */
 
 /* -------------------------------------------------------------------------- */
-/* Context rail geometry: keep it present without overriding sidebar breakpoints. */
-/* -------------------------------------------------------------------------- */
-
-#root .application-frame--search-cleanroom .wvsr-root {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 382px !important;
-}
-
-#root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail {
-  display: flex !important;
-  width: 382px !important;
-  min-width: 382px !important;
-  max-width: 382px !important;
-  height: 100% !important;
-  flex-direction: column !important;
-  padding: 42px 31px 28px !important;
-}
-
-#root .application-frame--search-cleanroom
-  .wvsr-detail-root.wvsr-detail-root--package-one.wvsr-detail-root--context-open {
-  grid-template-columns: minmax(0, 1fr) 382px !important;
-}
-
-#root .application-frame--search-cleanroom .wvsr-detail-context-rail {
-  display: flex !important;
-  width: 382px !important;
-  min-width: 382px !important;
-  max-width: 382px !important;
-  height: 100% !important;
-  flex-direction: column !important;
-  padding: 42px 31px 28px !important;
-}
-
-#root .application-frame--search-cleanroom .wvsr-detail-context-toggle {
-  display: grid !important;
-}
-
-#root .application-frame--search-cleanroom
-  .wvsr-detail-root--context-open .wvsr-detail-context-toggle {
-  right: 370px !important;
-}
-
-#root .application-frame--search-cleanroom
-  .wvsr-detail-root--context-closed .wvsr-detail-context-toggle {
-  right: 10px !important;
-}
-
-/* -------------------------------------------------------------------------- */
-/* One compact Wordie card, independent of the center view.                    */
+/* One compact Wordie card for Search home and Detail.                         */
 /* -------------------------------------------------------------------------- */
 
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card {
   position: relative !important;
-  display: block !important;
+  display: grid !important;
   width: 100% !important;
   height: 222px !important;
   min-height: 222px !important;
   max-height: 222px !important;
+  grid-template-columns: minmax(0, 1fr) 92px !important;
+  grid-template-areas:
+    "header header"
+    "subtitle subtitle"
+    "copy mascot"
+    "button button" !important;
+  grid-template-rows: 30px 18px minmax(0, 1fr) 50px !important;
+  column-gap: 10px !important;
+  row-gap: 0 !important;
   margin-top: auto !important;
   margin-bottom: 0 !important;
-  padding: 20px 18px 18px !important;
+  padding: 18px !important;
   overflow: hidden !important;
 }
 
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
-  .wvsr-wordie-card header {
-  display: flex !important;
-  min-height: 27px !important;
+  .wvsr-wordie-card > header {
+  grid-area: header !important;
+  min-height: 30px !important;
   align-items: center !important;
-  gap: 9px !important;
 }
 
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__subtitle {
-  margin: 4px 0 0 !important;
+  grid-area: subtitle !important;
+  margin: 1px 0 0 !important;
 }
 
-/* Use one copy block so different center states cannot change wrapping/geometry. */
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__copy {
-  position: absolute !important;
-  top: 86px !important;
-  left: 18px !important;
-  width: 145px !important;
-  max-width: 145px !important;
-  margin: 0 !important;
-  color: transparent !important;
-  font-size: 0 !important;
-  line-height: 0 !important;
-}
-
-#root .application-frame--search-cleanroom
-  :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
-  .wvsr-wordie-card__copy::after {
-  display: block !important;
+  position: static !important;
+  inset: auto !important;
+  grid-area: copy !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 11px 0 7px !important;
+  align-self: start !important;
+  overflow: hidden !important;
   color: #102d27 !important;
-  content: "Need help finding the right word or want another natural example?" !important;
-  font: 400 13px/1.45 "Inter", system-ui, sans-serif !important;
+  font: 400 13px/1.42 "Inter", system-ui, sans-serif !important;
 }
 
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__mascot {
-  position: absolute !important;
-  top: 24px !important;
-  right: -12px !important;
-  bottom: auto !important;
-  width: 168px !important;
-  height: 176px !important;
-  max-width: none !important;
-  max-height: none !important;
+  position: static !important;
+  inset: auto !important;
+  grid-area: mascot !important;
+  width: 86px !important;
+  height: 90px !important;
+  max-width: 86px !important;
+  max-height: 90px !important;
+  align-self: center !important;
+  justify-self: center !important;
   object-fit: contain !important;
-  transform: scale(1.62) !important;
-  transform-origin: right top !important;
+  transform: none !important;
+  transform-origin: center !important;
 }
 
 #root .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card > button {
-  position: absolute !important;
-  right: 18px !important;
-  bottom: 18px !important;
-  left: 18px !important;
-  width: auto !important;
+  position: static !important;
+  inset: auto !important;
+  grid-area: button !important;
+  width: 100% !important;
   height: 50px !important;
   margin: 0 !important;
+  align-self: end !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Compact windows: restore the intended responsive layout.                    */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  /* The activity rail is secondary at this width. Let the learning scene use
+     the freed space instead of forcing a 382px column into the window. */
+  #root .application-frame--search-cleanroom .wvsr-root {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail {
+    display: none !important;
+  }
+
+  /* When Wordie is closed, the dock must not reserve a full-width invisible
+     column. Keep only the launcher footprint, so no green strip remains. */
+  #root .application-frame--search-cleanroom
+    .assistant-dock.wv84-assistant:not([data-open]) {
+    top: auto !important;
+    right: 18px !important;
+    bottom: 18px !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    pointer-events: none !important;
+  }
+
+  #root .application-frame--search-cleanroom
+    .assistant-dock.wv84-assistant:not([data-open])
+    .assistant-launcher {
+    pointer-events: auto !important;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
