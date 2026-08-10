@@ -56,7 +56,7 @@ export function VocabularyEntryEditorIdentitySections({
 
   return (
     <>
-      <section className="vocabulary-entry-editor__section">
+      <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--identity">
         <header>
           <span>1</span>
           <div>
@@ -71,23 +71,25 @@ export function VocabularyEntryEditorIdentitySections({
             helperText={`Current word: “${original.word}”.`}
             label="Word"
             maxLength={120}
-            onChange={(event) =>
+            onChange={(event) => {
+              const value = event.currentTarget.value;
               setDraft((current) => ({
                 ...current,
-                word: event.currentTarget.value
-              }))
-            }
+                word: value
+              }));
+            }}
             value={draft.word}
           />
           <SelectField
             error={firstIssue(issues, "cefr")}
             label="Level"
-            onChange={(event) =>
+            onChange={(event) => {
+              const value = event.currentTarget.value as CefrLevel;
               setDraft((current) => ({
                 ...current,
-                cefr: event.currentTarget.value as CefrLevel
-              }))
-            }
+                cefr: value
+              }));
+            }}
             value={draft.cefr}
           >
             {CEFR_LEVELS.map((level) => (
@@ -133,7 +135,7 @@ export function VocabularyEntryEditorIdentitySections({
         </details>
       </section>
 
-      <section className="vocabulary-entry-editor__section">
+      <section className="vocabulary-entry-editor__section vocabulary-entry-editor__section--meanings">
         <header>
           <span>2</span>
           <div>
