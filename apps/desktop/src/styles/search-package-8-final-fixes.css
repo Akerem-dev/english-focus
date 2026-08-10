@@ -1,7 +1,7 @@
 /*
  * Package 8 — final Search / Detail consistency fixes.
  *
- * The Word Valley shell renders on a fixed 1920x1080 stage and scales that stage
+ * Word Valley Search renders on a fixed virtual desktop stage and scales that stage
  * to the real desktop window. Responsive rules inside Search must therefore not
  * reflow the virtual stage when the host window becomes narrow. This package also
  * gives Search home and Detail one canonical compact Wordie card and corrects the
@@ -12,18 +12,17 @@
 /* Fixed-stage geometry: never collapse the virtual desktop layout.            */
 /* -------------------------------------------------------------------------- */
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom .wvsr-root,
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom .wvsr-detail-root {
+#root .application-frame--search-cleanroom .wvsr-root,
+#root .application-frame--search-cleanroom .wvsr-detail-root {
   left: 367px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom .wvsr-root {
+#root .application-frame--search-cleanroom .wvsr-root {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) 382px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
-  .wvsr-root > .wvsr-rail {
+#root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail {
   display: flex !important;
   width: 382px !important;
   min-width: 382px !important;
@@ -33,13 +32,12 @@
   padding: 42px 31px 28px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
+#root .application-frame--search-cleanroom
   .wvsr-detail-root.wvsr-detail-root--package-one.wvsr-detail-root--context-open {
   grid-template-columns: minmax(0, 1fr) 382px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
-  .wvsr-detail-context-rail {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail {
   display: flex !important;
   width: 382px !important;
   min-width: 382px !important;
@@ -49,30 +47,28 @@
   padding: 42px 31px 28px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
-  .wvsr-detail-context-toggle {
+#root .application-frame--search-cleanroom .wvsr-detail-context-toggle {
   display: grid !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
+#root .application-frame--search-cleanroom
   .wvsr-detail-root--context-open .wvsr-detail-context-toggle {
   right: 370px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
+#root .application-frame--search-cleanroom
   .wvsr-detail-root--context-closed .wvsr-detail-context-toggle {
   right: 10px !important;
 }
 
 /* Undo the narrow-window card reduction from the old responsive layer. */
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
-  .wvsr-detail-main > .wvsr-detail-card {
+#root .application-frame--search-cleanroom .wvsr-detail-main > .wvsr-detail-card {
   width: min(955px, calc(100% - 64px)) !important;
   max-width: 955px !important;
   margin: 42px auto 46px !important;
 }
 
-#root .application-frame--word-valley-stage.application-frame--search-cleanroom
+#root .application-frame--search-cleanroom
   .wvsr-detail-root--context-closed .wvsr-detail-main > .wvsr-detail-card {
   width: min(1120px, calc(100% - 96px)) !important;
   max-width: 1120px !important;
