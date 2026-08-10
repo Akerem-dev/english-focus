@@ -16,7 +16,8 @@
 /* One compact Wordie card for Search home and Detail.                         */
 /* -------------------------------------------------------------------------- */
 
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card {
   position: relative !important;
@@ -40,22 +41,26 @@
   overflow: hidden !important;
 }
 
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
-  .wvsr-wordie-card > header {
+  .wvsr-wordie-card
+  > header {
   grid-area: header !important;
   min-height: 30px !important;
   align-items: center !important;
 }
 
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__subtitle {
   grid-area: subtitle !important;
   margin: 1px 0 0 !important;
 }
 
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__copy {
   position: static !important;
@@ -67,10 +72,14 @@
   align-self: start !important;
   overflow: hidden !important;
   color: #102d27 !important;
-  font: 400 13px/1.42 "Inter", system-ui, sans-serif !important;
+  font:
+    400 13px/1.42 "Inter",
+    system-ui,
+    sans-serif !important;
 }
 
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
   .wvsr-wordie-card__mascot {
   position: static !important;
@@ -87,9 +96,11 @@
   transform-origin: center !important;
 }
 
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
-  .wvsr-wordie-card > button {
+  .wvsr-wordie-card
+  > button {
   position: static !important;
   inset: auto !important;
   grid-area: button !important;
@@ -116,8 +127,7 @@
 
   /* When Wordie is closed, the dock must not reserve a full-width invisible
      column. Keep only the launcher footprint, so no green strip remains. */
-  #root .application-frame--search-cleanroom
-    .assistant-dock.wv84-assistant:not([data-open]) {
+  #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant:not([data-open]) {
     top: auto !important;
     right: 18px !important;
     bottom: 18px !important;
@@ -131,7 +141,8 @@
     pointer-events: none !important;
   }
 
-  #root .application-frame--search-cleanroom
+  #root
+    .application-frame--search-cleanroom
     .assistant-dock.wv84-assistant:not([data-open])
     .assistant-launcher {
     pointer-events: auto !important;
@@ -148,10 +159,25 @@
 
 #root .application-frame--search-cleanroom .wvsr-detail-save > span::after {
   content: "Add to favorites" !important;
-  font: 600 19px "Cormorant Garamond", Georgia, serif !important;
+  font:
+    600 19px "Cormorant Garamond",
+    Georgia,
+    serif !important;
 }
 
-#root .application-frame--search-cleanroom
-  .wvsr-detail-save[aria-pressed="true"] > span::after {
+#root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"] > span::after {
   content: "In favorites" !important;
+}
+/* SEARCH HOME BAYKUŞ */
+#root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail .wvsr-wordie-card__mascot {
+  width: 150px !important;
+  height: 156px !important;
+  transform: translate(0px, -29px) scale(2) !important;
+}
+
+/* WORD DETAIL BAYKUŞ */
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
+  width: 100px !important;
+  height: 108px !important;
+  transform: translate(2px, -2px) scale(1) !important;
 }
