@@ -128,7 +128,7 @@ function FinalWordValleySidebar() {
             </button>
           ) : (
             <NavLink
-              aria-label={item.to === ROUTE_PATHS.library ? "Library" : item.label}
+              aria-label={item.label}
               className={({ isActive }) =>
                 `wv84-nav-item${isActive ? " wv84-nav-item--active" : ""}`
               }
@@ -228,10 +228,8 @@ function StandardSidebar() {
 
 export function AppSidebar() {
   const location = useLocation();
+  const usesFinalWordValleySidebar =
+    location.pathname === ROUTE_PATHS.vocabulary || location.pathname === ROUTE_PATHS.library;
 
-  return location.pathname === ROUTE_PATHS.vocabulary ? (
-    <FinalWordValleySidebar />
-  ) : (
-    <StandardSidebar />
-  );
+  return usesFinalWordValleySidebar ? <FinalWordValleySidebar /> : <StandardSidebar />;
 }
