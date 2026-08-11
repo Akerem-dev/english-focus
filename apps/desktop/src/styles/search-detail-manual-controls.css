@@ -1,0 +1,106 @@
+/*
+ * WORD DETAIL ONLY — MANUAL TUNING CONTROLS
+ *
+ * This file is intentionally isolated from Search Home.
+ * It targets only the right-rail Wordie card while a vocabulary word is open.
+ *
+ * X: positive = right, negative = left
+ * Y: positive = down,  negative = up
+ *
+ * Edit ONLY the variables in the first rule while tuning.
+ */
+
+#root
+  .application-frame--search-cleanroom
+  .wvsr-detail-root.wvsr-detail-root--package-three
+  .wvsr-detail-context-rail {
+  /* OUTER CARD */
+  --wd-card-width: 100% !important;
+  --wd-card-height: 222px !important;
+  --wd-card-x: 0px !important;
+  --wd-card-y: 0px !important;
+  --wd-card-padding-x: 18px !important;
+  --wd-card-padding-y: 18px !important;
+
+  /* WORDIE HEADER */
+  --wd-header-x: 0px !important;
+  --wd-header-y: 0px !important;
+
+  /* "Your vocabulary companion" */
+  --wd-subtitle-x: 0px !important;
+  --wd-subtitle-y: 0px !important;
+
+  /* HELPER COPY */
+  --wd-copy-x: 0px !important;
+  --wd-copy-y: 0px !important;
+  --wd-copy-width: auto !important;
+  --wd-copy-max-width: none !important;
+
+  /* OWL ASSET */
+  --wd-mascot-width: 150px !important;
+  --wd-mascot-height: 156px !important;
+  --wd-mascot-x: 0px !important;
+  --wd-mascot-y: -29px !important;
+  --wd-mascot-scale: 2 !important;
+}
+
+/* Stronger than search-package-3-detail-polish.css on purpose. */
+#root
+  .application-frame--search-cleanroom
+  .wvsr-detail-root.wvsr-detail-root--package-three
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card {
+  box-sizing: border-box !important;
+  width: var(--wd-card-width) !important;
+  height: var(--wd-card-height) !important;
+  min-height: var(--wd-card-height) !important;
+  max-height: var(--wd-card-height) !important;
+  padding: var(--wd-card-padding-y) var(--wd-card-padding-x) !important;
+  transform: translate(var(--wd-card-x), var(--wd-card-y)) !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvsr-detail-root.wvsr-detail-root--package-three
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card > header {
+  transform: translate(var(--wd-header-x), var(--wd-header-y)) !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvsr-detail-root.wvsr-detail-root--package-three
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__subtitle {
+  transform: translate(var(--wd-subtitle-x), var(--wd-subtitle-y)) !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvsr-detail-root.wvsr-detail-root--package-three
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__copy {
+  width: var(--wd-copy-width) !important;
+  max-width: var(--wd-copy-max-width) !important;
+  transform: translate(var(--wd-copy-x), var(--wd-copy-y)) !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvsr-detail-root.wvsr-detail-root--package-three
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__mascot {
+  position: static !important;
+  inset: auto !important;
+  width: var(--wd-mascot-width) !important;
+  height: var(--wd-mascot-height) !important;
+  max-width: none !important;
+  max-height: none !important;
+  align-self: center !important;
+  justify-self: center !important;
+  object-fit: contain !important;
+  transform:
+    translate(var(--wd-mascot-x), var(--wd-mascot-y))
+    scale(var(--wd-mascot-scale)) !important;
+  transform-origin: center !important;
+}
