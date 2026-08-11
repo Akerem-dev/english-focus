@@ -168,16 +168,101 @@
 #root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"] > span::after {
   content: "In favorites" !important;
 }
-/* SEARCH HOME BAYKUŞ */
+
+/* SEARCH HOME BAYKUŞ — leave this block alone when tuning Detail. */
 #root .application-frame--search-cleanroom .wvsr-root > .wvsr-rail .wvsr-wordie-card__mascot {
   width: 150px !important;
   height: 156px !important;
   transform: translate(0px, -29px) scale(2) !important;
 }
 
-/* WORD DETAIL BAYKUŞ — mirror Search Home exactly without changing Home. */
-#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
-  width: 150px !important;
-  height: 156px !important;
-  transform: translate(0px, -29px) scale(2) !important;
+/* -------------------------------------------------------------------------- */
+/* WORD DETAIL ONLY — MANUAL TUNING CONTROLS                                  */
+/*                                                                            */
+/* This block affects ONLY the bottom-right Wordie card while a word is open. */
+/* Search Home (no word open) is untouched.                                   */
+/*                                                                            */
+/* X: + moves right, - moves left.                                             */
+/* Y: + moves down,  - moves up.                                               */
+/* Change ONLY the variables below, then save/reload.                          */
+/* -------------------------------------------------------------------------- */
+
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail {
+  /* OUTER CARD: size + position */
+  --wd-card-width: 100%;
+  --wd-card-height: 222px;
+  --wd-card-x: 0px;
+  --wd-card-y: 0px;
+  --wd-card-padding-x: 18px;
+  --wd-card-padding-y: 18px;
+
+  /* WORDIE TITLE / SUBTITLE / BODY COPY: position */
+  --wd-header-x: 0px;
+  --wd-header-y: 0px;
+  --wd-subtitle-x: 0px;
+  --wd-subtitle-y: 0px;
+  --wd-copy-x: 0px;
+  --wd-copy-y: 0px;
+  --wd-copy-width: auto;
+  --wd-copy-max-width: none;
+
+  /* OWL ASSET: actual box size + position + optical scale */
+  --wd-mascot-width: 86px;
+  --wd-mascot-height: 90px;
+  --wd-mascot-x: 0px;
+  --wd-mascot-y: -29px;
+  --wd-mascot-scale: 2;
+}
+
+/* Bottom-right Detail card itself. */
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card {
+  box-sizing: border-box !important;
+  width: var(--wd-card-width) !important;
+  height: var(--wd-card-height) !important;
+  min-height: var(--wd-card-height) !important;
+  max-height: var(--wd-card-height) !important;
+  margin-right: 0 !important;
+  margin-left: auto !important;
+  padding: var(--wd-card-padding-y) var(--wd-card-padding-x) !important;
+  transform: translate(var(--wd-card-x), var(--wd-card-y)) !important;
+}
+
+/* "Wordie" heading row. */
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card > header {
+  transform: translate(var(--wd-header-x), var(--wd-header-y)) !important;
+}
+
+/* "Your vocabulary companion" line. */
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__subtitle {
+  transform: translate(var(--wd-subtitle-x), var(--wd-subtitle-y)) !important;
+}
+
+/* Main helper sentence inside the card. */
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__copy {
+  width: var(--wd-copy-width) !important;
+  max-width: var(--wd-copy-max-width) !important;
+  transform: translate(var(--wd-copy-x), var(--wd-copy-y)) !important;
+}
+
+/* Owl asset. max-width/max-height are deliberately released here so the numbers
+   above are REAL dimensions instead of being silently capped at 86 × 90. */
+#root .application-frame--search-cleanroom
+  .wvsr-detail-context-rail
+  .wvsr-wordie-card__mascot {
+  width: var(--wd-mascot-width) !important;
+  height: var(--wd-mascot-height) !important;
+  max-width: none !important;
+  max-height: none !important;
+  transform:
+    translate(var(--wd-mascot-x), var(--wd-mascot-y))
+    scale(var(--wd-mascot-scale)) !important;
+  transform-origin: center !important;
 }
