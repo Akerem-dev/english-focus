@@ -1,0 +1,71 @@
+/* Collections clean-room. The legacy app shell must never participate in this route. */
+.application-frame--collections-cleanroom {
+  --wv-c-green: #082f29;
+  --wv-c-green-hover: #0d3b33;
+  --wv-c-green-pressed: #06251f;
+  --wv-c-paper: #fbf8f1;
+  --wv-c-paper-2: #f7f2e8;
+  --wv-c-border: #d9cfbd;
+  --wv-c-text: #102d27;
+  --wv-c-muted: #7e7a71;
+  --wv-c-gold: #c99d34;
+  --wv-c-gold-soft: #e4cf96;
+  --wv-c-hover-paper: #f5f0e6;
+  --wv-c-pale-green: #edf3e6;
+  --wv-c-pale-green-2: #e4eddc;
+  --wv-c-focus: #d4a72c;
+  --wv-c-danger: #8d3430;
+  --wv-c-danger-hover: #762824;
+  --wv-c-danger-pressed: #651f1d;
+  --wv-c-disabled: #d9d5cc;
+  --wv-c-disabled-text: #a19d94;
+}
+
+#root .application-frame--collections-cleanroom .wvclean-main {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 1664px !important;
+  height: 936px !important;
+  overflow: hidden !important;
+  background: #f3efe6 !important;
+}
+
+#root .application-frame--collections-cleanroom .wv-collections-page {
+  position: absolute !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 318px !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  overflow: auto !important;
+  padding: 38px 42px 54px !important;
+  background:
+    radial-gradient(circle at 72% 18%, rgba(198, 154, 58, .05), transparent 30%),
+    linear-gradient(180deg, #f5f1e9 0%, #f1ede4 100%) !important;
+  color: var(--wv-c-text) !important;
+}
+
+#root .application-frame--collections-cleanroom .wv-collections-surface {
+  width: min(100%, 1110px) !important;
+  margin-inline: auto !important;
+}
+
+#root .application-frame--collections-cleanroom .wv-collections-modal-layer {
+  position: absolute !important;
+  inset: 0 !important;
+}
+
+/* Explicitly neutralize remnants of the pre-clean-room Library shell if they are ever mounted accidentally. */
+#root .application-frame--collections-cleanroom > .app-sidebar,
+#root .application-frame--collections-cleanroom > .application-main,
+#root .application-frame--collections-cleanroom .app-top-bar,
+#root .application-frame--collections-cleanroom .app-content > .library-panel,
+#root .application-frame--collections-cleanroom .library-table,
+#root .application-frame--collections-cleanroom .library-toolbar {
+  display: none !important;
+}
