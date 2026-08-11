@@ -18,10 +18,8 @@ import { AppContent } from "./AppContent";
 import { AppSidebar } from "./AppSidebar";
 import { AppTopBar } from "./AppTopBar";
 
-const SEARCH_STAGE_WIDTH = 1664;
-const SEARCH_STAGE_HEIGHT = 936;
-const LEGACY_WORD_VALLEY_STAGE_WIDTH = 1920;
-const LEGACY_WORD_VALLEY_STAGE_HEIGHT = 1080;
+const WORD_VALLEY_STAGE_WIDTH = 1664;
+const WORD_VALLEY_STAGE_HEIGHT = 936;
 
 function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
   return commands.some(
@@ -39,11 +37,11 @@ export function AppLayout({ children }: PropsWithChildren) {
   const canExportCurrent = hasAction(commands, "export-current");
   const canSaveCurrent = hasAction(commands, "save-current");
   const isWordValleySearch = location.pathname === ROUTE_PATHS.vocabulary;
-  const isWordValleyLibrary = location.pathname === ROUTE_PATHS.library;
-  const isWordValleyRoute = isWordValleySearch || isWordValleyLibrary;
+  const isWordValleyCollections = location.pathname === ROUTE_PATHS.library;
+  const isWordValleyCleanRoom = isWordValleySearch || isWordValleyCollections;
 
   useEffect(() => {
-    if (!isWordValleyRoute) {
+    if (!isWordValleyCleanRoom) {
       return;
     }
 
@@ -65,25 +63,16 @@ export function AppLayout({ children }: PropsWithChildren) {
           document.documentElement.clientHeight || window.innerHeight,
           1
         );
-
-        if (isWordValleySearch) {
-          const scale = Math.max(
-            Math.min(viewportWidth / SEARCH_STAGE_WIDTH, viewportHeight / SEARCH_STAGE_HEIGHT),
-            0.01
-          );
-          viewport.style.setProperty("--wv-stage-scale-x", String(scale));
-          viewport.style.setProperty("--wv-stage-scale-y", String(scale));
-          return;
-        }
-
-        viewport.style.setProperty(
-          "--wv-stage-scale-x",
-          String(Math.max(viewportWidth / LEGACY_WORD_VALLEY_STAGE_WIDTH, 0.01))
+        const scale = Math.max(
+          Math.min(
+            viewportWidth / WORD_VALLEY_STAGE_WIDTH,
+            viewportHeight / WORD_VALLEY_STAGE_HEIGHT
+          ),
+          0.01
         );
-        viewport.style.setProperty(
-          "--wv-stage-scale-y",
-          String(Math.max(viewportHeight / LEGACY_WORD_VALLEY_STAGE_HEIGHT, 0.01))
-        );
+
+        viewport.style.setProperty("--wv-stage-scale-x", String(scale));
+        viewport.style.setProperty("--wv-stage-scale-y", String(scale));
       });
     };
 
@@ -94,7 +83,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", updateScale);
     };
-  }, [isWordValleyRoute, isWordValleySearch]);
+  }, [isWordValleyCleanRoom]);
 
   function openVocabularyHome() {
     if (location.pathname === ROUTE_PATHS.vocabulary) {
@@ -106,12 +95,10 @@ export function AppLayout({ children }: PropsWithChildren) {
   }
 
   function focusCurrentSearch() {
-    if (location.pathname === ROUTE_PATHS.library) {
-      dispatchAppCommand("focus-search");
-      return;
-    }
-
-    if (location.pathname === ROUTE_PATHS.vocabulary) {
+    if (
+      location.pathname === ROUTE_PATHS.library ||
+      location.pathname === ROUTE_PATHS.vocabulary
+    ) {
       dispatchAppCommand("focus-search");
       return;
     }
@@ -161,9 +148,13 @@ export function AppLayout({ children }: PropsWithChildren) {
     }
   });
 
-  if (isWordValleySearch) {
+  if (isWordValleyCleanRoom) {
     return (
-      <div className="application-frame application-frame--search-cleanroom">
+      <div
+        className={`application-frame application-frame--search-cleanroom${
+          isWordValleyCollections ? " application-frame--collections-cleanroom" : ""
+        }`}
+      >
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
@@ -174,7 +165,7 @@ export function AppLayout({ children }: PropsWithChildren) {
               <RouteAccessibilityManager />
               {children}
             </SearchCleanShell>
-            <AssistantDock />
+            {isWordValleySearch ? <AssistantDock /> : null}
           </div>
         </div>
 
@@ -194,8 +185,12 @@ export function AppLayout({ children }: PropsWithChildren) {
     );
   }
 
-  const applicationShell = (
-    <>
+  return (
+    <div className="application-frame">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
+
       <AppSidebar />
       <div className="application-main">
         <RouteAccessibilityManager />
@@ -203,24 +198,6 @@ export function AppLayout({ children }: PropsWithChildren) {
         <AppContent>{children}</AppContent>
       </div>
       <AssistantDock />
-    </>
-  );
-
-  return (
-    <div
-      className={`application-frame${isWordValleyLibrary ? " application-frame--word-valley-stage application-frame--word-valley-library" : ""}`}
-    >
-      <a className="skip-link" href="#main-content">
-        Skip to content
-      </a>
-
-      {isWordValleyLibrary ? (
-        <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
-          <div className="word-valley-stage">{applicationShell}</div>
-        </div>
-      ) : (
-        applicationShell
-      )}
 
       <CommandBar
         commands={commands}
