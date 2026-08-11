@@ -49,10 +49,10 @@ export const APP_ROUTES = [
   {
     id: "library",
     path: ROUTE_PATHS.library,
-    label: "Library",
-    title: "Library",
+    label: "Collections",
+    title: "Collections",
     icon: "books",
-    element: createRouteElement("Library", <LibraryPage />)
+    element: createRouteElement("Collections", <LibraryPage />)
   },
   {
     id: "settings",
