@@ -189,7 +189,7 @@
 
 #root .application-frame--search-cleanroom .wvsr-detail-context-rail {
   /* OUTER CARD: size + position */
-  --wd-card-width: 100%;
+  --wd-card-width: 20%;
   --wd-card-height: 222px;
   --wd-card-x: 0px;
   --wd-card-y: 0px;
@@ -215,9 +215,7 @@
 }
 
 /* Bottom-right Detail card itself. */
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card {
   box-sizing: border-box !important;
   width: var(--wd-card-width) !important;
   height: var(--wd-card-height) !important;
@@ -230,23 +228,17 @@
 }
 
 /* "Wordie" heading row. */
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card > header {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card > header {
   transform: translate(var(--wd-header-x), var(--wd-header-y)) !important;
 }
 
 /* "Your vocabulary companion" line. */
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card__subtitle {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__subtitle {
   transform: translate(var(--wd-subtitle-x), var(--wd-subtitle-y)) !important;
 }
 
 /* Main helper sentence inside the card. */
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card__copy {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__copy {
   width: var(--wd-copy-width) !important;
   max-width: var(--wd-copy-max-width) !important;
   transform: translate(var(--wd-copy-x), var(--wd-copy-y)) !important;
@@ -254,15 +246,11 @@
 
 /* Owl asset. max-width/max-height are deliberately released here so the numbers
    above are REAL dimensions instead of being silently capped at 86 × 90. */
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card__mascot {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
   width: var(--wd-mascot-width) !important;
   height: var(--wd-mascot-height) !important;
   max-width: none !important;
   max-height: none !important;
-  transform:
-    translate(var(--wd-mascot-x), var(--wd-mascot-y))
-    scale(var(--wd-mascot-scale)) !important;
+  transform: translate(var(--wd-mascot-x), var(--wd-mascot-y)) scale(var(--wd-mascot-scale)) !important;
   transform-origin: center !important;
 }

@@ -28,16 +28,16 @@
 
   /* "Your vocabulary companion" */
   --wd-subtitle-x: 0px !important;
-  --wd-subtitle-y: 0px !important;
+  --wd-subtitle-y: -5px !important;
 
   /* HELPER COPY */
   --wd-copy-x: 0px !important;
-  --wd-copy-y: 0px !important;
+  --wd-copy-y: -20px !important;
   --wd-copy-width: auto !important;
   --wd-copy-max-width: none !important;
 
   /* OWL ASSET */
-  --wd-mascot-width: 150px !important;
+  --wd-mascot-width: 86px !important;
   --wd-mascot-height: 156px !important;
   --wd-mascot-x: 0px !important;
   --wd-mascot-y: -29px !important;
@@ -63,7 +63,8 @@
   .application-frame--search-cleanroom
   .wvsr-detail-root.wvsr-detail-root--package-three
   .wvsr-detail-context-rail
-  .wvsr-wordie-card > header {
+  .wvsr-wordie-card
+  > header {
   transform: translate(var(--wd-header-x), var(--wd-header-y)) !important;
 }
 
@@ -99,8 +100,6 @@
   align-self: center !important;
   justify-self: center !important;
   object-fit: contain !important;
-  transform:
-    translate(var(--wd-mascot-x), var(--wd-mascot-y))
-    scale(var(--wd-mascot-scale)) !important;
+  transform: translate(var(--wd-mascot-x), var(--wd-mascot-y)) scale(var(--wd-mascot-scale)) !important;
   transform-origin: center !important;
 }
