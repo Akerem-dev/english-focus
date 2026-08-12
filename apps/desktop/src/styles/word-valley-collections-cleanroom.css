@@ -1,24 +1,18 @@
-/* Collections clean-room. The legacy app shell must never participate in this route. */
+/* Word Valley Collections — single clean-room visual source of truth. */
 .application-frame--collections-cleanroom {
-  --wv-c-green: #082f29;
-  --wv-c-green-hover: #0d3b33;
-  --wv-c-green-pressed: #06251f;
-  --wv-c-paper: #fbf8f1;
-  --wv-c-paper-2: #f7f2e8;
-  --wv-c-border: #d9cfbd;
-  --wv-c-text: #102d27;
-  --wv-c-muted: #7e7a71;
-  --wv-c-gold: #c99d34;
-  --wv-c-gold-soft: #e4cf96;
-  --wv-c-hover-paper: #f5f0e6;
-  --wv-c-pale-green: #edf3e6;
-  --wv-c-pale-green-2: #e4eddc;
-  --wv-c-focus: #d4a72c;
-  --wv-c-danger: #8d3430;
-  --wv-c-danger-hover: #762824;
-  --wv-c-danger-pressed: #651f1d;
-  --wv-c-disabled: #d9d5cc;
-  --wv-c-disabled-text: #a19d94;
+  --wvc-green: #082f29;
+  --wvc-green-2: #0c3b33;
+  --wvc-green-3: #174a3f;
+  --wvc-paper: #fbf8f1;
+  --wvc-paper-soft: #f6f0e5;
+  --wvc-ink: #102d27;
+  --wvc-muted: #66716b;
+  --wvc-border: rgba(126, 111, 83, .28);
+  --wvc-gold: #c69a3a;
+  --wvc-gold-soft: #e5c987;
+  --wvc-moss: #617b5e;
+  --wvc-danger: #8d3e37;
+  --wvc-shadow: 0 18px 52px rgba(8, 47, 41, .16);
 }
 
 #root .application-frame--collections-cleanroom .wvclean-main {
@@ -27,45 +21,1301 @@
   width: 1664px !important;
   height: 936px !important;
   overflow: hidden !important;
-  background: #f3efe6 !important;
+  background: var(--wvc-green) !important;
 }
 
-#root .application-frame--collections-cleanroom .wv-collections-page {
-  position: absolute !important;
-  top: 46px !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: 318px !important;
-  width: auto !important;
-  height: auto !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  max-width: none !important;
-  margin: 0 !important;
-  overflow: auto !important;
-  padding: 38px 42px 54px !important;
+#root .application-frame--collections-cleanroom .wvc-page {
+  position: absolute;
+  top: 46px;
+  right: 0;
+  bottom: 0;
+  left: 318px;
+  overflow: hidden;
+  color: var(--wvc-ink);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-scene {
+  position: absolute;
+  inset: 0;
+  background-position: center 48%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(.88) contrast(.95) brightness(1.04);
+  transform: scale(1.015);
+}
+
+#root .application-frame--collections-cleanroom .wvc-mist {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   background:
-    radial-gradient(circle at 72% 18%, rgba(198, 154, 58, .05), transparent 30%),
-    linear-gradient(180deg, #f5f1e9 0%, #f1ede4 100%) !important;
-  color: var(--wv-c-text) !important;
+    linear-gradient(180deg, rgba(247,242,232,.91) 0%, rgba(247,242,232,.74) 19%, rgba(247,242,232,.32) 47%, rgba(8,47,41,.10) 100%),
+    radial-gradient(circle at 50% 18%, rgba(255,253,247,.8), transparent 37%);
 }
 
-#root .application-frame--collections-cleanroom .wv-collections-surface {
-  width: min(100%, 1110px) !important;
-  margin-inline: auto !important;
+#root .application-frame--collections-cleanroom .wvc-shell {
+  position: relative;
+  z-index: 2;
+  width: 1110px;
+  margin: 0 auto;
 }
 
-#root .application-frame--collections-cleanroom .wv-collections-modal-layer {
-  position: absolute !important;
-  inset: 0 !important;
+#root .application-frame--collections-cleanroom .wvc-shell--overview {
+  padding-top: 50px;
 }
 
-/* Explicitly neutralize remnants of the pre-clean-room Library shell if they are ever mounted accidentally. */
-#root .application-frame--collections-cleanroom > .app-sidebar,
-#root .application-frame--collections-cleanroom > .application-main,
-#root .application-frame--collections-cleanroom .app-top-bar,
-#root .application-frame--collections-cleanroom .app-content > .library-panel,
+#root .application-frame--collections-cleanroom .wvc-shell--detail,
+#root .application-frame--collections-cleanroom .wvc-shell--word {
+  padding-top: 28px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-eyebrow,
+#root .application-frame--collections-cleanroom .wvc-section-label {
+  margin: 0;
+  color: #987427;
+  font: 600 10px/14px "Inter", system-ui, sans-serif;
+  letter-spacing: .12em;
+}
+
+#root .application-frame--collections-cleanroom .wvc-overview-header {
+  display: flex;
+  min-height: 116px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 24px 30px 22px;
+  border: 1px solid var(--wvc-border);
+  border-radius: 16px 16px 0 0;
+  background: rgba(251, 248, 241, .88);
+  box-shadow: 0 12px 36px rgba(8,47,41,.08);
+  backdrop-filter: blur(12px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-overview-header h1,
+#root .application-frame--collections-cleanroom .wvc-collection-hero h1,
+#root .application-frame--collections-cleanroom .wvc-word-hero h1,
+#root .application-frame--collections-cleanroom .wvc-modal h2,
+#root .application-frame--collections-cleanroom .wvc-empty h2,
+#root .application-frame--collections-cleanroom .wvc-search-empty h2,
+#root .application-frame--collections-cleanroom .wvc-status h1 {
+  margin: 0;
+  color: var(--wvc-ink);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+}
+
+#root .application-frame--collections-cleanroom .wvc-overview-header h1 {
+  margin-top: 2px;
+  font-size: 39px;
+  line-height: 42px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-overview-header p:last-child {
+  margin: 5px 0 0;
+  color: var(--wvc-muted);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 19px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: 600 15px/18px "Cormorant Garamond", Georgia, serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-button--primary {
+  border-color: var(--wvc-green);
+  background: var(--wvc-green);
+  color: #fffaf0;
+  box-shadow: 0 7px 16px rgba(8,47,41,.14);
+}
+
+#root .application-frame--collections-cleanroom .wvc-button--primary:hover:not(:disabled) {
+  background: #0e4037;
+  box-shadow: 0 9px 22px rgba(8,47,41,.2);
+  transform: translateY(-1px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-button--secondary {
+  border-color: rgba(91, 78, 55, .28);
+  background: rgba(255,252,246,.84);
+  color: var(--wvc-ink);
+}
+
+#root .application-frame--collections-cleanroom .wvc-button--secondary:hover:not(:disabled) {
+  border-color: rgba(198,154,58,.6);
+  background: #fffaf0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-button--danger {
+  border-color: var(--wvc-danger);
+  background: var(--wvc-danger);
+  color: #fff8ef;
+}
+
+#root .application-frame--collections-cleanroom .wvc-button--compact {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-button:disabled {
+  cursor: default;
+  opacity: .45;
+}
+
+#root .application-frame--collections-cleanroom .wvc-button:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-icon-button:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-text-link:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-card__open:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-word-open:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-word-meaning:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-back:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-soft-action:focus-visible {
+  outline: 2px solid var(--wvc-gold);
+  outline-offset: 2px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-toolbar {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 30px;
+  border-right: 1px solid var(--wvc-border);
+  border-left: 1px solid var(--wvc-border);
+  background: rgba(251,248,241,.85);
+  backdrop-filter: blur(12px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-toolbar--overview {
+  border-bottom: 1px solid rgba(126,111,83,.18);
+}
+
+#root .application-frame--collections-cleanroom .wvc-search {
+  display: flex;
+  height: 44px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 14px;
+  border: 1px solid rgba(103,89,63,.25);
+  border-radius: 9px;
+  background: rgba(255,253,248,.88);
+  color: var(--wvc-muted);
+  transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-search:hover {
+  border-color: rgba(198,154,58,.52);
+  background: #fffdf8;
+}
+
+#root .application-frame--collections-cleanroom .wvc-search:focus-within {
+  border-color: var(--wvc-gold);
+  box-shadow: 0 0 0 2px rgba(198,154,58,.12);
+}
+
+#root .application-frame--collections-cleanroom .wvc-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--wvc-ink);
+  font: 400 13px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-search input::placeholder {
+  color: #7e837f;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-wrap {
+  position: relative;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-button {
+  display: flex;
+  width: 190px;
+  height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid rgba(103,89,63,.25);
+  border-radius: 9px;
+  background: rgba(255,253,248,.9);
+  color: var(--wvc-ink);
+  font: 500 12px/16px "Inter", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-button:hover,
+#root .application-frame--collections-cleanroom .wvc-sort-button[aria-expanded="true"] {
+  border-color: rgba(198,154,58,.62);
+  background: #fffaf0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-menu,
+#root .application-frame--collections-cleanroom .wvc-row-menu {
+  position: absolute;
+  z-index: 50;
+  overflow: hidden;
+  border: 1px solid rgba(103,89,63,.28);
+  border-radius: 9px;
+  background: #fffaf0;
+  box-shadow: 0 18px 38px rgba(8,47,41,.2);
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-menu {
+  top: 50px;
+  right: 0;
+  width: 190px;
+  padding: 5px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-menu button,
+#root .application-frame--collections-cleanroom .wvc-row-menu button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wvc-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-menu button {
+  height: 34px;
+  padding: 0 10px;
+  font: 500 11px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-menu button:hover,
+#root .application-frame--collections-cleanroom .wvc-row-menu button:hover {
+  background: #edf1e8;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 22px 30px 28px;
+  border: 1px solid var(--wvc-border);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  background: rgba(247,242,232,.72);
+  box-shadow: 0 18px 46px rgba(8,47,41,.08);
+  backdrop-filter: blur(10px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(103,89,63,.24);
+  border-radius: 12px;
+  background: #fffaf2;
+  box-shadow: 0 4px 13px rgba(8,47,41,.08);
+  transition: transform 160ms ease, box-shadow 180ms ease, border-color 160ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card:hover {
+  border-color: rgba(198,154,58,.58);
+  box-shadow: 0 13px 28px rgba(8,47,41,.16);
+  transform: translateY(-3px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__cover,
+#root .application-frame--collections-cleanroom .wvc-cover-preview,
+#root .application-frame--collections-cleanroom .wvc-cover-choice,
+#root .application-frame--collections-cleanroom .wvc-collection-hero__cover,
+#root .application-frame--collections-cleanroom .wvc-move-option__cover {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#root .application-frame--collections-cleanroom [data-cover="ridge"] { background-position: 44% 38%; }
+#root .application-frame--collections-cleanroom [data-cover="lake"] { background-position: 62% 55%; }
+#root .application-frame--collections-cleanroom [data-cover="cottage"] { background-position: 76% 60%; }
+#root .application-frame--collections-cleanroom [data-cover="meadow"] { background-position: 24% 70%; }
+#root .application-frame--collections-cleanroom [data-cover="forest"] { background-position: 12% 52%; }
+#root .application-frame--collections-cleanroom [data-cover="sunrise"] { background-position: 51% 24%; }
+
+#root .application-frame--collections-cleanroom .wvc-card__cover {
+  position: relative;
+  display: flex;
+  height: 126px;
+  align-items: flex-end;
+  padding: 12px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__cover::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 44%, rgba(8,47,41,.46));
+  content: "";
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__cover > span {
+  position: relative;
+  z-index: 1;
+  padding: 5px 9px;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 999px;
+  background: rgba(8,47,41,.56);
+  color: #fff9ef;
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+  backdrop-filter: blur(5px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__body {
+  display: grid;
+  min-height: 128px;
+  align-content: start;
+  padding: 15px 16px 13px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__body > strong {
+  overflow: hidden;
+  color: var(--wvc-ink);
+  font: 600 20px/24px "Cormorant Garamond", Georgia, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__body > small {
+  display: -webkit-box;
+  min-height: 36px;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--wvc-muted);
+  font: 400 11px/17px "Inter", system-ui, sans-serif;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(126,111,83,.18);
+  color: #6b744f;
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__menu {
+  position: absolute;
+  z-index: 5;
+  top: 9px;
+  right: 9px;
+  border-color: rgba(255,255,255,.26);
+  background: rgba(8,47,41,.48);
+  color: #fff8ec;
+  opacity: .66;
+  backdrop-filter: blur(6px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card:hover .wvc-card__menu,
+#root .application-frame--collections-cleanroom .wvc-card__menu:focus-visible {
+  opacity: 1;
+}
+
+#root .application-frame--collections-cleanroom .wvc-icon-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--wvc-muted);
+  font: 600 18px/20px "Cormorant Garamond", Georgia, serif;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-icon-button:hover {
+  border-color: rgba(103,89,63,.22);
+  background: rgba(255,250,240,.84);
+  color: var(--wvc-ink);
+}
+
+#root .application-frame--collections-cleanroom .wvc-empty,
+#root .application-frame--collections-cleanroom .wvc-search-empty {
+  border: 1px solid var(--wvc-border);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  background: rgba(247,242,232,.7);
+  backdrop-filter: blur(10px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-empty {
+  display: grid;
+  min-height: 370px;
+  place-items: center;
+  align-content: center;
+  padding: 40px;
+  text-align: center;
+}
+
+#root .application-frame--collections-cleanroom .wvc-empty h2,
+#root .application-frame--collections-cleanroom .wvc-search-empty h2 {
+  font-size: 25px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-empty p,
+#root .application-frame--collections-cleanroom .wvc-search-empty p {
+  margin: 6px 0 17px;
+  color: var(--wvc-muted);
+  font-size: 12px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-empty-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  margin-bottom: 12px;
+  border: 1px solid rgba(198,154,58,.32);
+  border-radius: 50%;
+  background: rgba(255,248,226,.78);
+  color: #9b7728;
+}
+
+#root .application-frame--collections-cleanroom .wvc-search-empty {
+  display: grid;
+  min-height: 150px;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 30px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-search-empty .wvc-empty-icon {
+  margin: 0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-search-empty p {
+  margin-bottom: 0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-text-link,
+#root .application-frame--collections-cleanroom .wvc-danger-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 5px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  font: 600 11px/15px "Inter", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-text-link {
+  color: #536b48;
+}
+
+#root .application-frame--collections-cleanroom .wvc-text-link:hover {
+  background: rgba(83,107,72,.08);
+}
+
+#root .application-frame--collections-cleanroom .wvc-danger-link {
+  color: var(--wvc-danger);
+}
+
+/* Collection detail */
+#root .application-frame--collections-cleanroom .wvc-back {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 3px;
+  border: 0;
+  background: transparent;
+  color: #314d43;
+  font: 600 11px/15px "Inter", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-back:hover { color: #8d6a22; }
+
+#root .application-frame--collections-cleanroom .wvc-collection-hero {
+  display: grid;
+  min-height: 178px;
+  grid-template-columns: 230px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  border: 1px solid var(--wvc-border);
+  border-radius: 14px 14px 0 0;
+  background: rgba(251,248,241,.9);
+  box-shadow: 0 12px 36px rgba(8,47,41,.1);
+  backdrop-filter: blur(12px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-collection-hero__cover {
+  height: 134px;
+  border: 1px solid rgba(255,255,255,.42);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(8,47,41,.08), 0 7px 18px rgba(8,47,41,.13);
+}
+
+#root .application-frame--collections-cleanroom .wvc-collection-hero__copy h1 {
+  margin-top: 2px;
+  font-size: 34px;
+  line-height: 38px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-collection-hero__copy > p:last-of-type {
+  max-width: 480px;
+  margin: 5px 0 10px;
+  color: var(--wvc-muted);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-collection-hero__copy > span {
+  color: #6f755f;
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-collection-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-shell--detail > .wvc-toolbar {
+  padding-right: 22px;
+  padding-left: 22px;
+  border-top: 0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-segmented {
+  display: flex;
+  padding: 3px;
+  border: 1px solid rgba(103,89,63,.22);
+  border-radius: 8px;
+  background: rgba(255,253,248,.72);
+}
+
+#root .application-frame--collections-cleanroom .wvc-segmented button {
+  height: 32px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wvc-muted);
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-segmented button[aria-pressed="true"] {
+  background: #e9eee6;
+  color: var(--wvc-ink);
+  box-shadow: 0 1px 4px rgba(8,47,41,.08);
+}
+
+#root .application-frame--collections-cleanroom .wvc-selection-bar {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px 6px 18px;
+  border-right: 1px solid var(--wvc-border);
+  border-left: 1px solid var(--wvc-border);
+  background: rgba(226,235,222,.93);
+  color: var(--wvc-ink);
+  font-size: 11px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-selection-bar > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-list {
+  overflow: visible;
+  border: 1px solid var(--wvc-border);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  background: rgba(251,248,241,.91);
+  box-shadow: 0 14px 38px rgba(8,47,41,.1);
+  backdrop-filter: blur(11px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-list__head,
+#root .application-frame--collections-cleanroom .wvc-word-row {
+  display: grid;
+  grid-template-columns: 38px minmax(180px, 1fr) minmax(260px, 1.6fr) 70px 42px;
+  align-items: center;
+  gap: 12px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-list__head {
+  min-height: 39px;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(126,111,83,.22);
+  background: rgba(241,235,223,.78);
+  color: #77776f;
+  font: 600 9px/12px "Inter", system-ui, sans-serif;
+  letter-spacing: .08em;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row {
+  position: relative;
+  min-height: 58px;
+  padding: 0 14px;
+  border-bottom: 1px solid rgba(126,111,83,.17);
+  transition: background 120ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row:last-child { border-bottom: 0; }
+#root .application-frame--collections-cleanroom .wvc-word-row:hover { background: rgba(241,236,223,.7); }
+#root .application-frame--collections-cleanroom .wvc-word-row[data-selected] { background: rgba(225,235,220,.86); }
+
+#root .application-frame--collections-cleanroom .wvc-checkbox-label {
+  position: relative;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-checkbox-label input,
+#root .application-frame--collections-cleanroom .wvc-pick-row input,
+#root .application-frame--collections-cleanroom .wvc-move-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-checkbox {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border: 1px solid rgba(103,89,63,.34);
+  border-radius: 4px;
+  background: #fffaf2;
+  color: transparent;
+}
+
+#root .application-frame--collections-cleanroom input:checked + .wvc-checkbox {
+  border-color: var(--wvc-green);
+  background: var(--wvc-green);
+  color: #fffaf0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-open,
+#root .application-frame--collections-cleanroom .wvc-word-meaning {
+  min-width: 0;
+  padding: 7px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-open {
+  display: grid;
+  gap: 1px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-open strong {
+  overflow: hidden;
+  color: var(--wvc-ink);
+  font: 600 17px/20px "Cormorant Garamond", Georgia, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-open small {
+  color: #80817a;
+  font: 400 9px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-meaning {
+  overflow: hidden;
+  color: var(--wvc-muted);
+  font: 400 11px/15px "Inter", system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row .cefr-badge,
+#root .application-frame--collections-cleanroom .wvc-pick-row .cefr-badge,
+#root .application-frame--collections-cleanroom .wvc-word-meta .cefr-badge {
+  min-width: 43px;
+  min-height: 25px;
+  padding: 0 9px;
+  border: 1px solid rgba(103,89,63,.24);
+  border-radius: 999px;
+  background: rgba(255,253,248,.8);
+  box-shadow: none;
+  color: #6e756c;
+  font: 600 9px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-row-menu-wrap {
+  position: relative;
+  justify-self: end;
+}
+
+#root .application-frame--collections-cleanroom .wvc-icon-button--row {
+  width: 30px;
+  height: 30px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-row-menu {
+  top: 33px;
+  right: 0;
+  width: 190px;
+  padding: 5px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-row-menu button {
+  min-height: 34px;
+  justify-content: flex-start;
+  padding: 0 9px;
+  font: 500 10px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-row-menu .wvc-row-menu__danger {
+  color: var(--wvc-danger);
+}
+
+/* Word detail remains inside Collections. */
+#root .application-frame--collections-cleanroom .wvc-word-detail {
+  overflow: hidden;
+  border: 1px solid var(--wvc-border);
+  border-radius: 15px;
+  background: rgba(251,248,241,.9);
+  box-shadow: var(--wvc-shadow);
+  backdrop-filter: blur(12px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-hero {
+  display: flex;
+  min-height: 150px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 28px 32px 24px;
+  border-bottom: 1px solid rgba(126,111,83,.22);
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-hero h1 {
+  margin-top: 2px;
+  font-size: 48px;
+  line-height: 50px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  color: #6e756f;
+  font: 500 11px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-grid {
+  display: grid;
+  grid-template-columns: 1.3fr .9fr;
+  gap: 14px;
+  padding: 20px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-panel {
+  min-height: 178px;
+  padding: 22px 24px;
+  border: 1px solid rgba(126,111,83,.22);
+  border-radius: 11px;
+  background: rgba(255,252,245,.82);
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-panel--definition {
+  grid-row: span 2;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-panel--definition h2 {
+  max-width: 560px;
+  margin: 13px 0 0;
+  color: var(--wvc-ink);
+  font: 500 27px/34px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-translation {
+  margin: 22px 0 0;
+  padding-top: 17px;
+  border-top: 1px solid rgba(126,111,83,.2);
+  color: #5d724f;
+  font: 600 16px/21px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-panel blockquote {
+  margin: 14px 0 8px;
+  color: var(--wvc-ink);
+  font: 500 18px/25px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-panel > p:not(.wvc-translation) {
+  color: var(--wvc-muted);
+  font-size: 11px;
+  line-height: 17px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-soft-action {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  border: 1px solid rgba(103,89,63,.22);
+  border-radius: 7px;
+  background: #f7f2e8;
+  color: #365046;
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-soft-action:hover {
+  border-color: rgba(198,154,58,.55);
+  background: #fff9ec;
+}
+
+/* Modals */
+#root .application-frame--collections-cleanroom .wvc-modal-layer {
+  position: absolute;
+  z-index: 500;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 34px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(8,47,41,.34);
+  backdrop-filter: blur(7px) saturate(.8);
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid rgba(126,111,83,.36);
+  border-radius: 14px;
+  background: #fbf8f1;
+  box-shadow: 0 30px 90px rgba(8,47,41,.34);
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal--editor { width: 880px; }
+#root .application-frame--collections-cleanroom .wvc-modal--words { width: 720px; }
+#root .application-frame--collections-cleanroom .wvc-modal--move { width: 610px; }
+
+#root .application-frame--collections-cleanroom .wvc-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 25px 18px;
+  border-bottom: 1px solid rgba(126,111,83,.22);
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal__header h2 {
+  margin-top: 2px;
+  font-size: 29px;
+  line-height: 32px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal__header p:last-child {
+  margin: 5px 0 0;
+  color: var(--wvc-muted);
+  font-size: 11px;
+  line-height: 16px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal__body {
+  max-height: 570px;
+  overflow: auto;
+  padding: 21px 25px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal__footer {
+  display: flex;
+  min-height: 65px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 18px 10px 25px;
+  border-top: 1px solid rgba(126,111,83,.22);
+  background: #f4eee3;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal__footer > div {
+  display: flex;
+  gap: 8px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-editor-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 24px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-preview {
+  position: relative;
+  display: flex;
+  height: 210px;
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid rgba(103,89,63,.24);
+  border-radius: 11px;
+  box-shadow: inset 0 -90px 70px rgba(8,47,41,.22);
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-preview > div {
+  display: grid;
+  gap: 2px;
+  color: #fff9ed;
+  text-shadow: 0 2px 12px rgba(8,47,41,.55);
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-preview > div span {
+  font: 600 23px/27px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-preview > div small {
+  max-width: 360px;
+  font: 500 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-studio__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 13px 0 8px;
+  color: #6d736d;
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-choice {
+  position: relative;
+  height: 58px;
+  overflow: hidden;
+  border: 1px solid rgba(103,89,63,.22);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-choice::after {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,47,41,.13);
+  content: "";
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-choice:hover,
+#root .application-frame--collections-cleanroom .wvc-cover-choice[aria-pressed="true"] {
+  border-color: var(--wvc-gold);
+  box-shadow: 0 0 0 2px rgba(198,154,58,.15);
+}
+
+#root .application-frame--collections-cleanroom .wvc-cover-choice span {
+  position: absolute;
+  z-index: 1;
+  right: 5px;
+  bottom: 4px;
+  left: 5px;
+  overflow: hidden;
+  color: #fff9ee;
+  font: 600 8px/10px "Inter", system-ui, sans-serif;
+  text-align: left;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 4px rgba(8,47,41,.7);
+  white-space: nowrap;
+}
+
+#root .application-frame--collections-cleanroom .wvc-editor-fields {
+  display: grid;
+  align-content: start;
+  gap: 17px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field {
+  display: grid;
+  gap: 6px;
+  color: #68736c;
+  font: 600 10px/13px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field input,
+#root .application-frame--collections-cleanroom .wvc-field textarea {
+  width: 100%;
+  border: 1px solid rgba(103,89,63,.25);
+  border-radius: 8px;
+  outline: 0;
+  background: #fffdf8;
+  color: var(--wvc-ink);
+  font: 400 12px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field input {
+  height: 44px;
+  padding: 0 12px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field textarea {
+  min-height: 122px;
+  padding: 11px 12px;
+  resize: vertical;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field input:hover,
+#root .application-frame--collections-cleanroom .wvc-field textarea:hover { border-color: rgba(198,154,58,.5); }
+#root .application-frame--collections-cleanroom .wvc-field input:focus,
+#root .application-frame--collections-cleanroom .wvc-field textarea:focus { border-color: var(--wvc-gold); box-shadow: 0 0 0 2px rgba(198,154,58,.12); }
+
+#root .application-frame--collections-cleanroom .wvc-editor-note {
+  margin: 0;
+  padding: 12px 13px;
+  border-left: 2px solid var(--wvc-gold);
+  border-radius: 0 7px 7px 0;
+  background: #f3eee1;
+  color: #727870;
+  font-size: 10px;
+  line-height: 16px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-pick-list,
+#root .application-frame--collections-cleanroom .wvc-move-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-pick-list {
+  max-height: 365px;
+  overflow: auto;
+}
+
+#root .application-frame--collections-cleanroom .wvc-pick-row {
+  position: relative;
+  display: grid;
+  min-height: 54px;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border: 1px solid rgba(103,89,63,.2);
+  border-radius: 8px;
+  background: #fffdf8;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-pick-row:hover { border-color: rgba(198,154,58,.5); background: #fff9ee; }
+#root .application-frame--collections-cleanroom .wvc-pick-row:has(input:checked) { border-color: rgba(83,110,72,.54); background: #edf1e8; }
+
+#root .application-frame--collections-cleanroom .wvc-pick-row > span:nth-of-type(2),
+#root .application-frame--collections-cleanroom .wvc-move-option > span:nth-of-type(2) {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-pick-row strong,
+#root .application-frame--collections-cleanroom .wvc-move-option strong {
+  overflow: hidden;
+  color: var(--wvc-ink);
+  font: 600 15px/18px "Cormorant Garamond", Georgia, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--collections-cleanroom .wvc-pick-row small,
+#root .application-frame--collections-cleanroom .wvc-move-option small {
+  color: var(--wvc-muted);
+  font: 400 9px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-selection-copy {
+  color: var(--wvc-muted);
+  font-size: 10px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-move-option {
+  position: relative;
+  display: grid;
+  min-height: 70px;
+  grid-template-columns: 88px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 12px;
+  padding: 7px;
+  border: 1px solid rgba(103,89,63,.22);
+  border-radius: 9px;
+  background: #fffdf8;
+  cursor: pointer;
+}
+
+#root .application-frame--collections-cleanroom .wvc-move-option:hover { border-color: rgba(198,154,58,.55); background: #fff9ee; }
+#root .application-frame--collections-cleanroom .wvc-move-option[data-selected] { border-color: #66805e; background: #edf2e9; box-shadow: 0 0 0 1px rgba(102,128,94,.18); }
+
+#root .application-frame--collections-cleanroom .wvc-move-option__cover {
+  height: 54px;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px rgba(8,47,41,.1);
+}
+
+#root .application-frame--collections-cleanroom .wvc-radio {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(103,89,63,.35);
+  border-radius: 50%;
+  background: #fffdf8;
+}
+
+#root .application-frame--collections-cleanroom .wvc-move-option[data-selected] .wvc-radio {
+  border: 5px solid var(--wvc-green);
+}
+
+#root .application-frame--collections-cleanroom .wvc-inline-empty {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 30px;
+  color: var(--wvc-muted);
+  text-align: center;
+}
+
+#root .application-frame--collections-cleanroom .wvc-inline-empty strong {
+  color: var(--wvc-ink);
+  font: 600 20px/24px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-inline-empty span,
+#root .application-frame--collections-cleanroom .wvc-inline-empty p { margin: 0; font-size: 10px; }
+#root .application-frame--collections-cleanroom .wvc-inline-empty--large { min-height: 300px; align-content: center; }
+
+#root .application-frame--collections-cleanroom .wvc-modal--confirm {
+  display: grid;
+  width: 450px;
+  justify-items: center;
+  padding: 32px;
+  text-align: center;
+}
+
+#root .application-frame--collections-cleanroom .wvc-danger-mark {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  margin-bottom: 13px;
+  border-radius: 50%;
+  background: #f2dcd5;
+  color: var(--wvc-danger);
+  font: 600 25px/28px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal--confirm h2 { font-size: 26px; }
+#root .application-frame--collections-cleanroom .wvc-modal--confirm p { max-width: 340px; margin: 7px 0 22px; color: var(--wvc-muted); font-size: 11px; line-height: 17px; }
+#root .application-frame--collections-cleanroom .wvc-modal--confirm > div:last-child { display: flex; gap: 8px; }
+
+#root .application-frame--collections-cleanroom .wvc-status {
+  position: absolute;
+  z-index: 2;
+  top: 180px;
+  left: 50%;
+  display: grid;
+  width: 560px;
+  justify-items: center;
+  padding: 38px;
+  border: 1px solid var(--wvc-border);
+  border-radius: 14px;
+  background: rgba(251,248,241,.92);
+  text-align: center;
+  transform: translateX(-50%);
+  backdrop-filter: blur(12px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-status h1 { font-size: 28px; }
+#root .application-frame--collections-cleanroom .wvc-status p { color: var(--wvc-muted); font-size: 11px; }
+
+/* Ensure no pre-clean-room Library interface can leak into Collections. */
+#root .application-frame--collections-cleanroom .library-panel,
 #root .application-frame--collections-cleanroom .library-table,
-#root .application-frame--collections-cleanroom .library-toolbar {
+#root .application-frame--collections-cleanroom .library-toolbar,
+#root .application-frame--collections-cleanroom .route-page--library:not(.wvc-page) {
   display: none !important;
+}
+
+@media (max-height: 820px) and (min-width: 1200px) {
+  #root .application-frame--collections-cleanroom .wvc-shell--overview { padding-top: 28px; }
+  #root .application-frame--collections-cleanroom .wvc-overview-header { min-height: 102px; padding-top: 18px; padding-bottom: 17px; }
+  #root .application-frame--collections-cleanroom .wvc-card__cover { height: 102px; }
+  #root .application-frame--collections-cleanroom .wvc-card__body { min-height: 112px; }
+  #root .application-frame--collections-cleanroom .wvc-card-grid { padding-top: 16px; padding-bottom: 18px; }
+  #root .application-frame--collections-cleanroom .wvc-collection-hero { min-height: 150px; }
+  #root .application-frame--collections-cleanroom .wvc-collection-hero__cover { height: 110px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--collections-cleanroom .wvc-card,
+  #root .application-frame--collections-cleanroom .wvc-button,
+  #root .application-frame--collections-cleanroom .wvc-search {
+    transition: none;
+  }
 }
