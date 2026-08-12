@@ -113,7 +113,7 @@ function primaryTranslation(record: LibraryRecord): string {
 }
 
 function primaryDefinition(record: LibraryRecord): string {
-  return record.entry.meanings[0]?.definition ?? "This word is ready for a definition when you revisit it.";
+  return record.entry.meanings[0]?.definitionEn ?? "This word is ready for a definition when you revisit it.";
 }
 
 function createSeedCollections(records: readonly LibraryRecord[]): CollectionModel[] {
