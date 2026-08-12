@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 export type AppIconName =
+  | "arrow-right"
   | "book-open"
   | "bookmark"
   | "books"
@@ -14,6 +15,7 @@ export type AppIconName =
   | "download"
   | "edit"
   | "eye"
+  | "image"
   | "moon"
   | "search"
   | "settings"
@@ -32,6 +34,13 @@ interface AppIconProps {
 
 function renderGlyph(name: AppIconName): ReactNode {
   switch (name) {
+    case "arrow-right":
+      return (
+        <>
+          <path d="M4 12h15" />
+          <path d="m14 7 5 5-5 5" />
+        </>
+      );
     case "book-open":
       return (
         <>
@@ -100,6 +109,14 @@ function renderGlyph(name: AppIconName): ReactNode {
           <circle cx="12" cy="12" r="2.5" />
         </>
       );
+    case "image":
+      return (
+        <>
+          <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+          <circle cx="9" cy="9" r="1.5" />
+          <path d="m5.5 17 4.2-4.2 2.7 2.6 2.2-2.1 3.9 3.7" />
+        </>
+      );
     case "moon":
       return <path d="M19 15.5A8 8 0 0 1 8.5 5 8.5 8.5 0 1 0 19 15.5Z" />;
     case "search":
@@ -117,9 +134,7 @@ function renderGlyph(name: AppIconName): ReactNode {
         </>
       );
     case "star":
-      return (
-        <path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />
-      );
+      return <path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />;
     case "sun":
       return (
         <>
