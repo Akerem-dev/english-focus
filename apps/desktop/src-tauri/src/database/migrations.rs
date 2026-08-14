@@ -2,7 +2,7 @@ use std::{collections::HashSet, error::Error, fmt};
 
 use rusqlite::{Connection, OptionalExtension};
 
-pub const CURRENT_DATABASE_SCHEMA_VERSION: u32 = 3;
+pub const CURRENT_DATABASE_SCHEMA_VERSION: u32 = 4;
 
 const METADATA_SCHEMA: &str = r#"
 CREATE TABLE IF NOT EXISTS schema_metadata (
@@ -60,6 +60,14 @@ CREATE TABLE IF NOT EXISTS vocabulary_user_metadata (
 );
 "#;
 
+const MIGRATION_4: &str = r#"
+CREATE TABLE IF NOT EXISTS collections_state (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    state_json TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+"#;
+
 #[derive(Debug)]
 pub enum MigrationError {
     Database(rusqlite::Error),
@@ -104,7 +112,7 @@ struct Migration {
     sql: &'static str,
 }
 
-const MIGRATIONS: [Migration; 3] = [
+const MIGRATIONS: [Migration; 4] = [
     Migration {
         version: 1,
         sql: MIGRATION_1,
@@ -116,6 +124,10 @@ const MIGRATIONS: [Migration; 3] = [
     Migration {
         version: 3,
         sql: MIGRATION_3,
+    },
+    Migration {
+        version: 4,
+        sql: MIGRATION_4,
     },
 ];
 
@@ -238,6 +250,15 @@ fn verify_schema(connection: &Connection, version: u32) -> Result<(), MigrationE
                 "created_at",
                 "updated_at",
             ],
+        )?;
+    }
+
+    if version >= 4 {
+        require_table(
+            connection,
+            version,
+            "collections_state",
+            &["id", "state_json", "updated_at"],
         )?;
     }
 
@@ -375,6 +396,7 @@ mod tests {
             "activity_log",
             "app_settings",
             "vocabulary_user_metadata",
+            "collections_state",
         ] {
             assert!(table_exists(&connection, table), "missing table: {table}");
         }
@@ -416,6 +438,7 @@ mod tests {
         assert_eq!(retained, 1);
         assert_eq!(version(&connection), Some(CURRENT_DATABASE_SCHEMA_VERSION));
         assert!(table_exists(&connection, "vocabulary_user_metadata"));
+        assert!(table_exists(&connection, "collections_state"));
     }
 
     #[test]
@@ -457,6 +480,7 @@ mod tests {
 
         assert_eq!(version(&connection), Some(CURRENT_DATABASE_SCHEMA_VERSION));
         assert!(table_exists(&connection, "vocabulary_user_metadata"));
+        assert!(table_exists(&connection, "collections_state"));
     }
 
     #[test]
