@@ -1,0 +1,101 @@
+/* Collections Phase 1A — runtime/layout fixes only.
+   Keep this file narrow: no visual redesign and no data/sorting behavior. */
+
+/* The 1664×936 app stage stays fixed, but the Collections content viewport must scroll. */
+#root .application-frame--collections-cleanroom .wvc-page {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+}
+
+/* Keep the Valley scene pinned while cards/lists move over it. */
+#root .application-frame--collections-cleanroom .wvc-scene,
+#root .application-frame--collections-cleanroom .wvc-mist {
+  position: fixed !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 318px !important;
+  width: auto !important;
+  height: auto !important;
+  pointer-events: none;
+}
+
+#root .application-frame--collections-cleanroom .wvc-scene {
+  z-index: 0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-mist {
+  z-index: 1;
+}
+
+#root .application-frame--collections-cleanroom .wvc-shell {
+  z-index: 2;
+  padding-bottom: 72px;
+}
+
+/* Overview/dropdown stacking: toolbar must sit above the gallery stacking context. */
+#root .application-frame--collections-cleanroom .wvc-toolbar {
+  z-index: 40;
+}
+
+#root .application-frame--collections-cleanroom .wvc-toolbar--overview {
+  position: relative;
+  z-index: 60;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-wrap {
+  z-index: 3;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sort-menu {
+  z-index: 300;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card-grid,
+#root .application-frame--collections-cleanroom .wvc-empty,
+#root .application-frame--collections-cleanroom .wvc-search-empty {
+  position: relative;
+  z-index: 2;
+}
+
+/* Row action menus should remain above following rows while a long list scrolls. */
+#root .application-frame--collections-cleanroom .wvc-row-menu-wrap {
+  z-index: 5;
+}
+
+#root .application-frame--collections-cleanroom .wvc-row-menu {
+  z-index: 320;
+}
+
+/* Modals belong to the visible main viewport, not to the current scroll position. */
+#root .application-frame--collections-cleanroom .wvc-modal-layer {
+  position: fixed !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 318px !important;
+  z-index: 700 !important;
+}
+
+/* Quiet desktop scrollbar: visible enough to communicate that the page continues. */
+#root .application-frame--collections-cleanroom .wvc-page::-webkit-scrollbar {
+  width: 10px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-page::-webkit-scrollbar-track {
+  background: rgba(247, 242, 232, 0.18);
+}
+
+#root .application-frame--collections-cleanroom .wvc-page::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(8, 47, 41, 0.34);
+  background-clip: padding-box;
+}
+
+#root .application-frame--collections-cleanroom .wvc-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(8, 47, 41, 0.48);
+  background-clip: padding-box;
+}
