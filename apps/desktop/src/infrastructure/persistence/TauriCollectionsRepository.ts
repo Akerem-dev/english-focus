@@ -10,7 +10,7 @@ export interface PersistedCollection {
   readonly wordIds: readonly string[];
 }
 
-export interface CollectionsState {
+interface CollectionsState {
   readonly version: 1;
   readonly collections: readonly PersistedCollection[];
 }
@@ -53,7 +53,7 @@ function parseCollection(payload: unknown): PersistedCollection {
   });
 }
 
-export function parseCollectionsState(payload: unknown): CollectionsState {
+function parseCollectionsState(payload: unknown): CollectionsState {
   if (typeof payload !== "object" || payload === null) {
     throw new Error("Stored collections state is invalid.");
   }
