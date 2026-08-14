@@ -7,7 +7,5 @@ export { TauriVocabularyUserMetadataRepository } from "./TauriVocabularyUserMeta
 export { TauriLocalDataRepository } from "./TauriLocalDataRepository";
 export {
   TauriCollectionsRepository,
-  parseCollectionsState,
-  type CollectionsState,
   type PersistedCollection
 } from "./TauriCollectionsRepository";
