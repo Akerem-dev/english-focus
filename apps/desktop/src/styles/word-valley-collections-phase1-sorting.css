@@ -1,0 +1,66 @@
+/* Collections Phase 1B — sorting behavior/affordances only. */
+
+#root .application-frame--collections-cleanroom .wvc-word-list {
+  display: flex;
+  flex-direction: column;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-list__head,
+#root .application-frame--collections-cleanroom .wvc-word-row,
+#root .application-frame--collections-cleanroom .wvc-inline-empty {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sortable-heading {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  border-radius: 5px;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sortable-heading::after {
+  min-width: 10px;
+  color: rgba(16, 45, 39, 0.4);
+  content: "↕";
+  font-family: var(--font-family-ui);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sortable-heading:hover {
+  color: #8d6c1e;
+}
+
+#root .application-frame--collections-cleanroom .wvc-sortable-heading:focus-visible {
+  box-shadow: 0 0 0 2px rgba(212, 167, 44, 0.52);
+}
+
+#root .application-frame--collections-cleanroom .wvc-sortable-heading[data-sort-direction="asc"]::after {
+  color: #9a741d;
+  content: "↑";
+}
+
+#root .application-frame--collections-cleanroom .wvc-sortable-heading[data-sort-direction="desc"]::after {
+  color: #9a741d;
+  content: "↓";
+}
+
+/* The old segmented A–Z / Level control is redundant once the table headers sort directly. */
+#root .application-frame--collections-cleanroom .wvc-page--detail .wvc-segmented {
+  display: none !important;
+}
+
+#root .application-frame--collections-cleanroom .wvc-page--detail .wvc-toolbar {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
