@@ -5,6 +5,7 @@ pub mod assistant_generation;
 pub mod assistant_routing;
 pub mod backup;
 pub mod backup_inventory;
+pub mod collections;
 pub mod contract_commands;
 pub mod data_reset;
 pub mod database;
