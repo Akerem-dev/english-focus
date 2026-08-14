@@ -13,6 +13,10 @@ import {
 import valleyBackground from "../../../assets/background/home-background-static.png";
 import { CefrBadge } from "../../../components";
 import { AppIcon } from "../../../design-system";
+import {
+  TauriCollectionsRepository,
+  type PersistedCollection
+} from "../../../infrastructure/persistence";
 import { exportVocabularyPack } from "../../import-export";
 import {
   matchesSearch,
@@ -48,6 +52,24 @@ interface CollectionPreset {
   readonly tone: CollectionTone;
   readonly coverPreset: CoverPreset;
 }
+
+const COLLECTION_TONES: readonly CollectionTone[] = Object.freeze([
+  "gold",
+  "sage",
+  "pine",
+  "rose",
+  "blue",
+  "sand"
+]);
+
+const COVER_PRESETS: readonly CoverPreset[] = Object.freeze([
+  "ridge",
+  "lake",
+  "cottage",
+  "meadow",
+  "forest",
+  "sunrise"
+]);
 
 const COLLECTION_PRESETS: readonly CollectionPreset[] = Object.freeze([
   {
@@ -138,6 +160,44 @@ function createSeedCollections(records: readonly LibraryRecord[]): CollectionMod
   });
 }
 
+function restoreCollections(
+  storedCollections: readonly PersistedCollection[],
+  recordByWord: ReadonlyMap<string, LibraryRecord>
+): CollectionModel[] {
+  const seenIds = new Set<string>();
+
+  return storedCollections.flatMap((stored) => {
+    const id = stored.id.trim();
+    const title = stored.title.trim();
+    if (id.length === 0 || title.length === 0 || seenIds.has(id)) {
+      return [];
+    }
+    seenIds.add(id);
+
+    const tone = COLLECTION_TONES.includes(stored.tone as CollectionTone)
+      ? (stored.tone as CollectionTone)
+      : "gold";
+    const coverPreset = COVER_PRESETS.includes(stored.coverPreset as CoverPreset)
+      ? (stored.coverPreset as CoverPreset)
+      : "ridge";
+    const wordIds = Array.from(
+      new Set(stored.wordIds.filter((wordId) => recordByWord.has(wordId)))
+    );
+
+    return [
+      {
+        id,
+        title,
+        description: stored.description,
+        tone,
+        coverPreset,
+        ...(stored.coverImage === undefined ? {} : { coverImage: stored.coverImage }),
+        wordIds
+      }
+    ];
+  });
+}
+
 function sortCollections(
   collections: readonly CollectionModel[],
   sort: CollectionSort
@@ -168,11 +228,14 @@ export function LibraryPage() {
   const { getMetadata } = useVocabularyMetadata();
   const { showToast } = useToast();
   const { exporter } = useFileTransfer();
+  const collectionsRepository = useMemo(() => new TauriCollectionsRepository(), []);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
-  const seededCollectionsRef = useRef(false);
+  const persistenceEnabledRef = useRef(false);
+  const persistQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   const [collections, setCollections] = useState<readonly CollectionModel[]>([]);
+  const [collectionsReady, setCollectionsReady] = useState(false);
   const [activeCollectionId, setActiveCollectionId] = useState<string>();
   const [viewingWordId, setViewingWordId] = useState<string>();
   const [collectionQuery, setCollectionQuery] = useState("");
@@ -211,13 +274,87 @@ export function LibraryPage() {
   );
 
   useEffect(() => {
-    if (seededCollectionsRef.current || libraryEntries.length === 0) {
+    if (collectionsReady || libraryEntries.length === 0) {
       return;
     }
 
-    setCollections(createSeedCollections(libraryEntries));
-    seededCollectionsRef.current = true;
-  }, [libraryEntries]);
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const storedState = await collectionsRepository.getState();
+        const nextCollections =
+          storedState === undefined
+            ? createSeedCollections(libraryEntries)
+            : restoreCollections(storedState.collections, recordByWord);
+
+        if (cancelled) {
+          return;
+        }
+
+        persistenceEnabledRef.current = true;
+        setCollections(nextCollections);
+        setCollectionsReady(true);
+      } catch (cause) {
+        if (cancelled) {
+          return;
+        }
+
+        persistenceEnabledRef.current = false;
+        setCollections(createSeedCollections(libraryEntries));
+        setCollectionsReady(true);
+        showToast({
+          title: "Saved collections couldn’t be loaded",
+          message:
+            cause instanceof Error
+              ? cause.message
+              : "Collections are available for this session, but changes will not be saved until storage is available.",
+          tone: "error",
+          dedupeKey: "collections-persistence-load"
+        });
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [collectionsReady, collectionsRepository, libraryEntries, recordByWord, showToast]);
+
+  useEffect(() => {
+    if (!collectionsReady || !persistenceEnabledRef.current) {
+      return;
+    }
+
+    const snapshot = {
+      version: 1 as const,
+      collections: collections.map((collection) => ({
+        id: collection.id,
+        title: collection.title,
+        description: collection.description,
+        tone: collection.tone,
+        coverPreset: collection.coverPreset,
+        ...(collection.coverImage === undefined ? {} : { coverImage: collection.coverImage }),
+        wordIds: [...collection.wordIds]
+      }))
+    };
+
+    persistQueueRef.current = persistQueueRef.current
+      .catch(() => undefined)
+      .then(async () => {
+        await collectionsRepository.saveState(snapshot);
+      })
+      .catch((cause) => {
+        showToast({
+          title: "Collections couldn’t be saved",
+          message:
+            cause instanceof Error
+              ? cause.message
+              : "Your latest collection changes may be lost when the app closes.",
+          tone: "error",
+          dedupeKey: "collections-persistence-save"
+        });
+      });
+  }, [collections, collectionsReady, collectionsRepository, showToast]);
 
   const activeCollection = useMemo(
     () => collections.find((collection) => collection.id === activeCollectionId),
@@ -840,7 +977,7 @@ export function LibraryPage() {
           <div className="wvc-sort-wrap"><button aria-expanded={sortOpen} className="wvc-sort-button" onClick={() => setSortOpen((current) => !current)} type="button"><span>{SORT_LABELS[collectionSort]}</span><AppIcon name="chevron-down" size={15} /></button>{sortOpen ? <div className="wvc-sort-menu">{(Object.keys(SORT_LABELS) as CollectionSort[]).map((sort) => <button aria-checked={collectionSort === sort} key={sort} onClick={() => { setCollectionSort(sort); setSortOpen(false); }} role="menuitemradio" type="button"><span>{SORT_LABELS[sort]}</span>{collectionSort === sort ? <AppIcon name="check" size={15} /> : null}</button>)}</div> : null}</div>
         </div>
 
-        {status === "loading" && collections.length === 0 ? <section className="wvc-empty"><span className="wvc-empty-icon"><AppIcon name="bookmark" size={28} /></span><h2>Gathering your collections…</h2></section> : collections.length === 0 ? <section className="wvc-empty"><span className="wvc-empty-icon"><AppIcon name="bookmark" size={28} /></span><h2>Make your first collection</h2><p>Choose a cover, give it a name, and start gathering words.</p><button className="wvc-button wvc-button--primary" onClick={() => setModal({ type: "new" })} type="button">Create collection</button></section> : visibleCollections.length === 0 ? <section className="wvc-search-empty"><span className="wvc-empty-icon"><AppIcon name="search" size={25} /></span><div><h2>No collections found</h2><p>Try another name or clear your search.</p></div><button className="wvc-text-link" onClick={() => setCollectionQuery("")} type="button">Clear search</button></section> : <section className="wvc-card-grid" aria-label="Your collections">{visibleCollections.map((collection) => (
+        {!collectionsReady || (status === "loading" && collections.length === 0) ? <section className="wvc-empty"><span className="wvc-empty-icon"><AppIcon name="bookmark" size={28} /></span><h2>Gathering your collections…</h2></section> : collections.length === 0 ? <section className="wvc-empty"><span className="wvc-empty-icon"><AppIcon name="bookmark" size={28} /></span><h2>Make your first collection</h2><p>Choose a cover, give it a name, and start gathering words.</p><button className="wvc-button wvc-button--primary" onClick={() => setModal({ type: "new" })} type="button">Create collection</button></section> : visibleCollections.length === 0 ? <section className="wvc-search-empty"><span className="wvc-empty-icon"><AppIcon name="search" size={25} /></span><div><h2>No collections found</h2><p>Try another name or clear your search.</p></div><button className="wvc-text-link" onClick={() => setCollectionQuery("")} type="button">Clear search</button></section> : <section className="wvc-card-grid" aria-label="Your collections">{visibleCollections.map((collection) => (
           <article className="wvc-card" data-tone={collection.tone} key={collection.id}>
             <button aria-label={`Edit ${collection.title}`} className="wvc-card__menu wvc-icon-button" onClick={() => { setActiveCollectionId(collection.id); setModal({ type: "edit" }); }} type="button">⋯</button>
             <button className="wvc-card__open" onClick={() => openCollection(collection.id)} type="button">
