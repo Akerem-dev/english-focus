@@ -5,3 +5,9 @@ export { TauriSettingsRepository } from "./TauriSettingsRepository";
 export { TauriVocabularyRepository } from "./TauriVocabularyRepository";
 export { TauriVocabularyUserMetadataRepository } from "./TauriVocabularyUserMetadataRepository";
 export { TauriLocalDataRepository } from "./TauriLocalDataRepository";
+export {
+  TauriCollectionsRepository,
+  parseCollectionsState,
+  type CollectionsState,
+  type PersistedCollection
+} from "./TauriCollectionsRepository";
