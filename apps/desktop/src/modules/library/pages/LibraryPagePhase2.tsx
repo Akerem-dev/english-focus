@@ -338,15 +338,22 @@ function AllWordsPage({
 
 export function LibraryPagePhase2() {
   const [mode, setMode] = useState<LibraryMode>("collections");
-
-  if (mode === "all-words") {
-    return <AllWordsPage onChangeMode={setMode} />;
-  }
+  const collectionsVisible = mode === "collections";
 
   return (
     <>
-      <LibraryPagePhase1 />
-      <CollectionsModeNavPortal onChange={setMode} />
+      <div
+        aria-hidden={collectionsVisible ? undefined : true}
+        style={{ display: collectionsVisible ? "contents" : "none" }}
+      >
+        <LibraryPagePhase1 />
+      </div>
+
+      {collectionsVisible ? (
+        <CollectionsModeNavPortal onChange={setMode} />
+      ) : (
+        <AllWordsPage onChangeMode={setMode} />
+      )}
     </>
   );
 }
