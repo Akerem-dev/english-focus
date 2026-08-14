@@ -57,6 +57,13 @@ function CollectionsPhase4EditorialCleanup() {
             label.setAttribute("aria-hidden", "true");
           }
         });
+
+      root.querySelectorAll<HTMLElement>(".wvc-phase3-example__notes span")
+        .forEach((note) => {
+          if (note.textContent?.trim().startsWith("Target form:")) {
+            note.hidden = true;
+          }
+        });
     };
 
     const schedule = () => {
