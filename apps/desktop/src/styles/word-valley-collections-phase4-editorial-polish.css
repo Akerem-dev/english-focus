@@ -1,0 +1,186 @@
+/* Collections Phase 4 — editorial polish and AI-vibe cleanup. */
+
+/* Keep the pronunciation / variant / CEFR rhythm clean. The separator before CEFR
+   previously sat too far left against the badge edge. */
+#root .application-frame--collections-cleanroom .wvc-phase3-meta > .cefr-badge {
+  margin-left: 2px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-phase3-meta > .cefr-badge::before {
+  left: 2px;
+}
+
+/* Collection cards: let the image and title carry the identity instead of pills/CTAs. */
+#root .application-frame--collections-cleanroom .wvc-card {
+  border-radius: 10px;
+  box-shadow: 0 5px 16px rgba(8,47,41,.075);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card:hover {
+  border-color: rgba(198,154,58,.48);
+  box-shadow: 0 14px 32px rgba(8,47,41,.14);
+  transform: translateY(-2px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__cover {
+  height: 136px;
+  padding: 13px 14px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__cover > span {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255,250,240,.92);
+  font: 600 10px/14px "Inter", system-ui, sans-serif;
+  letter-spacing: .015em;
+  text-shadow: 0 1px 4px rgba(8,47,41,.68);
+  backdrop-filter: none;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__body {
+  min-height: 112px;
+  padding: 14px 16px 15px;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__body > strong {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 20px;
+  line-height: 23px;
+  text-overflow: unset;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__body > small {
+  min-height: 34px;
+  margin-top: 5px;
+  color: rgba(16,45,39,.62);
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__footer {
+  min-height: 18px;
+  justify-content: flex-end;
+  margin-top: 6px;
+  padding-top: 2px;
+  border-top: 0;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__footer > span:first-child {
+  display: none;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card__footer > span:last-child {
+  color: rgba(135,102,31,0);
+  font: 600 16px/18px "Cormorant Garamond", Georgia, serif;
+  transform: translateX(-5px);
+  transition: color 150ms ease, transform 160ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card:hover .wvc-card__footer > span:last-child,
+#root .application-frame--collections-cleanroom .wvc-card:focus-within .wvc-card__footer > span:last-child {
+  color: rgba(135,102,31,.75);
+  transform: translateX(0);
+}
+
+/* Row controls stay quiet until the user actually starts managing words. */
+#root .application-frame--collections-cleanroom .wvc-checkbox-label {
+  opacity: .16;
+  transition: opacity 130ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row:hover .wvc-checkbox-label,
+#root .application-frame--collections-cleanroom .wvc-word-row[data-selected] .wvc-checkbox-label,
+#root .application-frame--collections-cleanroom .wvc-checkbox-label:focus-within,
+#root .application-frame--collections-cleanroom .wvc-shell:has(.wvc-selection-bar) .wvc-checkbox-label {
+  opacity: 1;
+}
+
+#root .application-frame--collections-cleanroom .wvc-icon-button--row {
+  opacity: .18;
+  transition: opacity 130ms ease, background 130ms ease, border-color 130ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row:hover .wvc-icon-button--row,
+#root .application-frame--collections-cleanroom .wvc-word-row[data-selected] .wvc-icon-button--row,
+#root .application-frame--collections-cleanroom .wvc-icon-button--row[aria-expanded="true"],
+#root .application-frame--collections-cleanroom .wvc-icon-button--row:focus-visible {
+  opacity: 1;
+}
+
+/* CEFR is reference metadata, not a call-to-action chip. */
+#root .application-frame--collections-cleanroom .wvc-word-row > .cefr-badge,
+#root .application-frame--collections-cleanroom .wvc-pick-row .cefr-badge {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(16,45,39,.56);
+  font: 600 10px/14px "Inter", system-ui, sans-serif;
+  letter-spacing: .045em;
+}
+
+/* Keep the rich-detail CEFR compact, but make it less pill-like. */
+#root .application-frame--collections-cleanroom .wvc-phase3-meta .cefr-badge {
+  min-width: 34px;
+  min-height: 23px;
+  padding-inline: 7px;
+  border-radius: 5px;
+  background: rgba(255,252,246,.46);
+}
+
+/* Remove generic helper copy that reads like generated onboarding text. */
+#root .application-frame--collections-cleanroom .wvc-editor-note {
+  display: none;
+}
+
+/* Selection mode remains contextual instead of feeling like a permanent data-table toolbar. */
+#root .application-frame--collections-cleanroom .wvc-selection-bar {
+  border-radius: 7px;
+  background: rgba(237,243,230,.88);
+  box-shadow: inset 3px 0 0 rgba(97,123,94,.58);
+}
+
+/* Softer row feedback: editorial list first, admin table second. */
+#root .application-frame--collections-cleanroom .wvc-word-row {
+  transition: background 120ms ease, box-shadow 120ms ease;
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row:hover {
+  background: rgba(244,238,224,.42);
+}
+
+#root .application-frame--collections-cleanroom .wvc-word-row[data-selected] {
+  background: rgba(237,243,230,.78);
+}
+
+/* Overview sort remains a control but reads less like an implementation setting. */
+#root .application-frame--collections-cleanroom .wvc-sort-button {
+  color: rgba(16,45,39,.76);
+}
+
+/* Keep menu/card stacking explicit after all visual effects. */
+#root .application-frame--collections-cleanroom .wvc-toolbar--overview {
+  z-index: 120;
+}
+
+#root .application-frame--collections-cleanroom .wvc-card-grid {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--collections-cleanroom .wvc-card,
+  #root .application-frame--collections-cleanroom .wvc-card__footer > span:last-child,
+  #root .application-frame--collections-cleanroom .wvc-checkbox-label,
+  #root .application-frame--collections-cleanroom .wvc-icon-button--row,
+  #root .application-frame--collections-cleanroom .wvc-word-row {
+    transition: none;
+  }
+}
