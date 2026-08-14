@@ -33,6 +33,8 @@ pub fn run() {
             commands::storage_contract_commands::contract_get_vocabulary_user_metadata,
             commands::storage_contract_commands::contract_save_vocabulary_user_metadata,
             commands::storage_contract_commands::contract_record_vocabulary_view,
+            commands::collections::get_collections_state,
+            commands::collections::save_collections_state,
             commands::contract_commands::get_local_data_snapshot,
             commands::contract_commands::reset_local_data,
             commands::storage_contract_commands::contract_get_app_settings,
