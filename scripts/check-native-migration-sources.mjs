@@ -9,7 +9,8 @@ const expectedSources = new Map([
   ["METADATA_SCHEMA", "0000_schema_metadata.sql"],
   ["MIGRATION_1", "0001_initial.sql"],
   ["MIGRATION_2", "0002_activity_settings.sql"],
-  ["MIGRATION_3", "0003_user_metadata.sql"]
+  ["MIGRATION_3", "0003_user_metadata.sql"],
+  ["MIGRATION_4", "0004_collections_state.sql"]
 ]);
 
 function normalizeSql(value) {
