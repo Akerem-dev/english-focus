@@ -5,6 +5,7 @@ on:
     branches: [feat/search-visual-cleanroom]
     paths:
       - .github/workflows/collections-backup-reset-integration.yml
+      - scripts/integrate-collections-backup-reset.py
 
 permissions:
   contents: write
@@ -13,521 +14,57 @@ jobs:
   integrate:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
           ref: feat/search-visual-cleanroom
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
 
-      - name: Apply collections backup/reset integration
-        shell: python
-        run: |
-          from pathlib import Path
-          import json
-          import re
-
-          def read(path):
-              return Path(path).read_text(encoding="utf-8")
-
-          def write(path, text):
-              Path(path).write_text(text, encoding="utf-8")
-
-          def replace_once(text, old, new, label):
-              count = text.count(old)
-              if count != 1:
-                  raise RuntimeError(f"{label}: expected 1 match, found {count}")
-              return text.replace(old, new, 1)
-
-          # Reuse the exact collections validator from backup/restore.
-          path = "apps/desktop/src-tauri/src/commands/collections.rs"
-          text = read(path)
-          text = replace_once(
-              text,
-              "fn validate_collections_state(value: &Value) -> Result<(), String> {",
-              "pub(crate) fn validate_collections_state(value: &Value) -> Result<(), String> {",
-              "collections validator visibility",
-          )
-          write(path, text)
-
-          # Native backup / restore.
-          path = "apps/desktop/src-tauri/src/commands/backup.rs"
-          text = read(path)
-          text = replace_once(
-              text,
-              "use crate::{\n    state::AppState,",
-              "use crate::{\n    commands::collections::validate_collections_state,\n    state::AppState,",
-              "backup collections validator import",
-          )
-          text = replace_once(
-              text,
-              'const DATABASE_SCHEMA_VERSION: &str = "3";',
-              'const DATABASE_SCHEMA_VERSION: &str = "4";',
-              "backup schema version",
-          )
-          text = replace_once(
-              text,
-              "struct BackupCounts {\n    vocabulary_entries: usize,\n    vocabulary_metadata: usize,\n    settings_records: usize,\n}",
-              "struct BackupCounts {\n    vocabulary_entries: usize,\n    vocabulary_metadata: usize,\n    settings_records: usize,\n    #[serde(default)]\n    collections_records: usize,\n}",
-              "backup counts collections",
-          )
-          text = replace_once(
-              text,
-              "struct BackupData {\n    entries: Vec<BackupVocabularyEntry>,\n    metadata: Vec<BackupVocabularyMetadata>,\n    settings: Option<Value>,\n}",
-              "struct BackupData {\n    entries: Vec<BackupVocabularyEntry>,\n    metadata: Vec<BackupVocabularyMetadata>,\n    settings: Option<Value>,\n    #[serde(default, skip_serializing_if = \"Option::is_none\")]\n    collections_state: Option<Value>,\n}",
-              "backup data collections",
-          )
-          text = replace_once(
-              text,
-              '        "Stored application settings cannot be backed up safely:",\n',
-              '        "Stored application settings cannot be backed up safely:",\n        "Stored collections JSON is invalid:",\n        "Stored collections cannot be backed up safely:",\n',
-              "backup corruption prefixes",
-          )
-
-          marker = "fn build_manifest(\n"
-          if text.count(marker) != 1:
-              raise RuntimeError("backup build_manifest marker mismatch")
-          read_collections = '''fn read_collections_state(connection: &Connection) -> Result<Option<Value>, String> {
-              let state_json = connection
-                  .query_row(
-                      "SELECT state_json FROM collections_state WHERE id = 1",
-                      [],
-                      |row| row.get::<_, String>(0),
-                  )
-                  .optional()
-                  .map_err(|error| format!("Collections could not be read for backup: {error}"))?;
-
-              state_json
-                  .map(|json| {
-                      let collections_state: Value = serde_json::from_str(&json)
-                          .map_err(|error| format!("Stored collections JSON is invalid: {error}"))?;
-                      validate_collections_state(&collections_state).map_err(|error| {
-                          format!("Stored collections cannot be backed up safely: {error}")
-                      })?;
-                      Ok(collections_state)
-                  })
-                  .transpose()
-          }
-
-          '''
-          text = text.replace(marker, read_collections + marker, 1)
-
-          text = replace_once(
-              text,
-              "        settings: read_settings(connection)?,\n    };",
-              "        settings: read_settings(connection)?,\n        collections_state: read_collections_state(connection)?,\n    };",
-              "backup build data",
-          )
-          text = replace_once(
-              text,
-              "        settings_records: usize::from(data.settings.is_some()),\n    };",
-              "        settings_records: usize::from(data.settings.is_some()),\n        collections_records: usize::from(data.collections_state.is_some()),\n    };",
-              "backup build counts",
-          )
-          text = replace_once(
-              text,
-              '    if manifest.database_schema_version != "2"\n        && manifest.database_schema_version != DATABASE_SCHEMA_VERSION\n    {',
-              '    if manifest.database_schema_version != "2"\n        && manifest.database_schema_version != "3"\n        && manifest.database_schema_version != DATABASE_SCHEMA_VERSION\n    {',
-              "backup legacy schema support",
-          )
-          text = replace_once(
-              text,
-              "        settings_records: usize::from(manifest.data.settings.is_some()),\n    };",
-              "        settings_records: usize::from(manifest.data.settings.is_some()),\n        collections_records: usize::from(manifest.data.collections_state.is_some()),\n    };",
-              "backup expected counts",
-          )
-          text = replace_once(
-              text,
-              "        || manifest.counts.settings_records != expected_counts.settings_records\n    {",
-              "        || manifest.counts.settings_records != expected_counts.settings_records\n        || manifest.counts.collections_records != expected_counts.collections_records\n    {",
-              "backup count validation",
-          )
-          text = replace_once(
-              text,
-              "    if let Some(settings) = &manifest.data.settings {\n        if let Err(error) = validate_app_settings(settings) {\n            issues.push(format!(\n                \"The backup application settings are invalid: {error}\"\n            ));\n        }\n    }\n\n    issues",
-              "    if let Some(settings) = &manifest.data.settings {\n        if let Err(error) = validate_app_settings(settings) {\n            issues.push(format!(\n                \"The backup application settings are invalid: {error}\"\n            ));\n        }\n    }\n\n    if let Some(collections_state) = &manifest.data.collections_state {\n        if let Err(error) = validate_collections_state(collections_state) {\n            issues.push(format!(\"The backup collections are invalid: {error}\"));\n        }\n    }\n\n    issues",
-              "backup collections validation",
-          )
-
-          delete_settings = '''    transaction
-              .execute("DELETE FROM app_settings", [])
-              .map_err(|error| format!("Existing settings could not be cleared: {error}"))?;
-          '''
-          replacement = delete_settings + '''
-              let restores_collections = manifest.database_schema_version == DATABASE_SCHEMA_VERSION;
-              if restores_collections {
-                  transaction
-                      .execute("DELETE FROM collections_state", [])
-                      .map_err(|error| format!("Existing collections could not be cleared: {error}"))?;
-              }
-          '''
-          text = replace_once(text, delete_settings, replacement, "restore clear collections")
-
-          commit_marker = '''    transaction
-              .commit()
-              .map_err(|error| format!("The restore transaction could not commit: {error}"))?;
-          '''
-          restore_collections = '''    if restores_collections {
-              if let Some(collections_state) = &manifest.data.collections_state {
-                  let state_json = serde_json::to_string(collections_state)
-                      .map_err(|error| format!("Restored collections are invalid: {error}"))?;
-                  transaction
-                      .execute(
-                          "INSERT INTO collections_state(id, state_json, updated_at) VALUES (1, ?1, ?2)",
-                          params![state_json, &restored_at],
-                      )
-                      .map_err(|error| format!("Collections could not be restored: {error}"))?;
-              }
-          }
-
-          ''' + commit_marker
-          text = replace_once(text, commit_marker, restore_collections, "restore collections state")
-
-          text = replace_once(
-              text,
-              '''                CREATE TABLE app_settings (
-                      id INTEGER PRIMARY KEY,
-                      settings_json TEXT NOT NULL,
-                      updated_at TEXT NOT NULL
-                  );
-                  ''',
-              '''                CREATE TABLE app_settings (
-                      id INTEGER PRIMARY KEY,
-                      settings_json TEXT NOT NULL,
-                      updated_at TEXT NOT NULL
-                  );
-                  CREATE TABLE collections_state (
-                      id INTEGER PRIMARY KEY,
-                      state_json TEXT NOT NULL,
-                      updated_at TEXT NOT NULL
-                  );
-                  ''',
-              "backup test collections table",
-          )
-          text = replace_once(
-              text,
-              "            settings: None,\n        };",
-              "            settings: None,\n            collections_state: None,\n        };",
-              "backup test data collections",
-          )
-          text = replace_once(
-              text,
-              "                settings_records: 0,\n            },",
-              "                settings_records: 0,\n                collections_records: 0,\n            },",
-              "backup test counts collections",
-          )
-          write(path, text)
-
-          # Native local-data reset.
-          path = "apps/desktop/src-tauri/src/commands/data_reset.rs"
-          text = read(path)
-          text = replace_once(
-              text,
-              'const ALLOWED_CATEGORIES: [&str; 6] = [\n    "study-metadata",\n    "user-vocabulary",\n    "overrides",\n    "settings",\n    "activity",\n    "backups",\n];',
-              'const ALLOWED_CATEGORIES: [&str; 7] = [\n    "study-metadata",\n    "user-vocabulary",\n    "overrides",\n    "collections",\n    "settings",\n    "activity",\n    "backups",\n];',
-              "reset categories collections",
-          )
-          text = replace_once(
-              text,
-              "    override_vocabulary_entries: usize,\n    settings_records: usize,",
-              "    override_vocabulary_entries: usize,\n    collections_records: usize,\n    settings_records: usize,",
-              "reset snapshot collections field",
-          )
-
-          marker = "fn snapshot_from_connection(\n"
-          if text.count(marker) != 1:
-              raise RuntimeError("reset snapshot marker mismatch")
-          helper = '''fn collections_count(connection: &rusqlite::Connection) -> Result<usize, String> {
-              let state_json = connection
-                  .query_row(
-                      "SELECT state_json FROM collections_state WHERE id = 1",
-                      [],
-                      |row| row.get::<_, String>(0),
-                  )
-                  .optional()
-                  .map_err(|error| format!("Collection totals could not be read: {error}"))?;
-
-              let Some(state_json) = state_json else {
-                  return Ok(0);
-              };
-              let state: serde_json::Value = serde_json::from_str(&state_json)
-                  .map_err(|error| format!("Stored collections JSON is invalid: {error}"))?;
-              Ok(state
-                  .get("collections")
-                  .and_then(serde_json::Value::as_array)
-                  .map_or(0, Vec::len))
-          }
-
-          '''
-          text = text.replace(marker, helper + marker, 1)
-          text = replace_once(
-              text,
-              "        override_vocabulary_entries: count_query(\n            connection,\n            \"SELECT COUNT(*) FROM vocabulary_entries WHERE layer = 'override'\",\n        )?,\n        settings_records:",
-              "        override_vocabulary_entries: count_query(\n            connection,\n            \"SELECT COUNT(*) FROM vocabulary_entries WHERE layer = 'override'\",\n        )?,\n        collections_records: collections_count(connection)?,\n        settings_records:",
-              "reset snapshot collections count",
-          )
-          text = replace_once(
-              text,
-              '            "study-metadata" | "user-vocabulary" | "overrides" | "settings"',
-              '            "study-metadata" | "user-vocabulary" | "overrides" | "collections" | "settings"',
-              "reset safety backup collections",
-          )
-          activity_marker = '''    if categories.contains("activity") {
-          '''
-          if text.count(activity_marker) != 1:
-              raise RuntimeError("reset activity marker mismatch")
-          collection_reset = '''    if categories.contains("collections") {
-              deleted.collections_records = collections_count(&transaction)?;
-              transaction
-                  .execute("DELETE FROM collections_state", [])
-                  .map_err(|error| format!("Collections could not be removed: {error}"))?;
-          }
-
-          '''
-          text = text.replace(activity_marker, collection_reset + activity_marker, 1)
-          write(path, text)
-
-          # Domain backup contract.
-          path = "packages/domain/src/backup/BackupDescriptor.ts"
-          text = read(path)
-          text = replace_once(
-              text,
-              "  readonly settingsRecords: number;\n}",
-              "  readonly settingsRecords: number;\n  readonly collectionsRecords: number;\n}",
-              "domain backup counts",
-          )
-          text = replace_once(
-              text,
-              '  readonly databaseSchemaVersion: "2" | "3";',
-              '  readonly databaseSchemaVersion: "2" | "3" | "4";',
-              "domain backup schema version",
-          )
-          write(path, text)
-
-          # Domain local-data contract.
-          path = "packages/domain/src/data/LocalDataReset.ts"
-          text = read(path)
-          text = replace_once(text, '  "overrides",\n  "settings",', '  "overrides",\n  "collections",\n  "settings",', "domain reset category")
-          text = replace_once(
-              text,
-              "  readonly overrideVocabularyEntries: number;\n  readonly settingsRecords: number;",
-              "  readonly overrideVocabularyEntries: number;\n  readonly collectionsRecords: number;\n  readonly settingsRecords: number;",
-              "domain reset snapshot",
-          )
-          write(path, text)
-
-          # Zod backup schema.
-          path = "packages/schemas/src/backup/backup-manifest.schema.ts"
-          text = read(path)
-          text = replace_once(
-              text,
-              "    settingsRecords: z.number().int().nonnegative()\n",
-              "    settingsRecords: z.number().int().nonnegative(),\n    collectionsRecords: z.number().int().nonnegative()\n",
-              "zod backup counts",
-          )
-          text = replace_once(text, 'databaseSchemaVersion: z.enum(["2", "3"])', 'databaseSchemaVersion: z.enum(["2", "3", "4"])', "zod backup schema")
-          write(path, text)
-
-          # Zod local-data schema.
-          path = "packages/schemas/src/data/local-data.schema.ts"
-          text = read(path)
-          text = replace_once(text, '  "overrides",\n  "settings",', '  "overrides",\n  "collections",\n  "settings",', "zod reset category")
-          text = replace_once(
-              text,
-              "    overrideVocabularyEntries: z.number().int().nonnegative(),\n    settingsRecords:",
-              "    overrideVocabularyEntries: z.number().int().nonnegative(),\n    collectionsRecords: z.number().int().nonnegative(),\n    settingsRecords:",
-              "zod reset snapshot",
-          )
-          write(path, text)
-
-          # Local-data application behavior.
-          path = "apps/desktop/src/modules/settings/application/ManageLocalData.ts"
-          text = read(path)
-          text = replace_once(text, '  "overrides",\n  "settings",', '  "overrides",\n  "collections",\n  "settings",', "full reset collections")
-          text = replace_once(
-              text,
-              '["study-metadata", "user-vocabulary", "overrides", "settings"].includes(category)',
-              '["study-metadata", "user-vocabulary", "overrides", "collections", "settings"].includes(\n        category\n      )',
-              "safety backup collections ui",
-          )
-          text = replace_once(
-              text,
-              '      case "settings":\n        return total + snapshot.settingsRecords;',
-              '      case "collections":\n        return total + snapshot.collectionsRecords;\n      case "settings":\n        return total + snapshot.settingsRecords;',
-              "selected collections count",
-          )
-          text = replace_once(
-              text,
-              "    deleted.overrideVocabularyEntries +\n    deleted.settingsRecords +",
-              "    deleted.overrideVocabularyEntries +\n    deleted.collectionsRecords +\n    deleted.settingsRecords +",
-              "deleted collections count",
-          )
-          write(path, text)
-
-          # Local-data repository defaults.
-          path = "apps/desktop/src/infrastructure/persistence/TauriLocalDataRepository.ts"
-          text = read(path)
-          text = replace_once(
-              text,
-              "  overrideVocabularyEntries: 0,\n  settingsRecords: 0,",
-              "  overrideVocabularyEntries: 0,\n  collectionsRecords: 0,\n  settingsRecords: 0,",
-              "local repository collections default",
-          )
-          write(path, text)
-
-          # Settings UI.
-          path = "apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx"
-          text = read(path)
-          text = replace_once(
-              text,
-              "  overrideVocabularyEntries: 0,\n  settingsRecords: 0,",
-              "  overrideVocabularyEntries: 0,\n  collectionsRecords: 0,\n  settingsRecords: 0,",
-              "settings collections default",
-          )
-          insert_after = '''    {
-                category: "overrides",
-                title: "Built-in words I edited",
-                description: "Your edits are removed and the original built-in versions return.",
-                count: snapshot.overrideVocabularyEntries
-              },
-          '''
-          if text.count(insert_after) != 1:
-              raise RuntimeError("settings overrides category marker mismatch")
-          collection_option = insert_after + '''    {
-                category: "collections",
-                title: "Collections",
-                description: "Your saved collection groups, covers, and the words organized inside them.",
-                count: snapshot.collectionsRecords
-              },
-          '''
-          text = text.replace(insert_after, collection_option, 1)
-          text = replace_once(
-              text,
-              "            Remove added words, edits, personal details, settings, and activity. Built-in words and\n            saved backups stay available.",
-              "            Remove added words, edits, personal details, collections, settings, and activity. Built-in\n            words and saved backups stay available.",
-              "full reset description collections",
-          )
-          write(path, text)
-
-          # Update native JSON contract schemas structurally.
-          def walk_backup_schema(node):
-              if isinstance(node, dict):
-                  props = node.get("properties")
-                  if isinstance(props, dict):
-                      if {"vocabularyEntries", "vocabularyMetadata", "settingsRecords"}.issubset(props):
-                          props.setdefault("collectionsRecords", dict(props["settingsRecords"]))
-                          required = node.setdefault("required", [])
-                          if "collectionsRecords" not in required:
-                              required.append("collectionsRecords")
-                      db = props.get("databaseSchemaVersion")
-                      if isinstance(db, dict) and isinstance(db.get("enum"), list) and "4" not in db["enum"]:
-                          db["enum"].append("4")
-                  for value in node.values():
-                      walk_backup_schema(value)
-              elif isinstance(node, list):
-                  for value in node:
-                      walk_backup_schema(value)
-
-          for schema_path in [
-              "apps/desktop/src-tauri/schemas/backup-descriptor.schema.json",
-              "apps/desktop/src-tauri/schemas/backup-validation-result.schema.json",
-              "apps/desktop/src-tauri/schemas/backup-restore-result.schema.json",
-              "apps/desktop/src-tauri/schemas/reset-local-data-result.schema.json",
-          ]:
-              data = json.loads(read(schema_path))
-              walk_backup_schema(data)
-              write(schema_path, json.dumps(data, indent=2) + "\n")
-
-          def walk_local_snapshot_schema(node):
-              if isinstance(node, dict):
-                  props = node.get("properties")
-                  if isinstance(props, dict) and {"studyMetadataRecords", "userVocabularyEntries", "overrideVocabularyEntries", "settingsRecords", "activityRecords", "backupFiles"}.issubset(props):
-                      props.setdefault("collectionsRecords", dict(props["settingsRecords"]))
-                      required = node.setdefault("required", [])
-                      if "collectionsRecords" not in required:
-                          insert_at = required.index("settingsRecords") if "settingsRecords" in required else len(required)
-                          required.insert(insert_at, "collectionsRecords")
-                  for value in node.values():
-                      walk_local_snapshot_schema(value)
-              elif isinstance(node, list):
-                  for value in node:
-                      walk_local_snapshot_schema(value)
-
-          for schema_path in [
-              "apps/desktop/src-tauri/schemas/local-data-snapshot.schema.json",
-              "apps/desktop/src-tauri/schemas/reset-local-data-result.schema.json",
-          ]:
-              data = json.loads(read(schema_path))
-              walk_local_snapshot_schema(data)
-              write(schema_path, json.dumps(data, indent=2) + "\n")
-
-          # Native boundary fixtures need the newly serialized count fields.
-          fixture_path = "testing/contracts/native-boundary-fixtures.json"
-          fixture = json.loads(read(fixture_path))
-          def add_runtime_counts(node):
-              if isinstance(node, dict):
-                  if {"vocabularyEntries", "vocabularyMetadata", "settingsRecords"}.issubset(node):
-                      node.setdefault("collectionsRecords", 0)
-                  if {"studyMetadataRecords", "userVocabularyEntries", "overrideVocabularyEntries", "settingsRecords", "activityRecords", "backupFiles"}.issubset(node):
-                      node.setdefault("collectionsRecords", 0)
-                  for value in node.values():
-                      add_runtime_counts(value)
-              elif isinstance(node, list):
-                  for value in node:
-                      add_runtime_counts(value)
-          add_runtime_counts(fixture)
-          write(fixture_path, json.dumps(fixture, indent=2) + "\n")
-
-          # Update focused test fixtures without changing their intent.
-          test_paths = [
-              "packages/schemas/tests/backup-manifest.schema.test.ts",
-              "packages/schemas/tests/local-data.schema.test.ts",
-              "apps/desktop/tests/unit/backup/backup-retention.test.ts",
-              "apps/desktop/tests/components/backup/BackupRestoreDialog.test.tsx",
-              "apps/desktop/tests/unit/settings/local-data-management.test.ts",
-              "apps/desktop/tests/components/settings/DiagnosticTechnicalDetails.test.tsx",
-              "apps/desktop/tests/unit/settings/diagnostics.test.ts",
-          ]
-          for test_path in test_paths:
-              p = Path(test_path)
-              if not p.exists():
-                  continue
-              text = read(test_path)
-              if "vocabularyEntries" in text and "settingsRecords:" in text and "collectionsRecords:" not in text:
-                  text = re.sub(r"(settingsRecords:\s*\d+)(\n\s*})", r"\1,\n    collectionsRecords: 0\2", text)
-              if "studyMetadataRecords" in text and "overrideVocabularyEntries" in text and "collectionsRecords:" not in text:
-                  text = text.replace("  overrideVocabularyEntries: 0,\n  settingsRecords: 0,", "  overrideVocabularyEntries: 0,\n  collectionsRecords: 0,\n  settingsRecords: 0,")
-              write(test_path, text)
+      - name: Apply Collections integration
+        run: python scripts/integrate-collections-backup-reset.py
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Format Rust and JS/TS
+      - name: Generate native schemas
+        run: npm run generate:native-schemas
+
+      - name: Format
         run: |
           cargo fmt --manifest-path apps/desktop/src-tauri/Cargo.toml --all
-          npm run format
+          npx prettier --write packages/domain/src/backup/BackupDescriptor.ts packages/domain/src/data/LocalDataReset.ts packages/schemas/src/backup/backup-manifest.schema.ts packages/schemas/src/data/local-data.schema.ts apps/desktop/src/infrastructure/persistence/TauriLocalDataRepository.ts apps/desktop/src/modules/settings/application/ManageLocalData.ts apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx packages/schemas/tests/local-data.schema.test.ts apps/desktop/tests/unit/settings/local-data-management.test.ts testing/contracts/native-boundary-fixtures.json
 
-      - name: Check migration chain
+      - name: Check migrations
         run: npm run check:migrations
 
-      - name: Check native contracts
+      - name: Check native schemas
         run: npm run check:native-schemas
 
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Run focused schema tests
+      - name: Run schema tests
         run: npm run test --workspace=@platform/schemas
+
+      - name: Run local-data tests
+        run: npx vitest run apps/desktop/tests/unit/settings/local-data-management.test.ts
 
       - name: Native compile check
         run: cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml --all-targets
+
+      - name: Native tests
+        run: cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --lib
 
       - name: Diff sanity
         shell: bash
@@ -550,8 +87,8 @@ jobs:
                   apps/desktop/src/modules/settings/components/LocalDataControlsSection.tsx \
                   apps/desktop/src-tauri/schemas \
                   testing/contracts/native-boundary-fixtures.json \
-                  packages/schemas/tests \
-                  apps/desktop/tests
+                  packages/schemas/tests/local-data.schema.test.ts \
+                  apps/desktop/tests/unit/settings/local-data-management.test.ts
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
