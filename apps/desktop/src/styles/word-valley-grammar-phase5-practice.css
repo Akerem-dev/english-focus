@@ -1,0 +1,276 @@
+.wvg-practice-view {
+  padding: 28px 30px 34px;
+  color: #183f36;
+}
+
+.wvg-practice-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(111, 92, 54, 0.22);
+}
+
+.wvg-practice-header__copy > p,
+.wvg-practice-summary > p,
+.wvg-practice-feedback > span,
+.wvg-practice-complete > p:first-child {
+  margin: 0 0 6px;
+  color: #a66f16;
+  font: 700 10px/1.2 Inter, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.wvg-practice-header h2,
+.wvg-practice-complete h2 {
+  margin: 0;
+  color: #123d34;
+  font: 600 29px/1.08 "Cormorant Garamond", Georgia, serif;
+}
+
+.wvg-practice-header__copy > span {
+  display: block;
+  max-width: 760px;
+  margin-top: 8px;
+  color: #35574f;
+  font: 500 13px/1.55 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-progress {
+  min-width: 170px;
+  text-align: right;
+}
+
+.wvg-practice-progress strong {
+  display: block;
+  color: #153f36;
+  font: 600 19px/1 "Cormorant Garamond", Georgia, serif;
+}
+
+.wvg-practice-progress span {
+  display: block;
+  margin-top: 7px;
+  color: #5c6e68;
+  font: 600 10px/1.2 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-progress__track {
+  width: 170px;
+  height: 3px;
+  margin-top: 10px;
+  margin-left: auto;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(125, 111, 78, 0.22);
+}
+
+.wvg-practice-progress__track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #bd861c;
+  transition: width 180ms ease;
+}
+
+.wvg-practice-question {
+  padding: 30px 0 24px;
+}
+
+.wvg-practice-question__context {
+  margin: 0 0 12px;
+  color: #a66f16;
+  font: 700 10px/1.2 Inter, system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wvg-practice-question h3 {
+  max-width: 950px;
+  margin: 0;
+  color: #113b33;
+  font: 600 30px/1.22 "Cormorant Garamond", Georgia, serif;
+}
+
+.wvg-practice-question__hint {
+  max-width: 880px;
+  margin: 10px 0 0;
+  color: #405e56;
+  font: 500 13px/1.55 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-options {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(111, 92, 54, 0.2);
+}
+
+.wvg-practice-option {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 61px;
+  padding: 11px 4px;
+  border: 0;
+  border-bottom: 1px solid rgba(111, 92, 54, 0.18);
+  background: transparent;
+  color: #173f36;
+  cursor: pointer;
+  text-align: left;
+  transition: background 130ms ease, padding 130ms ease;
+}
+
+.wvg-practice-option:hover:not(:disabled) {
+  padding-left: 10px;
+  background: rgba(245, 239, 222, 0.52);
+}
+
+.wvg-practice-option:disabled {
+  cursor: default;
+}
+
+.wvg-practice-option__letter {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border: 1px solid rgba(74, 88, 78, 0.26);
+  border-radius: 50%;
+  color: #49635c;
+  font: 700 10px/1 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-option__text {
+  color: #173f36;
+  font: 600 18px/1.25 "Cormorant Garamond", Georgia, serif;
+}
+
+.wvg-practice-option__mark {
+  color: transparent;
+  font: 700 16px/1 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-option[data-state="selected"] {
+  background: rgba(240, 232, 208, 0.7);
+}
+
+.wvg-practice-option[data-state="correct"] {
+  background: rgba(221, 234, 220, 0.72);
+}
+
+.wvg-practice-option[data-state="correct"] .wvg-practice-option__letter {
+  border-color: #567b5c;
+  background: #234f3f;
+  color: #fffaf0;
+}
+
+.wvg-practice-option[data-state="correct"] .wvg-practice-option__mark {
+  color: #2f6b45;
+}
+
+.wvg-practice-option[data-state="wrong"] {
+  background: rgba(239, 223, 214, 0.64);
+}
+
+.wvg-practice-option[data-state="wrong"] .wvg-practice-option__letter {
+  border-color: #a86a54;
+  color: #8c4c3d;
+}
+
+.wvg-practice-option[data-state="wrong"] .wvg-practice-option__mark {
+  color: #9b4f3d;
+}
+
+.wvg-practice-feedback {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 18px 0 4px 18px;
+  border-left: 2px solid #b7831f;
+}
+
+.wvg-practice-feedback[data-correct="true"] {
+  border-left-color: #3f7456;
+}
+
+.wvg-practice-feedback strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #153e35;
+  font: 700 13px/1.35 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-feedback p {
+  max-width: 850px;
+  margin: 0;
+  color: #35564e;
+  font: 500 12.5px/1.58 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-next,
+.wvg-practice-restart {
+  min-width: 132px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 7px;
+  background: #073f34;
+  color: #fffaf0;
+  cursor: pointer;
+  font: 600 14px/1 "Cormorant Garamond", Georgia, serif;
+}
+
+.wvg-practice-complete {
+  max-width: 780px;
+  margin: 68px auto 0;
+  text-align: center;
+}
+
+.wvg-practice-complete__score {
+  margin: 20px 0 16px;
+  color: #123e34;
+  font: 600 64px/0.9 "Cormorant Garamond", Georgia, serif;
+}
+
+.wvg-practice-complete__score span {
+  color: #9b7b35;
+  font-size: 28px;
+}
+
+.wvg-practice-complete > span {
+  display: block;
+  max-width: 620px;
+  margin: 0 auto 24px;
+  color: #3b5951;
+  font: 500 13px/1.6 Inter, system-ui, sans-serif;
+}
+
+.wvg-practice-restart {
+  min-width: 150px;
+}
+
+@media (max-width: 1120px) {
+  .wvg-practice-view {
+    padding-inline: 22px;
+  }
+
+  .wvg-practice-header {
+    grid-template-columns: 1fr;
+  }
+
+  .wvg-practice-progress {
+    text-align: left;
+  }
+
+  .wvg-practice-progress__track {
+    margin-left: 0;
+  }
+
+  .wvg-practice-feedback {
+    grid-template-columns: 1fr;
+  }
+}
