@@ -53,6 +53,15 @@ export function createCommandRegistry(pathname: string): readonly CommandDefinit
       target: { kind: "navigate", path: ROUTE_PATHS.vocabulary }
     },
     {
+      id: "navigate-grammar",
+      label: "Open Grammar",
+      description: "Browse grammar areas and continue structured grammar lessons.",
+      category: "Navigation",
+      icon: "book-open",
+      keywords: ["grammar", "tense", "article", "preposition", "lesson"],
+      target: { kind: "navigate", path: ROUTE_PATHS.grammar }
+    },
+    {
       id: "navigate-library",
       label: "Open Library",
       description: "Browse, filter, select, and export saved vocabulary.",
