@@ -1,5 +1,12 @@
 import { useEffect } from "react";
 
+import collectionsBackground from "../../../assets/collections/collections-background.png";
+import academicWritingCover from "../../../assets/collections/cover-academic-writing.png";
+import dailyCommunicationCover from "../../../assets/collections/cover-daily-communication.png";
+import ieltsVocabularyCover from "../../../assets/collections/cover-ielts-vocabulary.png";
+import studyReviewCover from "../../../assets/collections/cover-study-review.png";
+import usefulExpressionsCover from "../../../assets/collections/cover-useful-expressions.png";
+import workBusinessCover from "../../../assets/collections/cover-work-business.png";
 import { LibraryPagePhase3 } from "./LibraryPagePhase3";
 
 const COPY_REPLACEMENTS: Readonly<Record<string, string>> = Object.freeze({
@@ -23,11 +30,56 @@ const COPY_REPLACEMENTS: Readonly<Record<string, string>> = Object.freeze({
   "No additional forms are saved for this word.": "No additional forms."
 });
 
+const PRESET_COVERS: Readonly<Record<string, string>> = Object.freeze({
+  ridge: ieltsVocabularyCover,
+  lake: academicWritingCover,
+  cottage: workBusinessCover,
+  meadow: dailyCommunicationCover,
+  forest: studyReviewCover,
+  sunrise: usefulExpressionsCover
+});
+
+const COVER_GRADIENT =
+  "linear-gradient(180deg, rgba(8,47,41,.03), rgba(8,47,41,.28))";
+
+function isUserCover(backgroundImage: string): boolean {
+  return backgroundImage.includes("data:image/") || backgroundImage.includes("blob:");
+}
+
+function applyFinalCollectionArtwork(root: HTMLElement) {
+  const sceneImage = `url(\"${collectionsBackground}\")`;
+
+  root
+    .querySelectorAll<HTMLElement>(".wvc-scene, .wvc-phase3-scene")
+    .forEach((scene) => {
+      if (scene.style.backgroundImage !== sceneImage) {
+        scene.style.backgroundImage = sceneImage;
+      }
+    });
+
+  root.querySelectorAll<HTMLElement>("[data-cover]").forEach((cover) => {
+    const preset = cover.dataset.cover;
+    if (preset === undefined || isUserCover(cover.style.backgroundImage)) {
+      return;
+    }
+
+    const artwork = PRESET_COVERS[preset];
+    if (artwork === undefined) {
+      return;
+    }
+
+    const backgroundImage = `${COVER_GRADIENT}, url(\"${artwork}\")`;
+    if (cover.style.backgroundImage !== backgroundImage) {
+      cover.style.backgroundImage = backgroundImage;
+    }
+  });
+}
+
 function CollectionsPhase4EditorialCleanup() {
   useEffect(() => {
     let scheduled = false;
 
-    const applyCopyCleanup = () => {
+    const applyCleanup = () => {
       scheduled = false;
 
       const root = document.querySelector<HTMLElement>(
@@ -36,6 +88,8 @@ function CollectionsPhase4EditorialCleanup() {
       if (root === null) {
         return;
       }
+
+      applyFinalCollectionArtwork(root);
 
       root.querySelectorAll<HTMLElement>(
         ".wvc-sort-button > span, .wvc-sort-menu button > span, .wvc-eyebrow, .wvc-modal__header p, .wvc-inline-empty strong, .wvc-inline-empty p, .wvc-phase3-empty-copy, .wvc-word-panel p, .wvc-word-panel h2"
@@ -71,12 +125,17 @@ function CollectionsPhase4EditorialCleanup() {
         return;
       }
       scheduled = true;
-      requestAnimationFrame(applyCopyCleanup);
+      requestAnimationFrame(applyCleanup);
     };
 
-    applyCopyCleanup();
+    applyCleanup();
     const observer = new MutationObserver(schedule);
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-cover", "style"],
+      childList: true,
+      subtree: true
+    });
 
     return () => {
       observer.disconnect();
