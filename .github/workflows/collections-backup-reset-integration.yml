@@ -6,6 +6,7 @@ on:
     paths:
       - .github/workflows/collections-backup-reset-integration.yml
       - scripts/integrate-collections-backup-reset.py
+      - scripts/integrate-collections-backup-reset-v2.py
 
 permissions:
   contents: write
@@ -32,7 +33,7 @@ jobs:
           components: rustfmt
 
       - name: Apply Collections integration
-        run: python scripts/integrate-collections-backup-reset.py
+        run: python scripts/integrate-collections-backup-reset-v2.py
 
       - name: Install dependencies
         run: npm ci
