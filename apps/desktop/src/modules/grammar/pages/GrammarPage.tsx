@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 
-import valleyBackground from "../../../assets/background/home-background-static.png";
+import grammarBackground from "../../../assets/collections/collections-background.png";
 import { AppIcon } from "../../../design-system";
 
 import "../../../styles/word-valley-grammar-phase1-home.css";
@@ -11,6 +11,14 @@ interface GrammarArea {
   readonly description: string;
   readonly level: string;
   readonly accent: "gold" | "forest";
+}
+
+interface GrammarLesson {
+  readonly title: string;
+  readonly category: string;
+  readonly level: string;
+  readonly description: string;
+  readonly keywords: readonly string[];
 }
 
 const GRAMMAR_AREAS: readonly GrammarArea[] = Object.freeze([
@@ -58,6 +66,51 @@ const GRAMMAR_AREAS: readonly GrammarArea[] = Object.freeze([
   }
 ]);
 
+const GRAMMAR_LESSONS: readonly GrammarLesson[] = Object.freeze([
+  {
+    title: "Present Perfect",
+    category: "Tenses & Time",
+    level: "B1",
+    description: "Connect a past event, result, duration, or life experience to the present.",
+    keywords: ["present", "perfect", "have", "has", "since", "for"]
+  },
+  {
+    title: "Present Perfect Continuous",
+    category: "Tenses & Time",
+    level: "B1–B2",
+    description: "Focus on an activity continuing, or recently continuing, up to now.",
+    keywords: ["present", "perfect", "continuous", "have been", "has been"]
+  },
+  {
+    title: "Past Perfect",
+    category: "Tenses & Time",
+    level: "B2",
+    description: "Place one past event before another past reference point.",
+    keywords: ["past", "perfect", "had", "before"]
+  },
+  {
+    title: "Perfect Infinitive",
+    category: "Modals & Verb Patterns",
+    level: "C1",
+    description: "Use “to have + past participle” to look back from another viewpoint.",
+    keywords: ["perfect", "infinitive", "to have", "participle"]
+  },
+  {
+    title: "Articles: a, an, the",
+    category: "Nouns & Articles",
+    level: "A1–B2",
+    description: "Choose articles by reference, specificity, countability, and shared knowledge.",
+    keywords: ["article", "articles", "a", "an", "the", "noun"]
+  },
+  {
+    title: "Prepositions of time: in, on, at",
+    category: "Prepositions & Linkers",
+    level: "A1–A2",
+    description: "Choose the natural preposition for clock times, days, dates, months, and periods.",
+    keywords: ["preposition", "prepositions", "in", "on", "at", "time"]
+  }
+]);
+
 const TROUBLE_SPOTS = Object.freeze([
   "for vs since",
   "in · on · at",
@@ -73,38 +126,58 @@ function normalizeSearch(value: string): string[] {
     .filter(Boolean);
 }
 
+function includesEveryToken(haystack: string, tokens: readonly string[]): boolean {
+  const normalized = haystack.toLocaleLowerCase("en");
+  return tokens.every((token) => normalized.includes(token));
+}
+
 export function GrammarPage() {
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
+  const tokens = useMemo(() => normalizeSearch(query), [query]);
+  const searching = tokens.length > 0;
 
   const visibleAreas = useMemo(() => {
-    const tokens = normalizeSearch(query);
-    if (tokens.length === 0) {
+    if (!searching) {
       return GRAMMAR_AREAS;
     }
 
-    return GRAMMAR_AREAS.filter((area) => {
-      const haystack = `${area.eyebrow} ${area.title} ${area.description} ${area.level}`.toLocaleLowerCase("en");
-      return tokens.every((token) => haystack.includes(token));
-    });
-  }, [query]);
+    return GRAMMAR_AREAS.filter((area) =>
+      includesEveryToken(`${area.eyebrow} ${area.title} ${area.description} ${area.level}`, tokens)
+    );
+  }, [searching, tokens]);
 
-  function focusPresentPerfect() {
-    setQuery("present perfect");
+  const visibleLessons = useMemo(() => {
+    if (!searching) {
+      return [];
+    }
+
+    return GRAMMAR_LESSONS.filter((lesson) =>
+      includesEveryToken(
+        `${lesson.title} ${lesson.category} ${lesson.level} ${lesson.description} ${lesson.keywords.join(" ")}`,
+        tokens
+      )
+    );
+  }, [searching, tokens]);
+
+  function searchFor(value: string) {
+    setQuery(value);
     window.requestAnimationFrame(() => {
       searchRef.current?.focus();
       searchRef.current?.select();
     });
   }
 
+  const resultCount = visibleLessons.length + visibleAreas.length;
+
   return (
     <div className="wvg-page">
       <div
         aria-hidden="true"
         className="wvg-scene"
-        style={{ backgroundImage: `url("${valleyBackground}")` }}
+        style={{ backgroundImage: `url("${grammarBackground}")` }}
       />
-      <div aria-hidden="true" className="wvg-mist" />
+      <div aria-hidden="true" className="wvg-scene-veil" />
 
       <main className="wvg-home" aria-labelledby="grammar-home-title">
         <header className="wvg-home__header">
@@ -136,24 +209,59 @@ export function GrammarPage() {
               <span />
             </div>
           </div>
-          <button className="wvg-primary-button" onClick={focusPresentPerfect} type="button">
+          <button className="wvg-primary-button" onClick={() => searchFor("present perfect")} type="button">
             Continue lesson
           </button>
         </section>
 
-        <section className="wvg-browse" aria-labelledby="grammar-browse-title">
+        <section className={`wvg-browse${searching ? " wvg-browse--searching" : ""}`} aria-labelledby="grammar-browse-title">
           <header className="wvg-browse__header">
             <div>
-              <h2 id="grammar-browse-title">Browse grammar</h2>
-              <p>Organized by the way English actually works.</p>
+              <h2 id="grammar-browse-title">{searching ? "Search results" : "Browse grammar"}</h2>
+              <p>
+                {searching
+                  ? `${resultCount} ${resultCount === 1 ? "result" : "results"} for “${query.trim()}”.`
+                  : "Organized by the way English actually works."}
+              </p>
             </div>
-            <span>ALL LEVELS&nbsp;&nbsp; A1 — C1</span>
+            <span>{searching ? "GRAMMAR INDEX" : "ALL LEVELS  A1 — C1"}</span>
           </header>
 
-          {visibleAreas.length === 0 ? (
-            <div className="wvg-empty-search" role="status">
-              <strong>No matching grammar area</strong>
-              <span>Try a broader word such as “tense”, “article”, or “preposition”.</span>
+          {searching ? (
+            <div className="wvg-search-results" role="status">
+              {visibleLessons.map((lesson) => (
+                <button className="wvg-result-row" key={lesson.title} onClick={() => searchFor(lesson.title)} type="button">
+                  <span className="wvg-result-row__copy">
+                    <strong>{lesson.title}</strong>
+                    <small>{lesson.description}</small>
+                  </span>
+                  <span className="wvg-result-row__meta">
+                    <small>{lesson.level} · {lesson.category}</small>
+                    <b aria-hidden="true">→</b>
+                  </span>
+                </button>
+              ))}
+
+              {visibleAreas.map((area) => (
+                <button className="wvg-result-row wvg-result-row--area" key={area.title} onClick={() => searchFor(area.title)} type="button">
+                  <span className="wvg-result-row__copy">
+                    <strong>{area.title}</strong>
+                    <small>{area.description}</small>
+                  </span>
+                  <span className="wvg-result-row__meta">
+                    <small>{area.level} · Grammar area</small>
+                    <b aria-hidden="true">→</b>
+                  </span>
+                </button>
+              ))}
+
+              {resultCount === 0 ? (
+                <div className="wvg-empty-search">
+                  <strong>No matching grammar topic</strong>
+                  <span>Try a broader word such as “tense”, “article”, or “preposition”.</span>
+                  <button onClick={() => setQuery("")} type="button">Browse all grammar</button>
+                </div>
+              ) : null}
             </div>
           ) : (
             <div className="wvg-area-grid">
@@ -174,7 +282,9 @@ export function GrammarPage() {
           <strong>COMMON TROUBLE SPOTS</strong>
           <div>
             {TROUBLE_SPOTS.map((spot) => (
-              <span key={spot}>{spot}</span>
+              <button key={spot} onClick={() => searchFor(spot.replace(" · ", " "))} type="button">
+                {spot}
+              </button>
             ))}
           </div>
         </section>
