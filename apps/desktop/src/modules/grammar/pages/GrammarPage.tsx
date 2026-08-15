@@ -20,6 +20,7 @@ interface GrammarLesson {
   readonly level: string;
   readonly description: string;
   readonly keywords: readonly string[];
+  readonly implemented?: boolean;
 }
 
 type GrammarView = "home" | "present-perfect";
@@ -75,7 +76,8 @@ const GRAMMAR_LESSONS: readonly GrammarLesson[] = Object.freeze([
     category: "Tenses & Time",
     level: "B1",
     description: "Connect a past event, result, duration, or life experience to the present.",
-    keywords: ["present", "perfect", "have", "has", "since", "for"]
+    keywords: ["present", "perfect", "have", "has", "since", "for"],
+    implemented: true
   },
   {
     title: "Present Perfect Continuous",
@@ -106,11 +108,32 @@ const GRAMMAR_LESSONS: readonly GrammarLesson[] = Object.freeze([
     keywords: ["article", "articles", "a", "an", "the", "noun"]
   },
   {
-    title: "Prepositions of time: in, on, at",
+    title: "For vs Since",
+    category: "Tenses & Time",
+    level: "B1",
+    description: "Choose “for” for a duration and “since” for the starting point of that duration.",
+    keywords: ["for", "vs", "since", "duration", "starting point", "present perfect"]
+  },
+  {
+    title: "In, On, At: Time",
     category: "Prepositions & Linkers",
     level: "A1–A2",
-    description: "Choose the natural preposition for clock times, days, dates, months, and periods.",
+    description: "Choose the natural preposition for clock times, days, dates, months, and longer periods.",
     keywords: ["preposition", "prepositions", "in", "on", "at", "time"]
+  },
+  {
+    title: "Used to vs Be used to",
+    category: "Modals & Verb Patterns",
+    level: "B1",
+    description: "Separate past habits and states from the meaning of being accustomed to something.",
+    keywords: ["used", "to", "vs", "be", "used to", "habit", "accustomed"]
+  },
+  {
+    title: "Much vs Many",
+    category: "Nouns & Articles",
+    level: "A1–A2",
+    description: "Choose the natural quantity word by whether the noun is countable or uncountable.",
+    keywords: ["much", "vs", "many", "countable", "uncountable", "quantity"]
   }
 ]);
 
@@ -249,8 +272,10 @@ export function GrammarPage() {
                 {visibleLessons.map((lesson) => (
                   <button
                     className="wvg-result-row"
+                    data-implemented={lesson.implemented ? "true" : "false"}
+                    disabled={!lesson.implemented}
                     key={lesson.title}
-                    onClick={lesson.title === "Present Perfect" ? openPresentPerfect : () => searchFor(lesson.title)}
+                    onClick={lesson.implemented ? openPresentPerfect : undefined}
                     type="button"
                   >
                     <span className="wvg-result-row__copy">
@@ -259,7 +284,7 @@ export function GrammarPage() {
                     </span>
                     <span className="wvg-result-row__meta">
                       <small>{lesson.level} · {lesson.category}</small>
-                      <b aria-hidden="true">→</b>
+                      {lesson.implemented ? <b aria-hidden="true">→</b> : null}
                     </span>
                   </button>
                 ))}
@@ -304,7 +329,7 @@ export function GrammarPage() {
             <strong>COMMON TROUBLE SPOTS</strong>
             <div>
               {TROUBLE_SPOTS.map((spot) => (
-                <button key={spot} onClick={() => searchFor(spot.replace(" · ", " "))} type="button">
+                <button key={spot} onClick={() => searchFor(spot.replace(/\s*·\s*/g, " "))} type="button">
                   {spot}
                 </button>
               ))}
