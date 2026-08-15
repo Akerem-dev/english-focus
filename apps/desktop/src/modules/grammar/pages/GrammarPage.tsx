@@ -6,6 +6,7 @@ import { AppIcon } from "../../../design-system";
 import "../../../styles/word-valley-grammar-phase1-home.css";
 import "../../../styles/word-valley-grammar-phase2-topic.css";
 import "../../../styles/word-valley-grammar-phase3-examples.css";
+import "../../../styles/word-valley-grammar-phase4-compare.css";
 
 interface GrammarArea {
   readonly eyebrow: string;
@@ -25,7 +26,7 @@ interface GrammarLesson {
 }
 
 type GrammarView = "home" | "present-perfect";
-type PresentPerfectTab = "rule" | "examples";
+type PresentPerfectTab = "rule" | "examples" | "compare";
 
 const GRAMMAR_AREAS: readonly GrammarArea[] = Object.freeze([
   {
@@ -167,20 +168,14 @@ export function GrammarPage() {
   const searching = tokens.length > 0;
 
   const visibleAreas = useMemo(() => {
-    if (!searching) {
-      return GRAMMAR_AREAS;
-    }
-
+    if (!searching) return GRAMMAR_AREAS;
     return GRAMMAR_AREAS.filter((area) =>
       includesEveryToken(`${area.eyebrow} ${area.title} ${area.description} ${area.level}`, tokens)
     );
   }, [searching, tokens]);
 
   const visibleLessons = useMemo(() => {
-    if (!searching) {
-      return [];
-    }
-
+    if (!searching) return [];
     return GRAMMAR_LESSONS.filter((lesson) =>
       includesEveryToken(
         `${lesson.title} ${lesson.category} ${lesson.level} ${lesson.description} ${lesson.keywords.join(" ")}`,
@@ -247,9 +242,7 @@ export function GrammarPage() {
               <p className="wvg-section-label">CONTINUE LEARNING</p>
               <h2>Present Perfect</h2>
               <p>B1 · Tenses &amp; Time · Rule 2 of 4</p>
-              <div aria-hidden="true" className="wvg-progress-track">
-                <span />
-              </div>
+              <div aria-hidden="true" className="wvg-progress-track"><span /></div>
             </div>
             <button className="wvg-primary-button" onClick={openPresentPerfect} type="button">
               Continue lesson
@@ -352,9 +345,7 @@ function PresentPerfectLesson({ onBack }: PresentPerfectLessonProps) {
 
   return (
     <main className="wvg-topic" aria-labelledby="grammar-topic-title">
-      <button className="wvg-topic__back" onClick={onBack} type="button">
-        ← Grammar home
-      </button>
+      <button className="wvg-topic__back" onClick={onBack} type="button">← Grammar home</button>
 
       <section className="wvg-topic__paper">
         <header className="wvg-topic__hero">
@@ -363,7 +354,6 @@ function PresentPerfectLesson({ onBack }: PresentPerfectLessonProps) {
             <h1 id="grammar-topic-title">Present Perfect</h1>
             <p>Past tense gibi yalnızca “ne oldu?” demez. Geçmişte olan şeyin bugünle bağlantısına odaklanır.</p>
           </div>
-
           <div className="wvg-topic__turkish">
             <span>EN KISA TÜRKÇE MANTIĞI</span>
             <p>Geçmişte bir şey oldu; ama cümlenin asıl derdi o olayın tam olarak ne zaman olduğu değil, bugün sonucu var mı, deneyim mi, yoksa hâlâ devam mı ediyor sorusudur.</p>
@@ -371,27 +361,15 @@ function PresentPerfectLesson({ onBack }: PresentPerfectLessonProps) {
         </header>
 
         <nav className="wvg-topic-tabs" aria-label="Present Perfect lesson sections">
-          <button
-            aria-current={tab === "rule" ? "page" : undefined}
-            className={tab === "rule" ? "is-active" : undefined}
-            onClick={() => setTab("rule")}
-            type="button"
-          >
-            Rule
-          </button>
-          <button
-            aria-current={tab === "examples" ? "page" : undefined}
-            className={tab === "examples" ? "is-active" : undefined}
-            onClick={() => setTab("examples")}
-            type="button"
-          >
-            Examples
-          </button>
-          <button disabled type="button">Compare</button>
+          <button aria-current={tab === "rule" ? "page" : undefined} className={tab === "rule" ? "is-active" : undefined} onClick={() => setTab("rule")} type="button">Rule</button>
+          <button aria-current={tab === "examples" ? "page" : undefined} className={tab === "examples" ? "is-active" : undefined} onClick={() => setTab("examples")} type="button">Examples</button>
+          <button aria-current={tab === "compare" ? "page" : undefined} className={tab === "compare" ? "is-active" : undefined} onClick={() => setTab("compare")} type="button">Compare</button>
           <button disabled type="button">Practice</button>
         </nav>
 
-        {tab === "rule" ? <PresentPerfectRuleContent /> : <PresentPerfectExamples />}
+        {tab === "rule" ? <PresentPerfectRuleContent /> : null}
+        {tab === "examples" ? <PresentPerfectExamples /> : null}
+        {tab === "compare" ? <PresentPerfectCompare /> : null}
       </section>
     </main>
   );
@@ -410,9 +388,7 @@ function PresentPerfectRuleContent() {
             <span><strong>main verb</strong> → V3: done, gone, seen, eaten…</span>
           </div>
           <div className="wvg-pattern__examples">
-            <span>I have finished.</span>
-            <span>She has arrived.</span>
-            <span>They have never seen it.</span>
+            <span>I have finished.</span><span>She has arrived.</span><span>They have never seen it.</span>
           </div>
         </section>
 
@@ -452,18 +428,9 @@ function PresentPerfectRuleContent() {
         </section>
 
         <section className="wvg-rule-examples" aria-label="Present Perfect quick examples">
-          <div>
-            <strong>I’ve lost my keys.</strong>
-            <span><b>Şu anki sonuç:</b> Anahtarlar hâlâ bende değil; kapıyı açamıyorum.</span>
-          </div>
-          <div>
-            <strong>We’ve lived here for six years.</strong>
-            <span><b>Devam eden durum:</b> Altı yıl önce başladık ve hâlâ burada yaşıyoruz.</span>
-          </div>
-          <div>
-            <strong>Have you ever tried skiing?</strong>
-            <span><b>Hayat deneyimi:</b> Tam olarak ne zaman yaptığın önemli değil; bugüne kadarki deneyimin soruluyor.</span>
-          </div>
+          <div><strong>I’ve lost my keys.</strong><span><b>Şu anki sonuç:</b> Anahtarlar hâlâ bende değil; kapıyı açamıyorum.</span></div>
+          <div><strong>We’ve lived here for six years.</strong><span><b>Devam eden durum:</b> Altı yıl önce başladık ve hâlâ burada yaşıyoruz.</span></div>
+          <div><strong>Have you ever tried skiing?</strong><span><b>Hayat deneyimi:</b> Tam olarak ne zaman yaptığın önemli değil; bugüne kadarki deneyimin soruluyor.</span></div>
         </section>
       </article>
 
@@ -477,13 +444,11 @@ function PresentPerfectRuleContent() {
             <li>this week / today gibi henüz bitmemiş bir zaman diliminden söz ediliyorsa</li>
           </ul>
         </section>
-
         <section>
           <p>SIGNAL WORDS · İPUÇLARI</p>
           <div className="wvg-signal-words">just · already · yet · ever · never · since · for · recently</div>
           <span className="wvg-note-explainer">Bunları görünce otomatik Present Perfect seçme. Önce cümlenin anlamına ve zamanın bitip bitmediğine bak.</span>
         </section>
-
         <section className="wvg-common-mistake">
           <p>COMMON MISTAKE · SIK HATA</p>
           <del>I have seen him yesterday.</del>
@@ -530,9 +495,7 @@ function PresentPerfectExamples() {
           <p>EXAMPLES · ÖRNEKLER</p>
           <h2 id="present-perfect-examples-title">Cümleyi ezberleme; neden bu zamanı seçtiğimizi gör.</h2>
         </div>
-        <p className="wvg-examples-intro__guide">
-          Her örnekte önce İngilizce cümleyi oku, sonra Türkçesine bak ve en son “neden Present Perfect?” açıklamasını kontrol et.
-        </p>
+        <p className="wvg-examples-intro__guide">Her örnekte önce İngilizce cümleyi oku, sonra Türkçesine bak ve en son “neden Present Perfect?” açıklamasını kontrol et.</p>
       </header>
 
       <div className="wvg-example-list">
@@ -553,10 +516,116 @@ function PresentPerfectExamples() {
 
       <aside className="wvg-examples-note">
         <span>AKLINDA KALSIN</span>
-        <p>
-          Present Perfect’i yalnızca <strong>have/has + V3</strong> formülü olarak ezberlersen karışır. Önce anlamı seç: <strong>bugünle bağlantı</strong> var mı?
-          Sonra formülü kur. Böyle düşünürsen Past Simple ile farkı çok daha kolay oturur.
-        </p>
+        <p>Present Perfect’i yalnızca <strong>have/has + V3</strong> formülü olarak ezberlersen karışır. Önce anlamı seç: <strong>bugünle bağlantı</strong> var mı? Sonra formülü kur. Böyle düşünürsen Past Simple ile farkı çok daha kolay oturur.</p>
+      </aside>
+    </section>
+  );
+}
+
+function PresentPerfectCompare() {
+  const pairs = [
+    {
+      label: "RESULT NOW",
+      perfect: "I’ve lost my keys.",
+      simple: "I lost my keys yesterday.",
+      perfectTr: "Anahtarlarımı kaybettim; şu anda hâlâ bende değiller.",
+      simpleTr: "Anahtarlarımı dün kaybettim; olay bitmiş geçmiş zamanın içinde anlatılıyor."
+    },
+    {
+      label: "LIFE EXPERIENCE VS FINISHED EVENT",
+      perfect: "Have you ever visited Rome?",
+      simple: "Did you visit Rome in 2022?",
+      perfectTr: "Bugüne kadarki hayat deneyimini soruyoruz; ne zaman olduğu önemli değil.",
+      simpleTr: "2022 bitmiş bir zaman. Belirli geçmiş olayı soruyoruz."
+    },
+    {
+      label: "STILL TRUE VS FINISHED",
+      perfect: "She has lived here for six years.",
+      simple: "She lived there for six years.",
+      perfectTr: "Altı yıl önce başladı ve hâlâ burada yaşıyor.",
+      simpleTr: "Orada altı yıl yaşadı ama artık o dönem bitmiş durumda."
+    },
+    {
+      label: "UNFINISHED VS FINISHED TIME",
+      perfect: "I’ve had three meetings today.",
+      simple: "I had three meetings yesterday.",
+      perfectTr: "Bugün henüz bitmedi; şu ana kadarki kısmı özetliyoruz.",
+      simpleTr: "Dün tamamen bitti; bu yüzden Past Simple kullanıyoruz."
+    }
+  ] as const;
+
+  return (
+    <section className="wvg-compare-view" aria-labelledby="present-perfect-compare-title">
+      <header className="wvg-compare-intro">
+        <div>
+          <p>COMPARE · KARŞILAŞTIR</p>
+          <h2 id="present-perfect-compare-title">Present Perfect mı, Past Simple mı?</h2>
+          <span>Formülden önce zamanın nasıl görüldüğüne bak. İki yapı da geçmişten söz edebilir; fark, konuşanın geçmişi bugünden mi gördüğü yoksa bitmiş bir geçmiş zamanın içine mi yerleştirdiğidir.</span>
+        </div>
+        <aside>
+          <strong>EN HIZLI KARAR</strong>
+          <p><b>Bitmiş zaman söylüyorsan:</b> Past Simple.</p>
+          <p><b>Bitmiş zaman yok ve bugünle bağlantı varsa:</b> Present Perfect.</p>
+        </aside>
+      </header>
+
+      <div className="wvg-compare-columns">
+        <article data-side="perfect">
+          <span>PAST → NOW</span>
+          <h3>Present Perfect</h3>
+          <p className="wvg-compare-formula">have / has + V3</p>
+          <p>Geçmişte olan şeye <strong>bugünden bakar.</strong> Sonuç şimdi önemli olabilir, deneyim bugüne kadar sürebilir veya durum hâlâ devam ediyor olabilir.</p>
+          <ul>
+            <li>Kesin bitmiş geçmiş zamanı genellikle söylemez.</li>
+            <li>“Ne zaman?” yerine “şimdiyle bağlantısı ne?” önemlidir.</li>
+            <li>ever, never, since, for, just, already, yet sık görülür.</li>
+          </ul>
+        </article>
+
+        <article data-side="simple">
+          <span>FINISHED PAST</span>
+          <h3>Past Simple</h3>
+          <p className="wvg-compare-formula">V2 / did + base verb</p>
+          <p>Olayı <strong>bitmiş geçmiş zamanın içinde</strong> anlatır. Olayın bugün sonucu olup olmaması gramer seçiminde asıl mesele değildir.</p>
+          <ul>
+            <li>yesterday, last week, in 2020 gibi bitmiş zamanlarla doğaldır.</li>
+            <li>Belirli bir geçmiş olay veya hikâye anlatılır.</li>
+            <li>“Ne zaman oldu?” sorusuna cevap verebilir.</li>
+          </ul>
+        </article>
+      </div>
+
+      <section className="wvg-compare-pairs" aria-label="Present Perfect and Past Simple paired examples">
+        {pairs.map((pair, index) => (
+          <article className="wvg-compare-pair" key={pair.label}>
+            <header>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{pair.label}</strong>
+            </header>
+            <div className="wvg-compare-pair__sentence" data-side="perfect">
+              <b>Present Perfect</b>
+              <strong>{pair.perfect}</strong>
+              <p>{pair.perfectTr}</p>
+            </div>
+            <div className="wvg-compare-pair__sentence" data-side="simple">
+              <b>Past Simple</b>
+              <strong>{pair.simple}</strong>
+              <p>{pair.simpleTr}</p>
+            </div>
+          </article>
+        ))}
+      </section>
+
+      <section className="wvg-compare-decision">
+        <p>3 ADIMDA SEÇ</p>
+        <div><strong>1</strong><span>Cümlede yesterday, last..., ago, in 2020 gibi <b>bitmiş geçmiş zaman</b> var mı? → <b>Past Simple.</b></span></div>
+        <div><strong>2</strong><span>Yoksa olayın <b>şu anki sonucu, bugüne kadarki deneyimi veya hâlâ süren durumu</b> mu önemli? → <b>Present Perfect.</b></span></div>
+        <div><strong>3</strong><span>Hâlâ emin değilsen “Ne zaman oldu?” diye sor. Cevap belirli ve bitmiş bir geçmiş zamansa Past Simple tarafına yaklaş.</span></div>
+      </section>
+
+      <aside className="wvg-compare-warning">
+        <strong>EN SIK TUZAK</strong>
+        <p><del>I have seen her yesterday.</del> <b>I saw her yesterday.</b> “Yesterday” bitmiş bir zaman olduğu için Present Perfect kullanamayız.</p>
       </aside>
     </section>
   );
