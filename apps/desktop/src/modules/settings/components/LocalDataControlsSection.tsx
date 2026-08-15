@@ -29,6 +29,7 @@ const emptySnapshot: LocalDataSnapshot = Object.freeze({
   studyMetadataRecords: 0,
   userVocabularyEntries: 0,
   overrideVocabularyEntries: 0,
+  collectionsRecords: 0,
   settingsRecords: 0,
   activityRecords: 0,
   backupFiles: 0
@@ -103,6 +104,12 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
       title: "Built-in words I edited",
       description: "Your edits are removed and the original built-in versions return.",
       count: snapshot.overrideVocabularyEntries
+    },
+    {
+      category: "collections",
+      title: "Collections",
+      description: "Your saved collection groups, covers, and the words organized inside them.",
+      count: snapshot.collectionsRecords
     },
     {
       category: "settings",
@@ -319,8 +326,8 @@ export function LocalDataControlsSection({ showHeading = true }: LocalDataContro
           <p className="route-page__eyebrow">Reset</p>
           <h3>Reset English Focus</h3>
           <p>
-            Remove added words, edits, personal details, settings, and activity. Built-in words and
-            saved backups stay available.
+            Remove added words, edits, personal details, collections, settings, and activity.
+            Built-in words and saved backups stay available.
           </p>
         </div>
         <Button

@@ -4,6 +4,7 @@ export const LOCAL_DATA_CATEGORIES = [
   "study-metadata",
   "user-vocabulary",
   "overrides",
+  "collections",
   "settings",
   "activity",
   "backups"
@@ -15,6 +16,7 @@ export interface LocalDataSnapshot {
   readonly studyMetadataRecords: number;
   readonly userVocabularyEntries: number;
   readonly overrideVocabularyEntries: number;
+  readonly collectionsRecords: number;
   readonly settingsRecords: number;
   readonly activityRecords: number;
   readonly backupFiles: number;

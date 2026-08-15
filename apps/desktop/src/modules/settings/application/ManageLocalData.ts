@@ -4,6 +4,7 @@ export const FULL_LOCAL_RESET_CATEGORIES: readonly LocalDataCategory[] = Object.
   "study-metadata",
   "user-vocabulary",
   "overrides",
+  "collections",
   "settings",
   "activity"
 ]);
@@ -25,7 +26,9 @@ export function canCreateSafetyBackup(categories: readonly LocalDataCategory[]):
   return (
     !categories.includes("backups") &&
     categories.some((category) =>
-      ["study-metadata", "user-vocabulary", "overrides", "settings"].includes(category)
+      ["study-metadata", "user-vocabulary", "overrides", "collections", "settings"].includes(
+        category
+      )
     )
   );
 }
@@ -42,6 +45,8 @@ export function selectedLocalDataCount(
         return total + snapshot.userVocabularyEntries;
       case "overrides":
         return total + snapshot.overrideVocabularyEntries;
+      case "collections":
+        return total + snapshot.collectionsRecords;
       case "settings":
         return total + snapshot.settingsRecords;
       case "activity":
@@ -58,6 +63,7 @@ function deletedLocalDataCount(result: ResetLocalDataResult): number {
     deleted.studyMetadataRecords +
     deleted.userVocabularyEntries +
     deleted.overrideVocabularyEntries +
+    deleted.collectionsRecords +
     deleted.settingsRecords +
     deleted.activityRecords +
     deleted.backupFiles

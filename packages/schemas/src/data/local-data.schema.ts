@@ -6,6 +6,7 @@ export const localDataCategorySchema = z.enum([
   "study-metadata",
   "user-vocabulary",
   "overrides",
+  "collections",
   "settings",
   "activity",
   "backups"
@@ -16,6 +17,7 @@ export const localDataSnapshotSchema = z
     studyMetadataRecords: z.number().int().nonnegative(),
     userVocabularyEntries: z.number().int().nonnegative(),
     overrideVocabularyEntries: z.number().int().nonnegative(),
+    collectionsRecords: z.number().int().nonnegative(),
     settingsRecords: z.number().int().nonnegative(),
     activityRecords: z.number().int().nonnegative(),
     backupFiles: z.number().int().nonnegative()

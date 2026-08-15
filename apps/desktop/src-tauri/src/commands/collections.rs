@@ -8,13 +8,15 @@ const COLLECTIONS_STATE_VERSION: u64 = 1;
 const MAX_COLLECTIONS: usize = 500;
 const MAX_STATE_BYTES: usize = 32 * 1024 * 1024;
 
-fn validate_collections_state(value: &Value) -> Result<(), String> {
+pub(crate) fn validate_collections_state(value: &Value) -> Result<(), String> {
     let object = value
         .as_object()
         .ok_or_else(|| "Collections state must be an object.".to_string())?;
 
     if object.get("version").and_then(Value::as_u64) != Some(COLLECTIONS_STATE_VERSION) {
-        return Err("Collections state version is not supported by this application build.".to_string());
+        return Err(
+            "Collections state version is not supported by this application build.".to_string(),
+        );
     }
 
     let collections = object
@@ -23,7 +25,9 @@ fn validate_collections_state(value: &Value) -> Result<(), String> {
         .ok_or_else(|| "Collections state must contain a collections array.".to_string())?;
 
     if collections.len() > MAX_COLLECTIONS {
-        return Err(format!("At most {MAX_COLLECTIONS} collections can be stored."));
+        return Err(format!(
+            "At most {MAX_COLLECTIONS} collections can be stored."
+        ));
     }
 
     for collection in collections {

@@ -13,6 +13,7 @@ const snapshot = {
   studyMetadataRecords: 4,
   userVocabularyEntries: 3,
   overrideVocabularyEntries: 2,
+  collectionsRecords: 6,
   settingsRecords: 1,
   activityRecords: 9,
   backupFiles: 5
@@ -23,6 +24,7 @@ const resetResult = {
     studyMetadataRecords: 0,
     userVocabularyEntries: 2,
     overrideVocabularyEntries: 0,
+    collectionsRecords: 0,
     settingsRecords: 1,
     activityRecords: 0,
     backupFiles: 2
@@ -42,6 +44,7 @@ describe("local data management safeguards", () => {
       "study-metadata",
       "user-vocabulary",
       "overrides",
+      "collections",
       "settings",
       "activity"
     ]);
@@ -56,6 +59,7 @@ describe("local data management safeguards", () => {
 
   it("offers recovery copies only when saved backups are preserved", () => {
     expect(canCreateSafetyBackup(["settings", "study-metadata"])).toBe(true);
+    expect(canCreateSafetyBackup(["collections"])).toBe(true);
     expect(canCreateSafetyBackup(["activity"])).toBe(false);
     expect(canCreateSafetyBackup(["settings", "backups"])).toBe(false);
   });

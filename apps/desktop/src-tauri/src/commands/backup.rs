@@ -12,6 +12,7 @@ use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
+    commands::collections::validate_collections_state,
     state::AppState,
     validation::{
         validate_app_settings, validate_vocabulary_entry, validate_vocabulary_user_metadata,
@@ -20,7 +21,7 @@ use crate::{
 
 const BACKUP_KIND: &str = "english-focus-backup";
 const BACKUP_VERSION: &str = "1.0.0";
-const DATABASE_SCHEMA_VERSION: &str = "3";
+const DATABASE_SCHEMA_VERSION: &str = "4";
 const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 const MAX_BACKUP_BYTES: u64 = 32 * 1024 * 1024;
 const AUTOMATIC_RETENTION_LIMIT: usize = 7;
@@ -62,6 +63,8 @@ struct BackupData {
     entries: Vec<BackupVocabularyEntry>,
     metadata: Vec<BackupVocabularyMetadata>,
     settings: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    collections_state: Option<Value>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -200,6 +203,8 @@ fn is_current_data_corruption_error(error: &str) -> bool {
         "Stored vocabulary metadata cannot be backed up safely:",
         "Stored application settings are invalid:",
         "Stored application settings cannot be backed up safely:",
+        "Stored collections JSON is invalid:",
+        "Stored collections cannot be backed up safely:",
     ]
     .iter()
     .any(|prefix| error.starts_with(prefix))
@@ -331,6 +336,28 @@ fn read_settings(connection: &Connection) -> Result<Option<Value>, String> {
         .transpose()
 }
 
+fn read_collections_state(connection: &Connection) -> Result<Option<Value>, String> {
+    let state_json = connection
+        .query_row(
+            "SELECT state_json FROM collections_state WHERE id = 1",
+            [],
+            |row| row.get::<_, String>(0),
+        )
+        .optional()
+        .map_err(|error| format!("Collections could not be read for backup: {error}"))?;
+
+    state_json
+        .map(|json| {
+            let collections_state: Value = serde_json::from_str(&json)
+                .map_err(|error| format!("Stored collections JSON is invalid: {error}"))?;
+            validate_collections_state(&collections_state).map_err(|error| {
+                format!("Stored collections cannot be backed up safely: {error}")
+            })?;
+            Ok(collections_state)
+        })
+        .transpose()
+}
+
 fn build_manifest(
     connection: &Connection,
     reason: &str,
@@ -341,6 +368,7 @@ fn build_manifest(
         entries: read_vocabulary_entries(connection)?,
         metadata: read_vocabulary_metadata(connection)?,
         settings: read_settings(connection)?,
+        collections_state: read_collections_state(connection)?,
     };
     let counts = BackupCounts {
         vocabulary_entries: data.entries.len(),
@@ -468,6 +496,7 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
         ));
     }
     if manifest.database_schema_version != "2"
+        && manifest.database_schema_version != "3"
         && manifest.database_schema_version != DATABASE_SCHEMA_VERSION
     {
         issues.push(format!(
@@ -524,6 +553,12 @@ fn manifest_issues(manifest: &BackupManifest) -> Vec<String> {
             issues.push(format!(
                 "The backup application settings are invalid: {error}"
             ));
+        }
+    }
+
+    if let Some(collections_state) = &manifest.data.collections_state {
+        if let Err(error) = validate_collections_state(collections_state) {
+            issues.push(format!("The backup collections are invalid: {error}"));
         }
     }
 
@@ -693,6 +728,13 @@ pub fn restore_backup(
         .execute("DELETE FROM app_settings", [])
         .map_err(|error| format!("Existing settings could not be cleared: {error}"))?;
 
+    let restores_collections = manifest.database_schema_version == DATABASE_SCHEMA_VERSION;
+    if restores_collections {
+        transaction
+            .execute("DELETE FROM collections_state", [])
+            .map_err(|error| format!("Existing collections could not be cleared: {error}"))?;
+    }
+
     for record in &manifest.data.entries {
         let entry_id = record
             .entry
@@ -786,6 +828,18 @@ pub fn restore_backup(
             .map_err(|error| format!("Application settings could not be restored: {error}"))?;
     }
 
+    if restores_collections {
+        if let Some(collections_state) = &manifest.data.collections_state {
+            let state_json = serde_json::to_string(collections_state)
+                .map_err(|error| format!("Restored collections are invalid: {error}"))?;
+            transaction
+                .execute(
+                    "INSERT INTO collections_state(id, state_json, updated_at) VALUES (1, ?1, ?2)",
+                    params![state_json, &restored_at],
+                )
+                .map_err(|error| format!("Collections could not be restored: {error}"))?;
+        }
+    }
     transaction
         .commit()
         .map_err(|error| format!("The restore transaction could not commit: {error}"))?;
@@ -853,6 +907,11 @@ mod tests {
                     settings_json TEXT NOT NULL,
                     updated_at TEXT NOT NULL
                 );
+                CREATE TABLE collections_state (
+                    id INTEGER PRIMARY KEY,
+                    state_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL
+                );
                 "#,
             )
             .expect("backup test tables should be created");
@@ -873,6 +932,7 @@ mod tests {
             }],
             metadata: Vec::new(),
             settings: None,
+            collections_state: None,
         };
         let checksum_source = serde_json::to_vec(&data).expect("test backup data should serialize");
 

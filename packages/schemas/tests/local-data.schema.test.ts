@@ -6,6 +6,7 @@ const emptySnapshot = {
   studyMetadataRecords: 0,
   userVocabularyEntries: 0,
   overrideVocabularyEntries: 0,
+  collectionsRecords: 0,
   settingsRecords: 0,
   activityRecords: 0,
   backupFiles: 0

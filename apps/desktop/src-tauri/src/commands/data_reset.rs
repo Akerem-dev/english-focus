@@ -4,15 +4,17 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use rusqlite::OptionalExtension;
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager, State};
 
 use crate::{commands::backup, state::AppState};
 
-const ALLOWED_CATEGORIES: [&str; 6] = [
+const ALLOWED_CATEGORIES: [&str; 7] = [
     "study-metadata",
     "user-vocabulary",
     "overrides",
+    "collections",
     "settings",
     "activity",
     "backups",
@@ -24,6 +26,7 @@ pub struct LocalDataSnapshot {
     study_metadata_records: usize,
     user_vocabulary_entries: usize,
     override_vocabulary_entries: usize,
+    collections_records: usize,
     settings_records: usize,
     activity_records: usize,
     backup_files: usize,
@@ -89,6 +92,27 @@ fn validate_request(request: &ResetLocalDataRequest) -> Result<HashSet<&str>, St
     Ok(categories)
 }
 
+fn collections_count(connection: &rusqlite::Connection) -> Result<usize, String> {
+    let state_json = connection
+        .query_row(
+            "SELECT state_json FROM collections_state WHERE id = 1",
+            [],
+            |row| row.get::<_, String>(0),
+        )
+        .optional()
+        .map_err(|error| format!("Collection totals could not be read: {error}"))?;
+
+    let Some(state_json) = state_json else {
+        return Ok(0);
+    };
+    let state: serde_json::Value = serde_json::from_str(&state_json)
+        .map_err(|error| format!("Stored collections JSON is invalid: {error}"))?;
+    Ok(state
+        .get("collections")
+        .and_then(serde_json::Value::as_array)
+        .map_or(0, Vec::len))
+}
+
 fn snapshot_from_connection(
     connection: &rusqlite::Connection,
     backup_files: usize,
@@ -106,6 +130,7 @@ fn snapshot_from_connection(
             connection,
             "SELECT COUNT(*) FROM vocabulary_entries WHERE layer = 'override'",
         )?,
+        collections_records: collections_count(connection)?,
         settings_records: count_query(connection, "SELECT COUNT(*) FROM app_settings")?,
         activity_records: count_query(connection, "SELECT COUNT(*) FROM activity_log")?,
         backup_files,
@@ -199,7 +224,7 @@ pub fn reset_local_data(
     let backs_up_database_data = categories.iter().any(|category| {
         matches!(
             *category,
-            "study-metadata" | "user-vocabulary" | "overrides" | "settings"
+            "study-metadata" | "user-vocabulary" | "overrides" | "collections" | "settings"
         )
     });
     let safety_backup = if request.create_safety_backup && backs_up_database_data {
@@ -256,6 +281,13 @@ pub fn reset_local_data(
         deleted.settings_records = transaction
             .execute("DELETE FROM app_settings", [])
             .map_err(|error| format!("Application settings could not be reset: {error}"))?;
+    }
+
+    if categories.contains("collections") {
+        deleted.collections_records = collections_count(&transaction)?;
+        transaction
+            .execute("DELETE FROM collections_state", [])
+            .map_err(|error| format!("Collections could not be removed: {error}"))?;
     }
 
     if categories.contains("activity") {

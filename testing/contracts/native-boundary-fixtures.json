@@ -153,7 +153,8 @@
     "overrideVocabularyEntries": 1,
     "settingsRecords": 1,
     "activityRecords": 4,
-    "backupFiles": 1
+    "backupFiles": 1,
+    "collectionsRecords": 0
   },
   "resetLocalDataResult": {
     "deleted": {
@@ -162,7 +163,8 @@
       "overrideVocabularyEntries": 0,
       "settingsRecords": 1,
       "activityRecords": 4,
-      "backupFiles": 0
+      "backupFiles": 0,
+      "collectionsRecords": 0
     },
     "safetyBackup": null,
     "backupDeletion": {
