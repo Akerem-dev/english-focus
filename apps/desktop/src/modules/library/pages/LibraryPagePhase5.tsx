@@ -105,13 +105,18 @@ function CollectionsFinalQaGuards() {
           ?.querySelector<HTMLElement>(".wvc-collection-hero h1")
           ?.textContent?.trim() ?? "";
       const normalizedCurrentTitle = normalizeCollectionTitle(currentTitle);
+      const visibleCollectionTitles = Array.from(
+        root?.querySelectorAll<HTMLElement>(".wvc-card__body > strong") ?? []
+      ).map((node) => normalizeCollectionTitle(node.textContent ?? ""));
 
+      const duplicateInStorage = storedCollectionsRef.current.some(
+        (collection) => normalizeCollectionTitle(collection.title) === normalizedTitle
+      );
+      const duplicateOnScreen = visibleCollectionTitles.includes(normalizedTitle);
       const duplicate =
         normalizedTitle.length > 0 &&
         !(editing && normalizedTitle === normalizedCurrentTitle) &&
-        storedCollectionsRef.current.some(
-          (collection) => normalizeCollectionTitle(collection.title) === normalizedTitle
-        );
+        (duplicateInStorage || duplicateOnScreen);
 
       const touched = nameInput.dataset.qaTouched === "true";
       const empty = normalizedTitle.length === 0;
