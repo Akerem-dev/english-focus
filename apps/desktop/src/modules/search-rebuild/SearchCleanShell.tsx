@@ -27,7 +27,7 @@ const DAILY_WORD_GOAL = 25;
 
 const NAV_ITEMS: readonly CleanNavItem[] = Object.freeze([
   { label: "Search", icon: "search", to: ROUTE_PATHS.vocabulary },
-  { label: "Grammar", icon: "book-open" },
+  { label: "Grammar", icon: "book-open", to: ROUTE_PATHS.grammar },
   { label: "Collections", icon: "bookmark", to: ROUTE_PATHS.library },
   { label: "Practice", icon: "edit" },
   { label: "Favorites", icon: "star" },
