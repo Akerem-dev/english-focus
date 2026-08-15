@@ -1,0 +1,101 @@
+/* Collections Phase 5 — final QA guards and production polish. */
+
+/* Final artwork should crop predictably in every place the preset is reused. */
+#root .application-frame--collections-cleanroom .wvc-scene,
+#root .application-frame--collections-cleanroom .wvc-phase3-scene,
+#root .application-frame--collections-cleanroom [data-cover] {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* Keep keyboard navigation visible without turning every control into a heavy button. */
+#root .application-frame--collections-cleanroom .wvc-card__open:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-alpha-row:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-mode-nav button:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-alphabet button:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-phase3-tabs button:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-cover-choice:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-button:focus-visible,
+#root .application-frame--collections-cleanroom .wvc-icon-button:focus-visible {
+  outline: 2px solid rgba(190, 145, 44, .78);
+  outline-offset: 3px;
+}
+
+/* Collection editor validation stays editorial and close to the field. */
+#root .application-frame--collections-cleanroom .wvc-field-error {
+  display: block;
+  margin-top: 7px;
+  color: #9a3f32;
+  font: 500 11px/16px "Inter", system-ui, sans-serif;
+  letter-spacing: .005em;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field-error[hidden] {
+  display: none;
+}
+
+#root .application-frame--collections-cleanroom .wvc-field input[aria-invalid="true"] {
+  border-color: rgba(154, 63, 50, .62);
+  box-shadow: 0 0 0 3px rgba(154, 63, 50, .075);
+}
+
+/* Long descriptions and modal content must never force controls below the viewport. */
+#root .application-frame--collections-cleanroom .wvc-modal--editor {
+  max-height: calc(100vh - 92px);
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal--editor .wvc-modal__body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#root .application-frame--collections-cleanroom .wvc-modal--editor .wvc-modal__header,
+#root .application-frame--collections-cleanroom .wvc-modal--editor .wvc-modal__footer {
+  flex: 0 0 auto;
+}
+
+/* Preserve the premium cover composition when cards are compact. */
+#root .application-frame--collections-cleanroom .wvc-card__cover,
+#root .application-frame--collections-cleanroom .wvc-collection-hero__cover,
+#root .application-frame--collections-cleanroom .wvc-cover-preview,
+#root .application-frame--collections-cleanroom .wvc-cover-choice,
+#root .application-frame--collections-cleanroom .wvc-move-option__cover {
+  background-position: center;
+}
+
+/* Small desktop windows: keep the gallery useful rather than squeezing into broken columns. */
+@media (max-width: 1180px) {
+  #root .application-frame--collections-cleanroom .wvc-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .application-frame--collections-cleanroom .wvc-editor-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .application-frame--collections-cleanroom .wvc-cover-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  #root .application-frame--collections-cleanroom .wvc-card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .application-frame--collections-cleanroom .wvc-cover-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--collections-cleanroom .wvc-alpha-section,
+  #root .application-frame--collections-cleanroom .wvc-alpha-row,
+  #root .application-frame--collections-cleanroom .wvc-modal,
+  #root .application-frame--collections-cleanroom .wvc-cover-choice {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
