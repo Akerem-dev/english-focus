@@ -2,11 +2,13 @@ import { useMemo, useRef, useState } from "react";
 
 import grammarBackground from "../../../assets/collections/collections-background.png";
 import { AppIcon } from "../../../design-system";
+import { PresentPerfectPractice } from "../components/PresentPerfectPractice";
 
 import "../../../styles/word-valley-grammar-phase1-home.css";
 import "../../../styles/word-valley-grammar-phase2-topic.css";
 import "../../../styles/word-valley-grammar-phase3-examples.css";
 import "../../../styles/word-valley-grammar-phase4-compare.css";
+import "../../../styles/word-valley-grammar-phase5-practice.css";
 
 interface GrammarArea {
   readonly eyebrow: string;
@@ -26,7 +28,7 @@ interface GrammarLesson {
 }
 
 type GrammarView = "home" | "present-perfect";
-type PresentPerfectTab = "rule" | "examples" | "compare";
+type PresentPerfectTab = "rule" | "examples" | "compare" | "practice";
 
 const GRAMMAR_AREAS: readonly GrammarArea[] = Object.freeze([
   {
@@ -364,12 +366,13 @@ function PresentPerfectLesson({ onBack }: PresentPerfectLessonProps) {
           <button aria-current={tab === "rule" ? "page" : undefined} className={tab === "rule" ? "is-active" : undefined} onClick={() => setTab("rule")} type="button">Rule</button>
           <button aria-current={tab === "examples" ? "page" : undefined} className={tab === "examples" ? "is-active" : undefined} onClick={() => setTab("examples")} type="button">Examples</button>
           <button aria-current={tab === "compare" ? "page" : undefined} className={tab === "compare" ? "is-active" : undefined} onClick={() => setTab("compare")} type="button">Compare</button>
-          <button disabled type="button">Practice</button>
+          <button aria-current={tab === "practice" ? "page" : undefined} className={tab === "practice" ? "is-active" : undefined} onClick={() => setTab("practice")} type="button">Practice</button>
         </nav>
 
         {tab === "rule" ? <PresentPerfectRuleContent /> : null}
         {tab === "examples" ? <PresentPerfectExamples /> : null}
         {tab === "compare" ? <PresentPerfectCompare /> : null}
+        {tab === "practice" ? <PresentPerfectPractice /> : null}
       </section>
     </main>
   );
