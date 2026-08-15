@@ -37,8 +37,10 @@ export function AppLayout({ children }: PropsWithChildren) {
   const canExportCurrent = hasAction(commands, "export-current");
   const canSaveCurrent = hasAction(commands, "save-current");
   const isWordValleySearch = location.pathname === ROUTE_PATHS.vocabulary;
+  const isWordValleyGrammar = location.pathname === ROUTE_PATHS.grammar;
   const isWordValleyCollections = location.pathname === ROUTE_PATHS.library;
-  const isWordValleyCleanRoom = isWordValleySearch || isWordValleyCollections;
+  const isWordValleyCleanRoom =
+    isWordValleySearch || isWordValleyGrammar || isWordValleyCollections;
 
   useEffect(() => {
     if (!isWordValleyCleanRoom) {
@@ -153,7 +155,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       <div
         className={`application-frame application-frame--search-cleanroom${
           isWordValleyCollections ? " application-frame--collections-cleanroom" : ""
-        }`}
+        }${isWordValleyGrammar ? " application-frame--grammar-cleanroom" : ""}`}
       >
         <a className="skip-link" href="#main-content">
           Skip to content
