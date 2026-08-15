@@ -10,6 +10,11 @@ const VocabularyPage = lazy(async () => {
   return { default: module.VocabularyPage };
 });
 
+const GrammarPage = lazy(async () => {
+  const module = await import("../../modules/grammar/pages");
+  return { default: module.GrammarPage };
+});
+
 const LibraryPage = lazy(async () => {
   const module = await import("../../modules/library/pages");
   return { default: module.LibraryPage };
@@ -45,6 +50,14 @@ export const APP_ROUTES = [
     title: "Wordbook",
     icon: "book-open",
     element: createRouteElement("Wordbook", <VocabularyPage />)
+  },
+  {
+    id: "grammar",
+    path: ROUTE_PATHS.grammar,
+    label: "Grammar",
+    title: "Grammar",
+    icon: "book-open",
+    element: createRouteElement("Grammar", <GrammarPage />)
   },
   {
     id: "library",
