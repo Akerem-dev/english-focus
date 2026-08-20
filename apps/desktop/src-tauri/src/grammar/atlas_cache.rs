@@ -3,7 +3,10 @@ use std::sync::OnceLock;
 
 use serde::Deserialize;
 
-use crate::grammar::{atlas_review::is_runtime_approved, types::GrammarLocalAnswer};
+use crate::grammar::{
+    atlas_overrides::override_answer, atlas_review::is_runtime_approved,
+    types::GrammarLocalAnswer,
+};
 
 const ATLAS_SHARDS: &[&str] = &[
     include_str!("atlas_cache_01.json"),
@@ -17,7 +20,7 @@ const ATLAS_SHARDS: &[&str] = &[
 ];
 
 const EXPECTED_ATLAS_CARD_COUNT: usize = 156;
-const EXPECTED_RUNTIME_APPROVED_COUNT: usize = 128;
+const EXPECTED_RUNTIME_APPROVED_COUNT: usize = 139;
 const KNOWN_FAIL_CLOSED_GAPS: &[&str] = &["A010", "A014", "A087", "A150"];
 
 #[derive(Debug, Clone, Deserialize)]
@@ -187,12 +190,14 @@ fn normalized_phrase_present(question: &str, phrase: &str) -> bool {
 }
 
 fn to_answer(card: &AtlasCard, confidence: f32) -> GrammarLocalAnswer {
+    let answer_text = override_answer(card.card_id.as_str()).unwrap_or(card.answer_text.as_str());
+
     GrammarLocalAnswer {
         source: "local-atlas-cache",
         card_id: card.card_id.clone(),
         topic_name: card.title.clone(),
         category: card.category.clone(),
-        answer_text: card.answer_text.clone(),
+        answer_text: answer_text.to_string(),
         core_rule_ids: card.core_rule_ids.clone(),
         support_rule_ids: card.support_rule_ids.clone(),
         confidence,
@@ -240,12 +245,7 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
         right
             .informative_title_tokens
             .cmp(&left.informative_title_tokens)
-            .then_with(|| {
-                right
-                    .normalized_title
-                    .len()
-                    .cmp(&left.normalized_title.len())
-            })
+            .then_with(|| right.normalized_title.len().cmp(&left.normalized_title.len()))
     });
 
     if let Some(best) = phrase_matches.first() {
@@ -265,9 +265,10 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
 #[cfg(test)]
 mod tests {
     use super::{
-        answer_atlas_local, cards, EXPECTED_RUNTIME_APPROVED_COUNT, KNOWN_FAIL_CLOSED_GAPS,
+        answer_atlas_local, cards, generated_aliases, EXPECTED_RUNTIME_APPROVED_COUNT,
+        KNOWN_FAIL_CLOSED_GAPS,
     };
-    use crate::grammar::atlas_review::is_runtime_approved;
+    use crate::grammar::{atlas_overrides::override_answer, atlas_review::is_runtime_approved};
 
     #[test]
     fn embedded_atlas_has_exact_expected_coverage() {
@@ -289,6 +290,26 @@ mod tests {
                 .count(),
             EXPECTED_RUNTIME_APPROVED_COUNT
         );
+    }
+
+    #[test]
+    fn every_runtime_approved_compiler_alias_is_zero_token() {
+        let approved = cards()
+            .expect("embedded atlas should parse and validate")
+            .iter()
+            .filter(|card| is_runtime_approved(&card.card_id))
+            .collect::<Vec<_>>();
+        assert_eq!(approved.len(), EXPECTED_RUNTIME_APPROVED_COUNT);
+
+        for card in approved {
+            for alias in generated_aliases(&card.title) {
+                let answer = answer_atlas_local(&alias)
+                    .expect("cache lookup should succeed")
+                    .expect("approved compiler alias should be a local hit");
+                assert_eq!(answer.card_id, card.card_id, "alias={alias}");
+                assert_eq!(answer.source, "local-atlas-cache");
+            }
+        }
     }
 
     #[test]
@@ -317,6 +338,23 @@ mod tests {
             assert_eq!(answer.source, "local-atlas-cache");
             assert_eq!(answer.card_id, expected_id);
             assert_eq!(answer.confidence, 1.0);
+        }
+    }
+
+    #[test]
+    fn reviewed_overrides_replace_only_the_rendered_answer() {
+        for card_id in ["A038", "A104", "A157"] {
+            let card = cards()
+                .expect("embedded atlas should parse")
+                .iter()
+                .find(|candidate| candidate.card_id == card_id)
+                .expect("repaired card should exist");
+            let answer = answer_atlas_local(&card.title)
+                .expect("cache lookup should succeed")
+                .expect("repaired card should be runtime approved");
+            assert_eq!(answer.answer_text, override_answer(card_id).unwrap());
+            assert_eq!(answer.core_rule_ids, card.core_rule_ids);
+            assert_eq!(answer.support_rule_ids, card.support_rule_ids);
         }
     }
 
@@ -360,9 +398,9 @@ mod tests {
     }
 
     #[test]
-    fn manually_quarantined_cards_do_not_reach_users() {
+    fn remaining_quarantined_cards_do_not_reach_users() {
         for question in [
-            "Wish about the past nedir ve nasıl kullanılır?",
+            "Passive reporting structures nedir ve nasıl kullanılır?",
             "Adjective Order ne zaman kullanılır?",
             "Try doing vs Try to do kullanım mantığını yeni başlayan birine anlat.",
             "At / On / In for time için doğru kullanım nasıl anlaşılır?",
