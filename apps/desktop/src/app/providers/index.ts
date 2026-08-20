@@ -8,6 +8,7 @@ export { useAssistant } from "./useAssistant";
 export { useBackup } from "./useBackup";
 export { useClipboard } from "./useClipboard";
 export { useFileTransfer } from "./useFileTransfer";
+export { useGrammar } from "./useGrammar";
 export { useMaintenance } from "./useMaintenance";
 export { useInstructionPreferences } from "./useInstructionPreferences";
 export { useOptionalSettings } from "./useOptionalSettings";
