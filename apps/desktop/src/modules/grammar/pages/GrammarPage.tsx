@@ -2,10 +2,12 @@ import { useMemo, useRef, useState } from "react";
 
 import grammarBackground from "../../../assets/collections/collections-background.png";
 import { AppIcon } from "../../../design-system";
+import { CompiledGrammarLesson } from "../components/CompiledGrammarLesson";
 import { PresentPerfectPractice } from "../components/PresentPerfectPractice";
 import {
   GRAMMAR_KNOWLEDGE_AREAS,
-  GRAMMAR_KNOWLEDGE_LESSONS
+  GRAMMAR_KNOWLEDGE_LESSONS,
+  type GrammarKnowledgeLesson
 } from "../knowledge/grammarKnowledgeIndex";
 
 import "../../../styles/word-valley-grammar-phase1-home.css";
@@ -14,7 +16,7 @@ import "../../../styles/word-valley-grammar-phase3-examples.css";
 import "../../../styles/word-valley-grammar-phase4-compare.css";
 import "../../../styles/word-valley-grammar-phase5-practice.css";
 
-type GrammarView = "home" | "present-perfect";
+type GrammarView = "home" | "present-perfect" | "compiled-lesson";
 type PresentPerfectTab = "rule" | "examples" | "compare" | "practice";
 
 const TROUBLE_SPOTS = Object.freeze([
@@ -45,6 +47,7 @@ function lessonSearchText(lesson: (typeof GRAMMAR_KNOWLEDGE_LESSONS)[number]): s
 export function GrammarPage() {
   const [query, setQuery] = useState("");
   const [view, setView] = useState<GrammarView>("home");
+  const [selectedLesson, setSelectedLesson] = useState<GrammarKnowledgeLesson | undefined>();
   const searchRef = useRef<HTMLInputElement>(null);
   const tokens = useMemo(() => normalizeSearch(query), [query]);
   const searching = tokens.length > 0;
@@ -73,12 +76,29 @@ export function GrammarPage() {
 
   function openPresentPerfect() {
     setQuery("");
+    setSelectedLesson(undefined);
     setView("present-perfect");
+  }
+
+  function openLesson(lesson: GrammarKnowledgeLesson) {
+    if (lesson.id === "present-perfect") {
+      openPresentPerfect();
+      return;
+    }
+
+    setQuery("");
+    setSelectedLesson(lesson);
+    setView("compiled-lesson");
   }
 
   function returnHome() {
     setQuery("");
+    setSelectedLesson(undefined);
     setView("home");
+  }
+
+  function activateArea(title: string) {
+    searchFor(title);
   }
 
   const resultCount = visibleLessons.length + visibleAreas.length;
@@ -94,6 +114,8 @@ export function GrammarPage() {
 
       {view === "present-perfect" ? (
         <PresentPerfectLesson onBack={returnHome} />
+      ) : view === "compiled-lesson" && selectedLesson !== undefined ? (
+        <CompiledGrammarLesson lesson={selectedLesson} onBack={returnHome} />
       ) : (
         <main className="wvg-home" aria-labelledby="grammar-home-title">
           <header className="wvg-home__header">
@@ -146,10 +168,9 @@ export function GrammarPage() {
                 {visibleLessons.map((lesson) => (
                   <button
                     className="wvg-result-row"
-                    data-implemented={lesson.implemented ? "true" : "false"}
-                    disabled={!lesson.implemented}
+                    data-implemented="true"
                     key={lesson.id}
-                    onClick={lesson.implemented ? openPresentPerfect : undefined}
+                    onClick={() => openLesson(lesson)}
                     type="button"
                   >
                     <span className="wvg-result-row__copy">
@@ -158,7 +179,7 @@ export function GrammarPage() {
                     </span>
                     <span className="wvg-result-row__meta">
                       <small>{lesson.level} · {lesson.category}</small>
-                      {lesson.implemented ? <b aria-hidden="true">→</b> : null}
+                      <b aria-hidden="true">→</b>
                     </span>
                   </button>
                 ))}
@@ -187,7 +208,20 @@ export function GrammarPage() {
             ) : (
               <div className="wvg-area-grid">
                 {visibleAreas.map((area) => (
-                  <article className="wvg-area" data-accent={area.accent} key={area.id}>
+                  <article
+                    className="wvg-area"
+                    data-accent={area.accent}
+                    key={area.id}
+                    onClick={() => activateArea(area.title)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        activateArea(area.title);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
                     <i aria-hidden="true" />
                     <p>{area.eyebrow}</p>
                     <h3>{area.title}</h3>
