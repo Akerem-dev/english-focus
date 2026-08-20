@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type PropsWithChildren } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { AssistantDock } from "../../modules/assistant";
+import { AssistantDock, GrammarAssistantDock } from "../../modules/assistant";
 import { SearchCleanShell } from "../../modules/search-rebuild/SearchCleanShell";
 import {
   CommandBar,
@@ -168,6 +168,7 @@ export function AppLayout({ children }: PropsWithChildren) {
               {children}
             </SearchCleanShell>
             {isWordValleySearch ? <AssistantDock /> : null}
+            {isWordValleyGrammar ? <GrammarAssistantDock /> : null}
           </div>
         </div>
 
