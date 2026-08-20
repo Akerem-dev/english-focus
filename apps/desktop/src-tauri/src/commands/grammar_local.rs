@@ -1,11 +1,10 @@
 pub use crate::grammar::types::GrammarLocalAnswer;
-use crate::grammar::{
-    runtime_cache::answer_local,
-    types::GrammarAnswerResponse,
-};
+use crate::grammar::{runtime_cache::answer_local, types::GrammarAnswerResponse};
 
 #[tauri::command]
-pub fn assistant_answer_grammar_local(question: String) -> Result<Option<GrammarLocalAnswer>, String> {
+pub fn assistant_answer_grammar_local(
+    question: String,
+) -> Result<Option<GrammarLocalAnswer>, String> {
     answer_local(&question)
 }
 
