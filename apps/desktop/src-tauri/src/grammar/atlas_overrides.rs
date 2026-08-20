@@ -50,8 +50,7 @@ mod tests {
     #[test]
     fn reviewed_repairs_exist_only_for_explicit_cards() {
         for card_id in [
-            "A038", "A041", "A065", "A080", "A093", "A104", "A110", "A123", "A135",
-            "A137", "A157",
+            "A038", "A041", "A065", "A080", "A093", "A104", "A110", "A123", "A135", "A137", "A157",
         ] {
             let answer = override_answer(card_id).expect("reviewed override should exist");
             assert!(!answer.trim().is_empty());
