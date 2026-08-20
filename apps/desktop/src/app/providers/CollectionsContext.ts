@@ -10,7 +10,7 @@ export interface PersistedCollection {
   readonly wordIds: readonly string[];
 }
 
-export interface CollectionsState {
+interface CollectionsState {
   readonly version: 1;
   readonly collections: readonly PersistedCollection[];
 }
