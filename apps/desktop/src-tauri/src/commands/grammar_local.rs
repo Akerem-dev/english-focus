@@ -1,11 +1,15 @@
 pub use crate::grammar::types::GrammarLocalAnswer;
 use crate::grammar::{
     atlas_cache::answer_atlas_local,
+    core_curated::answer_curated_core,
     runtime_cache::answer_local as answer_core_local,
     types::GrammarAnswerResponse,
 };
 
 fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
+    if let Some(answer) = answer_curated_core(question)? {
+        return Ok(Some(answer));
+    }
     if let Some(answer) = answer_core_local(question)? {
         return Ok(Some(answer));
     }
@@ -31,6 +35,17 @@ pub fn assistant_answer_grammar(question: String) -> Result<GrammarAnswerRespons
 #[cfg(test)]
 mod tests {
     use super::answer_local;
+
+    #[test]
+    fn all_curated_core_wordings_can_bypass_cloud() {
+        let answer = answer_local(
+            "aga present perfect mi past simple mı kafam karıştı neye bakıp seçecem",
+        )
+        .expect("local lookup should succeed")
+        .expect("expected curated core hit");
+        assert_eq!(answer.source, "local-core-cache");
+        assert_eq!(answer.card_id, "C015");
+    }
 
     #[test]
     fn hardened_core_cache_keeps_priority_for_broad_family_questions() {
