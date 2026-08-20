@@ -17,8 +17,21 @@ fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
         if is_runtime_approved(&answer.card_id) {
             return Ok(Some(answer));
         }
+
+        // A quarantined compiler card is still useful as an intent discriminator. A reviewed
+        // rescue may replace that exact card, but it must never hijack the question as a
+        // different topic after punctuation/normalization has collapsed a meaningful contrast
+        // (for example `So ... that` vs `So that`).
+        if let Some(reviewed) = answer_reviewed_atlas(question) {
+            if reviewed.card_id == answer.card_id {
+                return Ok(Some(reviewed));
+            }
+        }
+
+        return Ok(None);
     }
 
+    // Missing compiler cards can still be served by explicitly source-reviewed rescues.
     if let Some(answer) = answer_reviewed_atlas(question) {
         return Ok(Some(answer));
     }
@@ -164,6 +177,13 @@ mod tests {
                 "question={question}"
             );
         }
+    }
+
+    #[test]
+    fn quarantined_intent_cannot_be_hijacked_by_a_different_rescue() {
+        let answer = answer_local("So ... that nedir ve nasıl kullanılır?")
+            .expect("local lookup should succeed");
+        assert!(answer.is_none());
     }
 
     #[test]
