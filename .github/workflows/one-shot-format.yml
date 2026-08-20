@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - feat/grammar-engine-integration
-    paths-ignore:
-      - .github/workflows/one-shot-format.yml
 
 permissions:
   contents: write
