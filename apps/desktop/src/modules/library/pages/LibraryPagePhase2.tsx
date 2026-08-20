@@ -164,12 +164,9 @@ function AllWordsPage({ onChangeMode }: { readonly onChangeMode: (mode: LibraryM
   }, [groupedEntries]);
 
   const [activeKey, setActiveKey] = useState<BrowseKey>(availableKeys[0] ?? "A");
-
-  useEffect(() => {
-    if (!availableKeys.includes(activeKey)) {
-      setActiveKey(availableKeys[0] ?? "A");
-    }
-  }, [activeKey, availableKeys]);
+  const displayedActiveKey = availableKeys.includes(activeKey)
+    ? activeKey
+    : (availableKeys[0] ?? "A");
 
   useEffect(() => {
     const page = pageRef.current;
@@ -268,7 +265,7 @@ function AllWordsPage({ onChangeMode }: { readonly onChangeMode: (mode: LibraryM
                 const available = groupedEntries.has(letter);
                 return (
                   <button
-                    aria-current={activeKey === letter ? "location" : undefined}
+                    aria-current={displayedActiveKey === letter ? "location" : undefined}
                     disabled={!available}
                     key={letter}
                     onClick={() => jumpTo(letter)}
@@ -280,7 +277,7 @@ function AllWordsPage({ onChangeMode }: { readonly onChangeMode: (mode: LibraryM
               })}
               {groupedEntries.has("#") ? (
                 <button
-                  aria-current={activeKey === "#" ? "location" : undefined}
+                  aria-current={displayedActiveKey === "#" ? "location" : undefined}
                   onClick={() => jumpTo("#")}
                   type="button"
                 >
