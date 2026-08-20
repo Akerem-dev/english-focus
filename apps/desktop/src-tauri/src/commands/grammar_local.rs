@@ -1,6 +1,7 @@
+pub use crate::grammar::types::GrammarLocalAnswer;
 use crate::grammar::{
     runtime_cache::answer_local,
-    types::{GrammarAnswerResponse, GrammarLocalAnswer},
+    types::GrammarAnswerResponse,
 };
 
 #[tauri::command]
