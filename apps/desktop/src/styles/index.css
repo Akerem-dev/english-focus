@@ -13,11 +13,7 @@
 @import "./assistant-layout-polish.css";
 @import "./route-pages.css";
 @import "./instruction.css";
-@import "./json-import.css";
 @import "./vocabulary-pack.css";
-@import "./word-valley-collections-cleanroom.css";
-@import "./settings.css";
-@import "./assistant-settings.css";
 @import "./backup.css";
 @import "./backup-resilience.css";
 @import "./diagnostics.css";
@@ -28,11 +24,6 @@
 @import "./advanced-vocabulary-tools.css";
 @import "./vocabulary-editor.css";
 @import "./release-hardening.css";
-@import "./settings-management.css";
-@import "./settings-polish.css";
-@import "./settings-surface-simplification.css";
-@import "./settings-task-simplification.css";
-@import "./settings-task-flow-polish.css";
 @import "./interface-polish.css";
 @import "./phase-1-ui-polish.css";
 @import "./phase-3-health-backup.css";
@@ -47,9 +38,3 @@
 @import "./search-package-7-rail-parity.css";
 @import "./search-package-8-final-fixes.css";
 @import "./search-detail-manual-controls.css";
-@import "./word-valley-collections-phase1-runtime.css";
-@import "./word-valley-collections-phase1-sorting.css";
-@import "./word-valley-collections-phase2-all-words.css";
-@import "./word-valley-collections-phase3-rich-detail.css";
-@import "./word-valley-collections-phase4-editorial-polish.css";
-@import "./word-valley-collections-phase5-final-qa.css";
