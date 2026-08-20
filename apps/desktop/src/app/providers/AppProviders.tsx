@@ -4,6 +4,7 @@ import { ActivityProvider } from "./ActivityProvider";
 import { AssistantProvider } from "./AssistantProvider";
 import { BackupProvider } from "./BackupProvider";
 import { ClipboardProvider } from "./ClipboardProvider";
+import { CollectionsProvider } from "./CollectionsProvider";
 import { FileTransferProvider } from "./FileTransferProvider";
 import { GrammarProvider } from "./GrammarProvider";
 import { InstructionPreferencesProvider } from "./InstructionPreferencesProvider";
@@ -25,13 +26,15 @@ export function AppProviders({ children }: PropsWithChildren) {
                 <SettingsProvider>
                   <VocabularyRepositoryProvider>
                     <VocabularyMetadataProvider>
-                      <BackupProvider>
-                        <InstructionPreferencesProvider>
-                          <AssistantProvider>
-                            <GrammarProvider>{children}</GrammarProvider>
-                          </AssistantProvider>
-                        </InstructionPreferencesProvider>
-                      </BackupProvider>
+                      <CollectionsProvider>
+                        <BackupProvider>
+                          <InstructionPreferencesProvider>
+                            <AssistantProvider>
+                              <GrammarProvider>{children}</GrammarProvider>
+                            </AssistantProvider>
+                          </InstructionPreferencesProvider>
+                        </BackupProvider>
+                      </CollectionsProvider>
                     </VocabularyMetadataProvider>
                   </VocabularyRepositoryProvider>
                 </SettingsProvider>
