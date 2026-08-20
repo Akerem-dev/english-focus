@@ -4,8 +4,7 @@ use std::sync::OnceLock;
 use serde::Deserialize;
 
 use crate::grammar::{
-    atlas_overrides::override_answer, atlas_review::is_runtime_approved,
-    types::GrammarLocalAnswer,
+    atlas_overrides::override_answer, atlas_review::is_runtime_approved, types::GrammarLocalAnswer,
 };
 
 const ATLAS_SHARDS: &[&str] = &[
@@ -245,7 +244,12 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
         right
             .informative_title_tokens
             .cmp(&left.informative_title_tokens)
-            .then_with(|| right.normalized_title.len().cmp(&left.normalized_title.len()))
+            .then_with(|| {
+                right
+                    .normalized_title
+                    .len()
+                    .cmp(&left.normalized_title.len())
+            })
     });
 
     if let Some(best) = phrase_matches.first() {
