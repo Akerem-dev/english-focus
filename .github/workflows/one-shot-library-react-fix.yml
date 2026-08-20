@@ -1,6 +1,5 @@
 name: One-shot library React fix
 
-# Trigger after the workflow exists on the branch.
 on:
   push:
     branches:
@@ -30,39 +29,21 @@ jobs:
       - name: Repair modal synchronization and search labels
         shell: bash
         run: |
-          node <<'NODE'
-          const fs = require('node:fs');
-          const path = 'apps/desktop/src/modules/library/pages/LibraryPage.tsx';
-          let source = fs.readFileSync(path, 'utf8');
+          python3 <<'PY'
+          from pathlib import Path
+          import re
 
-          const oldEffect = `  useEffect(() => {
-            if (modal === null) {
-              return;
-            }
+          path = Path('apps/desktop/src/modules/library/pages/LibraryPage.tsx')
+          source = path.read_text(encoding='utf-8')
 
-            setModalQuery("");
-            setModalWordSelection([]);
-            setMoveTargetId(undefined);
-
-            if (modal.type === "new") {
-              setDraftTitle("");
-              setDraftDescription("");
-              setDraftTone("gold");
-              setDraftCoverPreset("ridge");
-              setDraftCoverImage(undefined);
-              return;
-            }
-
-            if (modal.type === "edit" && activeCollection !== undefined) {
-              setDraftTitle(activeCollection.title);
-              setDraftDescription(activeCollection.description);
-              setDraftTone(activeCollection.tone);
-              setDraftCoverPreset(activeCollection.coverPreset);
-              setDraftCoverImage(activeCollection.coverImage);
-            }
-          }, [activeCollection, modal]);`;
-
-          const newEffect = `  useEffect(() => {
+          pattern = re.compile(
+              r'''  useEffect\(\(\) => \{\n'''
+              r'''    if \(modal === null\) \{\n      return;\n    \}\n\n'''
+              r'''    setModalQuery\(""\);.*?'''
+              r'''\n  \}, \[activeCollection, modal\]\);''',
+              re.DOTALL,
+          )
+          replacement = '''  useEffect(() => {
             if (modal === null) {
               return;
             }
@@ -98,37 +79,23 @@ jobs:
             return () => {
               cancelled = true;
             };
-          }, [activeCollection, modal]);`;
+          }, [activeCollection, modal]);'''
 
-          if (!source.includes(oldEffect)) {
-            throw new Error('Expected modal synchronization effect was not found.');
-          }
-          source = source.replace(oldEffect, newEffect);
+          source, count = pattern.subn(replacement, source, count=1)
+          if count != 1:
+              raise SystemExit(f'Expected one modal effect replacement, got {count}.')
 
-          const detailNeedle = `              <input
-                onChange={(event) => setWordQuery(event.currentTarget.value)}
-                placeholder="Find a word in this collection…"`;
-          const detailReplacement = `              <input
-                aria-label="Search words in collection"
-                onChange={(event) => setWordQuery(event.currentTarget.value)}
-                placeholder="Find a word in this collection…"`;
-          const overviewNeedle = `            <input
-              onChange={(event) => setCollectionQuery(event.currentTarget.value)}
-              placeholder="Search collections…"`;
-          const overviewReplacement = `            <input
-              aria-label="Search collections"
-              onChange={(event) => setCollectionQuery(event.currentTarget.value)}
-              placeholder="Search collections…"`;
+          detail = '              <input\n                onChange={(event) => setWordQuery(event.currentTarget.value)}'
+          detail_new = '              <input\n                aria-label="Search words in collection"\n                onChange={(event) => setWordQuery(event.currentTarget.value)}'
+          overview = '            <input\n              onChange={(event) => setCollectionQuery(event.currentTarget.value)}'
+          overview_new = '            <input\n              aria-label="Search collections"\n              onChange={(event) => setCollectionQuery(event.currentTarget.value)}'
 
-          if (!source.includes(detailNeedle) || !source.includes(overviewNeedle)) {
-            throw new Error('Expected collection search inputs were not found.');
-          }
-          source = source
-            .replace(detailNeedle, detailReplacement)
-            .replace(overviewNeedle, overviewReplacement);
+          if detail not in source or overview not in source:
+              raise SystemExit('Expected search input anchors were not found.')
 
-          fs.writeFileSync(path, source);
-          NODE
+          source = source.replace(detail, detail_new, 1).replace(overview, overview_new, 1)
+          path.write_text(source, encoding='utf-8')
+          PY
           npx prettier --write apps/desktop/src/modules/library/pages/LibraryPage.tsx
 
       - name: Commit repair
