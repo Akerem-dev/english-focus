@@ -69,7 +69,8 @@ fn normalize(value: &str) -> String {
 }
 
 fn informative_title_token_count(title: &str) -> usize {
-    const TITLE_STOPWORDS: &[&str] = &["a", "an", "the", "and", "or", "vs", "to", "of", "in", "for"];
+    const TITLE_STOPWORDS: &[&str] =
+        &["a", "an", "the", "and", "or", "vs", "to", "of", "in", "for"];
 
     normalize(title)
         .split_whitespace()
@@ -86,9 +87,7 @@ fn generated_aliases(title: &str) -> [String; 8] {
         format!("{title} yapısını kısa ama net açıkla."),
         format!("{title} İngilizcede hangi durumda kullanılır?"),
         format!("{title} için doğru kullanım nasıl anlaşılır?"),
-        format!(
-            "{title} konusunda temel kural ve dikkat edilmesi gereken nokta nedir?"
-        ),
+        format!("{title} konusunda temel kural ve dikkat edilmesi gereken nokta nedir?"),
     ]
 }
 
@@ -97,11 +96,7 @@ fn parse_cards() -> Result<Vec<AtlasCard>, String> {
 
     for (index, shard) in ATLAS_SHARDS.iter().enumerate() {
         let parsed: Vec<EmbeddedAtlasCard> = serde_json::from_str(shard).map_err(|error| {
-            format!(
-                "grammar_atlas_cache_invalid|shard={}|{}",
-                index + 1,
-                error
-            )
+            format!("grammar_atlas_cache_invalid|shard={}|{}", index + 1, error)
         })?;
 
         cards.extend(parsed.into_iter().map(|card| {
@@ -253,7 +248,10 @@ mod tests {
     #[test]
     fn exact_compiler_aliases_are_zero_token_hits() {
         let cases = [
-            ("Present Perfect Continuous nedir ve nasıl kullanılır?", "A001"),
+            (
+                "Present Perfect Continuous nedir ve nasıl kullanılır?",
+                "A001",
+            ),
             ("Mustn't vs Don't have to ne zaman kullanılır?", "A029"),
             (
                 "Remember doing vs Remember to do kullanım mantığını yeni başlayan birine anlat.",
@@ -278,9 +276,10 @@ mod tests {
 
     #[test]
     fn exact_multiword_topic_inside_natural_question_is_safe_hit() {
-        let answer = answer_atlas_local("Aga Past Perfect Continuous mantığını bana anlatır mısın?")
-            .expect("cache lookup should succeed")
-            .expect("expected atlas hit");
+        let answer =
+            answer_atlas_local("Aga Past Perfect Continuous mantığını bana anlatır mısın?")
+                .expect("cache lookup should succeed")
+                .expect("expected atlas hit");
         assert_eq!(answer.card_id, "A004");
         assert!(answer.confidence >= 0.98);
     }
@@ -308,8 +307,10 @@ mod tests {
 
     #[test]
     fn unrelated_question_fails_closed() {
-        assert!(answer_atlas_local("bana bugün ne çalışmam gerektiğini söyle")
-            .expect("cache lookup should succeed")
-            .is_none());
+        assert!(
+            answer_atlas_local("bana bugün ne çalışmam gerektiğini söyle")
+                .expect("cache lookup should succeed")
+                .is_none()
+        );
     }
 }
