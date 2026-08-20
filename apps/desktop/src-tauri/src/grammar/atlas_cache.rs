@@ -3,7 +3,7 @@ use std::sync::OnceLock;
 
 use serde::Deserialize;
 
-use crate::grammar::types::GrammarLocalAnswer;
+use crate::grammar::{atlas_review::is_runtime_approved, types::GrammarLocalAnswer};
 
 const ATLAS_SHARDS: &[&str] = &[
     include_str!("atlas_cache_01.json"),
@@ -17,6 +17,7 @@ const ATLAS_SHARDS: &[&str] = &[
 ];
 
 const EXPECTED_ATLAS_CARD_COUNT: usize = 156;
+const EXPECTED_RUNTIME_APPROVED_COUNT: usize = 128;
 const KNOWN_FAIL_CLOSED_GAPS: &[&str] = &["A010", "A014", "A087", "A150"];
 
 #[derive(Debug, Clone, Deserialize)]
@@ -151,6 +152,16 @@ fn validate_cards(cards: &[AtlasCard]) -> Result<(), String> {
         }
     }
 
+    let runtime_approved_count = cards
+        .iter()
+        .filter(|card| is_runtime_approved(&card.card_id))
+        .count();
+    if runtime_approved_count != EXPECTED_RUNTIME_APPROVED_COUNT {
+        return Err(format!(
+            "grammar_atlas_runtime_approved_count_mismatch|expected={EXPECTED_RUNTIME_APPROVED_COUNT}|actual={runtime_approved_count}"
+        ));
+    }
+
     Ok(())
 }
 
@@ -194,10 +205,14 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
         return Ok(None);
     }
 
-    let cards = cards()?;
+    let approved_cards = cards()?
+        .iter()
+        .filter(|card| is_runtime_approved(&card.card_id))
+        .collect::<Vec<_>>();
 
-    // Exact source-title and exact compiler-alias matches are deterministic cache hits.
-    for card in cards {
+    // Exact source-title and exact compiler-alias matches are deterministic cache hits,
+    // but only after a card has passed the separate manual semantic review.
+    for card in &approved_cards {
         if normalized_question == card.normalized_title
             || card
                 .normalized_aliases
@@ -213,8 +228,8 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
     // stay exact-only to avoid collisions. When one title contains another (for example
     // "Past Perfect Continuous" and "Past Perfect"), prefer the uniquely more specific
     // title rather than treating the nested phrase as an ambiguity.
-    let mut phrase_matches = cards
-        .iter()
+    let mut phrase_matches = approved_cards
+        .into_iter()
         .filter(|card| {
             card.informative_title_tokens >= 2
                 && normalized_phrase_present(&normalized_question, &card.normalized_title)
@@ -249,7 +264,10 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
 
 #[cfg(test)]
 mod tests {
-    use super::{answer_atlas_local, cards, KNOWN_FAIL_CLOSED_GAPS};
+    use super::{
+        answer_atlas_local, cards, EXPECTED_RUNTIME_APPROVED_COUNT, KNOWN_FAIL_CLOSED_GAPS,
+    };
+    use crate::grammar::atlas_review::is_runtime_approved;
 
     #[test]
     fn embedded_atlas_has_exact_expected_coverage() {
@@ -264,10 +282,17 @@ mod tests {
         for gap in KNOWN_FAIL_CLOSED_GAPS {
             assert!(!ids.contains(gap));
         }
+        assert_eq!(
+            cards
+                .iter()
+                .filter(|card| is_runtime_approved(&card.card_id))
+                .count(),
+            EXPECTED_RUNTIME_APPROVED_COUNT
+        );
     }
 
     #[test]
-    fn exact_compiler_aliases_are_zero_token_hits() {
+    fn exact_compiler_aliases_are_zero_token_hits_when_runtime_approved() {
         let cases = [
             (
                 "Present Perfect Continuous nedir ve nasıl kullanılır?",
@@ -327,6 +352,20 @@ mod tests {
             "Past Simple finished-time expressions ne zaman kullanılır?",
             "Indefinite Pronouns yapısını kısa ama net açıkla.",
             "Before vs After için doğru kullanım nasıl anlaşılır?",
+        ] {
+            assert!(answer_atlas_local(question)
+                .expect("cache lookup should succeed")
+                .is_none());
+        }
+    }
+
+    #[test]
+    fn manually_quarantined_cards_do_not_reach_users() {
+        for question in [
+            "Wish about the past nedir ve nasıl kullanılır?",
+            "Adjective Order ne zaman kullanılır?",
+            "Try doing vs Try to do kullanım mantığını yeni başlayan birine anlat.",
+            "At / On / In for time için doğru kullanım nasıl anlaşılır?",
         ] {
             assert!(answer_atlas_local(question)
                 .expect("cache lookup should succeed")
