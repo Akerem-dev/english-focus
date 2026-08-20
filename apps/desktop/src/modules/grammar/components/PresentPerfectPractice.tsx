@@ -9,7 +9,7 @@ interface PracticeQuestion {
   readonly explanation: string;
 }
 
-const PRACTICE_QUESTIONS: readonly PracticeQuestion[] = Object.freeze([
+const PRACTICE_QUESTIONS = [
   {
     context: "RESULT NOW · ŞİMDİKİ SONUÇ",
     prompt: "I ______ my keys. Can you help me look for them?",
@@ -50,12 +50,7 @@ const PRACTICE_QUESTIONS: readonly PracticeQuestion[] = Object.freeze([
     correctIndex: 1,
     explanation: "Doğru cevap “saw”. “Yesterday” bitmiş ve belirli bir geçmiş zaman olduğu için burada Present Perfect kullanmayız. Past Simple seçilir: see → saw."
   }
-]);
-
-const FIRST_PRACTICE_QUESTION = PRACTICE_QUESTIONS[0];
-if (FIRST_PRACTICE_QUESTION === undefined) {
-  throw new Error("Present Perfect practice requires at least one question.");
-}
+] as const satisfies readonly [PracticeQuestion, ...PracticeQuestion[]];
 
 export function PresentPerfectPractice() {
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -63,7 +58,7 @@ export function PresentPerfectPractice() {
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
 
-  const question = PRACTICE_QUESTIONS[questionIndex] ?? FIRST_PRACTICE_QUESTION;
+  const question = PRACTICE_QUESTIONS[questionIndex] ?? PRACTICE_QUESTIONS[0];
   const answered = selectedIndex !== null;
   const answerIsCorrect = answered && selectedIndex === question.correctIndex;
   const progress = ((questionIndex + (answered ? 1 : 0)) / PRACTICE_QUESTIONS.length) * 100;
