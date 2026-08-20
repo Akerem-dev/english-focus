@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { useGrammar } from "../../../app/providers";
-import type { GrammarLocalAnswer } from "../../../infrastructure/grammar/TauriGrammarRepository";
 import type { GrammarKnowledgeLesson } from "../knowledge/grammarKnowledgeIndex";
 
 interface CompiledGrammarLessonProps {
@@ -9,11 +8,16 @@ interface CompiledGrammarLessonProps {
   readonly onBack: () => void;
 }
 
+interface LoadedGrammarAnswer {
+  readonly source: string;
+  readonly answerText: string;
+}
+
 interface LoadedGrammarPoint {
   readonly key: string;
   readonly title: string;
   readonly cardId?: string;
-  readonly answer?: GrammarLocalAnswer;
+  readonly answer?: LoadedGrammarAnswer;
   readonly status: "loading" | "ready" | "unavailable";
 }
 
@@ -112,8 +116,8 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
                     {String(index + 1).padStart(2, "0")} · {answer.source === "local-core-cache" ? "CORE RULE" : "GRAMMAR POINT"}
                   </p>
                   <h2>{point.title}</h2>
-                  {splitParagraphs(answer.answerText).map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
+                  {splitParagraphs(answer.answerText).map((paragraph, paragraphIndex) => (
+                    <p key={`${point.key}:${paragraphIndex}`}>{paragraph}</p>
                   ))}
                 </section>
               );
