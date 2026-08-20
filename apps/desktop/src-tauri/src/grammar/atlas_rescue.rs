@@ -114,7 +114,7 @@ const REVIEWED_RESCUES: &[ReviewedAtlasRescue] = &[
         category: "Prepositions",
         answer_text: "At / On / In for time: Zaman ifadelerinde temel dağılımı örneklerden şöyle okuyabiliriz: at kesin saatlerle kullanılır (at 3.30); on günler, belirli günler ve tarihlerle kullanılır (on Monday, on my birthday, on June 21st); in ise aylar, yıllar/yüzyıllar, mevsimler ve günün bölümleriyle kullanılır (in July, in 1985, in autumn, in the morning). In ayrıca gelecekte ‘ne kadar süre sonra’ anlamı da verebilir. Bunlar güçlü temel kalıplardır; sabit ifadeler ve özel kullanımlar ayrıca öğrenilebilir.",
         core_rule_ids: &["R1"],
-        support_rule_ids: &["R2", "R11", "R12", "X1"],
+        support_rule_ids: &["R2", "R11", "R12"],
     },
     ReviewedAtlasRescue {
         card_id: "A150",
@@ -306,7 +306,10 @@ mod tests {
             "Mean doing vs Mean to do kullanım mantığını yeni başlayan birine anlat.",
             "Basic Word Order nedir ve nasıl kullanılır?",
         ] {
-            assert!(answer_reviewed_atlas(question).is_none(), "question={question}");
+            assert!(
+                answer_reviewed_atlas(question).is_none(),
+                "question={question}"
+            );
         }
     }
 }
