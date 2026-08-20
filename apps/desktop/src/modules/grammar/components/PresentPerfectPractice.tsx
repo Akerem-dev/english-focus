@@ -52,13 +52,18 @@ const PRACTICE_QUESTIONS: readonly PracticeQuestion[] = Object.freeze([
   }
 ]);
 
+const FIRST_PRACTICE_QUESTION = PRACTICE_QUESTIONS[0];
+if (FIRST_PRACTICE_QUESTION === undefined) {
+  throw new Error("Present Perfect practice requires at least one question.");
+}
+
 export function PresentPerfectPractice() {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState(false);
 
-  const question = PRACTICE_QUESTIONS[questionIndex];
+  const question = PRACTICE_QUESTIONS[questionIndex] ?? FIRST_PRACTICE_QUESTION;
   const answered = selectedIndex !== null;
   const answerIsCorrect = answered && selectedIndex === question.correctIndex;
   const progress = ((questionIndex + (answered ? 1 : 0)) / PRACTICE_QUESTIONS.length) * 100;
