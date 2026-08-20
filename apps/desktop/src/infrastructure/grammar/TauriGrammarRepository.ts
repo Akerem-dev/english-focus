@@ -11,6 +11,11 @@ export interface GrammarLocalAnswer {
   readonly confidence: number;
 }
 
+export type GrammarAnswerResult =
+  | { readonly kind: "local"; readonly answer: GrammarLocalAnswer }
+  | { readonly kind: "miss" }
+  | { readonly kind: "desktop-required" };
+
 function isTauriRuntime(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
@@ -22,11 +27,8 @@ function stringArray(value: unknown): readonly string[] | undefined {
   return Object.freeze([...value]);
 }
 
-function parseLocalAnswer(payload: unknown): GrammarLocalAnswer | undefined {
-  if (payload === null || payload === undefined) {
-    return undefined;
-  }
-  if (typeof payload !== "object") {
+function parseLocalAnswer(payload: unknown): GrammarLocalAnswer {
+  if (typeof payload !== "object" || payload === null) {
     throw new Error("The local grammar response is invalid.");
   }
 
@@ -59,15 +61,37 @@ function parseLocalAnswer(payload: unknown): GrammarLocalAnswer | undefined {
   });
 }
 
+function parseAnswer(payload: unknown): Exclude<GrammarAnswerResult, { readonly kind: "desktop-required" }> {
+  if (typeof payload !== "object" || payload === null || !("kind" in payload)) {
+    throw new Error("The grammar answer response is invalid.");
+  }
+
+  const value = payload as Record<string, unknown>;
+  if (value.kind === "miss") {
+    return Object.freeze({ kind: "miss" as const });
+  }
+  if (value.kind === "local" && "answer" in value) {
+    return Object.freeze({
+      kind: "local" as const,
+      answer: parseLocalAnswer(value.answer)
+    });
+  }
+
+  throw new Error("The grammar answer response has an unknown result kind.");
+}
+
 export class TauriGrammarRepository {
-  async answerLocal(question: string): Promise<GrammarLocalAnswer | undefined> {
+  async answerQuestion(question: string): Promise<GrammarAnswerResult> {
     const trimmed = question.trim();
-    if (trimmed.length === 0 || !isTauriRuntime()) {
-      return undefined;
+    if (trimmed.length === 0) {
+      return Object.freeze({ kind: "miss" as const });
+    }
+    if (!isTauriRuntime()) {
+      return Object.freeze({ kind: "desktop-required" as const });
     }
 
-    return parseLocalAnswer(
-      await invoke<unknown>("assistant_answer_grammar_local", {
+    return parseAnswer(
+      await invoke<unknown>("assistant_answer_grammar", {
         question: trimmed
       })
     );
