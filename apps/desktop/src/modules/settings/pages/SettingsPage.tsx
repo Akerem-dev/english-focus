@@ -37,210 +37,268 @@ interface SettingsPreferenceListProps {
 
 function SettingsPreferenceList({ ariaLabel, children }: SettingsPreferenceListProps) {
   return (
-    <div aria-label={ariaLabel} className="settings-preference-list" role="list">
+    <section aria-label={ariaLabel} className="settings-preference-list">
       {children}
+    </section>
+  );
+}
+
+interface StaticPreferenceRowProps {
+  readonly description: string;
+  readonly label: string;
+  readonly value: string;
+}
+
+function StaticPreferenceRow({ description, label, value }: StaticPreferenceRowProps) {
+  return (
+    <div className="settings-preference-row settings-preference-row--static">
+      <span className="settings-preference-row__copy">
+        <span className="settings-preference-row__label">{label}</span>
+        <span className="settings-preference-row__description">{description}</span>
+      </span>
+      <strong className="settings-preference-row__value">{value}</strong>
     </div>
   );
 }
 
-interface SettingsPreferenceRowProps {
-  readonly label: string;
-  readonly description: string;
-  readonly control: ReactNode;
-}
+function SettingsSaveNote({ status }: { readonly status: string }) {
+  let message = "Changes save automatically.";
 
-function SettingsPreferenceRow({ label, description, control }: SettingsPreferenceRowProps) {
+  if (status === "loading") {
+    message = "Loading local settings…";
+  } else if (status === "saving") {
+    message = "Saving changes locally…";
+  } else if (status === "error") {
+    message = "Some changes need attention.";
+  }
+
   return (
-    <div className="settings-preference-row" role="listitem">
-      <div>
-        <strong>{label}</strong>
-        <p>{description}</p>
-      </div>
-      <div className="settings-preference-row__control">{control}</div>
-    </div>
+    <p aria-live="polite" className="settings-save-note" data-status={status}>
+      <AppIcon name={status === "error" ? "warning" : "check"} size={15} />
+      <span>{message}</span>
+    </p>
   );
 }
 
 export function SettingsPage() {
-  const { recordEvent } = useActivity();
+  const { activity, error: activityError, status: activityStatus } = useActivity();
   const { error, settings, status, updateSettings } = useSettings();
-  const [activeCategory, setActiveCategory] = useState<SettingsCategoryId>("general");
-  const [managementView, setManagementView] = useState<SettingsManagementView>();
-  const headingRef = useRef<HTMLHeadingElement>(null);
-
-  const categoryTitle = settingsCategoryLabel(activeCategory);
+  const [selectedCategory, setSelectedCategory] = useState<SettingsCategoryId>("content");
+  const [managementView, setManagementView] = useState<SettingsManagementView | undefined>();
+  const privacyContentRef = useRef<HTMLDivElement>(null);
+  const isBusy = status === "loading" || status === "saving";
+  const activitySummary =
+    activityError !== undefined
+      ? "Some activity cannot be shown"
+      : activityStatus === "loading"
+        ? "Loading activity"
+        : `${activity.length} activity ${activity.length === 1 ? "item" : "items"}`;
 
   function selectCategory(category: SettingsCategoryId) {
-    setActiveCategory(category);
+    setManagementView(undefined);
+    setSelectedCategory(category);
+  }
+
+  function closeManagementView() {
     setManagementView(undefined);
     window.requestAnimationFrame(() => {
-      headingRef.current?.focus();
+      privacyContentRef.current
+        ?.querySelector<HTMLButtonElement>("[data-settings-management-trigger]")
+        ?.focus();
     });
   }
-
-  async function updateTheme(theme: ThemePreference) {
-    const next = updateAppearanceSettings(settings, { theme });
-    await updateSettings(next);
-    await recordEvent({ type: "settings.updated", detail: `Theme: ${theme}` });
-  }
-
-  async function updateInterfaceSize(interfaceSize: InterfaceSize) {
-    const next = updateAppearanceSettings(settings, { interfaceSize });
-    await updateSettings(next);
-    await recordEvent({ type: "settings.updated", detail: `Interface size: ${interfaceSize}` });
-  }
-
-  async function updateShowTurkishSupport(showTurkishSupport: boolean) {
-    const next = updateContentSettings(settings, { showTurkishSupport });
-    await updateSettings(next);
-    await recordEvent({
-      type: "settings.updated",
-      detail: `Turkish support: ${showTurkishSupport ? "on" : "off"}`
-    });
-  }
-
-  async function updateAutoBackupEnabled(autoBackupEnabled: boolean) {
-    const next = updateDataSettings(settings, { autoBackupEnabled });
-    await updateSettings(next);
-    await recordEvent({
-      type: "settings.updated",
-      detail: `Automatic backups: ${autoBackupEnabled ? "on" : "off"}`
-    });
-  }
-
-  async function updateBackupFrequency(backupFrequency: BackupFrequency) {
-    const next = updateDataSettings(settings, { backupFrequency });
-    await updateSettings(next);
-    await recordEvent({ type: "settings.updated", detail: `Backup frequency: ${backupFrequency}` });
-  }
-
-  const busy = status === "loading" || status === "saving";
 
   return (
-    <main aria-busy={busy} className="settings-page" id="main-content" tabIndex={-1}>
-      <header className="route-page-header settings-page__header">
-        <p className="eyebrow">Preferences</p>
-        <h1>Settings</h1>
-        <p>Manage the interface, study preferences, assistant connection, and local data.</p>
+    <div className="route-page route-page--settings">
+      <header className="route-page__header settings-page-header">
+        <div>
+          <p className="route-page__eyebrow">Application preferences</p>
+          <h1>Settings</h1>
+          <p>Customize the English Focus experience around the way you learn.</p>
+        </div>
       </header>
 
-      {error ? (
-        <div className="settings-page__error" role="alert">
-          <strong>Settings could not be saved.</strong>
-          <span>{error}</span>
-        </div>
-      ) : null}
-
-      <div className="settings-page__layout">
-        <SettingsCategoryNavigation
-          activeCategory={activeCategory}
-          onSelectCategory={selectCategory}
-        />
-
-        <section className="settings-page__content" aria-labelledby="settings-category-heading">
-          <header className="settings-category-header">
-            <p className="eyebrow">{activeCategory === "general" ? "Preferences" : "Management"}</p>
-            <h2 id="settings-category-heading" ref={headingRef} tabIndex={-1}>
-              {managementView === undefined ? categoryTitle : managementView.title}
-            </h2>
-          </header>
-
-          {activeCategory === "general" && managementView === undefined ? (
-            <>
-              <SettingsPreferenceList ariaLabel="Appearance preferences">
-                <SettingsPreferenceRow
-                  label="Theme"
-                  description="Choose how English Focus looks on this device."
-                  control={
-                    <SelectField
-                      ariaLabel="Theme"
-                      disabled={busy}
-                      onChange={(value) => {
-                        void updateTheme(value as ThemePreference);
-                      }}
-                      options={[
-                        { label: "System", value: "system" },
-                        { label: "Light", value: "light" },
-                        { label: "Dark", value: "dark" }
-                      ]}
-                      value={settings.appearance.theme}
-                    />
-                  }
-                />
-                <SettingsPreferenceRow
-                  label="Interface size"
-                  description="Adjust spacing and control size without changing content."
-                  control={
-                    <SelectField
-                      ariaLabel="Interface size"
-                      disabled={busy}
-                      onChange={(value) => {
-                        void updateInterfaceSize(value as InterfaceSize);
-                      }}
-                      options={[
-                        { label: "Comfortable", value: "comfortable" },
-                        { label: "Compact", value: "compact" }
-                      ]}
-                      value={settings.appearance.interfaceSize}
-                    />
-                  }
-                />
-              </SettingsPreferenceList>
-
-              <SettingsPreferenceList ariaLabel="Content preferences">
-                <SettingsPreferenceRow
-                  label="Turkish support"
-                  description="Show Turkish translations and notes alongside English content."
-                  control={
-                    <SwitchField
-                      checked={settings.content.showTurkishSupport}
-                      disabled={busy}
-                      label="Show Turkish support"
-                      onChange={(checked) => {
-                        void updateShowTurkishSupport(checked);
-                      }}
-                    />
-                  }
-                />
-              </SettingsPreferenceList>
-
-              <AssistantConnectionSettings />
-              <InstructionSettingsSection />
-            </>
-          ) : null}
-
-          {activeCategory === "data" && managementView === undefined ? (
-            <SettingsMaintenanceOverview onOpenView={setManagementView} />
-          ) : null}
-
-          {activeCategory === "data" && managementView !== undefined ? (
-            <SettingsManagementDetail
-              onBack={() => {
-                setManagementView(undefined);
-              }}
-              view={managementView}
-            />
-          ) : null}
-
-          {activeCategory === "backup" && managementView === undefined ? (
-            <BackupSettingsSection
-              autoBackupEnabled={settings.data.autoBackupEnabled}
-              backupFrequency={settings.data.backupFrequency}
-              disabled={busy}
-              onAutoBackupEnabledChange={(checked) => {
-                void updateAutoBackupEnabled(checked);
-              }}
-              onBackupFrequencyChange={(value) => {
-                void updateBackupFrequency(value as BackupFrequency);
-              }}
-            />
-          ) : null}
-
-          {activeCategory === "content" && managementView === undefined ? (
-            <CoreContentSection />
-          ) : null}
+      {error === undefined ? null : (
+        <section className="settings-error" role="alert">
+          <strong>Application settings could not be saved.</strong>
+          <p>{error}</p>
         </section>
+      )}
+
+      <div className="settings-workspace">
+        <div className="settings-workspace__rail">
+          <SettingsCategoryNavigation
+            onSelect={selectCategory}
+            selectedCategory={selectedCategory}
+          />
+        </div>
+
+        <section
+          aria-busy={isBusy}
+          aria-labelledby={`settings-category-tab-${selectedCategory}`}
+          className="settings-category-view"
+          id="settings-category-panel"
+          role="tabpanel"
+        >
+          <h2 className="sr-only">{settingsCategoryLabel(selectedCategory)}</h2>
+
+          {selectedCategory === "general" ? (
+            <div className="settings-category-view__content settings-category-view__content--preferences">
+              <SettingsPreferenceList ariaLabel="General preferences">
+                <SelectField
+                  disabled={isBusy}
+                  fieldClassName="settings-inline-select"
+                  helperText="Choose how English Focus follows your system appearance."
+                  label="Theme"
+                  onChange={(event) => {
+                    const theme = event.currentTarget.value as ThemePreference;
+                    void updateSettings((current) =>
+                      updateAppearanceSettings(current, {
+                        ...current.appearance,
+                        theme
+                      })
+                    );
+                  }}
+                  value={settings.appearance.theme}
+                >
+                  <option value="light">Light</option>
+                  <option value="system">System</option>
+                  <option value="dark">Dark</option>
+                </SelectField>
+                <SwitchField
+                  checked={settings.appearance.reducedMotion}
+                  containerClassName="settings-preference-row"
+                  description="Minimize non-essential motion and smooth scrolling."
+                  disabled={isBusy}
+                  label="Reduced motion"
+                  onChange={(event) => {
+                    const reducedMotion = event.currentTarget.checked;
+                    void updateSettings((current) =>
+                      updateAppearanceSettings(current, {
+                        ...current.appearance,
+                        reducedMotion
+                      })
+                    );
+                  }}
+                />
+                <SelectField
+                  disabled={isBusy}
+                  fieldClassName="settings-inline-select"
+                  helperText="Adjust the overall density of controls and content."
+                  label="Interface size"
+                  onChange={(event) => {
+                    const interfaceSize = event.currentTarget.value as InterfaceSize;
+                    void updateSettings((current) =>
+                      updateAppearanceSettings(current, {
+                        ...current.appearance,
+                        interfaceSize
+                      })
+                    );
+                  }}
+                  value={settings.appearance.interfaceSize}
+                >
+                  <option value="compact">Compact</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </SelectField>
+              </SettingsPreferenceList>
+            </div>
+          ) : null}
+
+          {selectedCategory === "content" ? (
+            <div className="settings-category-view__content settings-category-view__content--preferences">
+              <SettingsPreferenceList ariaLabel="Vocabulary content preferences">
+                <SwitchField
+                  checked={settings.content.showEtymology}
+                  containerClassName="settings-preference-row"
+                  description="Display reliable word origins when they are available."
+                  disabled={isBusy}
+                  label="Show etymology"
+                  onChange={(event) => {
+                    const showEtymology = event.currentTarget.checked;
+                    void updateSettings((current) =>
+                      updateContentSettings(current, {
+                        ...current.content,
+                        showEtymology
+                      })
+                    );
+                  }}
+                />
+                <StaticPreferenceRow
+                  description="Every vocabulary entry shows its first three translated examples."
+                  label="Example sentences shown"
+                  value="First 3"
+                />
+                <InstructionSettingsSection disabled={isBusy} />
+                <AssistantConnectionSettings />
+              </SettingsPreferenceList>
+            </div>
+          ) : null}
+
+          {selectedCategory === "data" ? (
+            <div className="settings-category-view__content settings-category-view__content--preferences">
+              <SettingsPreferenceList ariaLabel="Backup preferences">
+                <SwitchField
+                  checked={settings.data.automaticBackups}
+                  containerClassName="settings-preference-row"
+                  description="Create a backup automatically on the schedule you choose."
+                  disabled={isBusy}
+                  label="Automatic backups"
+                  onChange={(event) => {
+                    const automaticBackups = event.currentTarget.checked;
+                    void updateSettings((current) =>
+                      updateDataSettings(current, {
+                        ...current.data,
+                        automaticBackups
+                      })
+                    );
+                  }}
+                />
+                <SelectField
+                  disabled={isBusy || !settings.data.automaticBackups}
+                  fieldClassName="settings-inline-select"
+                  helperText="Choose how often English Focus creates a backup."
+                  label="Backup frequency"
+                  onChange={(event) => {
+                    const backupFrequency = event.currentTarget.value as BackupFrequency;
+                    void updateSettings((current) =>
+                      updateDataSettings(current, {
+                        ...current.data,
+                        backupFrequency
+                      })
+                    );
+                  }}
+                  value={settings.data.backupFrequency}
+                >
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="manual">Manual only</option>
+                </SelectField>
+                <BackupSettingsSection />
+              </SettingsPreferenceList>
+            </div>
+          ) : null}
+
+          {selectedCategory === "privacy" ? (
+            <div className="settings-category-view__content" ref={privacyContentRef}>
+              {managementView === undefined ? (
+                <SettingsMaintenanceOverview
+                  activitySummary={activitySummary}
+                  onOpen={setManagementView}
+                />
+              ) : (
+                <SettingsManagementDetail onBack={closeManagementView} view={managementView} />
+              )}
+            </div>
+          ) : null}
+
+          {selectedCategory === "privacy" ? null : <SettingsSaveNote status={status} />}
+        </section>
+
+        <aside aria-label="Application information" className="settings-about-footer">
+          <CoreContentSection />
+        </aside>
       </div>
-    </main>
+    </div>
   );
 }
