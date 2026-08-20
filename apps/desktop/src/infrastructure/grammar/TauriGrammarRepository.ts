@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
-export interface GrammarLocalAnswer {
+interface GrammarLocalAnswer {
   readonly source: "local-core-cache" | string;
   readonly cardId: string;
   readonly topicName: string;
