@@ -26,31 +26,32 @@ export function ImportSourceDialog({
       }
       onClose={onClose}
       open={open}
-      size="medium"
       title="Import vocabulary"
     >
-      <div className="import-source-options">
+      <div className="import-source-grid">
+        <button className="import-source-card" onClick={onSelectPack} type="button">
+          <span aria-hidden="true">
+            <AppIcon name="books" size={26} />
+          </span>
+          <strong>Vocabulary pack</strong>
+          <small>
+            Recommended for complete English Focus packs. Review multiple entries, errors, and
+            duplicates before saving.
+          </small>
+        </button>
         <button
-          className="import-source-option"
+          className="import-source-card import-source-card--advanced"
           onClick={onSelectSingleEntry}
           type="button"
         >
-          <span className="import-source-option__icon" aria-hidden="true">
-            <AppIcon name="file" size={22} />
+          <span aria-hidden="true">
+            <AppIcon name="book-open" size={26} />
           </span>
-          <span>
-            <strong>One vocabulary entry</strong>
-            <small>Import a single English Focus JSON entry.</small>
-          </span>
-        </button>
-        <button className="import-source-option" onClick={onSelectPack} type="button">
-          <span className="import-source-option__icon" aria-hidden="true">
-            <AppIcon name="books" size={22} />
-          </span>
-          <span>
-            <strong>Vocabulary pack</strong>
-            <small>Import a complete English Focus vocabulary pack.</small>
-          </span>
+          <strong>Advanced JSON entry</strong>
+          <small>
+            Fallback for one entry prepared outside the app. The file still passes the full local
+            validation workflow.
+          </small>
         </button>
       </div>
     </Modal>
