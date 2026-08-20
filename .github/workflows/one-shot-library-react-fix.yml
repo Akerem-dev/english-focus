@@ -1,5 +1,6 @@
 name: One-shot library React fix
 
+# Trigger after the workflow exists on the branch.
 on:
   push:
     branches:
