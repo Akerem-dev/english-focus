@@ -13,7 +13,6 @@ export { useFileTransfer } from "./useFileTransfer";
 export { useGrammar } from "./useGrammar";
 export { useMaintenance } from "./useMaintenance";
 export { useInstructionPreferences } from "./useInstructionPreferences";
-export { useOptionalSettings } from "./useOptionalSettings";
 export { useSettings } from "./useSettings";
 export { useVocabularyMetadata } from "./useVocabularyMetadata";
 export { useVocabularyRepository } from "./useVocabularyRepository";
