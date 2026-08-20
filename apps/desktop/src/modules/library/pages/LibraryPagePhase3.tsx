@@ -68,10 +68,6 @@ function RichWordDetail({
     new Set([...entry.registers, ...entry.meanings.flatMap((meaning) => meaning.registers)])
   );
 
-  useEffect(() => {
-    setTab("definition");
-  }, [entry.normalizedWord]);
-
   return (
     <div className="wvc-phase3-detail-layer">
       <div
@@ -411,7 +407,12 @@ function CollectionsRichWordController() {
   }
 
   return (
-    <RichWordDetail entry={entry} onBack={() => setSelection(undefined)} selection={selection} />
+    <RichWordDetail
+      entry={entry}
+      key={entry.normalizedWord}
+      onBack={() => setSelection(undefined)}
+      selection={selection}
+    />
   );
 }
 
