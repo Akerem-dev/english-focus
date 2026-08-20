@@ -21,6 +21,11 @@ interface LoadedGrammarPoint {
   readonly status: "loading" | "ready" | "unavailable";
 }
 
+interface LoadedGrammarState {
+  readonly requestKey: string;
+  readonly points: readonly LoadedGrammarPoint[];
+}
+
 function splitParagraphs(answerText: string): readonly string[] {
   return answerText
     .split("\n")
@@ -42,14 +47,21 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
     ],
     [lesson]
   );
-
-  const [points, setPoints] = useState<readonly LoadedGrammarPoint[]>(() =>
-    requests.map((request) => ({ ...request, status: "loading" as const }))
+  const requestKey = useMemo(
+    () => requests.map((request) => `${request.key}:${request.title}`).join("\u001f"),
+    [requests]
   );
+  const loadingPoints = useMemo<readonly LoadedGrammarPoint[]>(
+    () => requests.map((request) => ({ ...request, status: "loading" as const })),
+    [requests]
+  );
+  const [loadedState, setLoadedState] = useState<LoadedGrammarState>(() => ({
+    requestKey,
+    points: loadingPoints
+  }));
 
   useEffect(() => {
     let cancelled = false;
-    setPoints(requests.map((request) => ({ ...request, status: "loading" as const })));
 
     void Promise.all(
       requests.map(async (request): Promise<LoadedGrammarPoint> => {
@@ -64,14 +76,17 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
         }
       })
     ).then((loaded) => {
-      if (!cancelled) setPoints(Object.freeze(loaded));
+      if (!cancelled) {
+        setLoadedState({ requestKey, points: Object.freeze(loaded) });
+      }
     });
 
     return () => {
       cancelled = true;
     };
-  }, [answerGrammarQuestion, requests]);
+  }, [answerGrammarQuestion, requestKey, requests]);
 
+  const points = loadedState.requestKey === requestKey ? loadedState.points : loadingPoints;
   const readyPoints = points.filter(
     (point) => point.status === "ready" && point.answer !== undefined
   );
