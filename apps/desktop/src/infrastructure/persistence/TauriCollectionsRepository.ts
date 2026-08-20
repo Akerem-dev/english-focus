@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
-export interface PersistedCollection {
+interface PersistedCollection {
   readonly id: string;
   readonly title: string;
   readonly description: string;
