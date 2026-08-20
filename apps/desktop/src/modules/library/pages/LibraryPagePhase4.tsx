@@ -47,7 +47,7 @@ function isUserCover(backgroundImage: string): boolean {
 }
 
 function applyFinalCollectionArtwork(root: HTMLElement) {
-  const sceneImage = `url(\"${collectionsBackground}\")`;
+  const sceneImage = `url("${collectionsBackground}")`;
 
   root.querySelectorAll<HTMLElement>(".wvc-scene, .wvc-phase3-scene").forEach((scene) => {
     if (scene.style.backgroundImage !== sceneImage) {
@@ -66,7 +66,7 @@ function applyFinalCollectionArtwork(root: HTMLElement) {
       return;
     }
 
-    const backgroundImage = `${COVER_GRADIENT}, url(\"${artwork}\")`;
+    const backgroundImage = `${COVER_GRADIENT}, url("${artwork}")`;
     if (cover.style.backgroundImage !== backgroundImage) {
       cover.style.backgroundImage = backgroundImage;
     }
