@@ -1,19 +1,17 @@
-use serde::Serialize;
-
-#[derive(Debug, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GrammarLocalAnswer {
-    pub source: &'static str,
-    pub card_id: String,
-    pub topic_name: String,
-    pub category: String,
-    pub answer_text: String,
-    pub core_rule_ids: Vec<String>,
-    pub support_rule_ids: Vec<String>,
-    pub confidence: f32,
-}
+use crate::grammar::{
+    runtime_cache::answer_local,
+    types::{GrammarAnswerResponse, GrammarLocalAnswer},
+};
 
 #[tauri::command]
 pub fn assistant_answer_grammar_local(question: String) -> Result<Option<GrammarLocalAnswer>, String> {
-    crate::grammar::runtime_cache::answer_local(&question)
+    answer_local(&question)
+}
+
+#[tauri::command]
+pub fn assistant_answer_grammar(question: String) -> Result<GrammarAnswerResponse, String> {
+    match answer_local(&question)? {
+        Some(answer) => Ok(GrammarAnswerResponse::Local { answer }),
+        None => Ok(GrammarAnswerResponse::Miss),
+    }
 }
