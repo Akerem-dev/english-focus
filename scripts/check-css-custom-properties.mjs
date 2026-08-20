@@ -25,9 +25,7 @@ for (const fileName of files) {
   }
 }
 
-const missing = usages.filter(
-  (usage) => !usage.hasFallback && !definitions.has(usage.property)
-);
+const missing = usages.filter((usage) => !usage.hasFallback && !definitions.has(usage.property));
 if (missing.length > 0) {
   console.error("Undefined CSS custom properties without fallbacks:\n");
   for (const usage of missing) {

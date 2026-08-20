@@ -45,9 +45,11 @@
 }
 
 /* Explicitly keep both rails on the same card/button rhythm. */
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   :is(.wvsr-root > .wvsr-rail, .wvsr-detail-context-rail)
-  .wvsr-wordie-card > button {
+  .wvsr-wordie-card
+  > button {
   right: 18px !important;
   bottom: 18px !important;
   left: 18px !important;

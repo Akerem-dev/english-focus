@@ -46,7 +46,8 @@
 
 /* Welcome state still owns its two discovery cards, so it gets the extra auto row.
    :has() is already used by the Word Valley shell and is supported by the Tauri WebView. */
-#root .application-frame--search-cleanroom
+#root
+  .application-frame--search-cleanroom
   .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
   grid-template-rows: 92px minmax(0, 1fr) auto 63px !important;
 }

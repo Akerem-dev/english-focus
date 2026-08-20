@@ -72,18 +72,24 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
     };
   }, [answerGrammarQuestion, requests]);
 
-  const readyPoints = points.filter((point) => point.status === "ready" && point.answer !== undefined);
+  const readyPoints = points.filter(
+    (point) => point.status === "ready" && point.answer !== undefined
+  );
   const unavailablePoints = points.filter((point) => point.status === "unavailable");
   const loading = points.some((point) => point.status === "loading");
 
   return (
     <main className="wvg-topic" aria-labelledby="grammar-compiled-topic-title">
-      <button className="wvg-topic__back" onClick={onBack} type="button">← Grammar home</button>
+      <button className="wvg-topic__back" onClick={onBack} type="button">
+        ← Grammar home
+      </button>
 
       <section className="wvg-topic__paper">
         <header className="wvg-topic__hero">
           <div className="wvg-topic__intro">
-            <p className="wvg-topic__eyebrow">{lesson.category.toUpperCase()} · {lesson.level}</p>
+            <p className="wvg-topic__eyebrow">
+              {lesson.category.toUpperCase()} · {lesson.level}
+            </p>
             <h1 id="grammar-compiled-topic-title">{lesson.title}</h1>
             <p>{lesson.description}</p>
           </div>
@@ -103,7 +109,9 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
               <section className="wvg-rule-breakdown">
                 <p className="wvg-rule-kicker">LOCAL KNOWLEDGE · YEREL BİLGİ</p>
                 <h2>Ders hazırlanıyor…</h2>
-                <p>Onaylı grammar cache kartları cihazdan okunuyor. Bu işlem Gemini çağrısı yapmaz.</p>
+                <p>
+                  Onaylı grammar cache kartları cihazdan okunuyor. Bu işlem Gemini çağrısı yapmaz.
+                </p>
               </section>
             ) : null}
 
@@ -113,7 +121,8 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
               return (
                 <section className="wvg-rule-breakdown" key={point.key}>
                   <p className="wvg-rule-kicker">
-                    {String(index + 1).padStart(2, "0")} · {answer.source === "local-core-cache" ? "CORE RULE" : "GRAMMAR POINT"}
+                    {String(index + 1).padStart(2, "0")} ·{" "}
+                    {answer.source === "local-core-cache" ? "CORE RULE" : "GRAMMAR POINT"}
                   </p>
                   <h2>{point.title}</h2>
                   {splitParagraphs(answer.answerText).map((paragraph, paragraphIndex) => (
@@ -128,7 +137,8 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
                 <p className="wvg-rule-kicker">FAIL CLOSED · GÜVENLİ DURUŞ</p>
                 <h2>Bu ders için henüz kullanıcıya açılmış yerel cevap yok.</h2>
                 <p>
-                  Konu katalogda kalıyor; fakat derlenmiş cevap manuel semantic kontrolden geçmediyse Wordie onu doğruymuş gibi göstermiyor.
+                  Konu katalogda kalıyor; fakat derlenmiş cevap manuel semantic kontrolden
+                  geçmediyse Wordie onu doğruymuş gibi göstermiyor.
                 </p>
               </section>
             ) : null}
@@ -140,7 +150,12 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
               <ul>
                 {points.map((point) => (
                   <li key={point.key}>
-                    {point.title}{point.status === "ready" ? " ✓" : point.status === "unavailable" ? " · review pending" : " · loading"}
+                    {point.title}
+                    {point.status === "ready"
+                      ? " ✓"
+                      : point.status === "unavailable"
+                        ? " · review pending"
+                        : " · loading"}
                   </li>
                 ))}
               </ul>
@@ -149,7 +164,8 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
             <section>
               <p>LOCAL FIRST · TOKEN DURUMU</p>
               <span className="wvg-note-explainer">
-                Burada görünen açıklamalar onaylı yerel grammar cache’inden gelir. Cache hit olduğunda Gemini isteği ve Gemini token kullanımı sıfırdır.
+                Burada görünen açıklamalar onaylı yerel grammar cache’inden gelir. Cache hit
+                olduğunda Gemini isteği ve Gemini token kullanımı sıfırdır.
               </span>
             </section>
 
@@ -158,7 +174,8 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
                 <p>REVIEW QUEUE · İNCELEMEDE</p>
                 <strong>{unavailablePoints.length} alt başlık fail-closed durumda.</strong>
                 <span>
-                  Bunlar eksik, hatalı veya yeterince güvenilir olmayan derlenmiş cevabı kullanıcıya göstermemek için bilinçli olarak kapalı tutuluyor.
+                  Bunlar eksik, hatalı veya yeterince güvenilir olmayan derlenmiş cevabı kullanıcıya
+                  göstermemek için bilinçli olarak kapalı tutuluyor.
                 </span>
               </section>
             ) : null}

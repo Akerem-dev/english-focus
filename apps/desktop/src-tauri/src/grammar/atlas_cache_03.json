@@ -1,1 +1,162 @@
-[{"id":"A043","t":"Passive by-agent","c":"Passive & Causative","a":"Passive by-agent: Passive voice, eylemi gerçekleştiren kişiden veya nesneden ziyade eylemden etkilenen kişiye veya şeye odaklanmak istediğinizde kullanılır. Eğer eylemi gerçekleştiren kişiyi (faili/agent) özellikle belirtmek isterseniz 'by' edatı kullanılır. Ayrıca, 'somebody', 'they' veya 'people' gibi belirsiz ifadeler kullanmak yerine, eylemi gerçekleştireni belirtmeden edilgen bir yapı kurmak da mümkündür.\nÖrnek: Tornavida olmadan onu çıkaramayız. 'By' edatı aynı zamanda ulaşım araçlarını belirtmek için de kullanılır (otobüsle, trenle vb.).","r":["R2"],"s":["R8","R1","R5","R6","R7"]},{"id":"A044","t":"Get Passive","c":"Passive & Causative","a":"Get Passive: İngilizcede 'get' fiili, gayriresmî (informal) durumlarda edilgen (passive) çatı oluşturmak için 'be' yardımcı fiilinin yerine bazen kullanılabilir. Edilgen çatı, eylemden etkilenen kişiye veya nesneye odaklanmak istediğimizde tercih edilir. 'Get' yapısı, bir past participle (fiilin 3. hâli) ile kullanılarak 'get washed', 'get dressed' veya 'get married' gibi ifadeler oluşturulabilir. Edilgen yapı kullanıldığında, eylemi gerçekleştiren kişiden veya nesneden genellikle bahsedilmez.","r":["R1"],"s":["R3","R4","R5","R6","R10"]},{"id":"A045","t":"Have something done","c":"Passive & Causative","a":"Have something done: ‘Have something done’ yapısı, bir şeyin bir başkası tarafından yapıldığını veya birinin başına bir şey geldiğini ifade etmek için kullanılır. Örneğin, bir kişinin bir kavgada burnunun kırılması durumunda bu yapı kullanılabilir. Ayrıca, ‘have something done’ yerine ‘get something done’ ifadesi de aynı anlamda kullanılabilmektedir.","r":["R2"],"s":["R1","R10","R4","R8","R11"]},{"id":"A046","t":"Get something done","c":"Passive & Causative","a":"Get something done: ‘Get something done’ yapısı, bir işin başkasına yaptırıldığını veya bir şey üzerinde çalışma tamamlandığını ifade etmek için kullanılır. ‘Have something done’ yapısı ile aynı anlamda kullanılabilir. Bu yapıda ‘get’ fiilinden sonra bir nesne ve ardından bir past participle (fiilin 3. hâli) gelir. Past participle kullanımı burada pasif bir anlam taşır.","r":["R1"],"s":["R4","R15","R2","R5","R7"]},{"id":"A047","t":"Passive reporting structures","c":"Passive & Causative","a":"Passive reporting structures: Passive reporting structures, insanların ne söylediklerini veya ne düşündüklerini bildirmek için kullanılan yapılardır. Bu yapılarda, eylemi kimin gerçekleştirdiğine odaklanmak yerine eylemin kendisine ilgi duyduğumuzda veya eylemi kimin yaptığını belirtemediğimizde ya da belirtmek istemediğimizde pasif yapılar tercih edilir. Reporting verb (bildirme fiili) konuşma anında gerçekleşen bir durumu ifade ediyorsa present tense kullanılabilir. Geçmişe dair raporlarda ise genellikle past tenses kullanılır; ancak bildirilen durum günümüzde önemini koruyorsa present tense tercih edilebilir.","r":["R3"],"s":["R4","R14","R15","R16","R1"]},{"id":"A048","t":"Impersonal Passive","c":"Passive & Causative","a":"Impersonal Passive: Impersonal Passive yapısı, 'somebody', 'they' veya 'people' gibi genel özneleri belirtmek yerine; 'it' öznesi ve edilgen (passive) bir bildirme fiili (reporting verb) kullanılarak genel inançları veya görüşleri ifade etmek için kullanılır. Cümle, 'it' öznesi ve 'be' fiilinin uygun bir formu ile başlar; bu yapı yeni bilgileri tanıtmak veya bir durum/olay hakkındaki genel kanaatleri aktarmak amacıyla tercih edilir.","r":["R1"],"s":["R2","R4","R6","R7","R12"]},{"id":"A049","t":"Reported Statements","c":"Reported Speech","a":"Reported Statements: Reported Statements (aktarılan ifadeler), birinin söylediği, yazdığı veya düşündüğü şeyin tam kelimeleri yerine, iletilen temel bilgiyi aktarmak istediğimiz durumlarda kullanılır. Reported speech, bir 'that'-clause, 'to'-infinitive clause, 'if'-clause veya 'wh'-word clause ile kurulabilir. Söz konusu ifadeleri aktarırken 'can' yerine 'could', 'may' yerine 'might' kullanımı yaygındır ve bazen 'must' yerine 'had to' kullanılabilir. Bu süreçte zaman uyumu dikkate alınır ve fiillerin zamanları aktarımın yapıldığı ana göre genellikle geriye doğru çekilir.","r":["R1"],"s":["R2","R6","R3","R16","R4"]},{"id":"A050","t":"Reported Questions","c":"Reported Speech","a":"Reported Questions: Reported Questions, başka birinin sorduğu bir soruyu aktarmak için kullanılır. Aktarılan sorularda genellikle soru işareti kullanılmaz. 'Yes/no' sorularını aktarırken 'if' veya 'whether' kullanılır. Bilgi sorularında ise soru kelimeleri (wh- kelimeleri) tercih edilir. Aktarılan sorularda normal şartlarda 'do' yardımcı fiili kullanılmaz; ancak sadece vurgu yapmak veya daha önce söylenen bir şeyle zıtlık oluşturmak amacıyla kullanılabilir. Çok gayriresmî konuşmalarda, aktarılan sorular bazen doğrudan soru yapısı ile aynı kelime dizilimine sahip olabilir.","r":["R1"],"s":["R2","R3","R7","R8","R5"]},{"id":"A051","t":"Reported Commands","c":"Reported Speech","a":"Reported Commands: Reported Commands ve genel olarak Reported Speech (bildirilen konuşma), kişilerin söylediklerini, düşündüklerini veya yazdıklarını aktarmak için kullanılan bir yapıdır. Bu yapıda, aktarılan yan cümle bir 'that'-clause, 'to'-infinitive clause, 'if'-clause veya 'wh'-word clause olabilir. Geçmişe dair raporlarda genellikle geçmiş zamanlar kullanılır; ancak aktarılan ifadedeki bilgi günümüzde önemini koruyorsa, yan cümlede geniş zaman kullanılabilir. Soru cümlelerini aktarırken, 'do' yardımcı fiili normalde kullanılmaz. Modal fiiller aktarılırken değişiklik gösterebilir (örneğin 'can' yerini 'could' alabilir veya 'may' yerine 'might' kullanılabilir). Ayrıca, kişi zamirleri (örneğin 'me' yerine 'him' veya 'her') veya iyelik belirteçleri aktarım sırasında değişebilir; bazen zamir yerine doğrudan isimler de tercih edilebilir.","r":["R1"],"s":["R2","R3","R4","R5","R6"]},{"id":"A052","t":"Reported Speech Backshift","c":"Reported Speech","a":"Reported Speech Backshift: Reported speech (aktarılan konuşma), birinin söylediklerinin, yazdıklarının veya düşündüklerinin özünü ifade etmek için kullanılır. Aktarılan konuşmada zaman ve kip değişimleri (backshift) yaşanabilir; örneğin 'can' ifadesi 'could', 'may' ifadesi 'might' şekline dönüşebilir. Bazen 'must' yerine 'had to' kullanılır. Zaman seçimi, aktarımı yaptığınız andaki uygunluk durumuna göre belirlenir ve önemli olan kelimelerin birebir tekrarı değil, aktarılan temel bilgidir.","r":["R1"],"s":["R2","R3","R4","R14","R6"]},{"id":"A053","t":"Say vs Tell","c":"Reported Speech","a":"Say vs Tell: Say ve tell hem doğrudan hem de dolaylı anlatımda kullanılır. Ancak kullanımları farklılık gösterir: Tell fiili, 'emir' veya 'talimat' anlamında nesneden sonra infinitive alabilirken, say fiili bu yapıda kullanılmaz. Tell fiili, 'birine bir şeyi bildirmek' gibi bir dinleyiciyi nesne olarak gerektirir; bu nedenle dinleyiciyi belirtmeden kullanılamaz. Öte yandan, say fiilinden sonra bir kelime, isim, cümle veya ifade gelebilir ancak tell bu şekilde kullanılmaz. 'That'-clause yapılarında her iki fiilden sonra 'so' kullanılabilir. Tell fiili ayrıca 'ayırdetmek' veya 'anlamak' (saati söylemek gibi) anlamlarına da gelir.\nÖrnek: Anna bana veda etti ve ayrıldı.","r":["R1"],"s":["R2","R3","R4","R5","R7"]},{"id":"A054","t":"Reporting Verbs","c":"Reported Speech","a":"Reporting Verbs: Reporting verbs, insanların ne düşündüğünü veya söylediğini aktarmak için kullanılan bir rapor yapısıdır. Konuşma anında gerçekleşen bir durumu aktarırken reporting verb için Present Tense kullanılır. Eğer geleceğe dair bir tahmin veya düşünce bildiriliyorsa Future Tense kullanımı tercih edilir. Geçmişe dair raporlamalarda genellikle Past Tense kullanılsa da, aktarılan bilginin günümüzde hala geçerli ve önemli olduğu durumlarda raporlanan yan cümlede (reported clause) Present Tense de kullanılabilir. Reporting verb seçerken sadece 'said' gibi yaygın fiillere odaklanmak yerine, söylenenin içeriğini daha iyi özetleyen ve yorumlayan çeşitli fiiller kullanmak daha uygundur. Belirli bir kural veya evrensel kısayol bulunmadığından, her fiilin hangi yapıyla (to-infinitive veya gerund gibi) kullanıldığını öğrenmek için sözlükten kontrol etmek gerekebilir.","r":["R1"],"s":["R2","R3","R4","R5","R10"]},{"id":"A055","t":"Reported time/place words","c":"Reported Speech","a":"Reported time/place words: Reported speech (aktarılan konuşma) yapısı, yalnızca söylenenleri değil; yazılanları ve düşünülenleri de kapsar. Bir ifadeyi aktarırken, orijinal cümlede kullanılan zaman (tense) ifadelerini, zamirleri, yer ve zaman bildiren kelimeleri (örneğin; 'this', 'that', 'these') değiştirmemiz gerekebilir. Zaman ve yer referanslarındaki bu değişim, konuşmanın yapıldığı ana göre güncellenir. Eğer aktarılan bilgi konuşma anında hala geçerli veya önemliyse, zaman kipini değiştirmeyebilirsiniz; ancak genellikle orijinal ifadedeki zaman yapısından farklı bir zaman kullanılır.","r":["R1"],"s":["R9","R17","R3","R6","R7"]},{"id":"A056","t":"No backshift in reported speech","c":"Reported Speech","a":"No backshift in reported speech: Aktarılan konuşmada (reported speech) zaman değişimi (backshift), cümlenin ifade ettiği durumun hâlâ geçerliliğini koruması veya değişmez bir gerçeklik bildirmesi durumunda zorunlu değildir. Birinin geçmişte söylediği bir şeyi aktarırken, eğer o bilgi günümüzde hâlâ doğru kabul ediliyorsa, cümlenin zamanı geçmişe çekilmeden aktarılabilir.","r":["R1"],"s":["R4","R13","R2"]},{"id":"A057","t":"Zero Article","c":"Articles & Determiners","a":"Zero Article: Zero article (sıfır artikeli), herhangi bir article (a, an, the) kullanılmaması durumunu ifade eder. Sayılamayan ve çoğul isimlerle genel ifadeler kullanırken, yani belirli bir kişi veya şeyden ziyade genel olarak genel bir kavramdan bahsettiğimizde zero article tercih edilir. Ayrıca 'the position of', 'the post of' veya 'the role of' gibi ifadelerden sonra gelen meslek isimlerinde de kullanılır. Bazen ise bir kişinin belirli özelliklerine atıfta bulunmak için bir ismin önünde zero article seçilebilir. Bununla birlikte, İngilizcedeki bazı deyimsel ifadelerde article kullanımı veya eksikliği, gramer kurallarından ziyade kelime bilgisiyle ilgilidir; bu kullanımlar için tek bir evrensel kural yoktur ve ifadelerin sözlükten kontrol edilmesi önerilir.","r":["R1"],"s":["R2","R3","R4","R5","R9"]},{"id":"A058","t":"Generic reference with articles","c":"Articles & Determiners","a":"Generic reference with articles: Genel referanslarda artikel kullanımı konusu dilbilgisi açısından oldukça net olmayan bir alandır; çoğu zaman aynı fikir hem 'the' artikeliyle hem de artikel kullanılmadan ifade edilebilir. Artikeller, konuştuğumuz şeylerin hem konuşan hem de dinleyen tarafından bilinen (belirli/definite) veya bilinmeyen (belirsiz/indefinite) olduğunu göstermek için kullanılır. 'The' artikeli, bir şey tanımlandığında veya tanımlanmış olduğunda tercih edilir; ancak kuralları bilsek dahi iletişim kurma sürecinde bazen artikellerin atlanabildiği görülmektedir. Mümkün olduğunda artikelleri doğru kullanmak daha iyi bir tercih olsa da, genel bir referans belirtirken tek bir kesin kuraldan ziyade ifade edilmek istenen bağlama göre tercih yapılır.","r":["R2"],"s":["R8","R9","R10","R11","R14"]},{"id":"A059","t":"Articles with proper names","c":"Articles & Determiners","a":"Articles with proper names: Özel isimlerle article (tanımlayıcı) kullanımı belirli kurallara tabidir. Genellikle kişi isimleri gibi özel isimlerle article kullanılmaz. Ancak bazı özel durumlarda 'the' kullanımı gereklidir: Gazete isimlerinden bahsederken (örneğin Daily Mirror), bir aileden söz ederken (the Browns), kraliçe gibi bazı unvanlarla, kurum, bina ve sanat eseri isimleriyle 'the' kullanılır. Ayrıca, isminde 'kingdom', 'republic', 'states' veya 'union' geçen ülkelerle ve ismi çoğul olan ülkelerle (örneğin United Kingdom) 'the' kullanılır. Gazete başlıklarında 'the' yer almasa bile, gazeteden bahsederken cümle içinde 'the' kullanılması gerekebilir.","r":["R1"],"s":["R3","R4","R5","R6","R7"]},{"id":"A060","t":"Articles with geographical names","c":"Articles & Determiners","a":"Articles with geographical names: Coğrafi isimlerle 'the' kullanımı belirli kurallara dayanır. 'The'; denizler, okyanuslar, nehirler, kanallar, körfezler ve boğazlar gibi su kütlelerinin isimleriyle kullanılır. Ayrıca ismi 'republic', 'states', 'kingdom' veya 'union' gibi kelimeleri içeren ülkelerle, çoğul isimlerden oluşan ülke, ada veya dağ isimleriyle (örneğin: the Netherlands, the Philippines, the Andes) birlikte kullanılır. 'Western Africa' gibi tekil isimlerle yön bildiren ifadelerde ise 'the' kullanılmaz.","r":["R1"],"s":["R2","R3","R8","R9","R10"]},{"id":"A061","t":"A/An with jobs and classifications","c":"Articles & Determiners","a":"A/An with jobs and classifications: İngilizcede bir kişinin mesleğini söylerken veya bir nesnenin ne olduğunu tanımlarken, kişi veya nesnenin ait olduğu sınıfı belirttiğimiz için 'a/an' artikellerini kullanırız. Bu kullanımda 'a/an', o mesleğe veya sınıfa ait herhangi bir üyeyi ifade eder. Meslekleri veya nesnelerin kullanım amaçlarını tanımlarken 'a/an' kullanımı atlanmamalıdır.\nÖrnek: Bir sınıfın herhangi bir üyesinden bahsettiğimizde 'a/an' kullanabiliriz.","r":["R1"],"s":["R19"]},{"id":"A062","t":"Articles vs possessives","c":"Articles & Determiners","a":"Articles vs possessives: İngilizcede artikeller (a/an/the) ve iyelik ekleri (possessives) genellikle birbirinin yerine kullanılmaz; iyelik ekleri kullanıldığında belirli tanımlıklar (definite articles) genellikle düşürülür. Bir isimle birlikte artikel kullanıp kullanmayacağınıza karar vermeniz gerekir ve eğer artikel gerekiyorsa hangisinin uygun olduğunu seçmelisiniz. Bazı durumlarda, özellikle vücut bölümleriyle ilgili ağrı veya darbe gibi durumlarda, iyelik ekleri yerine artikeller tercih edilebilir.","r":["R1"],"s":["R5","R2","R3","R7","R8"]}]
+[
+  {
+    "id": "A043",
+    "t": "Passive by-agent",
+    "c": "Passive & Causative",
+    "a": "Passive by-agent: Passive voice, eylemi gerçekleştiren kişiden veya nesneden ziyade eylemden etkilenen kişiye veya şeye odaklanmak istediğinizde kullanılır. Eğer eylemi gerçekleştiren kişiyi (faili/agent) özellikle belirtmek isterseniz 'by' edatı kullanılır. Ayrıca, 'somebody', 'they' veya 'people' gibi belirsiz ifadeler kullanmak yerine, eylemi gerçekleştireni belirtmeden edilgen bir yapı kurmak da mümkündür.\nÖrnek: Tornavida olmadan onu çıkaramayız. 'By' edatı aynı zamanda ulaşım araçlarını belirtmek için de kullanılır (otobüsle, trenle vb.).",
+    "r": ["R2"],
+    "s": ["R8", "R1", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A044",
+    "t": "Get Passive",
+    "c": "Passive & Causative",
+    "a": "Get Passive: İngilizcede 'get' fiili, gayriresmî (informal) durumlarda edilgen (passive) çatı oluşturmak için 'be' yardımcı fiilinin yerine bazen kullanılabilir. Edilgen çatı, eylemden etkilenen kişiye veya nesneye odaklanmak istediğimizde tercih edilir. 'Get' yapısı, bir past participle (fiilin 3. hâli) ile kullanılarak 'get washed', 'get dressed' veya 'get married' gibi ifadeler oluşturulabilir. Edilgen yapı kullanıldığında, eylemi gerçekleştiren kişiden veya nesneden genellikle bahsedilmez.",
+    "r": ["R1"],
+    "s": ["R3", "R4", "R5", "R6", "R10"]
+  },
+  {
+    "id": "A045",
+    "t": "Have something done",
+    "c": "Passive & Causative",
+    "a": "Have something done: ‘Have something done’ yapısı, bir şeyin bir başkası tarafından yapıldığını veya birinin başına bir şey geldiğini ifade etmek için kullanılır. Örneğin, bir kişinin bir kavgada burnunun kırılması durumunda bu yapı kullanılabilir. Ayrıca, ‘have something done’ yerine ‘get something done’ ifadesi de aynı anlamda kullanılabilmektedir.",
+    "r": ["R2"],
+    "s": ["R1", "R10", "R4", "R8", "R11"]
+  },
+  {
+    "id": "A046",
+    "t": "Get something done",
+    "c": "Passive & Causative",
+    "a": "Get something done: ‘Get something done’ yapısı, bir işin başkasına yaptırıldığını veya bir şey üzerinde çalışma tamamlandığını ifade etmek için kullanılır. ‘Have something done’ yapısı ile aynı anlamda kullanılabilir. Bu yapıda ‘get’ fiilinden sonra bir nesne ve ardından bir past participle (fiilin 3. hâli) gelir. Past participle kullanımı burada pasif bir anlam taşır.",
+    "r": ["R1"],
+    "s": ["R4", "R15", "R2", "R5", "R7"]
+  },
+  {
+    "id": "A047",
+    "t": "Passive reporting structures",
+    "c": "Passive & Causative",
+    "a": "Passive reporting structures: Passive reporting structures, insanların ne söylediklerini veya ne düşündüklerini bildirmek için kullanılan yapılardır. Bu yapılarda, eylemi kimin gerçekleştirdiğine odaklanmak yerine eylemin kendisine ilgi duyduğumuzda veya eylemi kimin yaptığını belirtemediğimizde ya da belirtmek istemediğimizde pasif yapılar tercih edilir. Reporting verb (bildirme fiili) konuşma anında gerçekleşen bir durumu ifade ediyorsa present tense kullanılabilir. Geçmişe dair raporlarda ise genellikle past tenses kullanılır; ancak bildirilen durum günümüzde önemini koruyorsa present tense tercih edilebilir.",
+    "r": ["R3"],
+    "s": ["R4", "R14", "R15", "R16", "R1"]
+  },
+  {
+    "id": "A048",
+    "t": "Impersonal Passive",
+    "c": "Passive & Causative",
+    "a": "Impersonal Passive: Impersonal Passive yapısı, 'somebody', 'they' veya 'people' gibi genel özneleri belirtmek yerine; 'it' öznesi ve edilgen (passive) bir bildirme fiili (reporting verb) kullanılarak genel inançları veya görüşleri ifade etmek için kullanılır. Cümle, 'it' öznesi ve 'be' fiilinin uygun bir formu ile başlar; bu yapı yeni bilgileri tanıtmak veya bir durum/olay hakkındaki genel kanaatleri aktarmak amacıyla tercih edilir.",
+    "r": ["R1"],
+    "s": ["R2", "R4", "R6", "R7", "R12"]
+  },
+  {
+    "id": "A049",
+    "t": "Reported Statements",
+    "c": "Reported Speech",
+    "a": "Reported Statements: Reported Statements (aktarılan ifadeler), birinin söylediği, yazdığı veya düşündüğü şeyin tam kelimeleri yerine, iletilen temel bilgiyi aktarmak istediğimiz durumlarda kullanılır. Reported speech, bir 'that'-clause, 'to'-infinitive clause, 'if'-clause veya 'wh'-word clause ile kurulabilir. Söz konusu ifadeleri aktarırken 'can' yerine 'could', 'may' yerine 'might' kullanımı yaygındır ve bazen 'must' yerine 'had to' kullanılabilir. Bu süreçte zaman uyumu dikkate alınır ve fiillerin zamanları aktarımın yapıldığı ana göre genellikle geriye doğru çekilir.",
+    "r": ["R1"],
+    "s": ["R2", "R6", "R3", "R16", "R4"]
+  },
+  {
+    "id": "A050",
+    "t": "Reported Questions",
+    "c": "Reported Speech",
+    "a": "Reported Questions: Reported Questions, başka birinin sorduğu bir soruyu aktarmak için kullanılır. Aktarılan sorularda genellikle soru işareti kullanılmaz. 'Yes/no' sorularını aktarırken 'if' veya 'whether' kullanılır. Bilgi sorularında ise soru kelimeleri (wh- kelimeleri) tercih edilir. Aktarılan sorularda normal şartlarda 'do' yardımcı fiili kullanılmaz; ancak sadece vurgu yapmak veya daha önce söylenen bir şeyle zıtlık oluşturmak amacıyla kullanılabilir. Çok gayriresmî konuşmalarda, aktarılan sorular bazen doğrudan soru yapısı ile aynı kelime dizilimine sahip olabilir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R7", "R8", "R5"]
+  },
+  {
+    "id": "A051",
+    "t": "Reported Commands",
+    "c": "Reported Speech",
+    "a": "Reported Commands: Reported Commands ve genel olarak Reported Speech (bildirilen konuşma), kişilerin söylediklerini, düşündüklerini veya yazdıklarını aktarmak için kullanılan bir yapıdır. Bu yapıda, aktarılan yan cümle bir 'that'-clause, 'to'-infinitive clause, 'if'-clause veya 'wh'-word clause olabilir. Geçmişe dair raporlarda genellikle geçmiş zamanlar kullanılır; ancak aktarılan ifadedeki bilgi günümüzde önemini koruyorsa, yan cümlede geniş zaman kullanılabilir. Soru cümlelerini aktarırken, 'do' yardımcı fiili normalde kullanılmaz. Modal fiiller aktarılırken değişiklik gösterebilir (örneğin 'can' yerini 'could' alabilir veya 'may' yerine 'might' kullanılabilir). Ayrıca, kişi zamirleri (örneğin 'me' yerine 'him' veya 'her') veya iyelik belirteçleri aktarım sırasında değişebilir; bazen zamir yerine doğrudan isimler de tercih edilebilir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A052",
+    "t": "Reported Speech Backshift",
+    "c": "Reported Speech",
+    "a": "Reported Speech Backshift: Reported speech (aktarılan konuşma), birinin söylediklerinin, yazdıklarının veya düşündüklerinin özünü ifade etmek için kullanılır. Aktarılan konuşmada zaman ve kip değişimleri (backshift) yaşanabilir; örneğin 'can' ifadesi 'could', 'may' ifadesi 'might' şekline dönüşebilir. Bazen 'must' yerine 'had to' kullanılır. Zaman seçimi, aktarımı yaptığınız andaki uygunluk durumuna göre belirlenir ve önemli olan kelimelerin birebir tekrarı değil, aktarılan temel bilgidir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R14", "R6"]
+  },
+  {
+    "id": "A053",
+    "t": "Say vs Tell",
+    "c": "Reported Speech",
+    "a": "Say vs Tell: Say ve tell hem doğrudan hem de dolaylı anlatımda kullanılır. Ancak kullanımları farklılık gösterir: Tell fiili, 'emir' veya 'talimat' anlamında nesneden sonra infinitive alabilirken, say fiili bu yapıda kullanılmaz. Tell fiili, 'birine bir şeyi bildirmek' gibi bir dinleyiciyi nesne olarak gerektirir; bu nedenle dinleyiciyi belirtmeden kullanılamaz. Öte yandan, say fiilinden sonra bir kelime, isim, cümle veya ifade gelebilir ancak tell bu şekilde kullanılmaz. 'That'-clause yapılarında her iki fiilden sonra 'so' kullanılabilir. Tell fiili ayrıca 'ayırdetmek' veya 'anlamak' (saati söylemek gibi) anlamlarına da gelir.\nÖrnek: Anna bana veda etti ve ayrıldı.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R7"]
+  },
+  {
+    "id": "A054",
+    "t": "Reporting Verbs",
+    "c": "Reported Speech",
+    "a": "Reporting Verbs: Reporting verbs, insanların ne düşündüğünü veya söylediğini aktarmak için kullanılan bir rapor yapısıdır. Konuşma anında gerçekleşen bir durumu aktarırken reporting verb için Present Tense kullanılır. Eğer geleceğe dair bir tahmin veya düşünce bildiriliyorsa Future Tense kullanımı tercih edilir. Geçmişe dair raporlamalarda genellikle Past Tense kullanılsa da, aktarılan bilginin günümüzde hala geçerli ve önemli olduğu durumlarda raporlanan yan cümlede (reported clause) Present Tense de kullanılabilir. Reporting verb seçerken sadece 'said' gibi yaygın fiillere odaklanmak yerine, söylenenin içeriğini daha iyi özetleyen ve yorumlayan çeşitli fiiller kullanmak daha uygundur. Belirli bir kural veya evrensel kısayol bulunmadığından, her fiilin hangi yapıyla (to-infinitive veya gerund gibi) kullanıldığını öğrenmek için sözlükten kontrol etmek gerekebilir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R10"]
+  },
+  {
+    "id": "A055",
+    "t": "Reported time/place words",
+    "c": "Reported Speech",
+    "a": "Reported time/place words: Reported speech (aktarılan konuşma) yapısı, yalnızca söylenenleri değil; yazılanları ve düşünülenleri de kapsar. Bir ifadeyi aktarırken, orijinal cümlede kullanılan zaman (tense) ifadelerini, zamirleri, yer ve zaman bildiren kelimeleri (örneğin; 'this', 'that', 'these') değiştirmemiz gerekebilir. Zaman ve yer referanslarındaki bu değişim, konuşmanın yapıldığı ana göre güncellenir. Eğer aktarılan bilgi konuşma anında hala geçerli veya önemliyse, zaman kipini değiştirmeyebilirsiniz; ancak genellikle orijinal ifadedeki zaman yapısından farklı bir zaman kullanılır.",
+    "r": ["R1"],
+    "s": ["R9", "R17", "R3", "R6", "R7"]
+  },
+  {
+    "id": "A056",
+    "t": "No backshift in reported speech",
+    "c": "Reported Speech",
+    "a": "No backshift in reported speech: Aktarılan konuşmada (reported speech) zaman değişimi (backshift), cümlenin ifade ettiği durumun hâlâ geçerliliğini koruması veya değişmez bir gerçeklik bildirmesi durumunda zorunlu değildir. Birinin geçmişte söylediği bir şeyi aktarırken, eğer o bilgi günümüzde hâlâ doğru kabul ediliyorsa, cümlenin zamanı geçmişe çekilmeden aktarılabilir.",
+    "r": ["R1"],
+    "s": ["R4", "R13", "R2"]
+  },
+  {
+    "id": "A057",
+    "t": "Zero Article",
+    "c": "Articles & Determiners",
+    "a": "Zero Article: Zero article (sıfır artikeli), herhangi bir article (a, an, the) kullanılmaması durumunu ifade eder. Sayılamayan ve çoğul isimlerle genel ifadeler kullanırken, yani belirli bir kişi veya şeyden ziyade genel olarak genel bir kavramdan bahsettiğimizde zero article tercih edilir. Ayrıca 'the position of', 'the post of' veya 'the role of' gibi ifadelerden sonra gelen meslek isimlerinde de kullanılır. Bazen ise bir kişinin belirli özelliklerine atıfta bulunmak için bir ismin önünde zero article seçilebilir. Bununla birlikte, İngilizcedeki bazı deyimsel ifadelerde article kullanımı veya eksikliği, gramer kurallarından ziyade kelime bilgisiyle ilgilidir; bu kullanımlar için tek bir evrensel kural yoktur ve ifadelerin sözlükten kontrol edilmesi önerilir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R9"]
+  },
+  {
+    "id": "A058",
+    "t": "Generic reference with articles",
+    "c": "Articles & Determiners",
+    "a": "Generic reference with articles: Genel referanslarda artikel kullanımı konusu dilbilgisi açısından oldukça net olmayan bir alandır; çoğu zaman aynı fikir hem 'the' artikeliyle hem de artikel kullanılmadan ifade edilebilir. Artikeller, konuştuğumuz şeylerin hem konuşan hem de dinleyen tarafından bilinen (belirli/definite) veya bilinmeyen (belirsiz/indefinite) olduğunu göstermek için kullanılır. 'The' artikeli, bir şey tanımlandığında veya tanımlanmış olduğunda tercih edilir; ancak kuralları bilsek dahi iletişim kurma sürecinde bazen artikellerin atlanabildiği görülmektedir. Mümkün olduğunda artikelleri doğru kullanmak daha iyi bir tercih olsa da, genel bir referans belirtirken tek bir kesin kuraldan ziyade ifade edilmek istenen bağlama göre tercih yapılır.",
+    "r": ["R2"],
+    "s": ["R8", "R9", "R10", "R11", "R14"]
+  },
+  {
+    "id": "A059",
+    "t": "Articles with proper names",
+    "c": "Articles & Determiners",
+    "a": "Articles with proper names: Özel isimlerle article (tanımlayıcı) kullanımı belirli kurallara tabidir. Genellikle kişi isimleri gibi özel isimlerle article kullanılmaz. Ancak bazı özel durumlarda 'the' kullanımı gereklidir: Gazete isimlerinden bahsederken (örneğin Daily Mirror), bir aileden söz ederken (the Browns), kraliçe gibi bazı unvanlarla, kurum, bina ve sanat eseri isimleriyle 'the' kullanılır. Ayrıca, isminde 'kingdom', 'republic', 'states' veya 'union' geçen ülkelerle ve ismi çoğul olan ülkelerle (örneğin United Kingdom) 'the' kullanılır. Gazete başlıklarında 'the' yer almasa bile, gazeteden bahsederken cümle içinde 'the' kullanılması gerekebilir.",
+    "r": ["R1"],
+    "s": ["R3", "R4", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A060",
+    "t": "Articles with geographical names",
+    "c": "Articles & Determiners",
+    "a": "Articles with geographical names: Coğrafi isimlerle 'the' kullanımı belirli kurallara dayanır. 'The'; denizler, okyanuslar, nehirler, kanallar, körfezler ve boğazlar gibi su kütlelerinin isimleriyle kullanılır. Ayrıca ismi 'republic', 'states', 'kingdom' veya 'union' gibi kelimeleri içeren ülkelerle, çoğul isimlerden oluşan ülke, ada veya dağ isimleriyle (örneğin: the Netherlands, the Philippines, the Andes) birlikte kullanılır. 'Western Africa' gibi tekil isimlerle yön bildiren ifadelerde ise 'the' kullanılmaz.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R8", "R9", "R10"]
+  },
+  {
+    "id": "A061",
+    "t": "A/An with jobs and classifications",
+    "c": "Articles & Determiners",
+    "a": "A/An with jobs and classifications: İngilizcede bir kişinin mesleğini söylerken veya bir nesnenin ne olduğunu tanımlarken, kişi veya nesnenin ait olduğu sınıfı belirttiğimiz için 'a/an' artikellerini kullanırız. Bu kullanımda 'a/an', o mesleğe veya sınıfa ait herhangi bir üyeyi ifade eder. Meslekleri veya nesnelerin kullanım amaçlarını tanımlarken 'a/an' kullanımı atlanmamalıdır.\nÖrnek: Bir sınıfın herhangi bir üyesinden bahsettiğimizde 'a/an' kullanabiliriz.",
+    "r": ["R1"],
+    "s": ["R19"]
+  },
+  {
+    "id": "A062",
+    "t": "Articles vs possessives",
+    "c": "Articles & Determiners",
+    "a": "Articles vs possessives: İngilizcede artikeller (a/an/the) ve iyelik ekleri (possessives) genellikle birbirinin yerine kullanılmaz; iyelik ekleri kullanıldığında belirli tanımlıklar (definite articles) genellikle düşürülür. Bir isimle birlikte artikel kullanıp kullanmayacağınıza karar vermeniz gerekir ve eğer artikel gerekiyorsa hangisinin uygun olduğunu seçmelisiniz. Bazı durumlarda, özellikle vücut bölümleriyle ilgili ağrı veya darbe gibi durumlarda, iyelik ekleri yerine artikeller tercih edilebilir.",
+    "r": ["R1"],
+    "s": ["R5", "R2", "R3", "R7", "R8"]
+  }
+]

@@ -16,7 +16,8 @@ const PRACTICE_QUESTIONS = [
     hint: "Anahtarlar şu anda hâlâ kayıp. Geçmişteki olayın sonucu bugün devam ediyor.",
     options: ["lost", "have lost", "had lost", "am losing"],
     correctIndex: 1,
-    explanation: "Doğru cevap “have lost”. Anahtarları kaybetme olayı geçmişte oldu ama asıl önemli bilgi şu an anahtarların bulunamaması. Bitmiş bir geçmiş zaman da söylemiyoruz; bu yüzden Present Perfect doğal seçimdir."
+    explanation:
+      "Doğru cevap “have lost”. Anahtarları kaybetme olayı geçmişte oldu ama asıl önemli bilgi şu an anahtarların bulunamaması. Bitmiş bir geçmiş zaman da söylemiyoruz; bu yüzden Present Perfect doğal seçimdir."
   },
   {
     context: "DURATION · GEÇMİŞTEN BUGÜNE",
@@ -24,7 +25,8 @@ const PRACTICE_QUESTIONS = [
     hint: "2021 başlangıç noktası. Cümle, durumun hâlâ devam ettiğini anlatıyor.",
     options: ["lived", "has lived", "is living", "was living"],
     correctIndex: 1,
-    explanation: "“Since 2021” bize başlangıç noktasını verir ve yaşama durumu hâlâ devam ediyor. Bu nedenle “has lived” kullanılır. “Lived” deseydik bağlama göre artık Ankara’da yaşamıyor olduğu anlaşılabilirdi."
+    explanation:
+      "“Since 2021” bize başlangıç noktasını verir ve yaşama durumu hâlâ devam ediyor. Bu nedenle “has lived” kullanılır. “Lived” deseydik bağlama göre artık Ankara’da yaşamıyor olduğu anlaşılabilirdi."
   },
   {
     context: "LIFE EXPERIENCE · HAYAT DENEYİMİ",
@@ -32,7 +34,8 @@ const PRACTICE_QUESTIONS = [
     hint: "Belirli bir yıl veya tarih sormuyoruz; bugüne kadarki deneyimi soruyoruz.",
     options: ["Did / try", "Have / tried", "Have / try", "Did / tried"],
     correctIndex: 1,
-    explanation: "Doğru yapı “Have you ever tried…?” olur. “Ever” burada kişinin bugüne kadarki hayat deneyimini soruyor. Present Perfect’te yardımcı fiil have/has gelir ve ana fiil V3 biçimine geçer: try → tried."
+    explanation:
+      "Doğru yapı “Have you ever tried…?” olur. “Ever” burada kişinin bugüne kadarki hayat deneyimini soruyor. Present Perfect’te yardımcı fiil have/has gelir ve ana fiil V3 biçimine geçer: try → tried."
   },
   {
     context: "UNFINISHED TIME · BİTMEMİŞ ZAMAN",
@@ -40,7 +43,8 @@ const PRACTICE_QUESTIONS = [
     hint: "Konuşma anında bugün henüz bitmemiş kabul ediliyor.",
     options: ["had", "have had", "have", "had had"],
     correctIndex: 1,
-    explanation: "Doğru cevap “have had”. “Today” henüz bitmemiş bir zaman dilimiyse günün şu ana kadarki bölümünü özetliyoruz. Bu yüzden Present Perfect kullanabiliriz. Gün tamamen bittikten sonra geçmiş bir günü anlatırken Past Simple daha doğal olabilir."
+    explanation:
+      "Doğru cevap “have had”. “Today” henüz bitmemiş bir zaman dilimiyse günün şu ana kadarki bölümünü özetliyoruz. Bu yüzden Present Perfect kullanabiliriz. Gün tamamen bittikten sonra geçmiş bir günü anlatırken Past Simple daha doğal olabilir."
   },
   {
     context: "FINISHED PAST · BİTMİŞ GEÇMİŞ",
@@ -48,7 +52,8 @@ const PRACTICE_QUESTIONS = [
     hint: "“Yesterday” tamamen bitmiş bir geçmiş zamanı gösteriyor.",
     options: ["have seen", "saw", "have saw", "seen"],
     correctIndex: 1,
-    explanation: "Doğru cevap “saw”. “Yesterday” bitmiş ve belirli bir geçmiş zaman olduğu için burada Present Perfect kullanmayız. Past Simple seçilir: see → saw."
+    explanation:
+      "Doğru cevap “saw”. “Yesterday” bitmiş ve belirli bir geçmiş zaman olduğu için burada Present Perfect kullanmayız. Past Simple seçilir: see → saw."
   }
 ] as const satisfies readonly [PracticeQuestion, ...PracticeQuestion[]];
 
@@ -89,20 +94,26 @@ export function PresentPerfectPractice() {
   }
 
   if (completed) {
-    const message = score === 5
-      ? "Mükemmel. Present Perfect ile Past Simple arasındaki temel ayrımı doğru kuruyorsun."
-      : score >= 3
-        ? "Temel mantık oturmuş. Yanlış yaptığın sorularda önce zamanın bitip bitmediğine ve bugünle bağlantıya tekrar bak."
-        : "Rule ve Compare bölümlerini bir kez daha okuyup yeniden denemen iyi olur. Formülden önce anlamı seçmeye odaklan.";
+    const message =
+      score === 5
+        ? "Mükemmel. Present Perfect ile Past Simple arasındaki temel ayrımı doğru kuruyorsun."
+        : score >= 3
+          ? "Temel mantık oturmuş. Yanlış yaptığın sorularda önce zamanın bitip bitmediğine ve bugünle bağlantıya tekrar bak."
+          : "Rule ve Compare bölümlerini bir kez daha okuyup yeniden denemen iyi olur. Formülden önce anlamı seçmeye odaklan.";
 
     return (
       <section className="wvg-practice-view" aria-labelledby="present-perfect-practice-title">
         <div className="wvg-practice-complete">
           <p>PRACTICE COMPLETE · ALIŞTIRMA TAMAMLANDI</p>
           <h2 id="present-perfect-practice-title">Sonucun</h2>
-          <div className="wvg-practice-complete__score">{score}<span> / 5</span></div>
+          <div className="wvg-practice-complete__score">
+            {score}
+            <span> / 5</span>
+          </div>
           <span>{message}</span>
-          <button className="wvg-practice-restart" onClick={restart} type="button">Try again</button>
+          <button className="wvg-practice-restart" onClick={restart} type="button">
+            Try again
+          </button>
         </div>
       </section>
     );
@@ -114,12 +125,22 @@ export function PresentPerfectPractice() {
         <div className="wvg-practice-header__copy">
           <p>PRACTICE · ALIŞTIRMA</p>
           <h2 id="present-perfect-practice-title">Önce anlamı seç, sonra zamanı.</h2>
-          <span>Her soruda formüle atlamadan önce “bitmiş geçmiş mi, bugünle bağlantı mı?” diye düşün. Cevabı seçince neden doğru veya yanlış olduğunu hemen göreceksin.</span>
+          <span>
+            Her soruda formüle atlamadan önce “bitmiş geçmiş mi, bugünle bağlantı mı?” diye düşün.
+            Cevabı seçince neden doğru veya yanlış olduğunu hemen göreceksin.
+          </span>
         </div>
-        <div className="wvg-practice-progress" aria-label={`Question ${questionIndex + 1} of ${PRACTICE_QUESTIONS.length}`}>
-          <strong>{questionIndex + 1} / {PRACTICE_QUESTIONS.length}</strong>
+        <div
+          className="wvg-practice-progress"
+          aria-label={`Question ${questionIndex + 1} of ${PRACTICE_QUESTIONS.length}`}
+        >
+          <strong>
+            {questionIndex + 1} / {PRACTICE_QUESTIONS.length}
+          </strong>
           <span>{score} correct so far</span>
-          <div className="wvg-practice-progress__track" aria-hidden="true"><i style={{ width: `${progress}%` }} /></div>
+          <div className="wvg-practice-progress__track" aria-hidden="true">
+            <i style={{ width: `${progress}%` }} />
+          </div>
         </div>
       </header>
 
@@ -149,7 +170,11 @@ export function PresentPerfectPractice() {
               <span className="wvg-practice-option__letter">{String.fromCharCode(65 + index)}</span>
               <span className="wvg-practice-option__text">{option}</span>
               <span aria-hidden="true" className="wvg-practice-option__mark">
-                {answered && index === question.correctIndex ? "✓" : answered && index === selectedIndex ? "×" : ""}
+                {answered && index === question.correctIndex
+                  ? "✓"
+                  : answered && index === selectedIndex
+                    ? "×"
+                    : ""}
               </span>
             </button>
           );
@@ -157,10 +182,18 @@ export function PresentPerfectPractice() {
       </div>
 
       {answered ? (
-        <div aria-live="polite" className="wvg-practice-feedback" data-correct={answerIsCorrect ? "true" : "false"}>
+        <div
+          aria-live="polite"
+          className="wvg-practice-feedback"
+          data-correct={answerIsCorrect ? "true" : "false"}
+        >
           <div>
             <span>{answerIsCorrect ? "DOĞRU" : "BİR DAHA DÜŞÜN"}</span>
-            <strong>{answerIsCorrect ? "Mantığı doğru kurdun." : `Doğru cevap: ${question.options[question.correctIndex]}`}</strong>
+            <strong>
+              {answerIsCorrect
+                ? "Mantığı doğru kurdun."
+                : `Doğru cevap: ${question.options[question.correctIndex]}`}
+            </strong>
             <p>{question.explanation}</p>
           </div>
           <button className="wvg-practice-next" onClick={nextQuestion} type="button">

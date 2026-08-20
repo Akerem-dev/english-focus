@@ -1,1 +1,162 @@
-[{"id":"A023","t":"Would for polite requests","c":"Modals: Ability & Permission","a":"Would for polite requests: İngilizcede 'would', özellikle resmi durumlarda veya birisinden yardım isterken çok daha nazik ve kibar olmak istediğinizde kullanılan bir yapıdır. 'Would you' ifadesi, birinden çaba gerektiren bir şey rica ederken sıklıkla tercih edilir. Ayrıca, 'I would like' (veya kısaca 'I’d like') yapısı, 'want' (istemek) ifadesinin daha nazik ve kibar bir alternatifi olarak özellikle rica ve tekliflerde kullanılır. 'Would you mind' veya 'Do you think you could' gibi kalıplar da yine nazik bir dille ricada bulunmak için başvurulan diğer yapısal seçeneklerdir.","r":["R1"],"s":["R5","R2","R10","R21","R4"]},{"id":"A024","t":"Be allowed to","c":"Modals: Ability & Permission","a":"Be allowed to: 'Be allowed to' ifadesi, birine bir şey yapma izni verildiğini belirtmek için kullanılır. 'Can' ve 'could' modalları da izin bildirmek için kullanılırken, başka bir modal ile birlikte, '-ing' formuyla, geçmişte bir ortaç (past participle) olarak veya 'to-infinitive' yapısında bir modal kullanamadığınız durumlarda 'be allowed to' yapısını kullanmanız gerekir. Daha resmi durumlarda ise izin belirtmek için 'may' veya izin verilmediğini ifade etmek için 'may not' tercih edilir.","r":["R2"],"s":["R1","R3","R4","R5","R6"]},{"id":"A025","t":"May and Might for possibility","c":"Modals: Possibility, Obligation & Advice","a":"May and Might for possibility: May, might ve could, bir olayın gerçekleşme veya gerçekleşiyor olma ihtimalinden bahsederken kullanılır. 'Can' fiili, bir şeyin olma ihtimalini anlatmak için bu şekilde kullanılmaz. 'Might' ve 'could', genellikle geçmiş zaman ihtimallerini ifade etmek için kullanılmaz (dolaylı anlatım hariç); bunların yerine şimdiki zaman veya gelecek zaman için tercih edilirler. Konuşma dilinde, gelecekte yapılması muhtemel olan eylemler için 'might' daha sık tercih edilir. 'May well', 'might well' ve 'could well' ifadeleri, olasılığın daha güçlü olduğunu vurgular.\nÖrnek: Gelecek yaz Alpler'de tırmanışa gidebiliriz. 'Bence İşçi Partisi kazanacak.' 'Haklı olabilirsin.'","r":["R2"],"s":["R1","R3","R5","R6","R7"]},{"id":"A026","t":"Must for obligation","c":"Modals: Possibility, Obligation & Advice","a":"Must for obligation: 'Must' şimdiki ve gelecek zamanda zorunluluk (obligation) ve gereklilik ifade etmek için kullanılır. Kullanımı genellikle konuşmacının kendi içsel kararı veya hissettiği bir zorunlulukla ilişkilendirilir. 'Must' ile ifade edilen zorunluluk hissi, 'should' veya 'ought' ile ifade edilene göre daha güçlüdür. Olumsuz formu olan 'must not' (mustn't), bir eylemin yapılmaması gerektiğini belirtir; 'not have to' ile aynı anlama gelmez.","r":["R3"],"s":["R1","R2","R4","R8","R10"]},{"id":"A027","t":"Have to for obligation","c":"Modals: Possibility, Obligation & Advice","a":"Have to for obligation: 'Have to', genellikle kurallar, gelenekler veya bir başkasının iradesi tarafından dayatılan 'dışsal' bir zorunluluğu ifade eder. Buna karşılık, 'must' genellikle konuşmacının kendi iradesinden kaynaklanan 'içsel' bir zorunluluğu belirtmek için kullanılır. 'Have to' yapısı, geçmiş zaman için 'had to' veya 'would have to' şeklinde raporlanabilir; gelecek zaman için ise 'will have to' kullanılabilir. 'Must not' ve 'not have to' ifadeleri aynı anlama gelmez; 'must not' bir şeyin yapılmasının önemli derecede yasak olduğunu ifade eder.\nÖrnek: Arabamı ödünç alabilirsin, ancak onu ondan önce geri getirmek zorunda kalacaksın.","r":["R2"],"s":["R1","R3","R4","R14","R15"]},{"id":"A028","t":"Should and Ought to","c":"Modals: Possibility, Obligation & Advice","a":"Should and Ought to: Should ve ought to, birbiriyle oldukça benzer olan ve genellikle birbirinin yerine kullanılabilen yapılardır. Her ikisi de yükümlülük, görev, tavsiye verme veya alma ve bir durumun doğru olduğunu düşündüğümüz şeyleri ifade etmek için kullanılır. Ancak, Should ve ought to geçmişteki bir yükümlülüğü anlatmak için normalde kullanılmazlar. Ayrıca, nazik isteklerde bulunmak için tercih edilmezler. 'Should / ought to + have + past participle' yapısı, bir beklentinin gerçekleşmiş, gerçekleşmekte olan veya gerçekleşecek bir durum olduğunu belirtmek için kullanılır (örneğin; uçak zamanındaysa, bu sabah erken varmış olması gerekir).\nÖrnek: Göremiyorum. (You should move yerine kullanılamaz; nazik isteklerde kullanılmazlar.)","r":["R2"],"s":["R1","R3","R4","R5","R6"]},{"id":"A029","t":"Mustn't vs Don't have to","c":"Modals: Possibility, Obligation & Advice","a":"Mustn't vs Don't have to: Mustn't ve don't have to ifadelerinin olumsuz formları tamamen farklı anlamlar taşır. 'Mustn't' (must not), bir şeyi yapmamanız gerektiğini, yani bir yasak veya negatif zorunluluk bildirir (yapmamalısınız). 'Don't have to' ise bir şeyin gerekli olmadığını, yani zorunluluğun olmadığını (yapmak zorunda değilsiniz, yapmasanız da olur) ifade eder. 'Mustn't' ifadesi gereksizliği ifade etmek için kullanılmaz; gereksizlik durumunda 'don't have to' veya 'needn't' kullanılır.","r":["R1"],"s":["R3","R5","R10","R12","R19"]},{"id":"A030","t":"Needn't","c":"Modals: Possibility, Obligation & Advice","a":"Needn't: Needn't, bir şeyin yapılması gerekmediğini belirtmek için kullanılır. Genellikle acil gereklilik durumlarına işaret eder. Birine bir şeyi yapmaması için izin vermek amacıyla kullanılabildiği gibi, bir durumun zorunlu olmadığını veya bir bilginin illa doğru olması gerekmediğini ifade etmek için de tercih edilir. Geçmişte yapılması gerekmeyen eylemler için ise 'needn't have' yapısı kullanılır.","r":["R1"],"s":["R2","R3","R5","R7","R8"]},{"id":"A031","t":"Must vs Can't deduction","c":"Modals: Possibility, Obligation & Advice","a":"Must vs Can't deduction: Mantıksal çıkarım (deduction), bir durumun gerçekleştiğine veya bir sonucun doğruluğuna dair güçlü inançlarımızı belirtmek için kullanılır. 'Must', bir durumun normal, mantıklı veya eldeki kanıtlara göre tek olası açıklama olduğunu ifade ederken; 'can't', bir durumun mantıksal veya pratik olarak imkansız ya da son derece düşük ihtimalli olduğunu belirtir. Çoğu İngilizce türünde, 'must' ile yapılan çıkarımın olumsuzu 'can't' olarak ifade edilir.\nÖrnek: Zehirli olabilir.","r":["R1"],"s":["R2","R6","R8","R10","R11"]},{"id":"A032","t":"Modal perfects","c":"Modals: Possibility, Obligation & Advice","a":"Modal perfects: Modal perfect yapılar, modal fiillerin (can, could, may, might, must, should, ought to gibi) 'have' ve fiilin üçüncü hâli (past participle) ile kullanılmasıyla oluşur. Bu yapılar genellikle geçmişe yönelik olasılık, tahmin, gereklilik veya eleştiri bildirmek için kullanılır. Modal fiiller doğrudan past participle ile takip edilemez, araya 'have' yardımcı fiilinin girmesi gerekir. Modal perfect yapılar, bazen gerçekleşmiş ancak gereksiz olan durumları veya geçmişe dair güçlü tahminleri ifade eder.","r":["R1"],"s":["R7","R9","R2","R18"]},{"id":"A033","t":"Unless","c":"Conditionals & Wishes","a":"Unless: Unless kelimesi, cümle içinde 'olmadıkça', 'eğer ... değilse' (except if) anlamını taşır ve koşullu cümlelerde kullanılır. 'Unless' ve 'if ... not' yapıları, gerçek koşul cümlelerinde genellikle benzer anlamlarla birbirinin yerine kullanılabilir. Ancak, ana cümlede beklenmedik bir olay veya durum ifade edildiğinde sadece 'if ... not' yapısı kullanılır; bu durumlarda 'unless' tercih edilmez. 'Unless' kullanıldığında, tıpkı 'if' ile olduğu gibi aynı zaman (tenses) yapıları tercih edilir. 'Unless' kelimesi 'if' kelimesinin diğer anlamlarıyla (örneğin soru veya belirsizlik bildiren kullanımlarıyla) eş anlamlı değildir ve bu anlamlarda kullanılamaz.\nÖrnek: Maaş çok düşük olmadıkça işi kabul edeceğim.","r":["R1"],"s":["R2","R3","R4","R5","R6"]},{"id":"A034","t":"Provided / Providing that","c":"Conditionals & Wishes","a":"Provided / Providing that: Provided (that) ve providing (that) yapıları, bir koşul belirtmek amacıyla kullanılır. Bu yapılar, \"şartıyla\" veya \"olduğu sürece\" gibi anlamlar taşır. Örneğin, bir durumun gerçekleşmesini başka bir koşulun yerine getirilmesine bağlarken tercih edilirler. Bu ifadeler, koşul bildiren diğer yapılarla (örneğin 'as long as' veya 'on condition that') benzer işlevlere sahiptir.","r":["R1"],"s":["R2","R3"]},{"id":"A035","t":"As long as","c":"Conditionals & Wishes","a":"As long as: ‘As long as’, bir koşul belirtmek için kullanılır ve genellikle 'şartıyla' veya '-dığı sürece' anlamlarına gelir. Gramer açısından dikkat edilmesi gereken önemli bir kural, gelecek zamanı ifade etmek için 'as long as' yapısından sonra Present Simple (geniş zaman) kullanılmasıdır. Ayrıca 'as long as', bir seçim veya alternatif sunmak için de kullanılabilir (örneğin: 'pencerenin yanına oturmayı tercih etmediğin sürece burada oturabiliriz').","r":["R1"],"s":["R3","R4","R15","R2"]},{"id":"A036","t":"Mixed Conditionals","c":"Conditionals & Wishes","a":"Mixed Conditionals: Mixed Conditionals, geçmişte gerçekleşen durumların şimdiki zamana olan etkilerini veya şimdiki/genel gerçeklerin geçmişteki olaylar üzerindeki sonuçlarını ifade eder. Bu yapılar, geçmişte yaşananların bugünkü sonuçlarını ya da geçmişteki olayların mevcut gerçeklerden kaynaklandığını anlatmak için kullanılır. Gramatik olarak, bazen Past Perfect yerine simple past tense kullanımı görülebilir; ayrıca ana cümlede would have + past participle yerine might veya could (have) yapıları da tercih edilebilir.","r":["R1"],"s":["R2","R12"]},{"id":"A037","t":"Wish about the present","c":"Conditionals & Wishes","a":"Wish about the present: İçinde bulunulan ana dair dilekleri ifade etmek için 'wish' kelimesi kullanılır. Bu yapıda, İngilizce dilbilgisi kuralları gereği, ifade edilmek istenen durum şimdiki zamanı temsil etse dahi Past Tenses kullanılır. Bu kalıp, gerçekte mevcut olmayan veya gerçekleşmesi istenen durumlar için tercih edilir; şimdiki zamanda gerçekleşmesi mümkün görülen durumlar için genellikle 'wish + that-clause' yapısı kullanılmaz.\nÖrnek: Keşke burada olmasaydı.","r":["R3"],"s":["R1","R4","R12","R14","R15"]},{"id":"A038","t":"Wish about the past","c":"Conditionals & Wishes","a":"Wish about the past: Geçmişe dair pişmanlıkları veya gerçekleşmemiş durumları ifade etmek için kullanılır. Geçmişle ilgili bir durumu dile getirirken 'past perfect' (had + V3) veya 'past perfect continuous' (had been + V-ing) yapıları kullanılır. Bu yapılar, hayali veya hipotetik durumlar için tercih edilir. 'Wish' ile kurulan cümlelerde 'that' bağlacı kullanılabilir; ancak bu yapı, gelecekte gerçekleşmesi muhtemel görünen istekler için genellikle kullanılmaz.\nÖrnek: Keşke Japonca konuşabilseydim. (Keşke Japonca konuşabiliyor olsaydım iyi olurdu.)","r":["R2"],"s":["R9","R12","R1","R3","R24"]},{"id":"A039","t":"If only","c":"Conditionals & Wishes","a":"If only: ‘If only’ ifadesi, dilekleri ve pişmanlıkları ifade etmek için kullanılır. Kullanımı şu zaman yapılarına göre değişir: Mevcut durumlar için Past Simple (örneğin: 'If only I knew...') kullanılır. Geçmişteki durumlar için Past Perfect (örneğin: 'If only she hadn't told...') tercih edilir. Geleceğe dair istekler için ise 'would + infinitive' yapısı kullanılır (örneğin: 'If only it would stop raining'). 'If only' yapısı genellikle bir ana cümle olmaksızın tek başına kullanılır.\nÖrnek: If only yapısını içeren yan cümle, genellikle bir ana cümle olmadan tek başına kullanılır.","r":["R1"],"s":["R2","R3","R7","R4","R5"]},{"id":"A040","t":"Would rather","c":"Conditionals & Wishes","a":"Would rather: 'Would rather' (veya 'would sooner'), bir kişinin bir durumu diğerine tercih ettiğini ifade etmek için kullanılır. Cümle içinde fiilin yalın hâli (base form) ile kullanılır.","r":["R2"],"s":["R4","R1","R7","R9","R10"]},{"id":"A041","t":"Basic Passive Form","c":"Passive & Causative","a":"Basic Passive Form: Basic Passive Form, bir eylemi yapan kişiden ziyade eylemin kendisine veya etkilenen nesneye odaklanıldığında kullanılır. Genellikle 'be' yardımcı fiilinin uygun bir formu ve fiilin geçmiş zaman ortacı (past participle) kullanılarak oluşturulur. Pasif yapıda eylemi gerçekleştiren kişi veya nesne genellikle belirtilmez. Gayriresmi İngilizcede 'be' yerine bazen 'get' fiili de kullanılabilir. Ayrıca resmi düzenlemeler, talimatlar ve emirler için (örneğin 'You are not to leave...') de bu yapı tercih edilebilir. Pasif yapılar, aktif cümlelerin dönüştürülmüş hâli gibi düşünülmek yerine, bilgiyi sunmanın bağımsız ve geçerli bir yolu olarak değerlendirilmelidir.\nÖrnek: Bağışlanmak istedi. Arabanın çalındığı bildirildi. Pasif yapıyı, 'be' fiilinin bir formu ve bir past participle kullanarak oluşturursunuz.","r":["R1"],"s":["R3","R6","R8","R9","R13"]},{"id":"A042","t":"Passive across tenses","c":"Passive & Causative","a":"Passive across tenses: Passive across tenses, 'somebody', 'they' veya 'people' gibi genel özneleri kullanmak yerine eylemin kendisine odaklanmak için tercih edilir. Passive yapısı her tense için farklı bir form gerektirdiği için genellikle zaman dilimleri bazında öğrenilir. Örneğin, Present Progressive Passive, tıpkı aktif formunda olduğu gibi konuşma anında gerçekleşen eylemleri anlatmak için kullanılır. Present Perfect Passive ise, Present Perfect Active formunda olduğu gibi, geçmişte tamamlanmış ancak şimdiki zamanda sonuçları devam eden durumları ifade etmek için kullanılır.","r":["R2"],"s":["R15","R1","R3","R4","R5"]}]
+[
+  {
+    "id": "A023",
+    "t": "Would for polite requests",
+    "c": "Modals: Ability & Permission",
+    "a": "Would for polite requests: İngilizcede 'would', özellikle resmi durumlarda veya birisinden yardım isterken çok daha nazik ve kibar olmak istediğinizde kullanılan bir yapıdır. 'Would you' ifadesi, birinden çaba gerektiren bir şey rica ederken sıklıkla tercih edilir. Ayrıca, 'I would like' (veya kısaca 'I’d like') yapısı, 'want' (istemek) ifadesinin daha nazik ve kibar bir alternatifi olarak özellikle rica ve tekliflerde kullanılır. 'Would you mind' veya 'Do you think you could' gibi kalıplar da yine nazik bir dille ricada bulunmak için başvurulan diğer yapısal seçeneklerdir.",
+    "r": ["R1"],
+    "s": ["R5", "R2", "R10", "R21", "R4"]
+  },
+  {
+    "id": "A024",
+    "t": "Be allowed to",
+    "c": "Modals: Ability & Permission",
+    "a": "Be allowed to: 'Be allowed to' ifadesi, birine bir şey yapma izni verildiğini belirtmek için kullanılır. 'Can' ve 'could' modalları da izin bildirmek için kullanılırken, başka bir modal ile birlikte, '-ing' formuyla, geçmişte bir ortaç (past participle) olarak veya 'to-infinitive' yapısında bir modal kullanamadığınız durumlarda 'be allowed to' yapısını kullanmanız gerekir. Daha resmi durumlarda ise izin belirtmek için 'may' veya izin verilmediğini ifade etmek için 'may not' tercih edilir.",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A025",
+    "t": "May and Might for possibility",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "May and Might for possibility: May, might ve could, bir olayın gerçekleşme veya gerçekleşiyor olma ihtimalinden bahsederken kullanılır. 'Can' fiili, bir şeyin olma ihtimalini anlatmak için bu şekilde kullanılmaz. 'Might' ve 'could', genellikle geçmiş zaman ihtimallerini ifade etmek için kullanılmaz (dolaylı anlatım hariç); bunların yerine şimdiki zaman veya gelecek zaman için tercih edilirler. Konuşma dilinde, gelecekte yapılması muhtemel olan eylemler için 'might' daha sık tercih edilir. 'May well', 'might well' ve 'could well' ifadeleri, olasılığın daha güçlü olduğunu vurgular.\nÖrnek: Gelecek yaz Alpler'de tırmanışa gidebiliriz. 'Bence İşçi Partisi kazanacak.' 'Haklı olabilirsin.'",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A026",
+    "t": "Must for obligation",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Must for obligation: 'Must' şimdiki ve gelecek zamanda zorunluluk (obligation) ve gereklilik ifade etmek için kullanılır. Kullanımı genellikle konuşmacının kendi içsel kararı veya hissettiği bir zorunlulukla ilişkilendirilir. 'Must' ile ifade edilen zorunluluk hissi, 'should' veya 'ought' ile ifade edilene göre daha güçlüdür. Olumsuz formu olan 'must not' (mustn't), bir eylemin yapılmaması gerektiğini belirtir; 'not have to' ile aynı anlama gelmez.",
+    "r": ["R3"],
+    "s": ["R1", "R2", "R4", "R8", "R10"]
+  },
+  {
+    "id": "A027",
+    "t": "Have to for obligation",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Have to for obligation: 'Have to', genellikle kurallar, gelenekler veya bir başkasının iradesi tarafından dayatılan 'dışsal' bir zorunluluğu ifade eder. Buna karşılık, 'must' genellikle konuşmacının kendi iradesinden kaynaklanan 'içsel' bir zorunluluğu belirtmek için kullanılır. 'Have to' yapısı, geçmiş zaman için 'had to' veya 'would have to' şeklinde raporlanabilir; gelecek zaman için ise 'will have to' kullanılabilir. 'Must not' ve 'not have to' ifadeleri aynı anlama gelmez; 'must not' bir şeyin yapılmasının önemli derecede yasak olduğunu ifade eder.\nÖrnek: Arabamı ödünç alabilirsin, ancak onu ondan önce geri getirmek zorunda kalacaksın.",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R14", "R15"]
+  },
+  {
+    "id": "A028",
+    "t": "Should and Ought to",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Should and Ought to: Should ve ought to, birbiriyle oldukça benzer olan ve genellikle birbirinin yerine kullanılabilen yapılardır. Her ikisi de yükümlülük, görev, tavsiye verme veya alma ve bir durumun doğru olduğunu düşündüğümüz şeyleri ifade etmek için kullanılır. Ancak, Should ve ought to geçmişteki bir yükümlülüğü anlatmak için normalde kullanılmazlar. Ayrıca, nazik isteklerde bulunmak için tercih edilmezler. 'Should / ought to + have + past participle' yapısı, bir beklentinin gerçekleşmiş, gerçekleşmekte olan veya gerçekleşecek bir durum olduğunu belirtmek için kullanılır (örneğin; uçak zamanındaysa, bu sabah erken varmış olması gerekir).\nÖrnek: Göremiyorum. (You should move yerine kullanılamaz; nazik isteklerde kullanılmazlar.)",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A029",
+    "t": "Mustn't vs Don't have to",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Mustn't vs Don't have to: Mustn't ve don't have to ifadelerinin olumsuz formları tamamen farklı anlamlar taşır. 'Mustn't' (must not), bir şeyi yapmamanız gerektiğini, yani bir yasak veya negatif zorunluluk bildirir (yapmamalısınız). 'Don't have to' ise bir şeyin gerekli olmadığını, yani zorunluluğun olmadığını (yapmak zorunda değilsiniz, yapmasanız da olur) ifade eder. 'Mustn't' ifadesi gereksizliği ifade etmek için kullanılmaz; gereksizlik durumunda 'don't have to' veya 'needn't' kullanılır.",
+    "r": ["R1"],
+    "s": ["R3", "R5", "R10", "R12", "R19"]
+  },
+  {
+    "id": "A030",
+    "t": "Needn't",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Needn't: Needn't, bir şeyin yapılması gerekmediğini belirtmek için kullanılır. Genellikle acil gereklilik durumlarına işaret eder. Birine bir şeyi yapmaması için izin vermek amacıyla kullanılabildiği gibi, bir durumun zorunlu olmadığını veya bir bilginin illa doğru olması gerekmediğini ifade etmek için de tercih edilir. Geçmişte yapılması gerekmeyen eylemler için ise 'needn't have' yapısı kullanılır.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R5", "R7", "R8"]
+  },
+  {
+    "id": "A031",
+    "t": "Must vs Can't deduction",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Must vs Can't deduction: Mantıksal çıkarım (deduction), bir durumun gerçekleştiğine veya bir sonucun doğruluğuna dair güçlü inançlarımızı belirtmek için kullanılır. 'Must', bir durumun normal, mantıklı veya eldeki kanıtlara göre tek olası açıklama olduğunu ifade ederken; 'can't', bir durumun mantıksal veya pratik olarak imkansız ya da son derece düşük ihtimalli olduğunu belirtir. Çoğu İngilizce türünde, 'must' ile yapılan çıkarımın olumsuzu 'can't' olarak ifade edilir.\nÖrnek: Zehirli olabilir.",
+    "r": ["R1"],
+    "s": ["R2", "R6", "R8", "R10", "R11"]
+  },
+  {
+    "id": "A032",
+    "t": "Modal perfects",
+    "c": "Modals: Possibility, Obligation & Advice",
+    "a": "Modal perfects: Modal perfect yapılar, modal fiillerin (can, could, may, might, must, should, ought to gibi) 'have' ve fiilin üçüncü hâli (past participle) ile kullanılmasıyla oluşur. Bu yapılar genellikle geçmişe yönelik olasılık, tahmin, gereklilik veya eleştiri bildirmek için kullanılır. Modal fiiller doğrudan past participle ile takip edilemez, araya 'have' yardımcı fiilinin girmesi gerekir. Modal perfect yapılar, bazen gerçekleşmiş ancak gereksiz olan durumları veya geçmişe dair güçlü tahminleri ifade eder.",
+    "r": ["R1"],
+    "s": ["R7", "R9", "R2", "R18"]
+  },
+  {
+    "id": "A033",
+    "t": "Unless",
+    "c": "Conditionals & Wishes",
+    "a": "Unless: Unless kelimesi, cümle içinde 'olmadıkça', 'eğer ... değilse' (except if) anlamını taşır ve koşullu cümlelerde kullanılır. 'Unless' ve 'if ... not' yapıları, gerçek koşul cümlelerinde genellikle benzer anlamlarla birbirinin yerine kullanılabilir. Ancak, ana cümlede beklenmedik bir olay veya durum ifade edildiğinde sadece 'if ... not' yapısı kullanılır; bu durumlarda 'unless' tercih edilmez. 'Unless' kullanıldığında, tıpkı 'if' ile olduğu gibi aynı zaman (tenses) yapıları tercih edilir. 'Unless' kelimesi 'if' kelimesinin diğer anlamlarıyla (örneğin soru veya belirsizlik bildiren kullanımlarıyla) eş anlamlı değildir ve bu anlamlarda kullanılamaz.\nÖrnek: Maaş çok düşük olmadıkça işi kabul edeceğim.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A034",
+    "t": "Provided / Providing that",
+    "c": "Conditionals & Wishes",
+    "a": "Provided / Providing that: Provided (that) ve providing (that) yapıları, bir koşul belirtmek amacıyla kullanılır. Bu yapılar, \"şartıyla\" veya \"olduğu sürece\" gibi anlamlar taşır. Örneğin, bir durumun gerçekleşmesini başka bir koşulun yerine getirilmesine bağlarken tercih edilirler. Bu ifadeler, koşul bildiren diğer yapılarla (örneğin 'as long as' veya 'on condition that') benzer işlevlere sahiptir.",
+    "r": ["R1"],
+    "s": ["R2", "R3"]
+  },
+  {
+    "id": "A035",
+    "t": "As long as",
+    "c": "Conditionals & Wishes",
+    "a": "As long as: ‘As long as’, bir koşul belirtmek için kullanılır ve genellikle 'şartıyla' veya '-dığı sürece' anlamlarına gelir. Gramer açısından dikkat edilmesi gereken önemli bir kural, gelecek zamanı ifade etmek için 'as long as' yapısından sonra Present Simple (geniş zaman) kullanılmasıdır. Ayrıca 'as long as', bir seçim veya alternatif sunmak için de kullanılabilir (örneğin: 'pencerenin yanına oturmayı tercih etmediğin sürece burada oturabiliriz').",
+    "r": ["R1"],
+    "s": ["R3", "R4", "R15", "R2"]
+  },
+  {
+    "id": "A036",
+    "t": "Mixed Conditionals",
+    "c": "Conditionals & Wishes",
+    "a": "Mixed Conditionals: Mixed Conditionals, geçmişte gerçekleşen durumların şimdiki zamana olan etkilerini veya şimdiki/genel gerçeklerin geçmişteki olaylar üzerindeki sonuçlarını ifade eder. Bu yapılar, geçmişte yaşananların bugünkü sonuçlarını ya da geçmişteki olayların mevcut gerçeklerden kaynaklandığını anlatmak için kullanılır. Gramatik olarak, bazen Past Perfect yerine simple past tense kullanımı görülebilir; ayrıca ana cümlede would have + past participle yerine might veya could (have) yapıları da tercih edilebilir.",
+    "r": ["R1"],
+    "s": ["R2", "R12"]
+  },
+  {
+    "id": "A037",
+    "t": "Wish about the present",
+    "c": "Conditionals & Wishes",
+    "a": "Wish about the present: İçinde bulunulan ana dair dilekleri ifade etmek için 'wish' kelimesi kullanılır. Bu yapıda, İngilizce dilbilgisi kuralları gereği, ifade edilmek istenen durum şimdiki zamanı temsil etse dahi Past Tenses kullanılır. Bu kalıp, gerçekte mevcut olmayan veya gerçekleşmesi istenen durumlar için tercih edilir; şimdiki zamanda gerçekleşmesi mümkün görülen durumlar için genellikle 'wish + that-clause' yapısı kullanılmaz.\nÖrnek: Keşke burada olmasaydı.",
+    "r": ["R3"],
+    "s": ["R1", "R4", "R12", "R14", "R15"]
+  },
+  {
+    "id": "A038",
+    "t": "Wish about the past",
+    "c": "Conditionals & Wishes",
+    "a": "Wish about the past: Geçmişe dair pişmanlıkları veya gerçekleşmemiş durumları ifade etmek için kullanılır. Geçmişle ilgili bir durumu dile getirirken 'past perfect' (had + V3) veya 'past perfect continuous' (had been + V-ing) yapıları kullanılır. Bu yapılar, hayali veya hipotetik durumlar için tercih edilir. 'Wish' ile kurulan cümlelerde 'that' bağlacı kullanılabilir; ancak bu yapı, gelecekte gerçekleşmesi muhtemel görünen istekler için genellikle kullanılmaz.\nÖrnek: Keşke Japonca konuşabilseydim. (Keşke Japonca konuşabiliyor olsaydım iyi olurdu.)",
+    "r": ["R2"],
+    "s": ["R9", "R12", "R1", "R3", "R24"]
+  },
+  {
+    "id": "A039",
+    "t": "If only",
+    "c": "Conditionals & Wishes",
+    "a": "If only: ‘If only’ ifadesi, dilekleri ve pişmanlıkları ifade etmek için kullanılır. Kullanımı şu zaman yapılarına göre değişir: Mevcut durumlar için Past Simple (örneğin: 'If only I knew...') kullanılır. Geçmişteki durumlar için Past Perfect (örneğin: 'If only she hadn't told...') tercih edilir. Geleceğe dair istekler için ise 'would + infinitive' yapısı kullanılır (örneğin: 'If only it would stop raining'). 'If only' yapısı genellikle bir ana cümle olmaksızın tek başına kullanılır.\nÖrnek: If only yapısını içeren yan cümle, genellikle bir ana cümle olmadan tek başına kullanılır.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R7", "R4", "R5"]
+  },
+  {
+    "id": "A040",
+    "t": "Would rather",
+    "c": "Conditionals & Wishes",
+    "a": "Would rather: 'Would rather' (veya 'would sooner'), bir kişinin bir durumu diğerine tercih ettiğini ifade etmek için kullanılır. Cümle içinde fiilin yalın hâli (base form) ile kullanılır.",
+    "r": ["R2"],
+    "s": ["R4", "R1", "R7", "R9", "R10"]
+  },
+  {
+    "id": "A041",
+    "t": "Basic Passive Form",
+    "c": "Passive & Causative",
+    "a": "Basic Passive Form: Basic Passive Form, bir eylemi yapan kişiden ziyade eylemin kendisine veya etkilenen nesneye odaklanıldığında kullanılır. Genellikle 'be' yardımcı fiilinin uygun bir formu ve fiilin geçmiş zaman ortacı (past participle) kullanılarak oluşturulur. Pasif yapıda eylemi gerçekleştiren kişi veya nesne genellikle belirtilmez. Gayriresmi İngilizcede 'be' yerine bazen 'get' fiili de kullanılabilir. Ayrıca resmi düzenlemeler, talimatlar ve emirler için (örneğin 'You are not to leave...') de bu yapı tercih edilebilir. Pasif yapılar, aktif cümlelerin dönüştürülmüş hâli gibi düşünülmek yerine, bilgiyi sunmanın bağımsız ve geçerli bir yolu olarak değerlendirilmelidir.\nÖrnek: Bağışlanmak istedi. Arabanın çalındığı bildirildi. Pasif yapıyı, 'be' fiilinin bir formu ve bir past participle kullanarak oluşturursunuz.",
+    "r": ["R1"],
+    "s": ["R3", "R6", "R8", "R9", "R13"]
+  },
+  {
+    "id": "A042",
+    "t": "Passive across tenses",
+    "c": "Passive & Causative",
+    "a": "Passive across tenses: Passive across tenses, 'somebody', 'they' veya 'people' gibi genel özneleri kullanmak yerine eylemin kendisine odaklanmak için tercih edilir. Passive yapısı her tense için farklı bir form gerektirdiği için genellikle zaman dilimleri bazında öğrenilir. Örneğin, Present Progressive Passive, tıpkı aktif formunda olduğu gibi konuşma anında gerçekleşen eylemleri anlatmak için kullanılır. Present Perfect Passive ise, Present Perfect Active formunda olduğu gibi, geçmişte tamamlanmış ancak şimdiki zamanda sonuçları devam eden durumları ifade etmek için kullanılır.",
+    "r": ["R2"],
+    "s": ["R15", "R1", "R3", "R4", "R5"]
+  }
+]

@@ -129,7 +129,10 @@ function CollectionsPhase1Sorting() {
         cell.dataset.sortDirection = active ? sort.direction : "none";
         cell.tabIndex = 0;
         cell.setAttribute("role", "columnheader");
-        cell.setAttribute("aria-sort", active ? (sort.direction === "asc" ? "ascending" : "descending") : "none");
+        cell.setAttribute(
+          "aria-sort",
+          active ? (sort.direction === "asc" ? "ascending" : "descending") : "none"
+        );
         cell.setAttribute(
           "aria-label",
           active

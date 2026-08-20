@@ -65,10 +65,7 @@ function RichWordDetail({
   );
   const forms = entry.morphology.inflectedForms;
   const registers = Array.from(
-    new Set([
-      ...entry.registers,
-      ...entry.meanings.flatMap((meaning) => meaning.registers)
-    ])
+    new Set([...entry.registers, ...entry.meanings.flatMap((meaning) => meaning.registers)])
   );
 
   useEffect(() => {
@@ -99,12 +96,18 @@ function RichWordDetail({
               </p>
               <h1>{entry.word}</h1>
               <div className="wvc-phase3-meta">
-                {pronunciation?.ipa ? <span className="wvc-phase3-ipa">/{pronunciation.ipa.replace(/^\/+|\/+$/g, "")}/</span> : null}
+                {pronunciation?.ipa ? (
+                  <span className="wvc-phase3-ipa">
+                    /{pronunciation.ipa.replace(/^\/+|\/+$/g, "")}/
+                  </span>
+                ) : null}
                 {pronunciation?.variant && pronunciation.variant !== "general" ? (
                   <span>{pronunciation.variant.toUpperCase()}</span>
                 ) : null}
                 <CefrBadge level={entry.cefr} showPrefix={false} />
-                {entry.partsOfSpeech.length > 0 ? <span>{entry.partsOfSpeech.join(" · ")}</span> : null}
+                {entry.partsOfSpeech.length > 0 ? (
+                  <span>{entry.partsOfSpeech.join(" · ")}</span>
+                ) : null}
               </div>
             </div>
 
@@ -123,7 +126,9 @@ function RichWordDetail({
                 type="button"
               >
                 {TAB_LABELS[key]}
-                {key === "examples" && examples.length > 0 ? <small>{examples.length}</small> : null}
+                {key === "examples" && examples.length > 0 ? (
+                  <small>{examples.length}</small>
+                ) : null}
               </button>
             ))}
           </nav>
@@ -132,15 +137,21 @@ function RichWordDetail({
             {tab === "definition" ? (
               <section className="wvc-phase3-definition" aria-label="Definitions">
                 {entry.meanings.length === 0 ? (
-                  <div className="wvc-phase3-empty-copy">No definition is saved for this word yet.</div>
+                  <div className="wvc-phase3-empty-copy">
+                    No definition is saved for this word yet.
+                  </div>
                 ) : (
                   entry.meanings.map((meaning, index) => (
                     <article className="wvc-phase3-meaning" key={meaning.id}>
-                      <div className="wvc-phase3-meaning__index">{String(index + 1).padStart(2, "0")}</div>
+                      <div className="wvc-phase3-meaning__index">
+                        {String(index + 1).padStart(2, "0")}
+                      </div>
                       <div className="wvc-phase3-meaning__body">
                         <div className="wvc-phase3-meaning__meta">
                           <span>{meaning.partOfSpeech}</span>
-                          {meaning.registers.length > 0 ? <span>{meaning.registers.join(" · ")}</span> : null}
+                          {meaning.registers.length > 0 ? (
+                            <span>{meaning.registers.join(" · ")}</span>
+                          ) : null}
                         </div>
                         <h2>{meaning.definitionEn}</h2>
                         {meaning.translationsTr.length > 0 ? (
@@ -162,7 +173,9 @@ function RichWordDetail({
             {tab === "examples" ? (
               <section className="wvc-phase3-examples" aria-label="Example sentences">
                 {examples.length === 0 ? (
-                  <div className="wvc-phase3-empty-copy">No example sentence is saved for this word yet.</div>
+                  <div className="wvc-phase3-empty-copy">
+                    No example sentence is saved for this word yet.
+                  </div>
                 ) : (
                   examples.map((example, index) => (
                     <article className="wvc-phase3-example" key={example.id}>
@@ -174,7 +187,9 @@ function RichWordDetail({
                           <div className="wvc-phase3-example__notes">
                             {example.context ? <span>{example.context}</span> : null}
                             {example.grammarLabel ? <span>{example.grammarLabel}</span> : null}
-                            {example.targetForm ? <span>Target form: {example.targetForm}</span> : null}
+                            {example.targetForm ? (
+                              <span>Target form: {example.targetForm}</span>
+                            ) : null}
                           </div>
                         ) : null}
                       </div>
@@ -187,23 +202,46 @@ function RichWordDetail({
             {tab === "forms" ? (
               <section className="wvc-phase3-forms" aria-label="Word forms">
                 <div className="wvc-phase3-form-summary">
-                  <div><span>BASE FORM</span><strong>{entry.morphology.baseForm || entry.word}</strong></div>
-                  {entry.morphology.root ? <div><span>ROOT</span><strong>{entry.morphology.root}</strong></div> : null}
-                  {entry.morphology.prefix ? <div><span>PREFIX</span><strong>{entry.morphology.prefix}</strong></div> : null}
-                  {entry.morphology.suffix ? <div><span>SUFFIX</span><strong>{entry.morphology.suffix}</strong></div> : null}
+                  <div>
+                    <span>BASE FORM</span>
+                    <strong>{entry.morphology.baseForm || entry.word}</strong>
+                  </div>
+                  {entry.morphology.root ? (
+                    <div>
+                      <span>ROOT</span>
+                      <strong>{entry.morphology.root}</strong>
+                    </div>
+                  ) : null}
+                  {entry.morphology.prefix ? (
+                    <div>
+                      <span>PREFIX</span>
+                      <strong>{entry.morphology.prefix}</strong>
+                    </div>
+                  ) : null}
+                  {entry.morphology.suffix ? (
+                    <div>
+                      <span>SUFFIX</span>
+                      <strong>{entry.morphology.suffix}</strong>
+                    </div>
+                  ) : null}
                 </div>
 
                 {forms.length > 0 ? (
                   <div className="wvc-phase3-form-list">
                     {forms.map((form) => (
-                      <div className="wvc-phase3-form-row" key={`${form.type}-${form.normalizedForm}`}>
+                      <div
+                        className="wvc-phase3-form-row"
+                        key={`${form.type}-${form.normalizedForm}`}
+                      >
                         <span>{readableInflectionType(form.type)}</span>
                         <strong>{form.form}</strong>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="wvc-phase3-empty-copy">No additional forms are saved for this word.</div>
+                  <div className="wvc-phase3-empty-copy">
+                    No additional forms are saved for this word.
+                  </div>
                 )}
 
                 {entry.morphology.notesEn || entry.morphology.notesTr ? (
@@ -269,9 +307,7 @@ function CollectionsRichWordController() {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         document
-          .querySelectorAll<HTMLElement>(
-            ".application-frame--collections-cleanroom .wvc-alpha-row"
-          )
+          .querySelectorAll<HTMLElement>(".application-frame--collections-cleanroom .wvc-alpha-row")
           .forEach((row) => {
             row.tabIndex = 0;
             row.setAttribute("role", "button");
@@ -295,7 +331,11 @@ function CollectionsRichWordController() {
         if (entry === undefined) {
           return false;
         }
-        setSelection({ normalizedWord: entry.normalizedWord, contextLabel: "All Words", source: "all-words" });
+        setSelection({
+          normalizedWord: entry.normalizedWord,
+          contextLabel: "All Words",
+          source: "all-words"
+        });
         return true;
       }
 
@@ -308,10 +348,16 @@ function CollectionsRichWordController() {
           return false;
         }
         const collectionTitle =
-          document.querySelector<HTMLElement>(
-            ".application-frame--collections-cleanroom .wvc-collection-hero h1"
-          )?.textContent?.trim() || "Collection";
-        setSelection({ normalizedWord: entry.normalizedWord, contextLabel: collectionTitle, source: "collection" });
+          document
+            .querySelector<HTMLElement>(
+              ".application-frame--collections-cleanroom .wvc-collection-hero h1"
+            )
+            ?.textContent?.trim() || "Collection";
+        setSelection({
+          normalizedWord: entry.normalizedWord,
+          contextLabel: collectionTitle,
+          source: "collection"
+        });
         return true;
       }
 
@@ -364,7 +410,9 @@ function CollectionsRichWordController() {
     return null;
   }
 
-  return <RichWordDetail entry={entry} onBack={() => setSelection(undefined)} selection={selection} />;
+  return (
+    <RichWordDetail entry={entry} onBack={() => setSelection(undefined)} selection={selection} />
+  );
 }
 
 export function LibraryPagePhase3() {

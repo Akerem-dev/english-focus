@@ -98,12 +98,9 @@ function CollectionsFinalQaGuards() {
       const title = nameInput.value.trim().replace(/\s+/g, " ");
       const normalizedTitle = normalizeCollectionTitle(title);
       const editing =
-        editor.querySelector("#collection-editor-title")?.textContent?.trim() ===
-        "Edit collection";
+        editor.querySelector("#collection-editor-title")?.textContent?.trim() === "Edit collection";
       const currentTitle =
-        root
-          ?.querySelector<HTMLElement>(".wvc-collection-hero h1")
-          ?.textContent?.trim() ?? "";
+        root?.querySelector<HTMLElement>(".wvc-collection-hero h1")?.textContent?.trim() ?? "";
       const normalizedCurrentTitle = normalizeCollectionTitle(currentTitle);
       const visibleCollectionTitles = Array.from(
         root?.querySelectorAll<HTMLElement>(".wvc-card__body > strong") ?? []

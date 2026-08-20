@@ -61,7 +61,9 @@ function parseLocalAnswer(payload: unknown): GrammarLocalAnswer {
   });
 }
 
-function parseAnswer(payload: unknown): Exclude<GrammarAnswerResult, { readonly kind: "desktop-required" }> {
+function parseAnswer(
+  payload: unknown
+): Exclude<GrammarAnswerResult, { readonly kind: "desktop-required" }> {
   if (typeof payload !== "object" || payload === null || !("kind" in payload)) {
     throw new Error("The grammar answer response is invalid.");
   }

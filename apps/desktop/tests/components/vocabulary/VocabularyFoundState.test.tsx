@@ -3,10 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
-import {
-  ActivityProvider,
-  VocabularyRepositoryProvider
-} from "../../../src/app/providers";
+import { ActivityProvider, VocabularyRepositoryProvider } from "../../../src/app/providers";
 import { maintainVocabularyEntry } from "../../../src/content";
 import { VocabularyFoundState } from "../../../src/modules/vocabulary/components";
 
@@ -74,7 +71,7 @@ describe("VocabularyFoundState", () => {
   });
 
   it("renders the package 3 detail tabs and definition-first content model", () => {
-    expect(markup).toContain('wvsr-detail-root--package-three');
+    expect(markup).toContain("wvsr-detail-root--package-three");
     expect(markup).toContain('aria-label="Vocabulary entry sections"');
     expect(markup).toContain(">Definition<");
     expect(markup).toContain(">Examples<");

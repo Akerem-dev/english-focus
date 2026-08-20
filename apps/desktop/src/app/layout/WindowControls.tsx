@@ -5,9 +5,7 @@ interface WindowControlsProps {
   readonly className?: string;
 }
 
-async function withCurrentWindow(
-  action: (window: TauriWindow) => Promise<void>
-): Promise<void> {
+async function withCurrentWindow(action: (window: TauriWindow) => Promise<void>): Promise<void> {
   try {
     const { getCurrentWindow } = await import("@tauri-apps/api/window");
     await action(getCurrentWindow());

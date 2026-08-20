@@ -1,4 +1,10 @@
-import { useMemo, useState, type CSSProperties, type FocusEvent, type PropsWithChildren } from "react";
+import {
+  useMemo,
+  useState,
+  type CSSProperties,
+  type FocusEvent,
+  type PropsWithChildren
+} from "react";
 import { Link, NavLink } from "react-router-dom";
 
 import type { ActivityRecord } from "@platform/domain";
@@ -246,7 +252,9 @@ function SearchCleanSidebar() {
               <span>{loading ? "—" : `${progress.percentage}%`}</span>
             </div>
             <div>
-              <strong>{loading ? "—" : progress.wordsExploredToday} / {DAILY_WORD_GOAL}</strong>
+              <strong>
+                {loading ? "—" : progress.wordsExploredToday} / {DAILY_WORD_GOAL}
+              </strong>
               <span>words explored</span>
             </div>
           </div>

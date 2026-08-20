@@ -97,10 +97,7 @@ export function AppLayout({ children }: PropsWithChildren) {
   }
 
   function focusCurrentSearch() {
-    if (
-      location.pathname === ROUTE_PATHS.library ||
-      location.pathname === ROUTE_PATHS.vocabulary
-    ) {
+    if (location.pathname === ROUTE_PATHS.library || location.pathname === ROUTE_PATHS.vocabulary) {
       dispatchAppCommand("focus-search");
       return;
     }

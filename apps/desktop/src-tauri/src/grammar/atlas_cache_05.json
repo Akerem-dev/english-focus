@@ -1,1 +1,162 @@
-[{"id":"A083","t":"Of-possessive","c":"Nouns & Pronouns","a":"Of-possessive: Of-possessive yapısı, bir kişinin veya nesnenin bir başkasına ait olduğunu veya onunla bağlantılı olduğunu belirtmek için kullanılan bir yapıdır. 'Of' ile başlayan bu edat grubu, genellikle sahiplik veya ilişki ifade etmek amacıyla tercih edilir. Türkçedeki '...-nin/-nın' iyelik eklerine benzer bir işlev görür. Sahiplik belirtirken bazen 's (possessive 's) yapısı ile birbirinin yerine kullanılabilirler; ancak her durumda birbirlerinin yerine geçmezler. Bu yapıyı kullanırken, aidiyeti veya bağlantıyı kurduğunuz isim ya da isim grubunun önüne 'of' ifadesini getirerek bağlantıyı kurabilirsiniz.\nÖrnek: O, eskiden aynı okula gittiğim birinin kız kardeşi.","r":["R1"],"s":["R2","R5","R6","R8","R22"]},{"id":"A084","t":"Compound Nouns","c":"Nouns & Pronouns","a":"Compound Nouns: Compound Nouns (birleşik isimler), birden fazla kelimenin birleşerek tek bir kavramı ifade etmesiyle oluşur. Genellikle 'isim + isim' yapısında kullanılırlar (örneğin 'income tax' veya 'coal mine'). Ancak, her birleşik fikir 'isim + isim' yapısıyla ifade edilemez; bazen 'isim + -'s + isim' (iyelik yapısı) veya farklı yapılar gerekebilir. Birleşik isimleri çoğul yapmak için genellikle ikinci ismi çoğul yapmanız yeterlidir (örneğin 'coal mines'). Hangi yapının tercih edileceğine dair kolay bir kural yoktur; bu nedenle belirli bir birleşik fikir için en doğru kullanımın hangisi olduğunu belirlemek bazen güç olabilir.","r":["R1"],"s":["R2","R9","R10","R17","R21"]},{"id":"A085","t":"Reflexive Pronouns","c":"Nouns & Pronouns","a":"Reflexive Pronouns: Reflexive pronouns (myself, yourself, himself, herself, itself, oneself, ourselves, yourselves, themselves); özne ile aynı kişiyi veya şeyi işaret eden nesne durumlarında kullanılır. Cümle içinde fiilin doğrudan veya dolaylı nesnesi olabildikleri gibi, bir edattan (preposition) sonra da kullanılabilirler. Ayrıca bir ismi veya zamiri vurgulamak için de tercih edilebilirler. Bununla birlikte, bir yer belirtirken veya 'eşlik etme/birliktelik' anlamındaki 'with' edatından sonra reflexive pronoun yerine kişi zamirleri (personal pronouns) kullanılır.\nÖrnek: Sabah tıraş olurken kendimi kestim.","r":["R1"],"s":["R2","R3","R5","R6","R7"]},{"id":"A086","t":"Each other / One another","c":"Nouns & Pronouns","a":"Each other / One another: Each other ve one another, iki kişi veya grup arasındaki karşılıklı eylemleri belirtmek için kullanılan ifadelerdir. Bazı fiiller doğrudan nesne alırken, bazı fiillerle birlikte 'with', 'from', 'to' gibi edatlar (prepositions) kullanılır. Örneğin, 'compete' veya 'fight' fiillerinde 'with' veya 'against' kullanılabilirken, 'part' fiilinden sonra 'from' kullanılır. Ayrıca 'correspond', 'relate' ve 'talk' gibi fiillerle de 'with' edatı tercih edilir. Bu ifadeler genellikle cümlenin öznesi olarak kullanılmazlar; vurgu yapmak için tercih edilebilirler.\nÖrnek: Birbirlerinden oldukça ani bir şekilde ayrıldılar.","r":["R2"],"s":["R1","R3","R4","R5","R6"]},{"id":"A088","t":"One / Ones substitution","c":"Nouns & Pronouns","a":"One / Ones substitution: ‘One’ ve ‘ones’ ifadeleri, daha önce belirtilen bir ismi tekrar etmemek için kullanılan birer zamirdir. Tekil isimlerin yerini ‘one’, çoğul isimlerin yerini ise ‘ones’ tutar. Genellikle nesnelere atıfta bulunmak için kullanılırlar; ancak ‘the little ones’ (küçük çocuklar), ‘loved ones’ (sevilen kişiler/yakınlar) veya ‘the lucky ones’ (şanslı olanlar) gibi kalıplarda insanları nitelemek için de tercih edilebilirler. ‘One’ ve ‘ones’ ifadeleri, bağlama göre bazen parantez içine alınarak cümleden çıkarılabilirler.\nÖrnek: Yanlış olanları almış olmalısın.","r":["R1"],"s":["R10","R11","R12"]},{"id":"A089","t":"Adjective Order","c":"Adjectives & Adverbs","a":"Adjective Order: İngilizcede birden fazla sıfat bir ismin önüne geldiğinde, genellikle belirli bir sıralamaya göre dizilirler. Bu sıralama katı bir kural olmamakla birlikte, vurgulamak istediğiniz niteliğe göre değişiklik gösterebilir. Örneğin, 'yaş' (age) ile ilgili bir sıfat ve 'milliyet' (nationality) belirten bir sıfat kullanılacaksa, yaş bildiren sıfat milliyet bildiren sıfattan önce gelir. Niteleyici sıfatlar isimden önce yer alır; eğer isimden önce başka bir isim (noun modifier) kullanılıyorsa, sıfatlar bu isim grubunun en başına konur.","r":["R1"],"s":["R2","R4","R5","R3","R7"]},{"id":"A090","t":"-ed vs -ing Adjectives","c":"Adjectives & Adverbs","a":"-ed vs -ing Adjectives: -ing ile biten sıfatlar genellikle bir şeyin veya bir durumun duygularınız üzerindeki etkisini tanımlamak ya da bir şeyin zaman içinde devam eden niteliğini belirtmek için kullanılır. -ed ile biten sıfatlar ise genellikle bir durumdan etkilenen duyguları ifade eder. Bu sıfatlar diğer sıfatlar gibi isimlerin önünde kullanılabilirler. Düzensiz fiillerin geçmiş zaman ortaçları -ed ile bitmese bile sıfat olarak kullanılabilir. Bu sıfatlar arasında seçim yaparken tek bir evrensel kural yoktur; bu nedenle kullanımları sözlükler üzerinden kontrol edilmelidir.","r":["R2"],"s":["R3","R4","R5","R6","R7"]},{"id":"A091","t":"Adjective vs Adverb","c":"Adjectives & Adverbs","a":"Adjective vs Adverb: Sıfatlar (adjective) isimleri niteler ve genellikle bir ismin önünde veya bir 'linking verb' (bağlayıcı fiil) sonrasında kullanılırlar. Zarflar (adverb) ise genellikle fiillerin nasıl, ne zaman veya nerede yapıldığını belirtir. Öğrenciler bazen sıfat yerine yanlışlıkla zarf formu kullanabilirler. Örneğin, 'good' bir sıfatken 'well' onun zarf halidir; 'He is a good driver' (İsimi niteler) denirken, 'He drives well' (Fiili niteler) denir. Bazı zarfların anlamı sıfat haliyle benzerlik gösterse de, 'lately' gibi kelimelerin 'late' sıfatından farklı olarak 'son zamanlarda' anlamı taşıdığına dikkat edilmelidir. Ayrıca 'direct' gibi bazı kelimeler hem sıfat hem de zarf olarak kullanılabilir, ancak kural gereği 'linking verb'lerden sonra sıfat kullanımı tercih edilmelidir.","r":["R1"],"s":["R4","R5","R20","R22","R10"]},{"id":"A092","t":"Adverb Position","c":"Adjectives & Adverbs","a":"Adverb Position: Zarf kullanımı ve cümle içindeki konumları karmaşık kurallara bağlıdır. Zarfların cümlede yerleşimi, vurgulanmak istenen anlama göre esneklik gösterebilir; örneğin 'even', 'only' ve 'also' gibi ifadeler farklı konumlara gelebilir. Bir yardımcı fiil tek başına kullanıldığında, orta konumlu zarflar ondan önce yer alır. Ayrıca, zarfların fiil öbeği içinde yanlış kullanımı anlatımı bozabilir, bu nedenle yer ve zaman zarfları gibi türlerin cümle içindeki yeri bağlama göre belirlenmelidir.","r":["R1"],"s":["R13","R3","R4","R5","R6"]},{"id":"A093","t":"Frequency Adverbs","c":"Adjectives & Adverbs","a":"Frequency Adverbs: Frequency Adverbs (sıklık zarfları), bir eylemin veya durumun ne sıklıkla gerçekleştiğini belirtmek için kullanılır. 'Always', 'usually', 'sometimes', 'ever', 'never', 'perhaps', 'possibly' ve 'probably' gibi kelimeleri içerirler. Kullanım yerleri açısından, 'am, is, are, was, were' gibi tek kelimelik formlarla kullanıldıklarında bu yardımcı fiillerden hemen sonra gelirler. Ancak, sıklık zarflarının yalnızca Present Simple tense ile kullanıldığı düşüncesi bir yanılgıdır; diğer zaman yapılarıyla da kullanılabilirler.","r":["R1"],"s":["R4","R5","R8","R6","R7"]},{"id":"A094","t":"So vs Such","c":"Adjectives & Adverbs","a":"So vs Such: ‘So’ ve ‘such’ farklı yapılarla kullanılır. ‘Such’, isimler ve isim tamlamaları ile kullanılır (örneğin: 'such a story', 'such people', 'such a stupid story'). ‘So’ ise yaygın olarak ‘so much’ ve ‘so many’ şeklinde miktar ifadeleriyle kullanılır. Ayrıca ‘so’, 'think', 'hope', 'expect' gibi fiillerden sonra kısa cevaplarda, cevabın 'evet' olduğu durumlarda sıklıkla tercih edilir. ‘So’ her fiilden sonra kullanılamaz; 'say' ve 'tell' gibi fiillerden sonra kullanılması uygun değildir.","r":["R2"],"s":["R7","R14","R16","R17","R19"]},{"id":"A095","t":"Too vs Enough","c":"Adjectives & Adverbs","a":"Too vs Enough: 'Too' ve 'enough' farklı kullanım alanlarına sahiptir. 'Too', genellikle sıfat veya zarflardan önce gelerek 'gereğinden fazla' anlamını taşır ve niceliğin ihtiyaçtan fazla olduğunu belirtir; 'too much' ise isimlerden önce kullanılır. Buna karşın 'enough', sıfat ve zarflardan sonra gelerek 'yeterli' anlamını ifade eder. 'Not + sıfat/zarf + enough + to-infinitive' yapısı, bir işi yapabilmek için gereken miktarda olmadığını belirtmek için kullanılır. 'Enough' ayrıca çoğul ve sayılamayan isimlerle birlikte isimden önce kullanılabilir.\nÖrnek: Yeterince zinde değilim.","r":["R2"],"s":["R3","R4","R5","R6","R7"]},{"id":"A096","t":"Quite / Rather / Fairly","c":"Adjectives & Adverbs","a":"Quite / Rather / Fairly: Bu ifadeler genellikle derece belirten zarflar olarak kullanılır ve bir sıfatın veya fiilin yoğunluğunu değiştirmek için tercih edilir. 'Quite', 'fairly' ve 'rather' kelimeleri olumlu cümlelerde genellikle benzer anlamlar taşır; 'quite' bazen 'oldukça' anlamında kullanılırken, bazen de 'tamamen' veya 'son derece' anlamını verebilir. 'Quite' kelimesi 'enormous' gibi sıfatlarla kullanıldığında 'a quite enormous sum' şeklinde 'a' edatından sonra gelebilir. Amerikan İngilizcesinde 'quite', derecelendirilebilir sıfatlarla 'fairly/rather' anlamından ziyade daha çok 'çok' (very) anlamında tercih edilir. Bu ifadelerin kullanımı bağlama göre değişiklik gösterdiğinden, tek bir evrensel kuraldan ziyade cümlenin yapısını dikkate almak önemlidir.\nÖrnek: Partinde oldukça keyif aldım.","r":["R2"],"s":["R6","R7","R10","R14","R15"]},{"id":"A097","t":"As ... as","c":"Comparison","a":"As ... as: 'As ... as' yapısı, bir sıfat veya zarfın başına 'as' getirilip ardından ikinci bir 'as' ile bir isim grubu, zarf veya yan cümle eklenerek kullanılır. Bu yapı, genellikle karşılaştırma yapmak amacıyla tercih edilir.","r":["R1"],"s":[]},{"id":"A098","t":"Less and Least","c":"Comparison","a":"Less and Least: Less ve least, miktar belirten ifadelerdir. Less, daha az anlamına gelir ve genellikle sayılamayan isimlerle veya ölçü birimleriyle (mesafe, para gibi) kullanılır (Örneğin: 'The beach is less than a mile away'). 'Less than', miktar belirten bir isim tamlamasıyla kullanılabilir. Least ise 'most'un zıttı olarak bir zarf şeklinde kullanılabilir veya en az/en düşük anlamını taşır. 'At least' ifadesi ise 'en az' (belki daha fazla da olabilir) anlamında kullanılır. 'Lesser' kelimesi ise daha çok resmî kullanımlarda 'daha küçük' veya 'o kadar çok olmayan' anlamında tercih edilir.","r":["R2"],"s":["R10","R12","R1","R3","R15"]},{"id":"A099","t":"Comparative modifiers","c":"Comparison","a":"Comparative modifiers: Comparative modifiers (karşılaştırma belirteçleri), insanlar veya nesneler arasındaki eşitsizliği veya farklılık derecelerini ifade etmek için kullanılır. Sıfatlar veya zarflar 'more + sıfat/zarf' yapısıyla ya da '-er' ekiyle karşılaştırma bildirebilir. Karşılaştırmalı yapılarda 'very' kullanılamaz; bunun yerine 'much', 'far' gibi belirteçler tercih edilir. Ayrıca 'different' gibi bazı sözcükler, çoğu sıfattan farklı olarak 'any', 'no', 'little' gibi belirteçlerle nitelenebilir.","r":["R2"],"s":["R9","R3","R4","R5","R6"]},{"id":"A100","t":"The more ... the more","c":"Comparison","a":"The more ... the more: Bu yapı, bir durumdaki değişimin başka bir durumdaki değişime yol açtığını ifade etmek için kullanılır. 'More' kelimesiyle kıyaslama yapılırken, bu özel yapıda 'most' kelimesinin önünde 'the' kullanılmaz.\nÖrnek: Yıllar geçtikçe bu işten daha da fazla nefret ediyorum.","r":["R1"],"s":["R3","R4","R5","R21","R22"]},{"id":"A101","t":"More and more","c":"Comparison","a":"More and more: ‘More and more’ ifadesi, sürekli bir artış durumundan bahsetmek için kullanılır. Bu ifade, sayılabilecek isimlerin önünde kullanılabildiği gibi, bir olayın veya durumun artan bir ivmeyle devam ettiğini belirtmek için de tercih edilebilir.\nÖrnek: Yıllar geçtikçe bu işten daha da fazla nefret ediyorum.","r":["R1"],"s":["R2","R3","R4","R6","R7"]},{"id":"A102","t":"Superlative + ever","c":"Comparison","a":"Superlative + ever: Superlative yapılarla birlikte kullanılan 'ever', ifadeyi vurgulamak ve karşılaştırmalı anlamı pekiştirmek için olumlu cümlelerde tercih edilir. Superlative yapılar, genellikle bir gruptaki tek veya en belirgin olanı tanımladığı için 'the' ile kullanılır. Ayrıca, bir superlative yapısını içinde bulunduğu gruba bağlamak için 'of' edatı kullanılır; örneğin, üç kardeşin en yaşlısı gibi ifadelerde bu bağlantı kurulur.\nÖrnek: That’s the funniest joke I’ve ever heard. (Bu şimdiye kadar duyduğum en komik şaka.)","r":["R1"],"s":["R2","R12","R5","R3","R8"]},{"id":"A103","t":"Same as / Different from","c":"Comparison","a":"Same as / Different from: 'The same as' yapısı, iki şeyin birbirine çok benzer veya özdeş olduğunu belirtmek için kullanılır. Bir isim grubu, zarf veya cümlecik ile takip edilebilir. 'The same' tek başına veya 'as' ile kullanılabilir; eğer bahsedilenler bir eylemin nesnesine işaret ediyorsa, 'as' kullanımı isteğe bağlı olabilir. 'Different from' ifadesi ise benzerlik yerine ayrılığı ifade ederken tercih edilir; ancak bu konu özelinde kaynaklar 'the same (as)' yapısının kimlik ve benzerlik belirtmek için kullanıldığını vurgular.","r":["R1"],"s":["R2","R4","R7","R14","R15"]}]
+[
+  {
+    "id": "A083",
+    "t": "Of-possessive",
+    "c": "Nouns & Pronouns",
+    "a": "Of-possessive: Of-possessive yapısı, bir kişinin veya nesnenin bir başkasına ait olduğunu veya onunla bağlantılı olduğunu belirtmek için kullanılan bir yapıdır. 'Of' ile başlayan bu edat grubu, genellikle sahiplik veya ilişki ifade etmek amacıyla tercih edilir. Türkçedeki '...-nin/-nın' iyelik eklerine benzer bir işlev görür. Sahiplik belirtirken bazen 's (possessive 's) yapısı ile birbirinin yerine kullanılabilirler; ancak her durumda birbirlerinin yerine geçmezler. Bu yapıyı kullanırken, aidiyeti veya bağlantıyı kurduğunuz isim ya da isim grubunun önüne 'of' ifadesini getirerek bağlantıyı kurabilirsiniz.\nÖrnek: O, eskiden aynı okula gittiğim birinin kız kardeşi.",
+    "r": ["R1"],
+    "s": ["R2", "R5", "R6", "R8", "R22"]
+  },
+  {
+    "id": "A084",
+    "t": "Compound Nouns",
+    "c": "Nouns & Pronouns",
+    "a": "Compound Nouns: Compound Nouns (birleşik isimler), birden fazla kelimenin birleşerek tek bir kavramı ifade etmesiyle oluşur. Genellikle 'isim + isim' yapısında kullanılırlar (örneğin 'income tax' veya 'coal mine'). Ancak, her birleşik fikir 'isim + isim' yapısıyla ifade edilemez; bazen 'isim + -'s + isim' (iyelik yapısı) veya farklı yapılar gerekebilir. Birleşik isimleri çoğul yapmak için genellikle ikinci ismi çoğul yapmanız yeterlidir (örneğin 'coal mines'). Hangi yapının tercih edileceğine dair kolay bir kural yoktur; bu nedenle belirli bir birleşik fikir için en doğru kullanımın hangisi olduğunu belirlemek bazen güç olabilir.",
+    "r": ["R1"],
+    "s": ["R2", "R9", "R10", "R17", "R21"]
+  },
+  {
+    "id": "A085",
+    "t": "Reflexive Pronouns",
+    "c": "Nouns & Pronouns",
+    "a": "Reflexive Pronouns: Reflexive pronouns (myself, yourself, himself, herself, itself, oneself, ourselves, yourselves, themselves); özne ile aynı kişiyi veya şeyi işaret eden nesne durumlarında kullanılır. Cümle içinde fiilin doğrudan veya dolaylı nesnesi olabildikleri gibi, bir edattan (preposition) sonra da kullanılabilirler. Ayrıca bir ismi veya zamiri vurgulamak için de tercih edilebilirler. Bununla birlikte, bir yer belirtirken veya 'eşlik etme/birliktelik' anlamındaki 'with' edatından sonra reflexive pronoun yerine kişi zamirleri (personal pronouns) kullanılır.\nÖrnek: Sabah tıraş olurken kendimi kestim.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A086",
+    "t": "Each other / One another",
+    "c": "Nouns & Pronouns",
+    "a": "Each other / One another: Each other ve one another, iki kişi veya grup arasındaki karşılıklı eylemleri belirtmek için kullanılan ifadelerdir. Bazı fiiller doğrudan nesne alırken, bazı fiillerle birlikte 'with', 'from', 'to' gibi edatlar (prepositions) kullanılır. Örneğin, 'compete' veya 'fight' fiillerinde 'with' veya 'against' kullanılabilirken, 'part' fiilinden sonra 'from' kullanılır. Ayrıca 'correspond', 'relate' ve 'talk' gibi fiillerle de 'with' edatı tercih edilir. Bu ifadeler genellikle cümlenin öznesi olarak kullanılmazlar; vurgu yapmak için tercih edilebilirler.\nÖrnek: Birbirlerinden oldukça ani bir şekilde ayrıldılar.",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A088",
+    "t": "One / Ones substitution",
+    "c": "Nouns & Pronouns",
+    "a": "One / Ones substitution: ‘One’ ve ‘ones’ ifadeleri, daha önce belirtilen bir ismi tekrar etmemek için kullanılan birer zamirdir. Tekil isimlerin yerini ‘one’, çoğul isimlerin yerini ise ‘ones’ tutar. Genellikle nesnelere atıfta bulunmak için kullanılırlar; ancak ‘the little ones’ (küçük çocuklar), ‘loved ones’ (sevilen kişiler/yakınlar) veya ‘the lucky ones’ (şanslı olanlar) gibi kalıplarda insanları nitelemek için de tercih edilebilirler. ‘One’ ve ‘ones’ ifadeleri, bağlama göre bazen parantez içine alınarak cümleden çıkarılabilirler.\nÖrnek: Yanlış olanları almış olmalısın.",
+    "r": ["R1"],
+    "s": ["R10", "R11", "R12"]
+  },
+  {
+    "id": "A089",
+    "t": "Adjective Order",
+    "c": "Adjectives & Adverbs",
+    "a": "Adjective Order: İngilizcede birden fazla sıfat bir ismin önüne geldiğinde, genellikle belirli bir sıralamaya göre dizilirler. Bu sıralama katı bir kural olmamakla birlikte, vurgulamak istediğiniz niteliğe göre değişiklik gösterebilir. Örneğin, 'yaş' (age) ile ilgili bir sıfat ve 'milliyet' (nationality) belirten bir sıfat kullanılacaksa, yaş bildiren sıfat milliyet bildiren sıfattan önce gelir. Niteleyici sıfatlar isimden önce yer alır; eğer isimden önce başka bir isim (noun modifier) kullanılıyorsa, sıfatlar bu isim grubunun en başına konur.",
+    "r": ["R1"],
+    "s": ["R2", "R4", "R5", "R3", "R7"]
+  },
+  {
+    "id": "A090",
+    "t": "-ed vs -ing Adjectives",
+    "c": "Adjectives & Adverbs",
+    "a": "-ed vs -ing Adjectives: -ing ile biten sıfatlar genellikle bir şeyin veya bir durumun duygularınız üzerindeki etkisini tanımlamak ya da bir şeyin zaman içinde devam eden niteliğini belirtmek için kullanılır. -ed ile biten sıfatlar ise genellikle bir durumdan etkilenen duyguları ifade eder. Bu sıfatlar diğer sıfatlar gibi isimlerin önünde kullanılabilirler. Düzensiz fiillerin geçmiş zaman ortaçları -ed ile bitmese bile sıfat olarak kullanılabilir. Bu sıfatlar arasında seçim yaparken tek bir evrensel kural yoktur; bu nedenle kullanımları sözlükler üzerinden kontrol edilmelidir.",
+    "r": ["R2"],
+    "s": ["R3", "R4", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A091",
+    "t": "Adjective vs Adverb",
+    "c": "Adjectives & Adverbs",
+    "a": "Adjective vs Adverb: Sıfatlar (adjective) isimleri niteler ve genellikle bir ismin önünde veya bir 'linking verb' (bağlayıcı fiil) sonrasında kullanılırlar. Zarflar (adverb) ise genellikle fiillerin nasıl, ne zaman veya nerede yapıldığını belirtir. Öğrenciler bazen sıfat yerine yanlışlıkla zarf formu kullanabilirler. Örneğin, 'good' bir sıfatken 'well' onun zarf halidir; 'He is a good driver' (İsimi niteler) denirken, 'He drives well' (Fiili niteler) denir. Bazı zarfların anlamı sıfat haliyle benzerlik gösterse de, 'lately' gibi kelimelerin 'late' sıfatından farklı olarak 'son zamanlarda' anlamı taşıdığına dikkat edilmelidir. Ayrıca 'direct' gibi bazı kelimeler hem sıfat hem de zarf olarak kullanılabilir, ancak kural gereği 'linking verb'lerden sonra sıfat kullanımı tercih edilmelidir.",
+    "r": ["R1"],
+    "s": ["R4", "R5", "R20", "R22", "R10"]
+  },
+  {
+    "id": "A092",
+    "t": "Adverb Position",
+    "c": "Adjectives & Adverbs",
+    "a": "Adverb Position: Zarf kullanımı ve cümle içindeki konumları karmaşık kurallara bağlıdır. Zarfların cümlede yerleşimi, vurgulanmak istenen anlama göre esneklik gösterebilir; örneğin 'even', 'only' ve 'also' gibi ifadeler farklı konumlara gelebilir. Bir yardımcı fiil tek başına kullanıldığında, orta konumlu zarflar ondan önce yer alır. Ayrıca, zarfların fiil öbeği içinde yanlış kullanımı anlatımı bozabilir, bu nedenle yer ve zaman zarfları gibi türlerin cümle içindeki yeri bağlama göre belirlenmelidir.",
+    "r": ["R1"],
+    "s": ["R13", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A093",
+    "t": "Frequency Adverbs",
+    "c": "Adjectives & Adverbs",
+    "a": "Frequency Adverbs: Frequency Adverbs (sıklık zarfları), bir eylemin veya durumun ne sıklıkla gerçekleştiğini belirtmek için kullanılır. 'Always', 'usually', 'sometimes', 'ever', 'never', 'perhaps', 'possibly' ve 'probably' gibi kelimeleri içerirler. Kullanım yerleri açısından, 'am, is, are, was, were' gibi tek kelimelik formlarla kullanıldıklarında bu yardımcı fiillerden hemen sonra gelirler. Ancak, sıklık zarflarının yalnızca Present Simple tense ile kullanıldığı düşüncesi bir yanılgıdır; diğer zaman yapılarıyla da kullanılabilirler.",
+    "r": ["R1"],
+    "s": ["R4", "R5", "R8", "R6", "R7"]
+  },
+  {
+    "id": "A094",
+    "t": "So vs Such",
+    "c": "Adjectives & Adverbs",
+    "a": "So vs Such: ‘So’ ve ‘such’ farklı yapılarla kullanılır. ‘Such’, isimler ve isim tamlamaları ile kullanılır (örneğin: 'such a story', 'such people', 'such a stupid story'). ‘So’ ise yaygın olarak ‘so much’ ve ‘so many’ şeklinde miktar ifadeleriyle kullanılır. Ayrıca ‘so’, 'think', 'hope', 'expect' gibi fiillerden sonra kısa cevaplarda, cevabın 'evet' olduğu durumlarda sıklıkla tercih edilir. ‘So’ her fiilden sonra kullanılamaz; 'say' ve 'tell' gibi fiillerden sonra kullanılması uygun değildir.",
+    "r": ["R2"],
+    "s": ["R7", "R14", "R16", "R17", "R19"]
+  },
+  {
+    "id": "A095",
+    "t": "Too vs Enough",
+    "c": "Adjectives & Adverbs",
+    "a": "Too vs Enough: 'Too' ve 'enough' farklı kullanım alanlarına sahiptir. 'Too', genellikle sıfat veya zarflardan önce gelerek 'gereğinden fazla' anlamını taşır ve niceliğin ihtiyaçtan fazla olduğunu belirtir; 'too much' ise isimlerden önce kullanılır. Buna karşın 'enough', sıfat ve zarflardan sonra gelerek 'yeterli' anlamını ifade eder. 'Not + sıfat/zarf + enough + to-infinitive' yapısı, bir işi yapabilmek için gereken miktarda olmadığını belirtmek için kullanılır. 'Enough' ayrıca çoğul ve sayılamayan isimlerle birlikte isimden önce kullanılabilir.\nÖrnek: Yeterince zinde değilim.",
+    "r": ["R2"],
+    "s": ["R3", "R4", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A096",
+    "t": "Quite / Rather / Fairly",
+    "c": "Adjectives & Adverbs",
+    "a": "Quite / Rather / Fairly: Bu ifadeler genellikle derece belirten zarflar olarak kullanılır ve bir sıfatın veya fiilin yoğunluğunu değiştirmek için tercih edilir. 'Quite', 'fairly' ve 'rather' kelimeleri olumlu cümlelerde genellikle benzer anlamlar taşır; 'quite' bazen 'oldukça' anlamında kullanılırken, bazen de 'tamamen' veya 'son derece' anlamını verebilir. 'Quite' kelimesi 'enormous' gibi sıfatlarla kullanıldığında 'a quite enormous sum' şeklinde 'a' edatından sonra gelebilir. Amerikan İngilizcesinde 'quite', derecelendirilebilir sıfatlarla 'fairly/rather' anlamından ziyade daha çok 'çok' (very) anlamında tercih edilir. Bu ifadelerin kullanımı bağlama göre değişiklik gösterdiğinden, tek bir evrensel kuraldan ziyade cümlenin yapısını dikkate almak önemlidir.\nÖrnek: Partinde oldukça keyif aldım.",
+    "r": ["R2"],
+    "s": ["R6", "R7", "R10", "R14", "R15"]
+  },
+  {
+    "id": "A097",
+    "t": "As ... as",
+    "c": "Comparison",
+    "a": "As ... as: 'As ... as' yapısı, bir sıfat veya zarfın başına 'as' getirilip ardından ikinci bir 'as' ile bir isim grubu, zarf veya yan cümle eklenerek kullanılır. Bu yapı, genellikle karşılaştırma yapmak amacıyla tercih edilir.",
+    "r": ["R1"],
+    "s": []
+  },
+  {
+    "id": "A098",
+    "t": "Less and Least",
+    "c": "Comparison",
+    "a": "Less and Least: Less ve least, miktar belirten ifadelerdir. Less, daha az anlamına gelir ve genellikle sayılamayan isimlerle veya ölçü birimleriyle (mesafe, para gibi) kullanılır (Örneğin: 'The beach is less than a mile away'). 'Less than', miktar belirten bir isim tamlamasıyla kullanılabilir. Least ise 'most'un zıttı olarak bir zarf şeklinde kullanılabilir veya en az/en düşük anlamını taşır. 'At least' ifadesi ise 'en az' (belki daha fazla da olabilir) anlamında kullanılır. 'Lesser' kelimesi ise daha çok resmî kullanımlarda 'daha küçük' veya 'o kadar çok olmayan' anlamında tercih edilir.",
+    "r": ["R2"],
+    "s": ["R10", "R12", "R1", "R3", "R15"]
+  },
+  {
+    "id": "A099",
+    "t": "Comparative modifiers",
+    "c": "Comparison",
+    "a": "Comparative modifiers: Comparative modifiers (karşılaştırma belirteçleri), insanlar veya nesneler arasındaki eşitsizliği veya farklılık derecelerini ifade etmek için kullanılır. Sıfatlar veya zarflar 'more + sıfat/zarf' yapısıyla ya da '-er' ekiyle karşılaştırma bildirebilir. Karşılaştırmalı yapılarda 'very' kullanılamaz; bunun yerine 'much', 'far' gibi belirteçler tercih edilir. Ayrıca 'different' gibi bazı sözcükler, çoğu sıfattan farklı olarak 'any', 'no', 'little' gibi belirteçlerle nitelenebilir.",
+    "r": ["R2"],
+    "s": ["R9", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A100",
+    "t": "The more ... the more",
+    "c": "Comparison",
+    "a": "The more ... the more: Bu yapı, bir durumdaki değişimin başka bir durumdaki değişime yol açtığını ifade etmek için kullanılır. 'More' kelimesiyle kıyaslama yapılırken, bu özel yapıda 'most' kelimesinin önünde 'the' kullanılmaz.\nÖrnek: Yıllar geçtikçe bu işten daha da fazla nefret ediyorum.",
+    "r": ["R1"],
+    "s": ["R3", "R4", "R5", "R21", "R22"]
+  },
+  {
+    "id": "A101",
+    "t": "More and more",
+    "c": "Comparison",
+    "a": "More and more: ‘More and more’ ifadesi, sürekli bir artış durumundan bahsetmek için kullanılır. Bu ifade, sayılabilecek isimlerin önünde kullanılabildiği gibi, bir olayın veya durumun artan bir ivmeyle devam ettiğini belirtmek için de tercih edilebilir.\nÖrnek: Yıllar geçtikçe bu işten daha da fazla nefret ediyorum.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R6", "R7"]
+  },
+  {
+    "id": "A102",
+    "t": "Superlative + ever",
+    "c": "Comparison",
+    "a": "Superlative + ever: Superlative yapılarla birlikte kullanılan 'ever', ifadeyi vurgulamak ve karşılaştırmalı anlamı pekiştirmek için olumlu cümlelerde tercih edilir. Superlative yapılar, genellikle bir gruptaki tek veya en belirgin olanı tanımladığı için 'the' ile kullanılır. Ayrıca, bir superlative yapısını içinde bulunduğu gruba bağlamak için 'of' edatı kullanılır; örneğin, üç kardeşin en yaşlısı gibi ifadelerde bu bağlantı kurulur.\nÖrnek: That’s the funniest joke I’ve ever heard. (Bu şimdiye kadar duyduğum en komik şaka.)",
+    "r": ["R1"],
+    "s": ["R2", "R12", "R5", "R3", "R8"]
+  },
+  {
+    "id": "A103",
+    "t": "Same as / Different from",
+    "c": "Comparison",
+    "a": "Same as / Different from: 'The same as' yapısı, iki şeyin birbirine çok benzer veya özdeş olduğunu belirtmek için kullanılır. Bir isim grubu, zarf veya cümlecik ile takip edilebilir. 'The same' tek başına veya 'as' ile kullanılabilir; eğer bahsedilenler bir eylemin nesnesine işaret ediyorsa, 'as' kullanımı isteğe bağlı olabilir. 'Different from' ifadesi ise benzerlik yerine ayrılığı ifade ederken tercih edilir; ancak bu konu özelinde kaynaklar 'the same (as)' yapısının kimlik ve benzerlik belirtmek için kullanıldığını vurgular.",
+    "r": ["R1"],
+    "s": ["R2", "R4", "R7", "R14", "R15"]
+  }
+]

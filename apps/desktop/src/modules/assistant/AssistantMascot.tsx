@@ -78,13 +78,7 @@ export function AssistantLauncherMascot({ awake }: AssistantLauncherMascotProps)
       alt=""
       className="assistant-launcher__mascot"
       key={`launcher-${awake ? "awake" : "closed"}`}
-      src={
-        cleanSearchRoute
-          ? wordieCutoutReading
-          : awake
-            ? mascotReady
-            : mascotLauncherClosed
-      }
+      src={cleanSearchRoute ? wordieCutoutReading : awake ? mascotReady : mascotLauncherClosed}
     />
   );
 }

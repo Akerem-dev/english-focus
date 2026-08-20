@@ -3,7 +3,11 @@ import { useRef, useState, type FormEvent } from "react";
 import { useGrammar } from "../../app/providers";
 import { IconButton } from "../../components";
 import { AppIcon } from "../../design-system";
-import { AssistantLauncherMascot, AssistantPanelMascot, type AssistantMascotState } from "./AssistantMascot";
+import {
+  AssistantLauncherMascot,
+  AssistantPanelMascot,
+  type AssistantMascotState
+} from "./AssistantMascot";
 
 const STARTERS = Object.freeze([
   "Present Perfect ile Past Simple arasındaki fark nedir?",
@@ -129,7 +133,8 @@ export function GrammarAssistantDock() {
                 <article className="wv84-wordie-welcome">
                   <h3>Ask naturally.</h3>
                   <p>
-                    Ask about a tense, article, modal, conditional, verb pattern, clause, or another grammar point.
+                    Ask about a tense, article, modal, conditional, verb pattern, clause, or another
+                    grammar point.
                   </p>
                 </article>
               ) : (
@@ -177,10 +182,19 @@ export function GrammarAssistantDock() {
                 {STARTERS.map((starter, index) => (
                   <button key={starter} onClick={() => focusStarter(starter)} type="button">
                     <span className="wv84-quick-actions__icon">
-                      <AppIcon name={index === 0 ? "book-open" : index === 1 ? "search" : "star"} size={22} />
+                      <AppIcon
+                        name={index === 0 ? "book-open" : index === 1 ? "search" : "star"}
+                        size={22}
+                      />
                     </span>
                     <span className="wv84-quick-actions__copy">
-                      <strong>{index === 0 ? "Compare tenses" : index === 1 ? "Check a rule" : "Choose a verb pattern"}</strong>
+                      <strong>
+                        {index === 0
+                          ? "Compare tenses"
+                          : index === 1
+                            ? "Check a rule"
+                            : "Choose a verb pattern"}
+                      </strong>
                       <small>{starter}</small>
                     </span>
                   </button>

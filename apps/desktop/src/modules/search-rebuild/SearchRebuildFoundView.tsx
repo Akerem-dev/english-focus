@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import type { ActivityKind, ActivityRecord, VocabularyEntry, VocabularyUserMetadata } from "@platform/domain";
+import type {
+  ActivityKind,
+  ActivityRecord,
+  VocabularyEntry,
+  VocabularyUserMetadata
+} from "@platform/domain";
 
 import { useActivity, useVocabularyRepository } from "../../app/providers";
 import { buildVocabularyEntryPath, ROUTE_PATHS } from "../../app/router";
@@ -142,7 +147,9 @@ function DetailActivitySection({ items, kind, title }: DetailActivitySectionProp
 
         {items.length === 0 ? (
           <p className="wvsr-activity__empty">
-            {kind === "viewed" ? "Words you open will appear here." : "Saved words will appear here."}
+            {kind === "viewed"
+              ? "Words you open will appear here."
+              : "Saved words will appear here."}
           </p>
         ) : null}
       </div>
@@ -205,7 +212,11 @@ export function SearchRebuildFoundView({
       const result: DetailActivityItem[] = [];
 
       for (const record of ordered) {
-        if (!kinds.includes(record.kind) || record.target === undefined || seen.has(record.target)) {
+        if (
+          !kinds.includes(record.kind) ||
+          record.target === undefined ||
+          seen.has(record.target)
+        ) {
           continue;
         }
 
@@ -261,10 +272,18 @@ export function SearchRebuildFoundView({
             <details className="wvsr-detail-menu">
               <summary aria-label="Word options">•••</summary>
               <div className="wvsr-detail-menu__popover">
-                <button onClick={onEditEntry} type="button">Edit word details</button>
-                <button onClick={onEditMetadata} type="button">Notes & learning status</button>
-                <button onClick={onImportReplacement} type="button">Replace word data</button>
-                <button onClick={onExport} type="button">Download word data</button>
+                <button onClick={onEditEntry} type="button">
+                  Edit word details
+                </button>
+                <button onClick={onEditMetadata} type="button">
+                  Notes & learning status
+                </button>
+                <button onClick={onImportReplacement} type="button">
+                  Replace word data
+                </button>
+                <button onClick={onExport} type="button">
+                  Download word data
+                </button>
               </div>
             </details>
 
@@ -280,12 +299,14 @@ export function SearchRebuildFoundView({
           </header>
 
           <nav aria-label="Vocabulary entry sections" className="wvsr-detail-tabs">
-            {([
-              ["definition", "Definition"],
-              ["examples", "Examples"],
-              ["synonyms", "Similar words"],
-              ["word-family", "Word forms"]
-            ] as const).map(([tab, label]) => (
+            {(
+              [
+                ["definition", "Definition"],
+                ["examples", "Examples"],
+                ["synonyms", "Similar words"],
+                ["word-family", "Word forms"]
+              ] as const
+            ).map(([tab, label]) => (
               <button
                 aria-current={activeTab === tab ? "page" : undefined}
                 key={tab}
@@ -317,7 +338,9 @@ export function SearchRebuildFoundView({
                 {examples.length === 0 ? (
                   <div className="wvsr-detail-empty">
                     <strong>No examples are saved for this word yet.</strong>
-                    <span>Wordie can show you a natural sentence and explain how the word fits into it.</span>
+                    <span>
+                      Wordie can show you a natural sentence and explain how the word fits into it.
+                    </span>
                     <button
                       onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
                       type="button"
@@ -338,7 +361,9 @@ export function SearchRebuildFoundView({
 
             {activeTab === "synonyms" ? (
               <div className="wvsr-detail-empty">
-                <span className="wvsr-detail-empty__mark" aria-hidden="true">⌁</span>
+                <span className="wvsr-detail-empty__mark" aria-hidden="true">
+                  ⌁
+                </span>
                 <strong>Similar words aren’t saved for this entry yet.</strong>
                 <span>
                   Wordie can compare nearby words and explain the difference in meaning, tone, and
@@ -385,7 +410,9 @@ export function SearchRebuildFoundView({
                 ) : morphologyParts.length === 0 ? (
                   <div className="wvsr-detail-empty">
                     <strong>No extra word forms are saved yet.</strong>
-                    <span>Wordie can help you explore common forms of this word in real sentences.</span>
+                    <span>
+                      Wordie can help you explore common forms of this word in real sentences.
+                    </span>
                     <button
                       onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
                       type="button"
@@ -459,7 +486,9 @@ export function SearchRebuildFoundView({
 
           <section className="wvsr-wordie-card" aria-label="Wordie vocabulary assistant">
             <header>
-              <span className="wvsr-wordie-card__status" aria-hidden="true">✓</span>
+              <span className="wvsr-wordie-card__status" aria-hidden="true">
+                ✓
+              </span>
               <h2>Wordie</h2>
               <img alt="" className="wvsr-wordie-card__sparkle" src={sparklePair} />
             </header>
