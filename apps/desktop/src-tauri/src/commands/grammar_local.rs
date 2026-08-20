@@ -2,7 +2,8 @@ pub use crate::grammar::types::GrammarLocalAnswer;
 use crate::grammar::{
     atlas_cache::answer_atlas_local, atlas_rescue::answer_reviewed_atlas,
     atlas_review::is_runtime_approved, core_curated::answer_curated_core,
-    runtime_cache::answer_local as answer_core_local, types::GrammarAnswerResponse,
+    runtime_cache::answer_local as answer_core_local,
+    source_verified_rescue::answer_source_verified_atlas, types::GrammarAnswerResponse,
 };
 
 fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
@@ -21,8 +22,15 @@ fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
         // A quarantined compiler card is still useful as an intent discriminator. A reviewed
         // rescue may replace that exact card, but it must never hijack the question as a
         // different topic after punctuation/normalization has collapsed a meaningful contrast
-        // (for example `So ... that` vs `So that`).
-        if let Some(reviewed) = answer_reviewed_atlas(question) {
+        // (for example `So ... that` vs `So that`). Check every reviewed layer and accept only
+        // a replacement carrying the same atlas card id as the quarantined intent.
+        for reviewed in [
+            answer_reviewed_atlas(question),
+            answer_source_verified_atlas(question),
+        ]
+        .into_iter()
+        .flatten()
+        {
             if reviewed.card_id == answer.card_id {
                 return Ok(Some(reviewed));
             }
@@ -33,6 +41,9 @@ fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
 
     // Missing compiler cards can still be served by explicitly source-reviewed rescues.
     if let Some(answer) = answer_reviewed_atlas(question) {
+        return Ok(Some(answer));
+    }
+    if let Some(answer) = answer_source_verified_atlas(question) {
         return Ok(Some(answer));
     }
 
@@ -159,31 +170,42 @@ mod tests {
     }
 
     #[test]
-    fn unresolved_weak_atlas_intents_still_fail_closed() {
-        for question in [
-            "Narrative Tenses nedir ve nasıl kullanılır?",
-            "Always with continuous forms nedir ve nasıl kullanılır?",
-            "Passive reporting structures nedir ve nasıl kullanılır?",
-            "Reported Commands nedir ve nasıl kullanılır?",
-            "Try doing vs Try to do ne zaman kullanılır?",
-            "Mean doing vs Mean to do ne zaman kullanılır?",
-            "So ... that nedir ve nasıl kullanılır?",
-            "Basic Word Order nedir ve nasıl kullanılır?",
+    fn final_eight_atlas_gaps_are_source_verified_local_hits() {
+        for (question, expected_id) in [
+            ("Narrative Tenses nedir ve nasıl kullanılır?", "A010"),
+            (
+                "Always with continuous forms nedir ve nasıl kullanılır?",
+                "A015",
+            ),
+            (
+                "Passive reporting structures nedir ve nasıl kullanılır?",
+                "A047",
+            ),
+            ("Reported Commands nedir ve nasıl kullanılır?", "A051"),
+            ("Try doing vs Try to do ne zaman kullanılır?", "A115"),
+            ("Mean doing vs Mean to do ne zaman kullanılır?", "A117"),
+            ("So ... that nedir ve nasıl kullanılır?", "A134"),
+            ("Basic Word Order nedir ve nasıl kullanılır?", "A156"),
         ] {
-            assert!(
-                answer_local(question)
-                    .expect("local lookup should succeed")
-                    .is_none(),
-                "question={question}"
-            );
+            let answer = answer_local(question)
+                .expect("local lookup should succeed")
+                .expect("source-verified atlas intent should be a local hit");
+            assert_eq!(answer.source, "local-reviewed-atlas", "question={question}");
+            assert_eq!(answer.card_id, expected_id, "question={question}");
         }
     }
 
     #[test]
-    fn quarantined_intent_cannot_be_hijacked_by_a_different_rescue() {
-        let answer = answer_local("So ... that nedir ve nasıl kullanılır?")
-            .expect("local lookup should succeed");
-        assert!(answer.is_none());
+    fn punctuation_collapsed_contrasts_keep_the_correct_card_identity() {
+        let purpose = answer_local("So that ne zaman kullanılır?")
+            .expect("local lookup should succeed")
+            .expect("purpose so-that should resolve");
+        assert_eq!(purpose.card_id, "A132");
+
+        let result = answer_local("So ... that nedir ve nasıl kullanılır?")
+            .expect("local lookup should succeed")
+            .expect("result so-that should resolve");
+        assert_eq!(result.card_id, "A134");
     }
 
     #[test]
