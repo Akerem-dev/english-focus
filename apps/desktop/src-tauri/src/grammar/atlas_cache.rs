@@ -210,8 +210,10 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
 
     // Natural free-form questions often preserve the exact grammar topic name. We accept
     // that only for multi-token titles. One-word topics such as "Some", "Any" or "All"
-    // stay exact-only to avoid collisions.
-    let phrase_matches = cards
+    // stay exact-only to avoid collisions. When one title contains another (for example
+    // "Past Perfect Continuous" and "Past Perfect"), prefer the uniquely more specific
+    // title rather than treating the nested phrase as an ambiguity.
+    let mut phrase_matches = cards
         .iter()
         .filter(|card| {
             card.informative_title_tokens >= 2
@@ -219,8 +221,22 @@ pub fn answer_atlas_local(question: &str) -> Result<Option<GrammarLocalAnswer>, 
         })
         .collect::<Vec<_>>();
 
-    if phrase_matches.len() == 1 {
-        return Ok(Some(to_answer(phrase_matches[0], 0.98)));
+    phrase_matches.sort_by(|left, right| {
+        right
+            .informative_title_tokens
+            .cmp(&left.informative_title_tokens)
+            .then_with(|| right.normalized_title.len().cmp(&left.normalized_title.len()))
+    });
+
+    if let Some(best) = phrase_matches.first() {
+        let tied_for_specificity = phrase_matches.get(1).is_some_and(|second| {
+            second.informative_title_tokens == best.informative_title_tokens
+                && second.normalized_title.len() == best.normalized_title.len()
+        });
+
+        if !tied_for_specificity {
+            return Ok(Some(to_answer(best, 0.98)));
+        }
     }
 
     Ok(None)
@@ -282,6 +298,14 @@ mod tests {
                 .expect("expected atlas hit");
         assert_eq!(answer.card_id, "A004");
         assert!(answer.confidence >= 0.98);
+    }
+
+    #[test]
+    fn nested_topic_names_prefer_the_uniquely_more_specific_card() {
+        let answer = answer_atlas_local("Past Perfect Continuous ile ilgili temel mantık ne?")
+            .expect("cache lookup should succeed")
+            .expect("expected atlas hit");
+        assert_eq!(answer.card_id, "A004");
     }
 
     #[test]
