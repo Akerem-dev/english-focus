@@ -1,7 +1,8 @@
 pub use crate::grammar::types::GrammarLocalAnswer;
 use crate::grammar::{
-    atlas_cache::answer_atlas_local, core_curated::answer_curated_core,
-    runtime_cache::answer_local as answer_core_local, types::GrammarAnswerResponse,
+    atlas_cache::answer_atlas_local, atlas_review::is_runtime_approved,
+    core_curated::answer_curated_core, runtime_cache::answer_local as answer_core_local,
+    types::GrammarAnswerResponse,
 };
 
 fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
@@ -12,7 +13,14 @@ fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
         return Ok(Some(answer));
     }
 
-    answer_atlas_local(question)
+    let Some(answer) = answer_atlas_local(question)? else {
+        return Ok(None);
+    };
+    if !is_runtime_approved(&answer.card_id) {
+        return Ok(None);
+    }
+
+    Ok(Some(answer))
 }
 
 #[tauri::command]
@@ -60,6 +68,25 @@ mod tests {
             .expect("expected atlas hit");
         assert_eq!(answer.source, "local-atlas-cache");
         assert_eq!(answer.card_id, "A029");
+    }
+
+    #[test]
+    fn manually_approved_atlas_card_remains_zero_token() {
+        let answer = answer_local("Remember doing vs Remember to do ne zaman kullanılır?")
+            .expect("local lookup should succeed")
+            .expect("expected approved atlas hit");
+        assert_eq!(answer.source, "local-atlas-cache");
+        assert_eq!(answer.card_id, "A114");
+    }
+
+    #[test]
+    fn semantically_weak_atlas_card_is_quarantined() {
+        assert!(answer_local("All nedir ve nasıl kullanılır?")
+            .expect("local lookup should succeed")
+            .is_none());
+        assert!(answer_local("Try doing vs Try to do ne zaman kullanılır?")
+            .expect("local lookup should succeed")
+            .is_none());
     }
 
     #[test]
