@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-import { useToast } from "../../../app/providers";
 import {
-  TauriCollectionsRepository,
+  useCollectionsRepository,
+  useToast,
   type PersistedCollection
-} from "../../../infrastructure/persistence";
+} from "../../../app/providers";
 import { LibraryPagePhase4 } from "./LibraryPagePhase4";
 
 const COLLECTION_TITLE_MAX = 64;
@@ -16,7 +16,7 @@ function normalizeCollectionTitle(value: string): string {
 
 function CollectionsFinalQaGuards() {
   const { showToast } = useToast();
-  const collectionsRepository = useMemo(() => new TauriCollectionsRepository(), []);
+  const collectionsRepository = useCollectionsRepository();
   const storedCollectionsRef = useRef<readonly PersistedCollection[]>([]);
 
   useEffect(() => {
