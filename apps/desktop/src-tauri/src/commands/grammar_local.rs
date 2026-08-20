@@ -1,8 +1,8 @@
 pub use crate::grammar::types::GrammarLocalAnswer;
 use crate::grammar::{
-    atlas_cache::answer_atlas_local, atlas_review::is_runtime_approved,
-    core_curated::answer_curated_core, runtime_cache::answer_local as answer_core_local,
-    types::GrammarAnswerResponse,
+    atlas_cache::answer_atlas_local, atlas_rescue::answer_reviewed_atlas,
+    atlas_review::is_runtime_approved, core_curated::answer_curated_core,
+    runtime_cache::answer_local as answer_core_local, types::GrammarAnswerResponse,
 };
 
 fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
@@ -13,14 +13,17 @@ fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
         return Ok(Some(answer));
     }
 
-    let Some(answer) = answer_atlas_local(question)? else {
-        return Ok(None);
-    };
-    if !is_runtime_approved(&answer.card_id) {
-        return Ok(None);
+    if let Some(answer) = answer_atlas_local(question)? {
+        if is_runtime_approved(&answer.card_id) {
+            return Ok(Some(answer));
+        }
     }
 
-    Ok(Some(answer))
+    if let Some(answer) = answer_reviewed_atlas(question) {
+        return Ok(Some(answer));
+    }
+
+    Ok(None)
 }
 
 #[tauri::command]
@@ -106,13 +109,61 @@ mod tests {
     }
 
     #[test]
-    fn semantically_weak_atlas_card_is_quarantined() {
-        assert!(answer_local("All nedir ve nasıl kullanılır?")
-            .expect("local lookup should succeed")
-            .is_none());
-        assert!(answer_local("Try doing vs Try to do ne zaman kullanılır?")
-            .expect("local lookup should succeed")
-            .is_none());
+    fn source_reviewed_rescues_cover_safe_compiler_weaknesses() {
+        for (question, expected_id) in [
+            ("All nedir ve nasıl kullanılır?", "A073"),
+            ("Any ne zaman kullanılır?", "A066"),
+            ("Adjective Order nedir ve nasıl kullanılır?", "A089"),
+            ("The more ... the more ne zaman kullanılır?", "A100"),
+            ("Go on doing vs Go on to do ne zaman kullanılır?", "A118"),
+            ("So that ne zaman kullanılır?", "A132"),
+            ("At / On / In for time ne zaman kullanılır?", "A145"),
+        ] {
+            let answer = answer_local(question)
+                .expect("local lookup should succeed")
+                .expect("reviewed rescue should be a local hit");
+            assert_eq!(answer.source, "local-reviewed-atlas", "question={question}");
+            assert_eq!(answer.card_id, expected_id, "question={question}");
+        }
+    }
+
+    #[test]
+    fn source_reviewed_rescues_recover_three_failed_compiler_cards() {
+        for (question, expected_id) in [
+            (
+                "Past Simple finished-time expressions nedir ve nasıl kullanılır?",
+                "A014",
+            ),
+            ("Indefinite Pronouns ne zaman kullanılır?", "A087"),
+            ("Before vs After yapısını kısa ama net açıkla.", "A150"),
+        ] {
+            let answer = answer_local(question)
+                .expect("local lookup should succeed")
+                .expect("reviewed missing card should be a local hit");
+            assert_eq!(answer.source, "local-reviewed-atlas", "question={question}");
+            assert_eq!(answer.card_id, expected_id, "question={question}");
+        }
+    }
+
+    #[test]
+    fn unresolved_weak_atlas_intents_still_fail_closed() {
+        for question in [
+            "Narrative Tenses nedir ve nasıl kullanılır?",
+            "Always with continuous forms nedir ve nasıl kullanılır?",
+            "Passive reporting structures nedir ve nasıl kullanılır?",
+            "Reported Commands nedir ve nasıl kullanılır?",
+            "Try doing vs Try to do ne zaman kullanılır?",
+            "Mean doing vs Mean to do ne zaman kullanılır?",
+            "So ... that nedir ve nasıl kullanılır?",
+            "Basic Word Order nedir ve nasıl kullanılır?",
+        ] {
+            assert!(
+                answer_local(question)
+                    .expect("local lookup should succeed")
+                    .is_none(),
+                "question={question}"
+            );
+        }
     }
 
     #[test]
