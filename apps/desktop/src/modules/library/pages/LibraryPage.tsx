@@ -491,26 +491,37 @@ export function LibraryPage() {
       return;
     }
 
-    setModalQuery("");
-    setModalWordSelection([]);
-    setMoveTargetId(undefined);
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (cancelled) {
+        return;
+      }
 
-    if (modal.type === "new") {
-      setDraftTitle("");
-      setDraftDescription("");
-      setDraftTone("gold");
-      setDraftCoverPreset("ridge");
-      setDraftCoverImage(undefined);
-      return;
-    }
+      setModalQuery("");
+      setModalWordSelection([]);
+      setMoveTargetId(undefined);
 
-    if (modal.type === "edit" && activeCollection !== undefined) {
-      setDraftTitle(activeCollection.title);
-      setDraftDescription(activeCollection.description);
-      setDraftTone(activeCollection.tone);
-      setDraftCoverPreset(activeCollection.coverPreset);
-      setDraftCoverImage(activeCollection.coverImage);
-    }
+      if (modal.type === "new") {
+        setDraftTitle("");
+        setDraftDescription("");
+        setDraftTone("gold");
+        setDraftCoverPreset("ridge");
+        setDraftCoverImage(undefined);
+        return;
+      }
+
+      if (modal.type === "edit" && activeCollection !== undefined) {
+        setDraftTitle(activeCollection.title);
+        setDraftDescription(activeCollection.description);
+        setDraftTone(activeCollection.tone);
+        setDraftCoverPreset(activeCollection.coverPreset);
+        setDraftCoverImage(activeCollection.coverImage);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [activeCollection, modal]);
 
   function openCollection(collectionId: string) {
@@ -1291,6 +1302,7 @@ export function LibraryPage() {
             <label className="wvc-search">
               <AppIcon name="search" size={19} />
               <input
+                aria-label="Search words in collection"
                 onChange={(event) => setWordQuery(event.currentTarget.value)}
                 placeholder="Find a word in this collection…"
                 ref={searchInputRef}
@@ -1496,6 +1508,7 @@ export function LibraryPage() {
           <label className="wvc-search">
             <AppIcon name="search" size={19} />
             <input
+              aria-label="Search collections"
               onChange={(event) => setCollectionQuery(event.currentTarget.value)}
               placeholder="Search collections…"
               ref={searchInputRef}
