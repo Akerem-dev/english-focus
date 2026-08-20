@@ -1,9 +1,9 @@
 import { createContext } from "react";
 
-import type { GrammarLocalAnswer } from "../../infrastructure/grammar/TauriGrammarRepository";
+import type { GrammarAnswerResult } from "../../infrastructure/grammar/TauriGrammarRepository";
 
 export interface GrammarContextValue {
-  readonly answerLocalGrammar: (question: string) => Promise<GrammarLocalAnswer | undefined>;
+  readonly answerGrammarQuestion: (question: string) => Promise<GrammarAnswerResult>;
 }
 
 export const GrammarContext = createContext<GrammarContextValue | undefined>(undefined);
