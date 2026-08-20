@@ -42,8 +42,34 @@ pub fn assistant_answer_grammar(question: String) -> Result<GrammarAnswerRespons
 mod tests {
     use super::answer_local;
 
+    const CURATED_CORE_QUESTIONS: &str = include_str!("../grammar/core_curated_aliases.tsv");
+
     #[test]
-    fn all_curated_core_wordings_can_bypass_cloud() {
+    fn every_curated_core_wording_bypasses_cloud() {
+        let mut checked = 0usize;
+
+        for raw_line in CURATED_CORE_QUESTIONS.lines() {
+            let line = raw_line.trim_start_matches('\u{feff}').trim();
+            if line.is_empty() {
+                continue;
+            }
+
+            let (_, question) = line
+                .split_once('\t')
+                .expect("curated grammar row should contain a tab separator");
+            let answer = answer_local(question)
+                .expect("local lookup should succeed")
+                .expect("every curated compiler question must be a local hit");
+
+            assert_eq!(answer.source, "local-core-cache", "question={question}");
+            checked += 1;
+        }
+
+        assert_eq!(checked, 195);
+    }
+
+    #[test]
+    fn natural_curated_core_wording_can_bypass_cloud() {
         let answer =
             answer_local("aga present perfect mi past simple mı kafam karıştı neye bakıp seçecem")
                 .expect("local lookup should succeed")
