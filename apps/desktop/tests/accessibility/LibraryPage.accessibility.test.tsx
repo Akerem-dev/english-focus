@@ -6,7 +6,7 @@ import { AppProviders } from "../../src/app/providers";
 import { LibraryPage } from "../../src/modules/library/pages";
 
 describe("LibraryPage accessibility", () => {
-  it("provides named search, filter, export, selection, and detail controls", () => {
+  it("keeps the collections overview controls discoverable in markup", () => {
     const markup = renderToStaticMarkup(
       <MemoryRouter>
         <AppProviders>
@@ -15,11 +15,12 @@ describe("LibraryPage accessibility", () => {
       </MemoryRouter>
     );
 
-    expect(markup).toContain("Search library");
-    expect(markup).toContain('aria-label="Library filters"');
-    expect(markup).toContain("Export selected");
-    expect(markup).toContain('aria-label="Select maintain"');
-    expect(markup).toContain('aria-label="Open maintain details"');
-    expect(markup).toContain('role="row"');
+    expect(markup).toContain("Your Collections");
+    expect(markup).toContain("New collection");
+    expect(markup).toContain('placeholder="Search collections…"');
+    expect(markup).toContain('aria-expanded="false"');
+    expect(markup).toContain("Gathering your collections…");
+    expect(markup).toContain('class="wvc-search"');
+    expect(markup).not.toContain('role="row"');
   });
 });
