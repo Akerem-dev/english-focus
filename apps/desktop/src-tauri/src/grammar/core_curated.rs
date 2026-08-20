@@ -54,9 +54,9 @@ fn parse_aliases() -> Result<HashMap<String, usize>, String> {
             continue;
         }
 
-        let (family_raw, question) = line.split_once('\t').ok_or_else(|| {
-            format!("grammar_core_alias_invalid|line={}", line_number + 1)
-        })?;
+        let (family_raw, question) = line
+            .split_once('\t')
+            .ok_or_else(|| format!("grammar_core_alias_invalid|line={}", line_number + 1))?;
         let family = family_raw.parse::<usize>().map_err(|_| {
             format!(
                 "grammar_core_alias_family_invalid|line={}|value={family_raw}",
@@ -72,10 +72,7 @@ fn parse_aliases() -> Result<HashMap<String, usize>, String> {
 
         let normalized = normalize(question);
         if normalized.is_empty() {
-            return Err(format!(
-                "grammar_core_alias_empty|line={}",
-                line_number + 1
-            ));
+            return Err(format!("grammar_core_alias_empty|line={}", line_number + 1));
         }
 
         if let Some(existing) = aliases.insert(normalized, family) {
@@ -115,9 +112,8 @@ pub fn answer_curated_core(question: &str) -> Result<Option<GrammarLocalAnswer>,
         return Ok(None);
     };
 
-    let answer = answer_core_local(CANONICAL_CORE_QUESTIONS[family])?.ok_or_else(|| {
-        format!("grammar_core_canonical_missing|family={family}")
-    })?;
+    let answer = answer_core_local(CANONICAL_CORE_QUESTIONS[family])?
+        .ok_or_else(|| format!("grammar_core_canonical_missing|family={family}"))?;
     Ok(Some(answer))
 }
 
