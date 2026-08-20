@@ -1,9 +1,7 @@
 pub use crate::grammar::types::GrammarLocalAnswer;
 use crate::grammar::{
-    atlas_cache::answer_atlas_local,
-    core_curated::answer_curated_core,
-    runtime_cache::answer_local as answer_core_local,
-    types::GrammarAnswerResponse,
+    atlas_cache::answer_atlas_local, core_curated::answer_curated_core,
+    runtime_cache::answer_local as answer_core_local, types::GrammarAnswerResponse,
 };
 
 fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
@@ -38,11 +36,10 @@ mod tests {
 
     #[test]
     fn all_curated_core_wordings_can_bypass_cloud() {
-        let answer = answer_local(
-            "aga present perfect mi past simple mı kafam karıştı neye bakıp seçecem",
-        )
-        .expect("local lookup should succeed")
-        .expect("expected curated core hit");
+        let answer =
+            answer_local("aga present perfect mi past simple mı kafam karıştı neye bakıp seçecem")
+                .expect("local lookup should succeed")
+                .expect("expected curated core hit");
         assert_eq!(answer.source, "local-core-cache");
         assert_eq!(answer.card_id, "C015");
     }
@@ -67,8 +64,10 @@ mod tests {
 
     #[test]
     fn ambiguous_cross_topic_question_still_fails_closed() {
-        assert!(answer_local("must ile have to arasında ince anlam farkı nedir?")
-            .expect("local lookup should succeed")
-            .is_none());
+        assert!(
+            answer_local("must ile have to arasında ince anlam farkı nedir?")
+                .expect("local lookup should succeed")
+                .is_none()
+        );
     }
 }
