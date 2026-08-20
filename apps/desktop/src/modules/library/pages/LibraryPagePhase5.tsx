@@ -7,6 +7,14 @@ import {
 } from "../../../app/providers";
 import { LibraryPagePhase4 } from "./LibraryPagePhase4";
 
+import "../../../styles/word-valley-collections-cleanroom.css";
+import "../../../styles/word-valley-collections-phase1-runtime.css";
+import "../../../styles/word-valley-collections-phase1-sorting.css";
+import "../../../styles/word-valley-collections-phase2-all-words.css";
+import "../../../styles/word-valley-collections-phase3-rich-detail.css";
+import "../../../styles/word-valley-collections-phase4-editorial-polish.css";
+import "../../../styles/word-valley-collections-phase5-final-qa.css";
+
 const COLLECTION_TITLE_MAX = 64;
 const COLLECTION_DESCRIPTION_MAX = 180;
 
