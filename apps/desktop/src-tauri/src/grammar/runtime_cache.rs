@@ -105,6 +105,7 @@ const CORE_TOPICS: &[CoreTopic] = &[
     },
 ];
 
+#[rustfmt::skip]
 const STOPWORDS: &[&str] = &[
     "a", "an", "the", "ve", "ile", "mi", "mı", "mu", "mü", "ne", "nedir", "nasıl",
     "hangi", "hangisi", "zaman", "kullanılır", "kullanırım", "anlat", "açıkla", "fark",
@@ -184,7 +185,10 @@ pub fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String
     let normalized_question = normalize(question);
     for topic in CORE_TOPICS {
         if normalize(topic.topic_name) == normalized_question
-            || topic.aliases.iter().any(|alias| normalize(alias) == normalized_question)
+            || topic
+                .aliases
+                .iter()
+                .any(|alias| normalize(alias) == normalized_question)
         {
             return Ok(Some(to_answer(topic, 1.0)));
         }
@@ -242,9 +246,11 @@ mod tests {
 
     #[test]
     fn uncertain_cross_topic_question_fails_closed() {
-        assert!(answer_local("must ile have to arasında ince anlam farkı nedir?")
-            .unwrap()
-            .is_none());
+        assert!(
+            answer_local("must ile have to arasında ince anlam farkı nedir?")
+                .unwrap()
+                .is_none()
+        );
     }
 
     #[test]
