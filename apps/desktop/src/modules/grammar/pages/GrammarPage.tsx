@@ -3,6 +3,10 @@ import { useMemo, useRef, useState } from "react";
 import grammarBackground from "../../../assets/collections/collections-background.png";
 import { AppIcon } from "../../../design-system";
 import { PresentPerfectPractice } from "../components/PresentPerfectPractice";
+import {
+  GRAMMAR_KNOWLEDGE_AREAS,
+  GRAMMAR_KNOWLEDGE_LESSONS
+} from "../knowledge/grammarKnowledgeIndex";
 
 import "../../../styles/word-valley-grammar-phase1-home.css";
 import "../../../styles/word-valley-grammar-phase2-topic.css";
@@ -10,137 +14,8 @@ import "../../../styles/word-valley-grammar-phase3-examples.css";
 import "../../../styles/word-valley-grammar-phase4-compare.css";
 import "../../../styles/word-valley-grammar-phase5-practice.css";
 
-interface GrammarArea {
-  readonly eyebrow: string;
-  readonly title: string;
-  readonly description: string;
-  readonly level: string;
-  readonly accent: "gold" | "forest";
-}
-
-interface GrammarLesson {
-  readonly title: string;
-  readonly category: string;
-  readonly level: string;
-  readonly description: string;
-  readonly keywords: readonly string[];
-  readonly implemented?: boolean;
-}
-
 type GrammarView = "home" | "present-perfect";
 type PresentPerfectTab = "rule" | "examples" | "compare" | "practice";
-
-const GRAMMAR_AREAS: readonly GrammarArea[] = Object.freeze([
-  {
-    eyebrow: "TENSES & TIME",
-    title: "Tenses & Time",
-    description: "Present, past, perfect forms, aspect, and time reference.",
-    level: "A1–C1",
-    accent: "gold"
-  },
-  {
-    eyebrow: "NOUN SYSTEM",
-    title: "Nouns & Articles",
-    description: "Articles, countability, determiners, pronouns, and possession.",
-    level: "A1–C1",
-    accent: "forest"
-  },
-  {
-    eyebrow: "VERB SYSTEM",
-    title: "Modals & Verb Patterns",
-    description: "Ability, obligation, advice, infinitives, gerunds, and verb patterns.",
-    level: "A2–C1",
-    accent: "gold"
-  },
-  {
-    eyebrow: "SENTENCE LOGIC",
-    title: "Clauses & Conditionals",
-    description: "Conditionals, relative clauses, reported speech, and linking ideas.",
-    level: "A2–C1",
-    accent: "forest"
-  },
-  {
-    eyebrow: "RELATIONSHIPS",
-    title: "Prepositions & Linkers",
-    description: "Time, place, movement, dependent prepositions, and connectors.",
-    level: "A1–C1",
-    accent: "gold"
-  },
-  {
-    eyebrow: "DESCRIPTION",
-    title: "Adjectives & Adverbs",
-    description: "Comparison, degree, order, modifiers, and natural emphasis.",
-    level: "A1–C1",
-    accent: "forest"
-  }
-]);
-
-const GRAMMAR_LESSONS: readonly GrammarLesson[] = Object.freeze([
-  {
-    title: "Present Perfect",
-    category: "Tenses & Time",
-    level: "B1",
-    description: "Connect a past event, result, duration, or life experience to the present.",
-    keywords: ["present", "perfect", "have", "has", "since", "for"],
-    implemented: true
-  },
-  {
-    title: "Present Perfect Continuous",
-    category: "Tenses & Time",
-    level: "B1–B2",
-    description: "Focus on an activity continuing, or recently continuing, up to now.",
-    keywords: ["present", "perfect", "continuous", "have been", "has been"]
-  },
-  {
-    title: "Past Perfect",
-    category: "Tenses & Time",
-    level: "B2",
-    description: "Place one past event before another past reference point.",
-    keywords: ["past", "perfect", "had", "before"]
-  },
-  {
-    title: "Perfect Infinitive",
-    category: "Modals & Verb Patterns",
-    level: "C1",
-    description: "Use “to have + past participle” to look back from another viewpoint.",
-    keywords: ["perfect", "infinitive", "to have", "participle"]
-  },
-  {
-    title: "Articles: a, an, the",
-    category: "Nouns & Articles",
-    level: "A1–B2",
-    description: "Choose articles by reference, specificity, countability, and shared knowledge.",
-    keywords: ["article", "articles", "a", "an", "the", "noun"]
-  },
-  {
-    title: "For vs Since",
-    category: "Tenses & Time",
-    level: "B1",
-    description: "Choose “for” for a duration and “since” for the starting point of that duration.",
-    keywords: ["for", "vs", "since", "duration", "starting point", "present perfect"]
-  },
-  {
-    title: "In, On, At: Time",
-    category: "Prepositions & Linkers",
-    level: "A1–A2",
-    description: "Choose the natural preposition for clock times, days, dates, months, and longer periods.",
-    keywords: ["preposition", "prepositions", "in", "on", "at", "time"]
-  },
-  {
-    title: "Used to vs Be used to",
-    category: "Modals & Verb Patterns",
-    level: "B1",
-    description: "Separate past habits and states from the meaning of being accustomed to something.",
-    keywords: ["used", "to", "vs", "be", "used to", "habit", "accustomed"]
-  },
-  {
-    title: "Much vs Many",
-    category: "Nouns & Articles",
-    level: "A1–A2",
-    description: "Choose the natural quantity word by whether the noun is countable or uncountable.",
-    keywords: ["much", "vs", "many", "countable", "uncountable", "quantity"]
-  }
-]);
 
 const TROUBLE_SPOTS = Object.freeze([
   "for vs since",
@@ -162,6 +37,11 @@ function includesEveryToken(haystack: string, tokens: readonly string[]): boolea
   return tokens.every((token) => normalized.includes(token));
 }
 
+function lessonSearchText(lesson: (typeof GRAMMAR_KNOWLEDGE_LESSONS)[number]): string {
+  const subtopicTitles = lesson.subtopics.map((subtopic) => subtopic.title).join(" ");
+  return `${lesson.title} ${lesson.category} ${lesson.level} ${lesson.description} ${lesson.keywords.join(" ")} ${lesson.coreTopics.join(" ")} ${subtopicTitles}`;
+}
+
 export function GrammarPage() {
   const [query, setQuery] = useState("");
   const [view, setView] = useState<GrammarView>("home");
@@ -170,19 +50,16 @@ export function GrammarPage() {
   const searching = tokens.length > 0;
 
   const visibleAreas = useMemo(() => {
-    if (!searching) return GRAMMAR_AREAS;
-    return GRAMMAR_AREAS.filter((area) =>
+    if (!searching) return GRAMMAR_KNOWLEDGE_AREAS;
+    return GRAMMAR_KNOWLEDGE_AREAS.filter((area) =>
       includesEveryToken(`${area.eyebrow} ${area.title} ${area.description} ${area.level}`, tokens)
     );
   }, [searching, tokens]);
 
   const visibleLessons = useMemo(() => {
     if (!searching) return [];
-    return GRAMMAR_LESSONS.filter((lesson) =>
-      includesEveryToken(
-        `${lesson.title} ${lesson.category} ${lesson.level} ${lesson.description} ${lesson.keywords.join(" ")}`,
-        tokens
-      )
+    return GRAMMAR_KNOWLEDGE_LESSONS.filter((lesson) =>
+      includesEveryToken(lessonSearchText(lesson), tokens)
     );
   }, [searching, tokens]);
 
@@ -271,7 +148,7 @@ export function GrammarPage() {
                     className="wvg-result-row"
                     data-implemented={lesson.implemented ? "true" : "false"}
                     disabled={!lesson.implemented}
-                    key={lesson.title}
+                    key={lesson.id}
                     onClick={lesson.implemented ? openPresentPerfect : undefined}
                     type="button"
                   >
@@ -287,7 +164,7 @@ export function GrammarPage() {
                 ))}
 
                 {visibleAreas.map((area) => (
-                  <button className="wvg-result-row wvg-result-row--area" key={area.title} onClick={() => searchFor(area.title)} type="button">
+                  <button className="wvg-result-row wvg-result-row--area" key={area.id} onClick={() => searchFor(area.title)} type="button">
                     <span className="wvg-result-row__copy">
                       <strong>{area.title}</strong>
                       <small>{area.description}</small>
@@ -310,7 +187,7 @@ export function GrammarPage() {
             ) : (
               <div className="wvg-area-grid">
                 {visibleAreas.map((area) => (
-                  <article className="wvg-area" data-accent={area.accent} key={area.title}>
+                  <article className="wvg-area" data-accent={area.accent} key={area.id}>
                     <i aria-hidden="true" />
                     <p>{area.eyebrow}</p>
                     <h3>{area.title}</h3>
