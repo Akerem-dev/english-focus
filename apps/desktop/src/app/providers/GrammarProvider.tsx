@@ -7,7 +7,7 @@ export function GrammarProvider({ children }: PropsWithChildren) {
   const value = useMemo<GrammarContextValue>(() => {
     const repository = new TauriGrammarRepository();
     return Object.freeze({
-      answerLocalGrammar: (question: string) => repository.answerLocal(question)
+      answerGrammarQuestion: (question: string) => repository.answerQuestion(question)
     });
   }, []);
 
