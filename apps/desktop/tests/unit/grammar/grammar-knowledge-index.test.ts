@@ -5,7 +5,8 @@ import {
   GRAMMAR_ATLAS_PLANNED_COUNT,
   GRAMMAR_CORE_FAMILY_COUNT,
   GRAMMAR_KNOWLEDGE_AREAS,
-  GRAMMAR_KNOWLEDGE_LESSONS
+  GRAMMAR_KNOWLEDGE_LESSONS,
+  type GrammarSubtopic
 } from "../../../src/modules/grammar/knowledge/grammarKnowledgeIndex";
 
 describe("grammar knowledge hierarchy", () => {
@@ -21,7 +22,9 @@ describe("grammar knowledge hierarchy", () => {
   });
 
   it("groups the full atlas under a compact lesson hierarchy", () => {
-    const subtopics = GRAMMAR_KNOWLEDGE_LESSONS.flatMap((lesson) => lesson.subtopics);
+    const subtopics: readonly GrammarSubtopic[] = GRAMMAR_KNOWLEDGE_LESSONS.flatMap(
+      (lesson) => lesson.subtopics
+    );
     const uniqueIds = new Set(subtopics.map((topic) => topic.cardId));
 
     expect(GRAMMAR_KNOWLEDGE_LESSONS).toHaveLength(35);
