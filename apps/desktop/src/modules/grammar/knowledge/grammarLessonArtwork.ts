@@ -40,5 +40,3 @@ export function getGrammarLessonArtwork(lessonId: string): string {
   const index = pinned ?? stableHash(lessonId) % GRAMMAR_HERO_ARTWORK.length;
   return GRAMMAR_HERO_ARTWORK[index] ?? GRAMMAR_HERO_ARTWORK[0];
 }
-
-export const GRAMMAR_HERO_ARTWORK_COUNT = GRAMMAR_HERO_ARTWORK.length;
