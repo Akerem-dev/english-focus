@@ -35,12 +35,6 @@ function buildStarters(
         prompt:
           "Sık karıştırılan iki İngilizce grammar yapısını anlam ve kullanım üzerinden karşılaştır.",
         icon: "books" as const
-      },
-      {
-        title: "Quick grammar quiz",
-        description: "Tek hızlı grammar sorusu çöz.",
-        prompt: "Bana tek hızlı bir İngilizce grammar quiz sorusu hazırla.",
-        icon: "star" as const
       }
     ]);
   }
@@ -64,12 +58,6 @@ function buildStarters(
       description: "Anlam, zaman ve kullanım farkını göster.",
       prompt: comparePrompt,
       icon: "books" as const
-    },
-    {
-      title: "Quiz this grammar",
-      description: "Bu konudan tek hızlı soru çöz.",
-      prompt: `${focus.title} konusunda tek hızlı quiz sorusu hazırla.`,
-      icon: "star" as const
     }
   ]);
 }
@@ -85,7 +73,7 @@ function GrammarAssistantSession() {
   const launcherRef = useRef<HTMLButtonElement>(null);
   const requestSequence = useRef(0);
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(lessonFocus !== undefined);
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState<string | undefined>();
   const [answerText, setAnswerText] = useState<string | undefined>();
@@ -170,10 +158,10 @@ function GrammarAssistantSession() {
 
   const welcomeCopy =
     lessonFocus?.id === "present-perfect"
-      ? "Bu konuyu çalışırken kuralı açıklamamı, Present Perfect ile Past Simple’ı karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin."
+      ? "Bu konuyu çalışırken kuralı açıklamamı veya Present Perfect ile Past Simple’ı karşılaştırmamı isteyebilirsin."
       : lessonFocus === undefined
         ? "Bir grammar konusu seçebilir veya aklına takılan kuralı, karşılaştırmayı ya da örneği doğrudan sorabilirsin."
-        : `${lessonFocus.title} çalışırken kuralı açıklamamı, benzer yapılarla karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin.`;
+        : `${lessonFocus.title} çalışırken kuralı açıklamamı veya benzer yapılarla karşılaştırmamı isteyebilirsin.`;
 
   return (
     <aside className="assistant-dock wv84-assistant" data-open={open || undefined}>
