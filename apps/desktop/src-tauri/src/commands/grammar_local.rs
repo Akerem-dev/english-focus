@@ -6,6 +6,10 @@ use crate::grammar::{
     source_verified_rescue::answer_source_verified_atlas, types::GrammarAnswerResponse,
 };
 
+fn has_explicit_ellipsis(question: &str) -> bool {
+    question.contains("...") || question.contains('…')
+}
+
 fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
     if let Some(answer) = answer_curated_core(question)? {
         return Ok(Some(answer));
@@ -37,6 +41,16 @@ fn answer_local(question: &str) -> Result<Option<GrammarLocalAnswer>, String> {
         }
 
         return Ok(None);
+    }
+
+    // An explicit ellipsis can be semantically meaningful in a grammar pattern. Preserve that
+    // signal before the broader reviewed rescue layer normalizes punctuation away. The
+    // source-verified layer is exact-title/exact-alias only, so this remains a narrow fail-closed
+    // discriminator rather than a fuzzy shortcut.
+    if has_explicit_ellipsis(question) {
+        if let Some(answer) = answer_source_verified_atlas(question) {
+            return Ok(Some(answer));
+        }
     }
 
     // Missing compiler cards can still be served by explicitly source-reviewed rescues.
@@ -206,6 +220,11 @@ mod tests {
             .expect("local lookup should succeed")
             .expect("result so-that should resolve");
         assert_eq!(result.card_id, "A134");
+
+        let unicode_result = answer_local("So … that nedir ve nasıl kullanılır?")
+            .expect("local lookup should succeed")
+            .expect("unicode ellipsis result so-that should resolve");
+        assert_eq!(unicode_result.card_id, "A134");
     }
 
     #[test]
