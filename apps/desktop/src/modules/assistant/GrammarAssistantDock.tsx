@@ -9,6 +9,8 @@ import {
   type AssistantMascotState
 } from "./AssistantMascot";
 
+import "../../styles/word-valley-grammar-reference-rail.css";
+
 const STARTERS = Object.freeze([
   "Present Perfect kuralını kısa Türkçe mantıkla açıkla.",
   "Present Perfect ile Past Simple arasındaki farkı anlam, zaman ve kullanım üzerinden göster.",
