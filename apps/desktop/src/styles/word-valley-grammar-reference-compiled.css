@@ -1,0 +1,126 @@
+/* Generic compiled lessons inside the final Figma grammar master layout. */
+
+.wvg-compiled-focus h2 {
+  margin: 16px 0 9px;
+  overflow: hidden;
+  color: #123a31;
+  font: 600 28px/31px "Cormorant Garamond", Georgia, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wvg-compiled-focus__summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #566660;
+  font: 500 12.5px/18px "Inter", system-ui, sans-serif;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.wvg-compiled-focus__rule {
+  display: grid;
+  min-height: 52px;
+  grid-template-columns: 31px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-top: 17px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #f8f3e8;
+}
+
+.wvg-compiled-focus__rule > span {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef5ef;
+  color: #285d50;
+}
+
+.wvg-compiled-focus__rule p {
+  margin: 0;
+  color: #4c5f58;
+  font: 600 11px/16px "Inter", system-ui, sans-serif;
+}
+
+.wvg-compiled-points .wvg-reference-use p {
+  display: -webkit-box;
+  max-width: 320px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.wvg-compiled-topics .wvg-reference-signals {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.wvg-compiled-topics .wvg-reference-signals span {
+  height: 27px;
+  padding: 0 9px;
+  overflow: hidden;
+  color: #53655e;
+  font: 600 9.5px/13px "Inter", system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wvg-compiled-guide__steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.wvg-compiled-guide__steps section {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 25px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  padding: 8px 7px;
+  border-radius: 7px;
+  background: #f8f3e8;
+}
+
+.wvg-compiled-guide__steps strong {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border-radius: 50%;
+  background: #0a493e;
+  color: #d7a943;
+  font: 800 10px/12px "Inter", system-ui, sans-serif;
+}
+
+.wvg-compiled-guide__steps p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: #5e6c66;
+  font: 600 8.5px/11px "Inter", system-ui, sans-serif;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.wvg-compiled-explanations .wvg-reference-example {
+  grid-template-columns: 24px 228px 56px minmax(0, 1fr);
+}
+
+.wvg-compiled-explanations .wvg-reference-example > strong,
+.wvg-compiled-explanations .wvg-reference-example > p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wvg-compiled-explanations .wvg-reference-example > b {
+  text-align: center;
+}
