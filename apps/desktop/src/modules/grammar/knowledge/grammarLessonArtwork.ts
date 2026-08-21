@@ -38,5 +38,5 @@ function stableHash(value: string): number {
 export function getGrammarLessonArtwork(lessonId: string): string {
   const pinned = PINNED_ARTWORK[lessonId];
   const index = pinned ?? stableHash(lessonId) % GRAMMAR_HERO_ARTWORK.length;
-  return GRAMMAR_HERO_ARTWORK[index] ?? GRAMMAR_HERO_ARTWORK[0];
+  return GRAMMAR_HERO_ARTWORK[index] ?? hero01;
 }
