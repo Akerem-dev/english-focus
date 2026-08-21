@@ -109,7 +109,9 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
           <div className="wvg-reference-formula" aria-label="have or has plus past participle V3">
             <strong>have&nbsp; / &nbsp;has</strong>
             <span>+</span>
-            <strong>past participle (V<sub>3</sub>)</strong>
+            <strong>
+              past participle (V<sub>3</sub>)
+            </strong>
           </div>
 
           <div className="wvg-reference-subjects">
@@ -119,7 +121,9 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
               </span>
               <span>I / You / We / They</span>
               <b>→</b>
-              <strong>have + V<sub>3</sub></strong>
+              <strong>
+                have + V<sub>3</sub>
+              </strong>
             </div>
             <div>
               <span className="wvg-reference-subjects__icon" aria-hidden="true">
@@ -127,7 +131,9 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
               </span>
               <span>He / She / It</span>
               <b>→</b>
-              <strong>has + V<sub>3</sub></strong>
+              <strong>
+                has + V<sub>3</sub>
+              </strong>
             </div>
           </div>
 
@@ -174,13 +180,23 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
             <section className="wvg-reference-compare__side wvg-reference-compare__side--perfect">
               <strong>Present Perfect</strong>
               <p>Bugünle bağlantıya odaklanır.</p>
-              <small>I’ve lost my keys.<br />(Sonuç şimdi önemli.)</small>
+              <small>
+                I’ve lost my keys.
+                <br />
+                (Sonuç şimdi önemli.)
+              </small>
             </section>
-            <span className="wvg-reference-compare__vs" aria-hidden="true">VS.</span>
+            <span className="wvg-reference-compare__vs" aria-hidden="true">
+              VS.
+            </span>
             <section className="wvg-reference-compare__side wvg-reference-compare__side--simple">
               <strong>Past Simple</strong>
               <p>Bitmiş bir geçmiş zamana odaklanır.</p>
-              <small>I lost my keys yesterday.<br />(Zaman belli.)</small>
+              <small>
+                I lost my keys yesterday.
+                <br />
+                (Zaman belli.)
+              </small>
             </section>
           </div>
         </article>
