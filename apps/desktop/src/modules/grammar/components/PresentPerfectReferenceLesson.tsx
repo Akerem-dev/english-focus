@@ -1,5 +1,5 @@
 import { AppIcon } from "../../../design-system";
-import grammarHero from "../../../assets/grammar/headers/grammar-hero-08-hilltop_chapel_valley.png";
+import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 
 interface PresentPerfectReferenceLessonProps {
   readonly onBack: () => void;
@@ -73,6 +73,8 @@ const EXAMPLES = Object.freeze([
 ]);
 
 export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenceLessonProps) {
+  const grammarHero = getGrammarLessonArtwork("present-perfect");
+
   return (
     <main className="wvg-reference-lesson" aria-labelledby="grammar-topic-title">
       <header className="wvg-reference-hero">
