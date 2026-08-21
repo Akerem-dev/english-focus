@@ -1,6 +1,7 @@
 import { expect, test } from "./app.fixture";
 
 test("grammar master lesson keeps the approved end-user layout and copy", async ({ page }) => {
+  await page.setViewportSize({ width: 1664, height: 936 });
   await page.goto("/#/grammar");
 
   await expect(page.getByRole("heading", { name: "English Grammar", level: 1 })).toBeVisible();
