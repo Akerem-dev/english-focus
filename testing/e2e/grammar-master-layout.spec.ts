@@ -8,6 +8,7 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
   await expect(page.getByRole("heading", { name: "Wordie AI", level: 2 })).toBeVisible();
   await expect(page.getByText("Explain a rule", { exact: true })).toBeVisible();
   await expect(page.getByText("Compare grammar points", { exact: true })).toBeVisible();
+  await expect(page.getByText("Quick grammar quiz", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "Continue lesson" }).click();
 
@@ -28,6 +29,8 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
   await expect(
     page.getByText("Anlam, zaman ve kullanım farkını göster.", { exact: true })
   ).toBeVisible();
+  await expect(page.getByText("Quiz this grammar", { exact: true })).toBeVisible();
+  await expect(page.getByText("Bu konudan tek hızlı soru çöz.", { exact: true })).toBeVisible();
   await expect(page.getByPlaceholder("Ask about this grammar...")).toBeVisible();
 
   await expect(
