@@ -7,8 +7,8 @@ test("Collections searches, sorts, and exposes the effective word catalog", asyn
 
   const search = page.getByLabel("Search collections");
   await search.fill("Academic");
-  await expect(page.getByRole("button", { name: /Academic Writing/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: /IELTS Vocabulary/ })).toHaveCount(0);
+  await expect(page.locator(".wvc-card").filter({ hasText: "Academic Writing" })).toBeVisible();
+  await expect(page.locator(".wvc-card").filter({ hasText: "IELTS Vocabulary" })).toHaveCount(0);
 
   await search.fill("");
   await page.locator(".wvc-sort-button").click();
