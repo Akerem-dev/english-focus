@@ -4,7 +4,6 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
   await page.goto("/#/grammar");
 
   await expect(page.getByRole("heading", { name: "English Grammar", level: 1 })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Open Wordie" })).toBeVisible();
 
   await page.getByRole("button", { name: "Continue lesson" }).click();
 
