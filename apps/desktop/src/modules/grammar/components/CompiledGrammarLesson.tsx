@@ -181,7 +181,7 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
                   <p>
                     {point.status === "loading"
                       ? "Açıklama hazırlanıyor…"
-                      : pointSummary(point, "Bu noktanın açıklaması yakında eklenecek.")}
+                      : pointSummary(point, lesson.description)}
                   </p>
                 </div>
               </div>
@@ -229,7 +229,7 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
                 <p>
                   {point.status === "loading"
                     ? "Açıklama hazırlanıyor…"
-                    : pointSummary(point, "Açıklama yakında eklenecek.")}
+                    : pointSummary(point, lesson.description)}
                 </p>
               </div>
             ))}
