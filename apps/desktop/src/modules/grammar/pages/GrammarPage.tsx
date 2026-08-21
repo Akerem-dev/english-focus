@@ -1,5 +1,6 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useGrammar } from "../../../app/providers";
 import grammarBackground from "../../../assets/collections/collections-background.png";
 import { AppIcon } from "../../../design-system";
 import { CompiledGrammarLesson } from "../components/CompiledGrammarLesson";
@@ -39,12 +40,18 @@ function lessonSearchText(lesson: (typeof GRAMMAR_KNOWLEDGE_LESSONS)[number]): s
 }
 
 export function GrammarPage() {
+  const { setLessonFocus } = useGrammar();
   const [query, setQuery] = useState("");
   const [view, setView] = useState<GrammarView>("home");
   const [selectedLesson, setSelectedLesson] = useState<GrammarKnowledgeLesson | undefined>();
   const searchRef = useRef<HTMLInputElement>(null);
   const tokens = useMemo(() => normalizeSearch(query), [query]);
   const searching = tokens.length > 0;
+
+  useEffect(() => {
+    setLessonFocus(undefined);
+    return () => setLessonFocus(undefined);
+  }, [setLessonFocus]);
 
   const visibleAreas = useMemo(() => {
     if (!searching) return GRAMMAR_KNOWLEDGE_AREAS;
@@ -71,6 +78,12 @@ export function GrammarPage() {
   function openPresentPerfect() {
     setQuery("");
     setSelectedLesson(undefined);
+    setLessonFocus({
+      id: "present-perfect",
+      title: "Present Perfect",
+      category: "Tenses & Time",
+      compareWith: "Past Simple"
+    });
     setView("present-perfect");
   }
 
@@ -82,12 +95,14 @@ export function GrammarPage() {
 
     setQuery("");
     setSelectedLesson(lesson);
+    setLessonFocus({ id: lesson.id, title: lesson.title, category: lesson.category });
     setView("compiled-lesson");
   }
 
   function returnHome() {
     setQuery("");
     setSelectedLesson(undefined);
+    setLessonFocus(undefined);
     setView("home");
   }
 
