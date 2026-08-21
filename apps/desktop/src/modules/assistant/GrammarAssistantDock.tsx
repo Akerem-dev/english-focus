@@ -10,9 +10,21 @@ import {
 } from "./AssistantMascot";
 
 const STARTERS = Object.freeze([
-  "Present Perfect ile Past Simple arasındaki fark nedir?",
-  "Mustn't vs Don't have to ne zaman kullanılır?",
-  "Gerund mı infinitive mi nasıl seçerim?"
+  "Present Perfect kuralını kısa Türkçe mantıkla açıkla.",
+  "Present Perfect ile Past Simple arasındaki farkı anlam, zaman ve kullanım üzerinden göster.",
+  "Present Perfect konusunda tek hızlı quiz sorusu hazırla."
+]);
+
+const STARTER_TITLES = Object.freeze([
+  "Explain this rule",
+  "Compare with Past Simple",
+  "Quiz this grammar"
+]);
+
+const STARTER_DESCRIPTIONS = Object.freeze([
+  "Kuralı kısa Türkçe mantıkla açıkla.",
+  "Anlam, zaman ve kullanım farkını göster.",
+  "Bu konudan tek hızlı soru çöz."
 ]);
 
 export function GrammarAssistantDock() {
@@ -21,7 +33,7 @@ export function GrammarAssistantDock() {
   const launcherRef = useRef<HTMLButtonElement>(null);
   const requestSequence = useRef(0);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState<string | undefined>();
   const [answerText, setAnswerText] = useState<string | undefined>();
@@ -131,10 +143,10 @@ export function GrammarAssistantDock() {
             <div className="wv84-assistant-panel__conversation">
               {isWelcome ? (
                 <article className="wv84-wordie-welcome">
-                  <h3>Ask naturally.</h3>
+                  <h3>Welcome.</h3>
                   <p>
-                    Ask about a tense, article, modal, conditional, verb pattern, clause, or another
-                    grammar point.
+                    Bu konuyu çalışırken kuralı açıklamamı, Present Perfect ile Past Simple’ı
+                    karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin.
                   </p>
                 </article>
               ) : (
@@ -183,20 +195,15 @@ export function GrammarAssistantDock() {
                   <button key={starter} onClick={() => focusStarter(starter)} type="button">
                     <span className="wv84-quick-actions__icon">
                       <AppIcon
-                        name={index === 0 ? "book-open" : index === 1 ? "search" : "star"}
+                        name={index === 0 ? "book-open" : index === 1 ? "books" : "star"}
                         size={22}
                       />
                     </span>
                     <span className="wv84-quick-actions__copy">
-                      <strong>
-                        {index === 0
-                          ? "Compare tenses"
-                          : index === 1
-                            ? "Check a rule"
-                            : "Choose a verb pattern"}
-                      </strong>
-                      <small>{starter}</small>
+                      <strong>{STARTER_TITLES[index]}</strong>
+                      <small>{STARTER_DESCRIPTIONS[index]}</small>
                     </span>
+                    <AppIcon className="wv84-quick-actions__arrow" name="chevron-right" size={18} />
                   </button>
                 ))}
               </div>
@@ -219,7 +226,7 @@ export function GrammarAssistantDock() {
                   setInput(event.currentTarget.value);
                   if (mascotState === "confused") setMascotState("ready");
                 }}
-                placeholder="Ask Wordie a grammar question…"
+                placeholder="Ask about this grammar…"
                 ref={inputRef}
                 spellCheck={false}
                 value={input}
