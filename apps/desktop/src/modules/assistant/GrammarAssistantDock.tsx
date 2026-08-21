@@ -32,7 +32,8 @@ function buildStarters(
       {
         title: "Compare grammar points",
         description: "Karışan iki yapının farkını göster.",
-        prompt: "Sık karıştırılan iki İngilizce grammar yapısını anlam ve kullanım üzerinden karşılaştır.",
+        prompt:
+          "Sık karıştırılan iki İngilizce grammar yapısını anlam ve kullanım üzerinden karşılaştır.",
         icon: "books" as const
       },
       {
@@ -44,7 +45,8 @@ function buildStarters(
     ]);
   }
 
-  const compareTitle = focus.compareWith === undefined ? "Compare this topic" : `Compare with ${focus.compareWith}`;
+  const compareTitle =
+    focus.compareWith === undefined ? "Compare this topic" : `Compare with ${focus.compareWith}`;
   const comparePrompt =
     focus.compareWith === undefined
       ? `${focus.title} konusunu en çok karıştırılan benzer yapıyla anlam ve kullanım üzerinden karşılaştır.`
@@ -53,19 +55,19 @@ function buildStarters(
   return Object.freeze([
     {
       title: "Explain this rule",
-      description: `${focus.title} kuralını sade mantıkla açıkla.`,
+      description: "Kuralı kısa Türkçe mantıkla açıkla.",
       prompt: `${focus.title} kuralını kısa Türkçe mantıkla açıkla.`,
       icon: "book-open" as const
     },
     {
       title: compareTitle,
-      description: "Anlam ve kullanım farkını örnekle göster.",
+      description: "Anlam, zaman ve kullanım farkını göster.",
       prompt: comparePrompt,
       icon: "books" as const
     },
     {
       title: "Quiz this grammar",
-      description: `${focus.title} konusundan tek hızlı soru çöz.`,
+      description: "Bu konudan tek hızlı soru çöz.",
       prompt: `${focus.title} konusunda tek hızlı quiz sorusu hazırla.`,
       icon: "star" as const
     }
@@ -172,9 +174,11 @@ export function GrammarAssistantDock() {
   }
 
   const welcomeCopy =
-    lessonFocus === undefined
-      ? "Bir grammar konusu seçebilir veya aklına takılan kuralı, karşılaştırmayı ya da örneği doğrudan sorabilirsin."
-      : `${lessonFocus.title} çalışırken kuralı açıklamamı, benzer yapılarla karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin.`;
+    lessonFocus?.id === "present-perfect"
+      ? "Bu konuyu çalışırken kuralı açıklamamı, Present Perfect ile Past Simple’ı karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin."
+      : lessonFocus === undefined
+        ? "Bir grammar konusu seçebilir veya aklına takılan kuralı, karşılaştırmayı ya da örneği doğrudan sorabilirsin."
+        : `${lessonFocus.title} çalışırken kuralı açıklamamı, benzer yapılarla karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin.`;
 
   return (
     <aside className="assistant-dock wv84-assistant" data-open={open || undefined}>
@@ -189,7 +193,7 @@ export function GrammarAssistantDock() {
             <header className="wv84-assistant-panel__header">
               <AssistantPanelMascot state={mascotState} />
               <div>
-                <h2>Wordie</h2>
+                <h2>Wordie AI</h2>
                 <p>Your grammar companion</p>
               </div>
               <IconButton
@@ -204,7 +208,7 @@ export function GrammarAssistantDock() {
             <div className="wv84-assistant-panel__conversation">
               {isWelcome ? (
                 <article className="wv84-wordie-welcome">
-                  <h3>{lessonFocus?.title ?? "Welcome."}</h3>
+                  <h3>Welcome.</h3>
                   <p>{welcomeCopy}</p>
                 </article>
               ) : (
@@ -250,7 +254,11 @@ export function GrammarAssistantDock() {
               <div className="wv84-quick-actions wv84-quick-actions--welcome">
                 <span className="wv84-quick-actions__label">TRY ASKING ME</span>
                 {starters.map((starter) => (
-                  <button key={starter.title} onClick={() => focusStarter(starter.prompt)} type="button">
+                  <button
+                    key={starter.title}
+                    onClick={() => focusStarter(starter.prompt)}
+                    type="button"
+                  >
                     <span className="wv84-quick-actions__icon">
                       <AppIcon name={starter.icon} size={22} />
                     </span>
@@ -283,8 +291,8 @@ export function GrammarAssistantDock() {
                 }}
                 placeholder={
                   lessonFocus === undefined
-                    ? "Ask Wordie a grammar question…"
-                    : `Ask about ${lessonFocus.title}…`
+                    ? "Ask Wordie a grammar question..."
+                    : "Ask about this grammar..."
                 }
                 ref={inputRef}
                 spellCheck={false}
