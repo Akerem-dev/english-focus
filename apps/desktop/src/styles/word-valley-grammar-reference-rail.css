@@ -58,10 +58,12 @@
 #root
   .application-frame--grammar-cleanroom
   .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
+  display: grid !important;
   width: 344px !important;
   height: 890px !important;
   max-height: 890px !important;
   grid-template-rows: 84px 210px minmax(0, 1fr) 61px !important;
+  overflow: hidden !important;
   border-radius: 0 !important;
 }
 
@@ -72,6 +74,7 @@
 }
 
 #root .application-frame--grammar-cleanroom .wv84-assistant-panel__conversation {
+  min-height: 0 !important;
   overflow: hidden !important;
   padding: 12px 16px 10px !important;
 }
@@ -89,13 +92,23 @@
 }
 
 #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome {
+  position: static !important;
   display: grid !important;
+  width: 100% !important;
+  height: 300px !important;
+  min-height: 300px !important;
+  max-height: none !important;
   grid-template-columns: 1fr !important;
+  grid-template-rows: 14px repeat(3, 82px) !important;
+  grid-auto-flow: row !important;
+  align-self: start !important;
   align-content: start !important;
   gap: 10px !important;
-  min-height: 0 !important;
   padding: 0 16px 10px !important;
   overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button {
@@ -104,14 +117,19 @@
   width: 312px !important;
   height: 82px !important;
   min-height: 82px !important;
+  max-height: 82px !important;
   grid-template-columns: 28px minmax(0, 1fr) 18px !important;
   align-items: center !important;
   gap: 12px !important;
   padding: 0 16px 0 19px !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 #root .application-frame--grammar-cleanroom .wv84-quick-actions__label {
-  margin-top: 0 !important;
+  margin: 0 !important;
   font-size: 11px !important;
   line-height: 14px !important;
 }
@@ -186,6 +204,9 @@
   }
 
   #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome {
+    height: 239px !important;
+    min-height: 239px !important;
+    grid-template-rows: 14px repeat(3, 68px) !important;
     gap: 7px !important;
     padding: 0 16px 7px !important;
   }
@@ -193,6 +214,7 @@
   #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button {
     height: 68px !important;
     min-height: 68px !important;
+    max-height: 68px !important;
   }
 
   #root .application-frame--grammar-cleanroom .wv84-assistant-composer {
