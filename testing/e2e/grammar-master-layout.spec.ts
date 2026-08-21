@@ -28,51 +28,7 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
   await expect(
     helper.getByText("Anlam, zaman ve kullanım farkını göster.", { exact: true })
   ).toBeVisible();
-
-  const quizTitle = helper.getByText("Quiz this grammar", { exact: true });
-  const quizDiagnostics = await quizTitle.evaluate((element) => {
-    const describe = (node: Element | null) => {
-      if (!(node instanceof HTMLElement)) return null;
-      const rect = node.getBoundingClientRect();
-      const style = window.getComputedStyle(node);
-      return {
-        tag: node.tagName,
-        className: node.className,
-        rect: {
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height,
-          top: rect.top,
-          right: rect.right,
-          bottom: rect.bottom,
-          left: rect.left
-        },
-        display: style.display,
-        visibility: style.visibility,
-        opacity: style.opacity,
-        overflow: style.overflow,
-        position: style.position,
-        transform: style.transform,
-        clip: style.clip,
-        clipPath: style.clipPath
-      };
-    };
-
-    const button = element.closest("button");
-    const quickActions = element.closest(".wv84-quick-actions--welcome");
-    const panel = element.closest(".wv84-assistant-panel");
-    return {
-      viewport: { width: window.innerWidth, height: window.innerHeight },
-      element: describe(element),
-      button: describe(button),
-      quickActions: describe(quickActions),
-      panel: describe(panel)
-    };
-  });
-  console.log(`GRAMMAR_QUIZ_DIAGNOSTICS=${JSON.stringify(quizDiagnostics)}`);
-
-  await expect(quizTitle).toBeVisible();
+  await expect(helper.getByText("Quiz this grammar", { exact: true })).toBeVisible();
   await expect(helper.getByText("Bu konudan tek hızlı soru çöz.", { exact: true })).toBeVisible();
   await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
 
