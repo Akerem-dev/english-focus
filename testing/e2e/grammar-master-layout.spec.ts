@@ -16,20 +16,21 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
   await expect(page.getByText("EXAMPLES · ÖRNEKLER", { exact: true })).toBeVisible();
   await expect(page.getByText("KISA KURAL", { exact: true })).toBeVisible();
 
-  await expect(page.getByRole("dialog", { name: "Grammar helper" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Wordie AI", level: 2 })).toBeVisible();
-  await expect(page.getByText("Welcome.", { exact: true })).toBeVisible();
-  await expect(page.getByText("Explain this rule", { exact: true })).toBeVisible();
+  const helper = page.getByRole("dialog", { name: "Grammar helper" });
+  await expect(helper).toBeVisible();
+  await expect(helper.getByRole("heading", { name: "Wordie AI", level: 2 })).toBeVisible();
+  await expect(helper.getByText("Welcome.", { exact: true })).toBeVisible();
+  await expect(helper.getByText("Explain this rule", { exact: true })).toBeVisible();
   await expect(
-    page.getByText("Kuralı kısa Türkçe mantıkla açıkla.", { exact: true })
+    helper.getByText("Kuralı kısa Türkçe mantıkla açıkla.", { exact: true })
   ).toBeVisible();
-  await expect(page.getByText("Compare with Past Simple", { exact: true })).toBeVisible();
+  await expect(helper.getByText("Compare with Past Simple", { exact: true })).toBeVisible();
   await expect(
-    page.getByText("Anlam, zaman ve kullanım farkını göster.", { exact: true })
+    helper.getByText("Anlam, zaman ve kullanım farkını göster.", { exact: true })
   ).toBeVisible();
-  await expect(page.getByText("Quiz this grammar", { exact: true })).toBeVisible();
-  await expect(page.getByText("Bu konudan tek hızlı soru çöz.", { exact: true })).toBeVisible();
-  await expect(page.getByPlaceholder("Ask about this grammar...")).toBeVisible();
+  await expect(helper.getByText("Quiz this grammar", { exact: true })).toBeVisible();
+  await expect(helper.getByText("Bu konudan tek hızlı soru çöz.", { exact: true })).toBeVisible();
+  await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
 
   await expect(
     page.getByText(
