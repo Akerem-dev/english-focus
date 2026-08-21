@@ -66,6 +66,20 @@
 .application-frame--grammar-cleanroom .wvg-reference-lesson {
   top: 0;
   left: 0;
+  transform: none;
+}
+
+.application-frame--grammar-cleanroom .wvg-reference-hero {
+  gap: 20px;
+}
+
+.application-frame--grammar-cleanroom .wvg-reference-hero h1 {
+  margin-top: 18px;
+  line-height: 58px;
+}
+
+.application-frame--grammar-cleanroom .wvg-reference-hero__copy > p {
+  margin-top: 12px;
 }
 
 .application-frame--grammar-cleanroom .wvg-home {
