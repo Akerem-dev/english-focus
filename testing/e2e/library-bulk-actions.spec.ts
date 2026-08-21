@@ -1,6 +1,6 @@
 import { expect, test } from "./app.fixture";
 
-test("collection selection exposes bulk actions only when words are selected", async ({ page }) => {
+test("Library selection enables bulk export in a collection detail", async ({ page }) => {
   await page.goto("/#/library");
   await expect(page.getByRole("heading", { name: "Your Collections", level: 1 })).toBeVisible();
 
