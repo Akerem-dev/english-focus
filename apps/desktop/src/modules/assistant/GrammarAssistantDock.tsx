@@ -74,7 +74,7 @@ export function GrammarAssistantDock() {
 
     setQuestion(prompt);
     setAnswerText(undefined);
-    setAssistantMessage("Checking the grammar knowledge base…");
+    setAssistantMessage("Let me work through that…");
     setMascotState("thinking");
 
     try {
@@ -89,18 +89,18 @@ export function GrammarAssistantDock() {
       }
 
       if (result.kind === "desktop-required") {
-        setAssistantMessage("Open Word Valley on desktop to use the grammar knowledge base.");
+        setAssistantMessage("This grammar answer is available in the Word Valley desktop app.");
         setMascotState("confused");
         return;
       }
 
       setAssistantMessage(
-        "I don’t have a cache-safe answer for that exact question yet. I won’t guess or force it into the wrong grammar topic."
+        "I’m not confident enough to answer that precisely. Try asking about the rule, a comparison, or an example."
       );
       setMascotState("confused");
     } catch {
       if (requestSequence.current !== sequence) return;
-      setAssistantMessage("I couldn’t check that grammar question right now. Please try again.");
+      setAssistantMessage("I couldn’t answer that just now. Please try again.");
       setMascotState("confused");
     }
   }
@@ -130,7 +130,7 @@ export function GrammarAssistantDock() {
             <header className="wv84-assistant-panel__header">
               <AssistantPanelMascot state={mascotState} />
               <div>
-                <h2>Wordie AI</h2>
+                <h2>Wordie</h2>
                 <p>Your grammar companion</p>
               </div>
               <IconButton
