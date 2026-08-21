@@ -47,7 +47,7 @@ test("settings categories support keyboard navigation and focused maintenance to
   await page.getByRole("button", { name: "Choose data" }).click();
   const selectiveDialog = page.getByRole("dialog", { name: "Remove selected data" });
   await expect(selectiveDialog).toBeVisible();
-  await expect(selectiveDialog.getByRole("checkbox")).toHaveCount(6);
+  await expect(selectiveDialog.getByRole("checkbox")).toHaveCount(7);
   for (const checkbox of await selectiveDialog.getByRole("checkbox").all()) {
     await expect(checkbox).not.toBeChecked();
   }
