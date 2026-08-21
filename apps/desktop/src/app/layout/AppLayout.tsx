@@ -169,6 +169,7 @@ export function AppLayout({ children }: PropsWithChildren) {
           </div>
         </div>
 
+        <AppTopBar headless onOpenCommandBar={commandBar.openCommandBar} />
         <CommandBar
           commands={commands}
           onClose={commandBar.closeCommandBar}
