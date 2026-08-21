@@ -1,10 +1,62 @@
 /* Grammar-only Wordie rail alignment for the final reference lesson. */
 
+.application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel {
+  grid-template-rows: 84px 210px minmax(0, 1fr) 61px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-assistant-panel__header {
+  height: 84px !important;
+  min-height: 84px !important;
+  padding: 12px 16px 9px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-assistant-panel__conversation {
+  overflow: hidden !important;
+  padding: 12px 16px 10px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-wordie-welcome {
+  min-height: 188px !important;
+  padding: 22px 20px 20px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-wordie-welcome p {
+  max-width: 268px !important;
+  margin-top: 9px !important;
+  font-size: 13px !important;
+  line-height: 19px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-quick-actions--welcome {
+  align-content: start !important;
+  gap: 10px !important;
+  padding: 0 16px 10px !important;
+}
+
 .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button {
   position: relative !important;
+  width: 312px !important;
+  height: 82px !important;
   grid-template-columns: 28px minmax(0, 1fr) 18px !important;
   gap: 12px !important;
   padding: 0 16px 0 19px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-quick-actions__label {
+  margin-top: 0 !important;
+  font-size: 11px !important;
+  line-height: 14px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-quick-actions__copy strong {
+  font-size: 17px !important;
+  line-height: 20px !important;
+}
+
+.application-frame--grammar-cleanroom .wv84-quick-actions__copy small {
+  max-width: 190px !important;
+  font-size: 11px !important;
+  line-height: 15px !important;
 }
 
 .application-frame--grammar-cleanroom .wv84-quick-actions__arrow {
@@ -19,8 +71,8 @@
   color: #102f28 !important;
 }
 
-.application-frame--grammar-cleanroom .wv84-quick-actions__copy small {
-  max-width: 190px !important;
+.application-frame--grammar-cleanroom .wv84-assistant-composer {
+  width: 312px !important;
 }
 
 .application-frame--grammar-cleanroom .wv84-assistant-composer button {
