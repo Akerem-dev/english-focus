@@ -13,6 +13,7 @@ import {
 import "../../../styles/word-valley-grammar-phase1-home.css";
 import "../../../styles/word-valley-grammar-phase2-topic.css";
 import "../../../styles/word-valley-grammar-reference-final.css";
+import "../../../styles/word-valley-grammar-shell-final.css";
 
 type GrammarView = "home" | "present-perfect" | "compiled-lesson";
 
