@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 
 import { useGrammar } from "../../app/providers";
 import { IconButton } from "../../components";
@@ -75,6 +75,11 @@ function buildStarters(
 }
 
 export function GrammarAssistantDock() {
+  const { lessonFocus } = useGrammar();
+  return <GrammarAssistantSession key={lessonFocus?.id ?? "grammar-home"} />;
+}
+
+function GrammarAssistantSession() {
   const { answerGrammarQuestion, lessonFocus } = useGrammar();
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
@@ -92,16 +97,6 @@ export function GrammarAssistantDock() {
 
   const isBusy = mascotState === "thinking";
   const isWelcome = question === undefined && answerText === undefined;
-
-  useEffect(() => {
-    requestSequence.current += 1;
-    setInput("");
-    setQuestion(undefined);
-    setAnswerText(undefined);
-    setAssistantMessage("Ask me a grammar question the way you’d ask a teacher.");
-    setMascotState("ready");
-    setOpen(true);
-  }, [lessonFocus?.id]);
 
   function openAssistant() {
     setOpen(true);
