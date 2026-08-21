@@ -4,7 +4,8 @@ test("collection selection exposes bulk actions only when words are selected", a
   await page.goto("/#/library");
   await expect(page.getByRole("heading", { name: "Your Collections", level: 1 })).toBeVisible();
 
-  await page.getByRole("button", { name: /IELTS Vocabulary/ }).click();
+  const ieltsCollection = page.locator(".wvc-card").filter({ hasText: "IELTS Vocabulary" });
+  await ieltsCollection.locator(".wvc-card__open").click();
   await expect(page.getByRole("heading", { name: "IELTS Vocabulary", level: 1 })).toBeVisible();
   await expect(page.locator(".wvc-selection-bar")).toHaveCount(0);
 
