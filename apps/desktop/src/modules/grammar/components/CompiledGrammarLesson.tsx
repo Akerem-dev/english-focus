@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { useGrammar } from "../../../app/providers";
+import { AppIcon } from "../../../design-system";
 import type { GrammarKnowledgeLesson } from "../knowledge/grammarKnowledgeIndex";
+import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
+
+import "../../../styles/word-valley-grammar-reference-compiled.css";
 
 interface CompiledGrammarLessonProps {
   readonly lesson: GrammarKnowledgeLesson;
@@ -33,8 +37,22 @@ function splitParagraphs(answerText: string): readonly string[] {
     .filter(Boolean);
 }
 
+function compactText(value: string, maxLength = 170): string {
+  const normalized = value.replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) return normalized;
+  const shortened = normalized.slice(0, Math.max(0, maxLength - 1));
+  const boundary = shortened.lastIndexOf(" ");
+  return `${shortened.slice(0, boundary > 80 ? boundary : shortened.length).trim()}…`;
+}
+
+function pointSummary(point: LoadedGrammarPoint, fallback: string): string {
+  const paragraph = point.answer === undefined ? undefined : splitParagraphs(point.answer.answerText)[0];
+  return paragraph === undefined ? fallback : compactText(paragraph);
+}
+
 export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonProps) {
   const { answerGrammarQuestion } = useGrammar();
+  const artwork = getGrammarLessonArtwork(lesson.id);
 
   const requests = useMemo(
     () => [
@@ -90,113 +108,135 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
   const readyPoints = points.filter(
     (point) => point.status === "ready" && point.answer !== undefined
   );
-  const unavailablePoints = points.filter((point) => point.status === "unavailable");
   const loading = points.some((point) => point.status === "loading");
+  const focusPoint = readyPoints[0] ?? points[0];
+  const keyPoints = (readyPoints.length > 0 ? readyPoints : points).slice(0, 3);
+  const rowPoints = (readyPoints.length > 0 ? readyPoints : points).slice(0, 5);
+  const topicLabels = lesson.subtopics.length > 0
+    ? lesson.subtopics.map((subtopic) => subtopic.title)
+    : lesson.coreTopics;
 
   return (
-    <main className="wvg-topic" aria-labelledby="grammar-compiled-topic-title">
-      <button className="wvg-topic__back" onClick={onBack} type="button">
-        ← Grammar home
-      </button>
-
-      <section className="wvg-topic__paper">
-        <header className="wvg-topic__hero">
-          <div className="wvg-topic__intro">
-            <p className="wvg-topic__eyebrow">
-              {lesson.category.toUpperCase()} · {lesson.level}
-            </p>
-            <h1 id="grammar-compiled-topic-title">{lesson.title}</h1>
-            <p>{lesson.description}</p>
-          </div>
-          <div className="wvg-topic__turkish">
-            <span>BU DERSİN KAPSAMI</span>
-            <p>
-              {requests.length === 1
-                ? "Bu ders tek bir temel grammar noktasını yerel bilgi tabanından açıklıyor."
-                : `Bu ders ${requests.length} bağlantılı grammar noktasını aynı başlık altında topluyor. Alt konular ayrı dersler gibi şişirilmeden burada birlikte tutuluyor.`}
-            </p>
-          </div>
-        </header>
-
-        <div className="wvg-rule-layout">
-          <article className="wvg-rule-main">
-            {loading ? (
-              <section className="wvg-rule-breakdown">
-                <p className="wvg-rule-kicker">LOCAL KNOWLEDGE · YEREL BİLGİ</p>
-                <h2>Ders hazırlanıyor…</h2>
-                <p>
-                  Onaylı grammar cache kartları cihazdan okunuyor. Bu işlem Gemini çağrısı yapmaz.
-                </p>
-              </section>
-            ) : null}
-
-            {readyPoints.map((point, index) => {
-              const answer = point.answer;
-              if (answer === undefined) return null;
-              return (
-                <section className="wvg-rule-breakdown" key={point.key}>
-                  <p className="wvg-rule-kicker">
-                    {String(index + 1).padStart(2, "0")} ·{" "}
-                    {answer.source === "local-core-cache" ? "CORE RULE" : "GRAMMAR POINT"}
-                  </p>
-                  <h2>{point.title}</h2>
-                  {splitParagraphs(answer.answerText).map((paragraph, paragraphIndex) => (
-                    <p key={`${point.key}:${paragraphIndex}`}>{paragraph}</p>
-                  ))}
-                </section>
-              );
-            })}
-
-            {!loading && readyPoints.length === 0 ? (
-              <section className="wvg-rule-breakdown">
-                <p className="wvg-rule-kicker">FAIL CLOSED · GÜVENLİ DURUŞ</p>
-                <h2>Bu ders için henüz kullanıcıya açılmış yerel cevap yok.</h2>
-                <p>
-                  Konu katalogda kalıyor; fakat derlenmiş cevap manuel semantic kontrolden
-                  geçmediyse Wordie onu doğruymuş gibi göstermiyor.
-                </p>
-              </section>
-            ) : null}
-          </article>
-
-          <aside className="wvg-rule-notes" aria-label={`${lesson.title} reference notes`}>
-            <section>
-              <p>LESSON MAP · ALT BAŞLIKLAR</p>
-              <ul>
-                {points.map((point) => (
-                  <li key={point.key}>
-                    {point.title}
-                    {point.status === "ready"
-                      ? " ✓"
-                      : point.status === "unavailable"
-                        ? " · review pending"
-                        : " · loading"}
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section>
-              <p>LOCAL FIRST · TOKEN DURUMU</p>
-              <span className="wvg-note-explainer">
-                Burada görünen açıklamalar onaylı yerel grammar cache’inden gelir. Cache hit
-                olduğunda Gemini isteği ve Gemini token kullanımı sıfırdır.
-              </span>
-            </section>
-
-            {unavailablePoints.length > 0 ? (
-              <section className="wvg-common-mistake">
-                <p>REVIEW QUEUE · İNCELEMEDE</p>
-                <strong>{unavailablePoints.length} alt başlık fail-closed durumda.</strong>
-                <span>
-                  Bunlar eksik, hatalı veya yeterince güvenilir olmayan derlenmiş cevabı kullanıcıya
-                  göstermemek için bilinçli olarak kapalı tutuluyor.
-                </span>
-              </section>
-            ) : null}
-          </aside>
+    <main
+      className="wvg-reference-lesson wvg-reference-lesson--compiled"
+      aria-labelledby="grammar-compiled-topic-title"
+    >
+      <header className="wvg-reference-hero">
+        <div className="wvg-reference-hero__copy">
+          <nav aria-label="Grammar breadcrumb" className="wvg-reference-breadcrumbs">
+            <button onClick={onBack} type="button">
+              Grammar
+            </button>
+            <span aria-hidden="true">›</span>
+            <span>{lesson.category}</span>
+            <span aria-hidden="true">›</span>
+            <strong>{lesson.title}</strong>
+          </nav>
+          <h1 id="grammar-compiled-topic-title">{lesson.title}</h1>
+          <p>{lesson.description}</p>
         </div>
+        <img
+          alt=""
+          aria-hidden="true"
+          className="wvg-reference-hero__art"
+          draggable={false}
+          src={artwork}
+        />
+      </header>
+
+      <section className="wvg-reference-grid" aria-label={`${lesson.title} lesson overview`}>
+        <article className="wvg-reference-card wvg-reference-card--formula wvg-compiled-focus">
+          <p className="wvg-reference-label">LESSON FOCUS · DERSİN ODAĞI</p>
+          <h2>{focusPoint?.title ?? lesson.title}</h2>
+          <p className="wvg-compiled-focus__summary">
+            {loading
+              ? "Dersin ana noktaları hazırlanıyor…"
+              : focusPoint === undefined
+                ? lesson.description
+                : pointSummary(focusPoint, lesson.description)}
+          </p>
+          <div className="wvg-compiled-focus__rule">
+            <span aria-hidden="true">
+              <AppIcon name="book-open" size={17} />
+            </span>
+            <p>Önce anlamı ve kullanım bağlamını seç; ardından doğru yapıyı kur.</p>
+          </div>
+        </article>
+
+        <article className="wvg-reference-card wvg-reference-card--uses wvg-compiled-points">
+          <p className="wvg-reference-label">KEY POINTS · ANA NOKTALAR</p>
+          <div className="wvg-reference-use-list">
+            {keyPoints.map((point, index) => (
+              <div className="wvg-reference-use" key={point.key}>
+                <span className="wvg-reference-use__icon" aria-hidden="true">
+                  <AppIcon name={index === 0 ? "star" : index === 1 ? "clock" : "check"} size={17} />
+                </span>
+                <div>
+                  <strong>{point.title}</strong>
+                  <p>
+                    {point.status === "loading"
+                      ? "Açıklama hazırlanıyor…"
+                      : pointSummary(point, "Bu noktanın açıklaması yakında eklenecek.")}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="wvg-reference-card wvg-reference-card--signals wvg-compiled-topics">
+          <p className="wvg-reference-label">TOPICS IN THIS LESSON · ALT BAŞLIKLAR</p>
+          <div className="wvg-reference-signals">
+            {topicLabels.slice(0, 10).map((topic) => (
+              <span key={topic}>{topic}</span>
+            ))}
+          </div>
+        </article>
+
+        <article className="wvg-reference-card wvg-reference-card--compare wvg-compiled-guide">
+          <p className="wvg-reference-label">HOW TO STUDY · NASIL ÇALIŞ?</p>
+          <div className="wvg-compiled-guide__steps">
+            <section>
+              <strong>1</strong>
+              <p>Önce yapının ne anlattığını kavra.</p>
+            </section>
+            <section>
+              <strong>2</strong>
+              <p>Benzer yapılarla farkını örnek üzerinden gör.</p>
+            </section>
+            <section>
+              <strong>3</strong>
+              <p>Kendi cümleni kurup Wordie ile kontrol et.</p>
+            </section>
+          </div>
+        </article>
+
+        <article className="wvg-reference-card wvg-reference-card--examples wvg-compiled-explanations">
+          <p className="wvg-reference-label">KEY EXPLANATIONS · ANA AÇIKLAMALAR</p>
+          <div className="wvg-reference-example-list">
+            {rowPoints.map((point, index) => (
+              <div className="wvg-reference-example" key={point.key}>
+                <span aria-hidden="true">
+                  <AppIcon name={index % 2 === 0 ? "book-open" : "check"} size={14} />
+                </span>
+                <strong>{point.title}</strong>
+                <b>{lesson.level}</b>
+                <p>
+                  {point.status === "loading"
+                    ? "Açıklama hazırlanıyor…"
+                    : pointSummary(point, "Açıklama yakında eklenecek.")}
+                </p>
+              </div>
+            ))}
+          </div>
+        </article>
       </section>
+
+      <aside className="wvg-reference-tip" aria-label={`${lesson.title} study tip`}>
+        <span aria-hidden="true">●</span>
+        <strong>KISA KURAL</strong>
+        <p>Formülü ezberlemeden önce anlamı seç; doğru yapı anlamdan sonra daha kolay oturur.</p>
+      </aside>
     </main>
   );
 }
