@@ -5,6 +5,7 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
 
   await expect(page.getByRole("heading", { name: "English Grammar", level: 1 })).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Grammar helper" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Wordie", level: 2 })).toBeVisible();
   await expect(page.getByText("Explain this rule", { exact: true })).toBeVisible();
   await expect(page.getByText("Compare with Past Simple", { exact: true })).toBeVisible();
   await expect(page.getByText("Quiz this grammar", { exact: true })).toBeVisible();
@@ -19,6 +20,8 @@ test("grammar master lesson keeps the approved end-user layout and copy", async 
   await expect(page.getByText("EXAMPLES · ÖRNEKLER", { exact: true })).toBeVisible();
   await expect(page.getByText("KISA KURAL", { exact: true })).toBeVisible();
 
-  await expect(page.getByText(/LOCAL CACHE|LOCAL KNOWLEDGE|REVIEW QUEUE|TOKEN DURUMU/)).toHaveCount(0);
-  await expect(page.getByText(/prototip|prototype|yakında eklenecek/i)).toHaveCount(0);
+  await expect(
+    page.getByText(/LOCAL CACHE|LOCAL KNOWLEDGE|REVIEW QUEUE|TOKEN DURUMU|knowledge base|cache-safe/i)
+  ).toHaveCount(0);
+  await expect(page.getByText(/Wordie AI|prototip|prototype|yakında eklenecek/i)).toHaveCount(0);
 });
