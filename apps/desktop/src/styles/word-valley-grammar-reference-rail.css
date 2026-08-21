@@ -1,7 +1,19 @@
 /* Grammar-only Wordie rail alignment for the final reference lesson. */
 
+.application-frame--grammar-cleanroom .assistant-dock.wv84-assistant {
+  position: absolute !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 344px !important;
+}
+
 .application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel {
+  width: 344px !important;
+  height: 890px !important;
+  max-height: 890px !important;
   grid-template-rows: 84px 210px minmax(0, 1fr) 61px !important;
+  border-radius: 0 !important;
 }
 
 .application-frame--grammar-cleanroom .wv84-assistant-panel__header {
