@@ -46,7 +46,8 @@ function compactText(value: string, maxLength = 170): string {
 }
 
 function pointSummary(point: LoadedGrammarPoint, fallback: string): string {
-  const paragraph = point.answer === undefined ? undefined : splitParagraphs(point.answer.answerText)[0];
+  const paragraph =
+    point.answer === undefined ? undefined : splitParagraphs(point.answer.answerText)[0];
   return paragraph === undefined ? fallback : compactText(paragraph);
 }
 
@@ -112,9 +113,10 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
   const focusPoint = readyPoints[0] ?? points[0];
   const keyPoints = (readyPoints.length > 0 ? readyPoints : points).slice(0, 3);
   const rowPoints = (readyPoints.length > 0 ? readyPoints : points).slice(0, 5);
-  const topicLabels = lesson.subtopics.length > 0
-    ? lesson.subtopics.map((subtopic) => subtopic.title)
-    : lesson.coreTopics;
+  const topicLabels =
+    lesson.subtopics.length > 0
+      ? lesson.subtopics.map((subtopic) => subtopic.title)
+      : lesson.coreTopics;
 
   return (
     <main
@@ -169,7 +171,10 @@ export function CompiledGrammarLesson({ lesson, onBack }: CompiledGrammarLessonP
             {keyPoints.map((point, index) => (
               <div className="wvg-reference-use" key={point.key}>
                 <span className="wvg-reference-use__icon" aria-hidden="true">
-                  <AppIcon name={index === 0 ? "star" : index === 1 ? "clock" : "check"} size={17} />
+                  <AppIcon
+                    name={index === 0 ? "star" : index === 1 ? "clock" : "check"}
+                    size={17}
+                  />
                 </span>
                 <div>
                   <strong>{point.title}</strong>
