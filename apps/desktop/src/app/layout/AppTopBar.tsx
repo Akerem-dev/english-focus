@@ -31,6 +31,7 @@ const PasteGeneratedJsonDialog = lazy(async () => {
 
 interface AppTopBarProps {
   readonly onOpenCommandBar: () => void;
+  readonly headless?: boolean;
 }
 
 function OverlayLoadingStatus() {
@@ -41,7 +42,7 @@ function OverlayLoadingStatus() {
   );
 }
 
-export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
+export function AppTopBar({ headless = false, onOpenCommandBar }: AppTopBarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const route = getRouteByPath(location.pathname);
@@ -68,34 +69,36 @@ export function AppTopBar({ onOpenCommandBar }: AppTopBarProps) {
 
   return (
     <>
-      <header className="app-topbar" data-tauri-drag-region="">
-        <span aria-live="polite" className="app-topbar__route">
-          {route.title}
-        </span>
-        <div className="app-topbar__actions">
-          <Button
-            leadingIcon={<AppIcon name="upload" size={17} />}
-            onClick={() => {
-              setSourceDialogOpen(true);
-            }}
-            size="small"
-            title="Import one entry or a vocabulary pack"
-            variant="secondary"
-          >
-            Import
-          </Button>
-          <button
-            aria-label="Open command bar"
-            className="app-topbar__keycap"
-            onClick={onOpenCommandBar}
-            title="Open command bar (Ctrl+K)"
-            type="button"
-          >
-            Ctrl+K
-          </button>
-          <WindowControls className="app-topbar__window-controls" />
-        </div>
-      </header>
+      {headless ? null : (
+        <header className="app-topbar" data-tauri-drag-region="">
+          <span aria-live="polite" className="app-topbar__route">
+            {route.title}
+          </span>
+          <div className="app-topbar__actions">
+            <Button
+              leadingIcon={<AppIcon name="upload" size={17} />}
+              onClick={() => {
+                setSourceDialogOpen(true);
+              }}
+              size="small"
+              title="Import one entry or a vocabulary pack"
+              variant="secondary"
+            >
+              Import
+            </Button>
+            <button
+              aria-label="Open command bar"
+              className="app-topbar__keycap"
+              onClick={onOpenCommandBar}
+              title="Open command bar (Ctrl+K)"
+              type="button"
+            >
+              Ctrl+K
+            </button>
+            <WindowControls className="app-topbar__window-controls" />
+          </div>
+        </header>
+      )}
 
       {sourceDialogOpen ? (
         <Suspense fallback={<OverlayLoadingStatus />}>
