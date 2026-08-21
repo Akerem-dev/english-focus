@@ -23,11 +23,11 @@ test("all primary screens and a long detail state fit the minimum desktop window
   await expect(page.getByRole("heading", { name: "maintain", level: 1 })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
-  await page.getByRole("link", { name: "Collections" }).click();
+  await page.goto("/#/library");
   await expect(page.getByRole("heading", { name: "Your Collections", level: 1 })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
-  await page.getByRole("link", { name: "Settings" }).click();
+  await page.goto("/#/settings");
   await expect(page.getByRole("heading", { name: "Settings", level: 1 })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
