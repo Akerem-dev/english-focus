@@ -1,17 +1,14 @@
-import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { expect, searchVocabulary, test } from "./app.fixture";
+import { expect, openImportSource, test } from "./app.fixture";
 
 test("replacement JSON preserves the explicit duplicate-review boundary", async ({ page }) => {
-  await searchVocabulary(page, "maintain");
-  await page.getByRole("button", { name: "Advanced" }).click();
-  await page.getByRole("menuitem", { name: /Replace from JSON/ }).click();
+  await openImportSource(page);
+  await page.getByRole("button", { name: /Advanced JSON entry/ }).click();
   await page
-    .getByLabel("Generated vocabulary JSON")
-    .fill(
-      await readFile(resolve("testing/manual/cp13-maintain-user-duplicate.entry.json"), "utf8")
-    );
+    .locator('input[type="file"]')
+    .setInputFiles(resolve("testing/manual/cp13-maintain-user-duplicate.entry.json"));
+  await page.getByRole("button", { name: "Continue to validation" }).click();
   await page.getByRole("button", { name: "Check JSON syntax" }).click();
   await page.getByRole("button", { name: "Validate schema" }).click();
   await expect(
