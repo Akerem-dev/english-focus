@@ -77,8 +77,7 @@ export function AppLayout({ children }: PropsWithChildren) {
         // the UI comfortably sized on those high-DPI panels without making
         // genuinely small windows unreadably tiny.
         const pixelRatio = Math.max(window.devicePixelRatio || 1, 1);
-        const densityCompensation =
-          fitScale >= 0.8 && fitScale < 1 && pixelRatio >= 1.2 ? 0.92 : 1;
+        const densityCompensation = fitScale >= 0.8 && fitScale < 1 && pixelRatio >= 1.2 ? 0.92 : 1;
         const scale = Math.max(fitScale * densityCompensation, WORD_VALLEY_MIN_SCALE);
 
         viewport.style.setProperty("--wv-stage-scale-x", String(scale));
