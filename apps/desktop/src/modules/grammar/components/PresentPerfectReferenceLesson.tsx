@@ -92,8 +92,8 @@ export function PresentPerfectReferenceLesson({
           </nav>
           <h1 id="grammar-topic-title">Present Perfect</h1>
           <p>
-            Geçmişte başlayan ya da gerçekleşen bir şeyin sonucu, deneyimi veya devamı bugün
-            hâlâ önemliyse Present Perfect kullanırız.
+            Geçmişte başlayan ya da gerçekleşen bir şeyin sonucu, deneyimi veya devamı bugün hâlâ
+            önemliyse Present Perfect kullanırız.
           </p>
         </div>
         <img
