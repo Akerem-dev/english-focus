@@ -20,6 +20,7 @@ import { AppTopBar } from "./AppTopBar";
 
 const WORD_VALLEY_STAGE_WIDTH = 1664;
 const WORD_VALLEY_STAGE_HEIGHT = 936;
+const WORD_VALLEY_MIN_SCALE = 0.45;
 
 function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
   return commands.some(
@@ -43,35 +44,42 @@ export function AppLayout({ children }: PropsWithChildren) {
     isWordValleySearch || isWordValleyGrammar || isWordValleyCollections;
 
   useEffect(() => {
-    if (!isWordValleyCleanRoom) {
-      return;
-    }
+    if (!isWordValleyCleanRoom) return;
 
     const viewport = wordValleyViewportRef.current;
-    if (viewport === null) {
-      return;
-    }
+    if (viewport === null) return;
 
     let animationFrame = 0;
 
     const updateScale = () => {
       window.cancelAnimationFrame(animationFrame);
       animationFrame = window.requestAnimationFrame(() => {
+        const visualViewport = window.visualViewport;
         const viewportWidth = Math.max(
-          document.documentElement.clientWidth || window.innerWidth,
+          visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth,
           1
         );
         const viewportHeight = Math.max(
-          document.documentElement.clientHeight || window.innerHeight,
+          visualViewport?.height ?? document.documentElement.clientHeight ?? window.innerHeight,
           1
         );
-        const scale = Math.max(
-          Math.min(
-            viewportWidth / WORD_VALLEY_STAGE_WIDTH,
-            viewportHeight / WORD_VALLEY_STAGE_HEIGHT
-          ),
-          0.01
+
+        // Never enlarge the canonical desktop composition. Large screens get
+        // breathing room instead of oversized controls/text.
+        const fitScale = Math.min(
+          viewportWidth / WORD_VALLEY_STAGE_WIDTH,
+          viewportHeight / WORD_VALLEY_STAGE_HEIGHT,
+          1
         );
+
+        // Windows commonly exposes a 1920×1080 laptop as a ~1536×864 CSS
+        // viewport at 125% display scaling. A small density correction keeps
+        // the UI comfortably sized on those high-DPI panels without making
+        // genuinely small windows unreadably tiny.
+        const pixelRatio = Math.max(window.devicePixelRatio || 1, 1);
+        const densityCompensation =
+          fitScale >= 0.8 && fitScale < 1 && pixelRatio >= 1.2 ? 0.92 : 1;
+        const scale = Math.max(fitScale * densityCompensation, WORD_VALLEY_MIN_SCALE);
 
         viewport.style.setProperty("--wv-stage-scale-x", String(scale));
         viewport.style.setProperty("--wv-stage-scale-y", String(scale));
@@ -80,10 +88,12 @@ export function AppLayout({ children }: PropsWithChildren) {
 
     updateScale();
     window.addEventListener("resize", updateScale);
+    window.visualViewport?.addEventListener("resize", updateScale);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", updateScale);
+      window.visualViewport?.removeEventListener("resize", updateScale);
     };
   }, [isWordValleyCleanRoom]);
 
