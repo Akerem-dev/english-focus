@@ -2,26 +2,26 @@ import { AppIcon } from "../../../design-system";
 import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 
 interface PresentPerfectReferenceLessonProps {
-  readonly onBack: () => void;
+  readonly onBrowseLessons: () => void;
 }
 
 const USE_CASES = Object.freeze([
   {
     icon: "star" as const,
     title: "Life experience",
-    body: "Hayatında bir kez bile yaptığın deneyimleri anlatır.",
+    body: "Hayatında şimdiye kadar yaşadığın deneyimleri anlatır.",
     example: "I have travelled to Japan."
   },
   {
     icon: "clock" as const,
     title: "Unspecified time",
-    body: "Ne zaman olduğu önemli değilse veya bilinmiyorsa.",
+    body: "Ne zaman olduğu önemli değilse ya da bilinmiyorsa kullanılır.",
     example: "They have seen that movie."
   },
   {
     icon: "check" as const,
     title: "Recent result / ongoing",
-    body: "Geçmişte başladı; etkisi ya da durum bugün sürüyor.",
+    body: "Geçmişte başladı; sonucu, etkisi veya durum bugün hâlâ sürüyor.",
     example: "She has lived here since 2018."
   }
 ]);
@@ -44,19 +44,19 @@ const EXAMPLES = Object.freeze([
     icon: "star" as const,
     sentence: "We have visited many countries.",
     type: "Life experience",
-    note: "Bugüne kadarki deneyim."
+    note: "Bugüne kadarki deneyimi anlatır."
   },
   {
     icon: "clock" as const,
     sentence: "She has already eaten lunch.",
     type: "Recent result",
-    note: "Kısa süre önce bitti; sonucu şimdi ilgili."
+    note: "Kısa süre önce bitti; sonucu şimdi önemli."
   },
   {
     icon: "check" as const,
     sentence: "They haven’t seen that movie yet.",
     type: "Unspecified time",
-    note: "Zaman belirsiz; “yet” henüz olmadığını gösterir."
+    note: "Zaman belirsizdir; “yet” eylemin henüz olmadığını gösterir."
   },
   {
     icon: "star" as const,
@@ -72,7 +72,9 @@ const EXAMPLES = Object.freeze([
   }
 ]);
 
-export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenceLessonProps) {
+export function PresentPerfectReferenceLesson({
+  onBrowseLessons
+}: PresentPerfectReferenceLessonProps) {
   const grammarHero = getGrammarLessonArtwork("present-perfect");
 
   return (
@@ -80,7 +82,7 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
       <header className="wvg-reference-hero">
         <div className="wvg-reference-hero__copy">
           <nav aria-label="Grammar breadcrumb" className="wvg-reference-breadcrumbs">
-            <button onClick={onBack} type="button">
+            <button onClick={onBrowseLessons} type="button">
               Grammar
             </button>
             <span aria-hidden="true">›</span>
@@ -90,8 +92,8 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
           </nav>
           <h1 id="grammar-topic-title">Present Perfect</h1>
           <p>
-            Geçmişte olan bir şeyin sonucu, deneyimi ya da devamı bugün hâlâ önemliyse Present
-            Perfect kullanırız.
+            Geçmişte başlayan ya da gerçekleşen bir şeyin sonucu, deneyimi veya devamı bugün
+            hâlâ önemliyse Present Perfect kullanırız.
           </p>
         </div>
         <img
@@ -109,9 +111,7 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
           <div className="wvg-reference-formula" aria-label="have or has plus past participle V3">
             <strong>have&nbsp; / &nbsp;has</strong>
             <span>+</span>
-            <strong>
-              past participle (V<sub>3</sub>)
-            </strong>
+            <strong>past participle (V3)</strong>
           </div>
 
           <div className="wvg-reference-subjects">
@@ -121,9 +121,7 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
               </span>
               <span>I / You / We / They</span>
               <b>→</b>
-              <strong>
-                have + V<sub>3</sub>
-              </strong>
+              <strong>have + V3</strong>
             </div>
             <div>
               <span className="wvg-reference-subjects__icon" aria-hidden="true">
@@ -131,9 +129,7 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
               </span>
               <span>He / She / It</span>
               <b>→</b>
-              <strong>
-                has + V<sub>3</sub>
-              </strong>
+              <strong>has + V3</strong>
             </div>
           </div>
 
@@ -179,7 +175,7 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
           <div className="wvg-reference-compare">
             <section className="wvg-reference-compare__side wvg-reference-compare__side--perfect">
               <strong>Present Perfect</strong>
-              <p>Bugünle bağlantıya odaklanır.</p>
+              <p>Bugünle olan bağlantıya odaklanır.</p>
               <small>
                 I’ve lost my keys.
                 <br />
@@ -195,7 +191,7 @@ export function PresentPerfectReferenceLesson({ onBack }: PresentPerfectReferenc
               <small>
                 I lost my keys yesterday.
                 <br />
-                (Zaman belli.)
+                (Zaman belli ve bitmiş.)
               </small>
             </section>
           </div>
