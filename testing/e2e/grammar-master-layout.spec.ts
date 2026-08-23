@@ -1,4 +1,6 @@
-import { expect, test, type Page } from "./app.fixture";
+import type { Page } from "@playwright/test";
+
+import { expect, test } from "./app.fixture";
 
 const LAST_GRAMMAR_LESSON_KEY = "word-valley:grammar:last-lesson";
 
