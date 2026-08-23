@@ -50,12 +50,20 @@ export function GrammarPage() {
       return () => setLessonFocus(undefined);
     }
 
-    setLessonFocus({
-      id: selectedLesson.id,
-      title: selectedLesson.title,
-      category: selectedLesson.category,
-      compareWith: selectedLesson.id === "present-perfect" ? "Past Simple" : undefined
-    });
+    if (selectedLesson.id === "present-perfect") {
+      setLessonFocus({
+        id: selectedLesson.id,
+        title: selectedLesson.title,
+        category: selectedLesson.category,
+        compareWith: "Past Simple"
+      });
+    } else {
+      setLessonFocus({
+        id: selectedLesson.id,
+        title: selectedLesson.title,
+        category: selectedLesson.category
+      });
+    }
 
     return () => setLessonFocus(undefined);
   }, [selectedLesson, setLessonFocus]);
@@ -71,7 +79,10 @@ export function GrammarPage() {
   }
 
   return (
-    <div className="wvg-page" data-grammar-view={selectedLesson === undefined ? "curriculum" : "lesson"}>
+    <div
+      className="wvg-page"
+      data-grammar-view={selectedLesson === undefined ? "curriculum" : "lesson"}
+    >
       <div
         aria-hidden="true"
         className="wvg-scene"
