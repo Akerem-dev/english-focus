@@ -9,7 +9,7 @@ import {
 import "../../../styles/word-valley-grammar-curriculum.css";
 
 interface GrammarCurriculumHomeProps {
-  readonly lastLesson?: GrammarKnowledgeLesson;
+  readonly lastLesson: GrammarKnowledgeLesson | undefined;
   readonly onOpenLesson: (lesson: GrammarKnowledgeLesson) => void;
 }
 
@@ -36,12 +36,7 @@ const CURRICULUM_LEVELS: readonly CurriculumLevel[] = Object.freeze([
     code: "A2",
     eyebrow: "BUILDING BLOCKS",
     description: "Past, future, quantity, comparison.",
-    lessonIds: Object.freeze([
-      "past-narrative",
-      "future-forms",
-      "modal-verbs",
-      "time-prepositions"
-    ])
+    lessonIds: Object.freeze(["past-narrative", "future-forms", "modal-verbs", "time-prepositions"])
   },
   {
     code: "B1",
@@ -105,10 +100,7 @@ function levelLessons(level: CurriculumLevel): readonly GrammarKnowledgeLesson[]
     .filter((lesson): lesson is GrammarKnowledgeLesson => lesson !== undefined);
 }
 
-export function GrammarCurriculumHome({
-  lastLesson,
-  onOpenLesson
-}: GrammarCurriculumHomeProps) {
+export function GrammarCurriculumHome({ lastLesson, onOpenLesson }: GrammarCurriculumHomeProps) {
   const [query, setQuery] = useState("");
   const tokens = useMemo(() => normalizeSearch(query), [query]);
   const searchResults = useMemo(() => {
@@ -147,7 +139,10 @@ export function GrammarCurriculumHome({
         </header>
 
         {heroLesson === undefined ? null : (
-          <section className="wvg-curriculum__hero" aria-label={continuing ? "Continue learning" : "Start here"}>
+          <section
+            className="wvg-curriculum__hero"
+            aria-label={continuing ? "Continue learning" : "Start here"}
+          >
             <div>
               <p>{continuing ? "CONTINUE LEARNING" : "START HERE · A1 FOUNDATIONS"}</p>
               <h2>{heroLesson.title}</h2>
@@ -165,7 +160,10 @@ export function GrammarCurriculumHome({
         )}
 
         {tokens.length > 0 ? (
-          <section className="wvg-curriculum__results" aria-labelledby="grammar-search-results-title">
+          <section
+            className="wvg-curriculum__results"
+            aria-labelledby="grammar-search-results-title"
+          >
             <div className="wvg-curriculum__section-heading">
               <div>
                 <h2 id="grammar-search-results-title">Search results</h2>
@@ -207,7 +205,8 @@ export function GrammarCurriculumHome({
               <div>
                 <h2 id="grammar-path-title">Your learning path</h2>
                 <p>
-                  Five levels, one clear sequence. You can open any lesson, but this is the recommended order.
+                  Five levels, one clear sequence. You can open any lesson, but this is the
+                  recommended order.
                 </p>
               </div>
               <span>EASIER&nbsp;&nbsp;→&nbsp;&nbsp;HARDER</span>
@@ -217,7 +216,11 @@ export function GrammarCurriculumHome({
               {CURRICULUM_LEVELS.map((level) => {
                 const lessons = levelLessons(level);
                 return (
-                  <article className="wvg-curriculum__level" data-level={level.code} key={level.code}>
+                  <article
+                    className="wvg-curriculum__level"
+                    data-level={level.code}
+                    key={level.code}
+                  >
                     <div className="wvg-curriculum__level-meta">
                       <b>{level.code}</b>
                       <div>
