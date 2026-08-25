@@ -5,6 +5,7 @@ import {
   GRAMMAR_KNOWLEDGE_LESSONS,
   type GrammarKnowledgeLesson
 } from "../knowledge/grammarKnowledgeIndex";
+import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 
 import "../../../styles/word-valley-grammar-curriculum.css";
 
@@ -40,7 +41,7 @@ const CURRICULUM_LEVELS: readonly CurriculumLevel[] = Object.freeze([
   },
   {
     code: "B1",
-    eyebrow: "CONNECT IDEAS",
+    eyebrow: "CONNECTED IDEAS",
     description: "Tense choice, clauses, and conditions.",
     lessonIds: Object.freeze([
       "present-perfect",
@@ -113,6 +114,7 @@ export function GrammarCurriculumHome({ lastLesson, onOpenLesson }: GrammarCurri
 
   const heroLesson = lastLesson ?? FIRST_LESSON;
   const continuing = lastLesson !== undefined;
+  const heroArtwork = getGrammarLessonArtwork(heroLesson?.id ?? "present-simple-continuous");
 
   return (
     <main className="wvg-curriculum" aria-labelledby="grammar-curriculum-title">
@@ -141,19 +143,29 @@ export function GrammarCurriculumHome({ lastLesson, onOpenLesson }: GrammarCurri
         {heroLesson === undefined ? null : (
           <section
             className="wvg-curriculum__hero"
+            data-continuing={continuing || undefined}
             aria-label={continuing ? "Continue learning" : "Start here"}
           >
-            <div>
-              <p>{continuing ? "CONTINUE LEARNING" : "START HERE · A1 FOUNDATIONS"}</p>
-              <h2>{heroLesson.title}</h2>
+            <div className="wvg-curriculum__hero-copy">
+              <p>{continuing ? "CONTINUE LEARNING" : "START HERE"}</p>
+              <h2>{continuing ? heroLesson.title : "A1 · Foundations"}</h2>
               <span>
                 {continuing
                   ? `${heroLesson.level} · ${heroLesson.category}`
-                  : "Begin with routines, facts, and actions happening around now."}
+                  : "4 core lessons · sentence basics"}
               </span>
             </div>
+
+            <img
+              alt=""
+              aria-hidden="true"
+              className="wvg-curriculum__hero-art"
+              draggable={false}
+              src={heroArtwork}
+            />
+
             <button onClick={() => onOpenLesson(heroLesson)} type="button">
-              {continuing ? "Continue lesson" : "Begin first lesson"}
+              {continuing ? "Continue lesson" : "Start learning"}
               <AppIcon name="chevron-right" size={17} />
             </button>
           </section>
@@ -233,7 +245,7 @@ export function GrammarCurriculumHome({ lastLesson, onOpenLesson }: GrammarCurri
                     <div className="wvg-curriculum__lesson-grid">
                       {lessons.map((lesson) => (
                         <button key={lesson.id} onClick={() => onOpenLesson(lesson)} type="button">
-                          <small>{lesson.category}</small>
+                          <small>LESSON</small>
                           <strong>{lesson.title}</strong>
                           <AppIcon name="chevron-right" size={15} />
                         </button>
