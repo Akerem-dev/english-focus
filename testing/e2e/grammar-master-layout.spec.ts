@@ -28,26 +28,33 @@ test("first Grammar visit opens the ordered curriculum, then the approved lesson
   for (const level of ["A1", "A2", "B1", "B2", "C1"]) {
     await expect(page.getByText(level, { exact: true }).first()).toBeVisible();
   }
-  await expect(page.getByRole("button", { name: /Begin first lesson/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Start learning/i })).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Grammar helper" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "English Grammar", level: 1 })).toHaveCount(0);
 
   await openPresentPerfectFromCurriculum(page);
 
-  await expect(page.getByText("CORE FORMULA · TEMEL YAPI", { exact: true })).toBeVisible();
-  await expect(page.getByText("past participle (V3)", { exact: true })).toBeVisible();
-  await expect(page.getByText("WHEN TO USE · NE ZAMAN?", { exact: true })).toBeVisible();
-  await expect(page.getByText("COMMON SIGNAL WORDS · İPUÇLARI", { exact: true })).toBeVisible();
-  await expect(page.getByText("PRESENT PERFECT vs. PAST SIMPLE", { exact: true })).toBeVisible();
-  await expect(page.getByText("EXAMPLES · ÖRNEKLER", { exact: true })).toBeVisible();
-  await expect(page.getByText("KISA KURAL", { exact: true })).toBeVisible();
+  await expect(page.getByRole("tab", { name: "Rule", exact: true })).toHaveAttribute(
+    "aria-selected",
+    "true"
+  );
+  await expect(page.getByText("CORE FORMULA", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /have \/ has.*past participle/i, level: 2 })
+  ).toBeVisible();
+  await expect(page.getByText("WHEN TO USE", { exact: true })).toBeVisible();
+  await expect(page.getByText("SIGNAL WORDS", { exact: true })).toBeVisible();
+  await expect(page.getByText("QUICK DECISION", { exact: true })).toBeVisible();
+  await expect(page.getByText("EXAMPLES", { exact: true })).toBeVisible();
 
   const helper = page.getByRole("dialog", { name: "Grammar helper" });
   await expect(helper).toBeVisible();
   await expect(helper.getByRole("heading", { name: "Wordie AI", level: 2 })).toBeVisible();
   await expect(helper.getByText("Explain this rule", { exact: true })).toBeVisible();
   await expect(helper.getByText("Compare with Past Simple", { exact: true })).toBeVisible();
-  await expect(helper.getByText("Quiz this grammar", { exact: true })).toBeVisible();
+  await expect(helper.getByText("Give another example", { exact: true })).toBeVisible();
+  await expect(helper.getByText("Quiz me", { exact: true })).toBeVisible();
+  await expect(helper.getByText("Why is this wrong?", { exact: true })).toBeVisible();
   await expect(helper.getByText("Explain a word", { exact: true })).toHaveCount(0);
   await expect(helper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
@@ -97,7 +104,7 @@ test("Grammar lesson paper meets Wordie cleanly at common desktop and laptop res
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
     const stage = page.locator(".word-valley-stage");
-    const lesson = page.locator(".wvg-reference-lesson");
+    const lesson = page.locator(".wvg-v12-lesson");
     const rail = page.locator('.assistant-dock.wv84-assistant[data-open="true"]');
     const stageBox = await stage.boundingBox();
     const lessonBox = await lesson.boundingBox();
@@ -111,8 +118,17 @@ test("Grammar lesson paper meets Wordie cleanly at common desktop and laptop res
     expect(stageBox!.width).toBeCloseTo(viewport.width, 0);
     expect(stageBox!.height).toBeCloseTo(viewport.height, 0);
 
-    const seam = Math.abs(lessonBox!.x + lessonBox!.width - railBox!.x);
-    expect(seam).toBeLessThanOrEqual(2);
-    expect(railBox!.x + railBox!.width).toBeLessThanOrEqual(viewport.width + 1);
+    const lessonRight = lessonBox!.x + lessonBox!.width;
+    const railRight = railBox!.x + railBox!.width;
+    expect(lessonRight).toBeLessThanOrEqual(viewport.width + 1);
+    expect(railRight).toBeLessThanOrEqual(viewport.width + 1);
+
+    if (viewport.width > 900) {
+      const seam = Math.abs(lessonRight - railBox!.x);
+      expect(seam).toBeLessThanOrEqual(2);
+    } else {
+      const overlay = lessonRight - railBox!.x;
+      expect(overlay).toBeGreaterThan(0);
+    }
   }
 });
