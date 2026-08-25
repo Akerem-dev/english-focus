@@ -226,8 +226,8 @@ export function PresentPerfectReferenceLesson({
                 <section className="wvg-v12-section">
                   <p className="wvg-v12-label">QUICK DECISION</p>
                   <div className="wvg-v12-quick-decision">
-                    Bitmiş geçmiş zamanı söylüyorsan → <strong>Past Simple.</strong> Bugünle bağlantı
-                    önemliyse → <strong>Present Perfect.</strong>
+                    Bitmiş geçmiş zamanı söylüyorsan → <strong>Past Simple.</strong> Bugünle
+                    bağlantı önemliyse → <strong>Present Perfect.</strong>
                   </div>
                 </section>
               </div>
@@ -367,7 +367,9 @@ export function PresentPerfectReferenceLesson({
               <section className="wvg-v12-practice__question">
                 <small>RESULT NOW · ŞİMDİKİ SONUÇ</small>
                 <h3>I _____ my keys. Can you help me look for them?</h3>
-                <p>İpucu: Anahtarlar şu anda hâlâ kayıp. Geçmişteki olayın sonucu bugün devam ediyor.</p>
+                <p>
+                  İpucu: Anahtarlar şu anda hâlâ kayıp. Geçmişteki olayın sonucu bugün devam ediyor.
+                </p>
               </section>
 
               <div className="wvg-v12-practice__options">
@@ -394,9 +396,13 @@ export function PresentPerfectReferenceLesson({
               {practiceChoice === undefined ? null : (
                 <aside
                   aria-live="polite"
-                  className={practiceCorrect ? "wvg-v12-feedback is-correct" : "wvg-v12-feedback is-wrong"}
+                  className={
+                    practiceCorrect ? "wvg-v12-feedback is-correct" : "wvg-v12-feedback is-wrong"
+                  }
                 >
-                  <strong>{practiceCorrect ? "DOĞRU · Mantığı doğru kurdun." : "TEKRAR DÜŞÜN"}</strong>
+                  <strong>
+                    {practiceCorrect ? "DOĞRU · Mantığı doğru kurdun." : "TEKRAR DÜŞÜN"}
+                  </strong>
                   <p>
                     {practiceCorrect
                       ? "Doğru cevap “have lost”. Anahtarları kaybetme olayı geçmişte oldu ama sonuç şimdi devam ediyor; anahtarlar hâlâ kayıp."
