@@ -125,23 +125,7 @@ test("Grammar lesson paper meets Wordie cleanly at common desktop and laptop res
 
     if (viewport.width > 900) {
       const seam = Math.abs(lessonRight - railBox!.x);
-      const styles = await page.evaluate(() => {
-        const frame = document.querySelector<HTMLElement>(".application-frame--grammar-cleanroom");
-        const lessonElement = document.querySelector<HTMLElement>(".wvg-v12-lesson");
-        const railElement = document.querySelector<HTMLElement>(
-          '.assistant-dock.wv84-assistant[data-open="true"]'
-        );
-        return {
-          railToken: frame === null ? "missing" : getComputedStyle(frame).getPropertyValue("--wvg-rail-width"),
-          lessonRight: lessonElement === null ? "missing" : getComputedStyle(lessonElement).right,
-          lessonWidth: lessonElement === null ? "missing" : getComputedStyle(lessonElement).width,
-          railWidth: railElement === null ? "missing" : getComputedStyle(railElement).width
-        };
-      });
-      expect(
-        seam,
-        `viewport=${viewport.width}x${viewport.height} lesson=${JSON.stringify(lessonBox)} rail=${JSON.stringify(railBox)} styles=${JSON.stringify(styles)}`
-      ).toBeLessThanOrEqual(2);
+      expect(seam).toBeLessThanOrEqual(2);
     } else {
       const overlay = lessonRight - railBox!.x;
       expect(overlay).toBeGreaterThan(0);
