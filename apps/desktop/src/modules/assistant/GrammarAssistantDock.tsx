@@ -55,21 +55,33 @@ function buildStarters(
   return Object.freeze([
     {
       title: "Explain this rule",
-      description: "Kuralı kısa Türkçe mantıkla açıkla.",
+      description: "Kuralı daha basit anlat.",
       prompt: `${focus.title} kuralını kısa Türkçe mantıkla açıkla.`,
       icon: "book-open" as const
     },
     {
       title: compareTitle,
-      description: "Anlam, zaman ve kullanım farkını göster.",
+      description: "Benzer yapıyla farkını göster.",
       prompt: comparePrompt,
       icon: "books" as const
     },
     {
-      title: "Quiz this grammar",
-      description: "Bu konudan tek hızlı soru çöz.",
+      title: "Give another example",
+      description: "Yeni ve doğal bir örnek ver.",
+      prompt: `${focus.title} için yeni ve doğal bir İngilizce örnek cümle ver ve neden bu yapının kullanıldığını kısaca açıkla.`,
+      icon: "book-open" as const
+    },
+    {
+      title: "Quiz me",
+      description: "Bu konudan hızlı soru sor.",
       prompt: `${focus.title} konusunda tek hızlı quiz sorusu hazırla.`,
       icon: "star" as const
+    },
+    {
+      title: "Why is this wrong?",
+      description: "Hatanın nedenini açıkla.",
+      prompt: `${focus.title} konusunda sık yapılan bir hatayı göster, doğru halini ver ve neden yanlış olduğunu açıkla.`,
+      icon: "check" as const
     }
   ]);
 }
@@ -170,7 +182,7 @@ function GrammarAssistantSession() {
 
   const welcomeCopy =
     lessonFocus?.id === "present-perfect"
-      ? "Bu konuyu çalışırken kuralı açıklamamı, Present Perfect ile Past Simple’ı karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin."
+      ? "Bu konuyu çalışırken kural açıklaması, Present Perfect ile Past Simple karşılaştırması, yeni örnek ya da kısa bir quiz isteyebilirsin."
       : lessonFocus === undefined
         ? "Bir grammar konusu seçebilir veya aklına takılan kuralı, karşılaştırmayı ya da örneği doğrudan sorabilirsin."
         : `${lessonFocus.title} çalışırken kuralı açıklamamı, benzer yapılarla karşılaştırmamı veya sana kısa bir quiz hazırlamamı isteyebilirsin.`;
