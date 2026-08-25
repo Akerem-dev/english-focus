@@ -23,7 +23,7 @@ const GRAMMAR_HERO_ARTWORK = Object.freeze([
 ]);
 
 const PINNED_ARTWORK: Readonly<Record<string, number>> = Object.freeze({
-  "present-perfect": 7
+  "present-perfect": 0
 });
 
 function stableHash(value: string): number {
