@@ -3,11 +3,15 @@
    Keep the lesson reservation and the live Wordie rail on that same token so
    1920/1536/1366 layouts cannot drift apart. */
 
-#root
-  .application-frame--grammar-cleanroom
-  .wvg-page[data-grammar-view="lesson"]
-  .wvg-v12-lesson {
-  right: var(--wvg-rail-width, 344px);
+@media (min-width: 901px) {
+  #root
+    .application-frame--grammar-cleanroom:has(
+      .assistant-dock.wv84-assistant[data-open="true"]
+    )
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-v12-lesson {
+    right: var(--wvg-rail-width, 344px);
+  }
 }
 
 #root .application-frame--grammar-cleanroom .assistant-dock.wv84-assistant[data-open="true"],
@@ -23,14 +27,6 @@
 #root .application-frame--grammar-cleanroom .wv84-assistant-composer {
   width: calc(var(--wvg-rail-width, 344px) - 50px) !important;
   max-width: calc(100% - 32px) !important;
-}
-
-/* When Wordie is closed, return the released space to the lesson. */
-#root
-  .application-frame--grammar-cleanroom:not(:has(.assistant-dock.wv84-assistant[data-open="true"]))
-  .wvg-page[data-grammar-view="lesson"]
-  .wvg-v12-lesson {
-  right: 0;
 }
 
 /* At the minimum desktop width Wordie intentionally becomes an overlay. */
