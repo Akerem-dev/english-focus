@@ -1,224 +1,413 @@
-import { AppIcon } from "../../../design-system";
+import { useState } from "react";
+
 import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 
 interface PresentPerfectReferenceLessonProps {
   readonly onBrowseLessons: () => void;
 }
 
+type LessonTab = "rule" | "examples" | "compare" | "mistakes" | "practice";
+
+interface LessonTabDefinition {
+  readonly id: LessonTab;
+  readonly label: string;
+}
+
+const TABS: readonly LessonTabDefinition[] = Object.freeze([
+  { id: "rule", label: "Rule" },
+  { id: "examples", label: "Examples" },
+  { id: "compare", label: "Compare" },
+  { id: "mistakes", label: "Mistakes" },
+  { id: "practice", label: "Practice" }
+]);
+
 const USE_CASES = Object.freeze([
   {
-    icon: "star" as const,
+    mark: "★",
     title: "Life experience",
-    body: "Hayatında şimdiye kadar yaşadığın deneyimleri anlatır.",
-    example: "I have travelled to Japan."
+    body: "Hayatındaki bir deneyimi anlatırken."
   },
   {
-    icon: "clock" as const,
+    mark: "◷",
     title: "Unspecified time",
-    body: "Ne zaman olduğu önemli değilse ya da bilinmiyorsa kullanılır.",
-    example: "They have seen that movie."
+    body: "Kesin geçmiş zaman önemli değilse."
   },
   {
-    icon: "check" as const,
+    mark: "✓",
     title: "Recent result / ongoing",
-    body: "Geçmişte başladı; sonucu, etkisi veya durum bugün hâlâ sürüyor.",
-    example: "She has lived here since 2018."
+    body: "Sonuç ya da durum bugün sürüyorsa."
   }
 ]);
 
 const SIGNAL_WORDS = Object.freeze([
+  "just",
   "already",
   "yet",
-  "just",
   "ever",
   "never",
-  "so far",
-  "recently",
   "since",
   "for",
-  "up to now"
+  "recently"
 ]);
 
 const EXAMPLES = Object.freeze([
   {
-    icon: "star" as const,
-    sentence: "We have visited many countries.",
+    sentence: "I’ve lost my keys.",
+    type: "Result now",
+    note: "Anahtarlar hâlâ kayıp."
+  },
+  {
+    sentence: "She has lived here for six years.",
+    type: "Duration",
+    note: "Durum hâlâ sürüyor."
+  },
+  {
+    sentence: "Have you ever visited Rome?",
     type: "Life experience",
-    note: "Bugüne kadarki deneyimi anlatır."
+    note: "Kesin geçmiş zaman önemli değil."
   },
   {
-    icon: "clock" as const,
-    sentence: "She has already eaten lunch.",
+    sentence: "I’ve just finished the report.",
     type: "Recent result",
-    note: "Kısa süre önce bitti; sonucu şimdi önemli."
+    note: "Raporun şimdi hazır olması önemli."
   },
   {
-    icon: "check" as const,
     sentence: "They haven’t seen that movie yet.",
     type: "Unspecified time",
-    note: "Zaman belirsizdir; “yet” eylemin henüz olmadığını gösterir."
-  },
-  {
-    icon: "star" as const,
-    sentence: "I’ve known him for five years.",
-    type: "Duration",
-    note: "Geçmişte başladı ve hâlâ sürüyor."
-  },
-  {
-    icon: "book-open" as const,
-    sentence: "You’ve just won a prize!",
-    type: "Very recent",
-    note: "Az önce gerçekleşti; etkisi şu anda önemli."
+    note: "Eylemin tam zamanı belirtilmiyor."
   }
 ]);
+
+const COMPARISONS = Object.freeze([
+  {
+    label: "RESULT NOW",
+    perfect: "I’ve lost my keys.",
+    perfectNote: "Sonuç şimdi önemli; anahtarlar hâlâ bende değil.",
+    simple: "I lost my keys yesterday.",
+    simpleNote: "Yesterday bitmiş bir geçmiş zaman verir."
+  },
+  {
+    label: "LIFE EXPERIENCE",
+    perfect: "Have you ever visited Rome?",
+    perfectNote: "Bugüne kadarki deneyimi sorar.",
+    simple: "Did you visit Rome in 2022?",
+    simpleNote: "2022 bitmiş ve belirli bir zamandır."
+  },
+  {
+    label: "STILL TRUE",
+    perfect: "She has lived here for six years.",
+    perfectNote: "Altı yıl önce başladı ve hâlâ burada yaşıyor.",
+    simple: "She lived there for six years.",
+    simpleNote: "O yaşam dönemi artık bitmiş olarak anlatılır."
+  },
+  {
+    label: "UNFINISHED TIME",
+    perfect: "I’ve had three meetings today.",
+    perfectNote: "Today hâlâ devam eden zaman dilimi olarak görülüyor.",
+    simple: "I had three meetings yesterday.",
+    simpleNote: "Yesterday tamamen bitmiştir."
+  }
+]);
+
+const MISTAKES = Object.freeze([
+  {
+    wrong: "I have seen him yesterday.",
+    correct: "I saw him yesterday.",
+    reason: "“Yesterday” bitmiş bir geçmiş zamanı gösterdiği için Past Simple kullanırız."
+  },
+  {
+    wrong: "She has finished the report last night.",
+    correct: "She finished the report last night.",
+    reason: "“Last night” belirli ve bitmiş bir geçmiş zamandır."
+  },
+  {
+    wrong: "I am here since 2021.",
+    correct: "I have been here since 2021.",
+    reason: "Geçmişte başlayıp şimdi süren bir durum için Present Perfect gerekir."
+  }
+]);
+
+const PRACTICE_OPTIONS = Object.freeze(["lost", "have lost", "had lost", "am losing"]);
+const PRACTICE_ANSWER = "have lost";
 
 export function PresentPerfectReferenceLesson({
   onBrowseLessons
 }: PresentPerfectReferenceLessonProps) {
+  const [activeTab, setActiveTab] = useState<LessonTab>("rule");
+  const [practiceChoice, setPracticeChoice] = useState<string | undefined>();
   const grammarHero = getGrammarLessonArtwork("present-perfect");
+  const practiceCorrect = practiceChoice === PRACTICE_ANSWER;
 
   return (
-    <main className="wvg-reference-lesson" aria-labelledby="grammar-topic-title">
-      <header className="wvg-reference-hero">
-        <div className="wvg-reference-hero__copy">
-          <nav aria-label="Grammar breadcrumb" className="wvg-reference-breadcrumbs">
-            <button onClick={onBrowseLessons} type="button">
-              Grammar
+    <main className="wvg-v12-lesson" aria-labelledby="grammar-topic-title">
+      <section className="wvg-v12-lesson__surface">
+        <header className="wvg-v12-lesson__hero">
+          <div className="wvg-v12-lesson__hero-copy">
+            <button className="wvg-v12-lesson__back" onClick={onBrowseLessons} type="button">
+              ← B1 · TENSES &amp; TIME
             </button>
-            <span aria-hidden="true">›</span>
-            <span>Tenses &amp; Time</span>
-            <span aria-hidden="true">›</span>
-            <strong>Present Perfect</strong>
-          </nav>
-          <h1 id="grammar-topic-title">Present Perfect</h1>
-          <p>
-            Geçmişte başlayan ya da gerçekleşen bir şeyin sonucu, deneyimi veya devamı bugün hâlâ
-            önemliyse Present Perfect kullanırız.
-          </p>
-        </div>
-        <img
-          alt=""
-          aria-hidden="true"
-          className="wvg-reference-hero__art"
-          draggable={false}
-          src={grammarHero}
-        />
-      </header>
-
-      <section className="wvg-reference-grid" aria-label="Present Perfect lesson overview">
-        <article className="wvg-reference-card wvg-reference-card--formula">
-          <p className="wvg-reference-label">CORE FORMULA · TEMEL YAPI</p>
-          <div className="wvg-reference-formula" aria-label="have or has plus past participle V3">
-            <strong>have&nbsp; / &nbsp;has</strong>
-            <span>+</span>
-            <strong>past participle (V3)</strong>
+            <h1 id="grammar-topic-title">Present Perfect</h1>
+            <p>
+              Geçmişte başlayan ya da gerçekleşen bir şeyin sonucu, deneyimi veya devamı bugün hâlâ
+              önemliyse Present Perfect kullanırız.
+            </p>
           </div>
+          <img
+            alt=""
+            aria-hidden="true"
+            className="wvg-v12-lesson__hero-art"
+            draggable={false}
+            src={grammarHero}
+          />
+        </header>
 
-          <div className="wvg-reference-subjects">
-            <div>
-              <span className="wvg-reference-subjects__icon" aria-hidden="true">
-                <AppIcon name="bookmark" size={16} />
-              </span>
-              <span>I / You / We / They</span>
-              <b>→</b>
-              <strong>have + V3</strong>
-            </div>
-            <div>
-              <span className="wvg-reference-subjects__icon" aria-hidden="true">
-                <AppIcon name="bookmark" size={16} />
-              </span>
-              <span>He / She / It</span>
-              <b>→</b>
-              <strong>has + V3</strong>
-            </div>
-          </div>
+        <nav aria-label="Present Perfect lesson sections" className="wvg-v12-tabs" role="tablist">
+          {TABS.map((tab) => (
+            <button
+              aria-controls={`grammar-panel-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              className={activeTab === tab.id ? "is-active" : undefined}
+              id={`grammar-tab-${tab.id}`}
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              role="tab"
+              type="button"
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
 
-          <div className="wvg-reference-mini-examples">
-            <span>
-              I <strong>have visited</strong> Paris.
-            </span>
-            <span>
-              She has <strong>finished</strong> her homework.
-            </span>
-          </div>
-        </article>
+        <section
+          aria-labelledby={`grammar-tab-${activeTab}`}
+          className="wvg-v12-panel"
+          id={`grammar-panel-${activeTab}`}
+          role="tabpanel"
+        >
+          {activeTab === "rule" ? (
+            <div className="wvg-v12-rule">
+              <div className="wvg-v12-rule__top">
+                <section className="wvg-v12-section wvg-v12-formula-section">
+                  <p className="wvg-v12-label">CORE FORMULA</p>
+                  <div className="wvg-v12-formula-card">
+                    <h2>have / has&nbsp; + &nbsp;past participle (V₃)</h2>
+                    <strong>I / you / we / they&nbsp; → &nbsp;have + V₃</strong>
+                    <strong>he / she / it&nbsp; → &nbsp;has + V₃</strong>
+                    <p>I have finished.&nbsp;&nbsp;&nbsp;&nbsp; She has arrived.</p>
+                  </div>
+                </section>
 
-        <article className="wvg-reference-card wvg-reference-card--uses">
-          <p className="wvg-reference-label">WHEN TO USE · NE ZAMAN?</p>
-          <div className="wvg-reference-use-list">
-            {USE_CASES.map((useCase) => (
-              <div className="wvg-reference-use" key={useCase.title}>
-                <span className="wvg-reference-use__icon" aria-hidden="true">
-                  <AppIcon name={useCase.icon} size={17} />
-                </span>
-                <div>
-                  <strong>{useCase.title}</strong>
-                  <p>{useCase.body}</p>
-                  <small>{useCase.example}</small>
+                <section className="wvg-v12-section wvg-v12-uses-section">
+                  <p className="wvg-v12-label">WHEN TO USE</p>
+                  <div className="wvg-v12-use-list">
+                    {USE_CASES.map((useCase) => (
+                      <div className="wvg-v12-use" key={useCase.title}>
+                        <span aria-hidden="true">{useCase.mark}</span>
+                        <div>
+                          <strong>{useCase.title}</strong>
+                          <p>{useCase.body}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+
+              <div className="wvg-v12-rule__middle">
+                <section className="wvg-v12-section">
+                  <p className="wvg-v12-label">SIGNAL WORDS</p>
+                  <div className="wvg-v12-signal-list">
+                    {SIGNAL_WORDS.map((word) => (
+                      <span key={word}>{word}</span>
+                    ))}
+                  </div>
+                </section>
+
+                <section className="wvg-v12-section">
+                  <p className="wvg-v12-label">QUICK DECISION</p>
+                  <div className="wvg-v12-quick-decision">
+                    Bitmiş geçmiş zamanı söylüyorsan → <strong>Past Simple.</strong> Bugünle bağlantı
+                    önemliyse → <strong>Present Perfect.</strong>
+                  </div>
+                </section>
+              </div>
+
+              <section className="wvg-v12-section wvg-v12-rule__examples">
+                <p className="wvg-v12-label">EXAMPLES</p>
+                <div className="wvg-v12-example-table">
+                  {EXAMPLES.slice(0, 3).map((example) => (
+                    <div className="wvg-v12-example-row" key={example.sentence}>
+                      <strong>{example.sentence}</strong>
+                      <b>{example.type}</b>
+                      <p>{example.note}</p>
+                    </div>
+                  ))}
                 </div>
+              </section>
+            </div>
+          ) : null}
+
+          {activeTab === "examples" ? (
+            <div className="wvg-v12-state-view">
+              <header className="wvg-v12-state-view__heading">
+                <div>
+                  <p className="wvg-v12-label">EXAMPLES · ÖRNEKLER</p>
+                  <h2>Cümleyi ezberleme; neden bu zamanı seçtiğimizi gör.</h2>
+                </div>
+                <p>Önce İngilizce cümleyi oku, sonra bugünkü bağlantının ne olduğunu kontrol et.</p>
+              </header>
+              <div className="wvg-v12-example-cards">
+                {EXAMPLES.map((example, index) => (
+                  <article key={example.sentence}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <h3>{example.sentence}</h3>
+                      <p>{example.note}</p>
+                    </div>
+                    <aside>
+                      <small>{example.type}</small>
+                      <strong>Neden?</strong>
+                      <p>{example.note} Bu yüzden cümlenin geçmişle bugünü bağlaması önemlidir.</p>
+                    </aside>
+                  </article>
+                ))}
               </div>
-            ))}
-          </div>
-        </article>
+            </div>
+          ) : null}
 
-        <article className="wvg-reference-card wvg-reference-card--signals">
-          <p className="wvg-reference-label">COMMON SIGNAL WORDS · İPUÇLARI</p>
-          <div className="wvg-reference-signals">
-            {SIGNAL_WORDS.map((word) => (
-              <span key={word}>{word}</span>
-            ))}
-          </div>
-        </article>
+          {activeTab === "compare" ? (
+            <div className="wvg-v12-state-view">
+              <header className="wvg-v12-state-view__heading">
+                <div>
+                  <p className="wvg-v12-label">COMPARE · KARŞILAŞTIR</p>
+                  <h2>Present Perfect mı, Past Simple mı?</h2>
+                </div>
+                <div className="wvg-v12-mini-rule">
+                  <strong>En hızlı karar</strong>
+                  <p>Bitmiş zaman varsa Past Simple; bugünle bağlantı varsa Present Perfect.</p>
+                </div>
+              </header>
 
-        <article className="wvg-reference-card wvg-reference-card--compare">
-          <p className="wvg-reference-label">PRESENT PERFECT vs. PAST SIMPLE</p>
-          <div className="wvg-reference-compare">
-            <section className="wvg-reference-compare__side wvg-reference-compare__side--perfect">
-              <strong>Present Perfect</strong>
-              <p>Bugünle olan bağlantıya odaklanır.</p>
-              <small>
-                I’ve lost my keys.
-                <br />
-                (Sonuç şimdi önemli.)
-              </small>
-            </section>
-            <span className="wvg-reference-compare__vs" aria-hidden="true">
-              VS.
-            </span>
-            <section className="wvg-reference-compare__side wvg-reference-compare__side--simple">
-              <strong>Past Simple</strong>
-              <p>Bitmiş bir geçmiş zamana odaklanır.</p>
-              <small>
-                I lost my keys yesterday.
-                <br />
-                (Zaman belli ve bitmiş.)
-              </small>
-            </section>
-          </div>
-        </article>
-
-        <article className="wvg-reference-card wvg-reference-card--examples">
-          <p className="wvg-reference-label">EXAMPLES · ÖRNEKLER</p>
-          <div className="wvg-reference-example-list">
-            {EXAMPLES.map((example) => (
-              <div className="wvg-reference-example" key={example.sentence}>
-                <span aria-hidden="true">
-                  <AppIcon name={example.icon} size={14} />
-                </span>
-                <strong>{example.sentence}</strong>
-                <b>{example.type}</b>
-                <p>{example.note}</p>
+              <div className="wvg-v12-compare-head">
+                <section>
+                  <small>PAST → NOW</small>
+                  <h3>Present Perfect</h3>
+                  <strong>have / has + V₃</strong>
+                  <p>Geçmişte olan şeye bugünden bakar; sonuç, deneyim ya da devam önemlidir.</p>
+                </section>
+                <section>
+                  <small>FINISHED PAST</small>
+                  <h3>Past Simple</h3>
+                  <strong>V₂ / did + base verb</strong>
+                  <p>Olayı bitmiş geçmiş zamanın içine yerleştirir.</p>
+                </section>
               </div>
-            ))}
-          </div>
-        </article>
+
+              <div className="wvg-v12-comparison-list">
+                {COMPARISONS.map((comparison, index) => (
+                  <article key={comparison.label}>
+                    <span>
+                      {String(index + 1).padStart(2, "0")}
+                      <small>{comparison.label}</small>
+                    </span>
+                    <div>
+                      <small>PRESENT PERFECT</small>
+                      <strong>{comparison.perfect}</strong>
+                      <p>{comparison.perfectNote}</p>
+                    </div>
+                    <div>
+                      <small>PAST SIMPLE</small>
+                      <strong>{comparison.simple}</strong>
+                      <p>{comparison.simpleNote}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {activeTab === "mistakes" ? (
+            <div className="wvg-v12-state-view">
+              <header className="wvg-v12-state-view__heading">
+                <div>
+                  <p className="wvg-v12-label">COMMON MISTAKES · SIK HATALAR</p>
+                  <h2>Yanlışı sadece düzeltme; neden yanlış olduğunu gör.</h2>
+                </div>
+                <p>En sık hata, bitmiş geçmiş zaman ifadesini Present Perfect ile kullanmaktır.</p>
+              </header>
+              <div className="wvg-v12-mistake-list">
+                {MISTAKES.map((mistake, index) => (
+                  <article key={mistake.wrong}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div className="wvg-v12-mistake-list__wrong">
+                      <small>YANLIŞ</small>
+                      <s>{mistake.wrong}</s>
+                    </div>
+                    <div className="wvg-v12-mistake-list__correct">
+                      <small>DOĞRU</small>
+                      <strong>{mistake.correct}</strong>
+                    </div>
+                    <p>{mistake.reason}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {activeTab === "practice" ? (
+            <div className="wvg-v12-state-view wvg-v12-practice">
+              <header className="wvg-v12-state-view__heading">
+                <div>
+                  <p className="wvg-v12-label">PRACTICE · ALIŞTIRMA</p>
+                  <h2>Önce anlamı seç, sonra zamanı.</h2>
+                </div>
+                <span>1 / 5</span>
+              </header>
+
+              <section className="wvg-v12-practice__question">
+                <small>RESULT NOW · ŞİMDİKİ SONUÇ</small>
+                <h3>I _____ my keys. Can you help me look for them?</h3>
+                <p>İpucu: Anahtarlar şu anda hâlâ kayıp. Geçmişteki olayın sonucu bugün devam ediyor.</p>
+              </section>
+
+              <div className="wvg-v12-practice__options">
+                {PRACTICE_OPTIONS.map((option, index) => {
+                  const selected = practiceChoice === option;
+                  const correct = selected && option === PRACTICE_ANSWER;
+                  const wrong = selected && option !== PRACTICE_ANSWER;
+                  return (
+                    <button
+                      className={correct ? "is-correct" : wrong ? "is-wrong" : undefined}
+                      key={option}
+                      onClick={() => setPracticeChoice(option)}
+                      type="button"
+                    >
+                      <span>{String.fromCharCode(65 + index)}</span>
+                      <strong>{option}</strong>
+                      {correct ? <b aria-label="Correct">✓</b> : null}
+                      {wrong ? <b aria-label="Incorrect">×</b> : null}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {practiceChoice === undefined ? null : (
+                <aside
+                  aria-live="polite"
+                  className={practiceCorrect ? "wvg-v12-feedback is-correct" : "wvg-v12-feedback is-wrong"}
+                >
+                  <strong>{practiceCorrect ? "DOĞRU · Mantığı doğru kurdun." : "TEKRAR DÜŞÜN"}</strong>
+                  <p>
+                    {practiceCorrect
+                      ? "Doğru cevap “have lost”. Anahtarları kaybetme olayı geçmişte oldu ama sonuç şimdi devam ediyor; anahtarlar hâlâ kayıp."
+                      : "Cümlenin odağı kaybetme anı değil, anahtarların şu anda bulunamaması. Bugünle bağlantıyı gösteren yapıyı seç."}
+                  </p>
+                </aside>
+              )}
+            </div>
+          ) : null}
+        </section>
       </section>
-
-      <aside className="wvg-reference-tip" aria-label="Present Perfect quick rule">
-        <span aria-hidden="true">●</span>
-        <strong>KISA KURAL</strong>
-        <p>Bitmiş bir zaman söylüyorsan Past Simple; cümlenin ayağı bugündeyse Present Perfect.</p>
-      </aside>
     </main>
   );
 }
