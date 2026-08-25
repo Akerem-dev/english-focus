@@ -1,0 +1,162 @@
+[
+  {
+    "id": "A063",
+    "t": "This and That",
+    "c": "Articles & Determiners",
+    "a": "This and That: Gayriresmî (informal) dilde 'this' ve 'that', sıfat ve zarfların önünde 'so' ile aynı anlamda (bu kadar/o kadar) kullanılabilir. Örneğin, bir durumun derecesini belirtmek için kullanılırlar. Ancak, ardından bir yan cümlecik (clause) gelen durumlarda standart İngilizcede yalnızca 'so' ifadesi tercih edilir.\nÖrnek: Hava o kadar soğuktu ki parmaklarımı hissedemiyordum.",
+    "r": ["R2"],
+    "s": []
+  },
+  {
+    "id": "A064",
+    "t": "These and Those",
+    "c": "Articles & Determiners",
+    "a": "These and Those: These ve those; fiziksel nesneleri işaret ederken, insanları tanıtırken veya kim olduklarını sorarken ve daha önce bahsedilen şeylere geri atıfta bulunurken kullanılan işaret zamirleridir. 'These' yakın olan çoğul nesneleri veya kişileri belirtmek için, 'those' ise uzak olanları ifade etmek için kullanılır. Informal bir üslupta 'this' ve 'that' bazen derecelendirme (so anlamında) bildirmek için kullanılsa da, standart İngilizcede bir yan cümle öncesinde bu işlev için yalnızca 'so' kullanılır.",
+    "r": ["R2"],
+    "s": ["R3", "R5", "R6", "R7", "R8"]
+  },
+  {
+    "id": "A065",
+    "t": "Some",
+    "c": "Quantifiers I",
+    "a": "Some: Some, genellikle olumlu cümlelerde kullanılır. Olumsuz cümlelerde veya sorularda kullanımına dair temel kısıtlamalar şöyledir: Olumsuz cümlelerde 'any' tercih edilir (örneğin: 'Sorry, I don’t have any flour'). Sorularda ise 'some', yalnızca karşı taraftan 'evet' cevabı beklendiğinde, tekliflerde veya ricada bulunulduğunda kullanılır (örneğin: 'Would you like some custard?'). Ricalarda 'some' kullanımı zorunludur. Bunun dışında 'some', sayıların önünde 'yaklaşık' anlamında kullanılabilir veya vurgulu olarak kullanıldığında belirli bir miktarı/kısmı kastetmek için tüm cümle türlerinde yer alabilir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A066",
+    "t": "Any",
+    "c": "Quantifiers I",
+    "a": "Any: 'Any' kelimesi, olumlu olmayan (non-affirmative) cümle yapılarında kullanılan bir ifadedir. Olumlu cümlelerin dışındaki durumlarda, bir varlığın veya durumun mevcudiyetiyle ilgili genel bir belirsizliği ifade etmek için tercih edilir.",
+    "r": ["R1"],
+    "s": []
+  },
+  {
+    "id": "A067",
+    "t": "No and None",
+    "c": "Quantifiers I",
+    "a": "No and None: ‘No’ ve ‘none’ kullanımı şu kurallara dayanır: ‘No’, bir isimle birlikte kullanılır (no bus, no shops gibi). ‘None’ ise kendisinden sonra bir isim gelmeden, tek başına kullanılır (Örneğin; ‘How much money do you have?’ sorusuna ‘None’ şeklinde yanıt verilebilir). ‘None of’ yapısı ise kendisinden sonra çoğul bir grup (none of the students, none of them gibi) ile kullanılır ve bu durumda fiil tekil ya da çoğul olabilir. Cümlede başka bir olumsuz ifade (not gibi) varsa ‘no’ yerine ‘any’ tercih edilir.",
+    "r": ["R3"],
+    "s": ["R1", "R2", "R4", "R6", "R8"]
+  },
+  {
+    "id": "A068",
+    "t": "Much and Many",
+    "c": "Quantifiers I",
+    "a": "Much and Many: Much ve many, büyük miktarları ifade etmek için kullanılır. Much, sayılamayan isimlerle (uncountable nouns); many ise çoğul isimlerle (plural nouns) tercih edilir. Ayrıca much, fiillerle birlikte de kullanılabilir. Birçok durumda 'a lot of' ifadesiyle benzer şekilde büyük miktarları belirtmek için kullanılırlar. 'Much of' ve 'many of' şeklinde de kullanımları mevcuttur.",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A069",
+    "t": "A lot of / Lots of",
+    "c": "Quantifiers I",
+    "a": "A lot of / Lots of: A lot of ve lots of; 'çok miktarda' veya 'çok sayıda' anlamında kullanılır. Olumlu cümlelerde 'much' ve 'many' yerine özellikle gayriresmi bağlamlarda tercih edilirler. 'A great deal of', 'a large amount of' ve 'a large number of' ifadeleri benzer şekilde kullanılsa da bunlar daha resmi ifadelerdir. Cümle içindeki fiilin tekil mi yoksa çoğul mu olacağını 'a lot of' veya 'lots of' kalıbının kendisi değil, bu ifadeden sonra gelen özne belirler. Sayılamayan ve çoğul sayılabilen isimlerle kullanılabilirler; ayrıca bu kullanımlarda 'plenty of' ifadesi de alternatif olarak tercih edilebilir.",
+    "r": ["R1"],
+    "s": ["R9", "R11", "R5", "R7", "R8"]
+  },
+  {
+    "id": "A070",
+    "t": "Few vs A few",
+    "c": "Quantifiers I",
+    "a": "Few vs A few: İngilizcede 'few' ve 'a few' miktarları ifade etmek için kullanılır ve çoğul isimlerle tercih edilir. 'Few', olumsuz bir anlam taşıyarak yeterli olmadığını veya az olduğunu belirtir. 'A few' ise olumlu bir anlam taşıyarak az da olsa bir miktar olduğunu vurgular. Her iki kullanım da genellikle resmi ve yazılı İngilizcede tercih edilir. Ayrıca 'little' ifadesi, sayılamayan isimlerle miktar belirtmek için kullanılır.\nÖrnek: Çok az hata yapıyorsun.",
+    "r": ["R3"],
+    "s": []
+  },
+  {
+    "id": "A071",
+    "t": "Little vs A little",
+    "c": "Quantifiers I",
+    "a": "Little vs A little: İngilizcede 'little' ve 'a little', sayılamayan isimlerle birlikte kullanılan miktar belirleyicilerdir. 'Little' (başında 'a' olmadan) kullanıldığında, genellikle olumsuz bir anlam taşıyarak 'yetersiz' veya 'neredeyse hiç' gibi bir çekinceyi ifade eder ve daha çok resmi, yazılı İngilizcede tercih edilir. 'A little' ise, 'bir miktar' anlamında daha olumlu bir yaklaşım sunar; konuşma dilinde ve resmi olmayan yazışmalarda 'a little' yerine 'a bit of' ifadesi de kullanılabilir. Ayrıca bu yapılar, olumsuz ifadelerden ziyade olumlu cümlelerde ve sorularda daha sık görülür.\nÖrnek: Çok az zamanımız kaldı! Doğum günümü sadece birkaç kişi hatırladı. Bununla birlikte, gayriresmî bir üslupta 'very little' ve 'very few' ifadeleri de kullanılabilir.",
+    "r": ["R3"],
+    "s": ["R1", "R2", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A072",
+    "t": "Enough",
+    "c": "Quantifiers I",
+    "a": "Enough: Enough kelimesi, bir miktarın yeterli olduğunu belirtmek için kullanılır. İsimlerden önce bir belirleyici (determiner) olarak gelebilir; sayılabilen çoğul isimlerle veya sayılamayan isimlerle kullanılabilir. Ayrıca, herhangi bir isim olmadan, anlamın açık olduğu durumlarda tek başına da kullanılabilir. Bazen cümle içindeki 'the' artikeli, bağlama göre 'enough' anlamını taşıyacak şekilde kullanılabilir. Ek olarak, sıfatlardan sonra gelerek bir durumun yeterlilik derecesini ifade edebilir ve bu yapıda cümlenin öznesi, kendisinden sonra gelen infinitive yapısının nesnesi olabilir.\nÖrnek: Yeterince sütün var mı?",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A073",
+    "t": "All",
+    "c": "Quantifiers II & Determiners",
+    "a": "All: 'All' sözcüğü, aynı anlamı vermek amacıyla çoğul isimlerle birlikte kullanılır.\nÖrnek: Hepimiz mutluyduk.",
+    "r": ["R3"],
+    "s": []
+  },
+  {
+    "id": "A074",
+    "t": "Every",
+    "c": "Quantifiers II & Determiners",
+    "a": "Every: Every, bir grubun tüm üyelerinden bahsetmek için kullanılan bir belirleyicidir. 'Every' tekil isimlerle kullanılır ve genellikle gruplar içindeki her bir üyeyi ifade eder. 'All' ile benzer şekilde genel bir anlam taşıyabilse de, dilbilgisi açısından temel fark, 'every' kelimesinin tekil isim gerektirmesi, 'all' kelimesinin ise çoğul isimlerle kullanılmasıdır. 'Every', artikeller, sahiplik bildiren ifadeler (possessives) veya işaret zamirleri gibi başka belirleyicilerle normalde doğrudan kullanılmaz; bu durumlarda 'all (of)' tercih edilir. Ayrıca 'every', bazen 'tam' veya 'eksiksiz' anlamında da kullanılabilir veya 'almost', 'virtually' gibi kelimelerle birlikte kullanılabilir.",
+    "r": ["R3"],
+    "s": ["R1", "R2", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A075",
+    "t": "Each",
+    "c": "Quantifiers II & Determiners",
+    "a": "Each: Each, İngilizcede bir grup içerisindeki üyelerin her birini ayrı ayrı ifade etmek için kullanılan bir belirleyicidir (determiner). Bir isim grubunun başında, sayıların veya sıfatların önünde yer alır. 'Each', gruptaki üyeleri tek tek, bireysel olarak düşündüğünüzde kullanılır. İki veya daha fazla kişi ya da nesne için kullanılabilir. 'Every' ifadesinden farklı olarak, bir grup içindeki üyeleri bireysel olarak odak noktasına alır. Ayrıca, 'chance', 'confidence', 'hope' gibi soyut ve sayılamayan isimlerle birlikte olumlu bir tutum belirtmek için de kullanılabilir.\nÖrnek: Onların her birine yapmaları için yüz soru veriliyor.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A076",
+    "t": "Both",
+    "c": "Quantifiers II & Determiners",
+    "a": "Both: Both, iki kişiyi veya nesneyi kapsayan bir ifade olup genellikle 'her ikisi' anlamına gelir. 'Both' tek başına tam bir yan tümceyi başlatamaz. 'I both play the piano and the violin' örneğinde görüldüğü gibi, hem fiil hem de nesne gruplarını bağlamak için 'and' ile birlikte kullanılabilir. Ayrıca 'both of' yapısından sonra 'the', 'these', 'my' gibi belirleyicilerle isimler gelebilir.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A077",
+    "t": "Either",
+    "c": "Quantifiers II & Determiners",
+    "a": "Either: Either, iki kişi veya nesneden bahsedildiğinde kullanılan bir yapıdır. İki seçenekten birinin mümkün olduğunu belirtir. 'Either' kullanımında, iki öğeyi tekil bireyler olarak düşündüğünüzde 'either' ifadesini kullanırsınız. Ancak, 'either' veya 'neither' sözcüklerini belirli bir belirleyici (determiner) ile birlikte kullanamazsınız. Ayrıca, 'either side' veya 'either end' gibi belirli kalıplarda 'either' bazen 'her biri' (each) anlamını taşıyabilir.\nÖrnek: Eğer erkek çocuklardan herhangi biri telefon ederse, ona bu akşam içeride olacağımı söyle.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A078",
+    "t": "Neither",
+    "c": "Quantifiers II & Determiners",
+    "a": "Neither: Neither, iki seçenek arasından 'ikisi de değil' veya 'ne o ne bu' anlamında kullanılır. Kullanım yapıları şöyledir: 1) Tekil isimden önce kullanıldığında her ikisinin de olmadığını ifade eder. 2) 'Neither of' yapısından sonra belirteç (the, my, these gibi) veya zamir gelirse, resmi dilde tekil fiil tercih edilir. 3) 'Neither... nor' yapısıyla iki fikir bağlanabilir; bu yapıda neither bir tümcenin başında kullanılamaz. 4) Tek başına bir cevap olarak 'hiçbiri' anlamında kullanılabilir. 5) Olumsuz bir ifadeye karşılık, 'ben de değil' anlamında informal olarak 'me neither' denilebilir.\nÖrnek: Ne sigara içerim ne de alkol kullanırım.",
+    "r": ["R1"],
+    "s": ["R2", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A079",
+    "t": "Most",
+    "c": "Quantifiers II & Determiners",
+    "a": "Most: \"Most\" kelimesi genellikle büyük bir çoğunluğu ifade eder. Kullanımı bağlama göre değişir: \n\n1. Belirli bir grup veya özel isimlerden önce kullanılırken \"most of\" yapısı tercih edilir (Örneğin: \"Most of them\"). Bu yapıda \"the\" kullanılmaz.\n\n2. Genel ifadelerde veya isimlerle doğrudan kullanılırken \"the\" kullanılmaz (Örneğin: \"most purposes\").\n\n3. \"More than any other/others\" (diğerlerinden daha fazla) anlamında karşılaştırmalar yaparken, isimlerin önünde \"the most\" şeklinde kullanılır.\n\n4. \"Most\" kelimesinden sonra \"the\" (most the gibi) getirilmez; belirli bir grubu işaret ediyorsa \"most of the\" şeklinde kullanılmalıdır.\nÖrnek: Shakespeare'in çoğunu okudum.",
+    "r": ["R2"],
+    "s": ["R1", "R3", "R4", "R5", "R6"]
+  },
+  {
+    "id": "A080",
+    "t": "Another / Other / Others",
+    "c": "Quantifiers II & Determiners",
+    "a": "Another / Other / Others: ‘Another’, ‘other’ ve ‘others’ kullanımları bağlama göre değişiklik gösterir. 'Another', tekil isimlerle ek bir kişi veya şeyden bahsetmek için kullanılır (örneğin: başka bir fincan kahve). 'Other' ve 'others' ise bir isimle kullanıldığında çoğul eki almazlar; 'other' bir belirleyici veya zamir olarak görev yapar ancak sıfat gibi doğrudan kullanılmaz. 'Others' biçimi genellikle daha önce bahsedilen bir ismi temsil ediyorsa tek başına kullanılabilir. Ayrıca 'each other' veya 'one another' ifadeleri, karşılıklı eylemleri belirtmek için kullanılır.\nÖrnek: Birkaç hafta daha kalıyorum. Üç sandalyeye daha ihtiyacımız var.",
+    "r": ["R3"],
+    "s": ["R1", "R2", "R5", "R6", "R7"]
+  },
+  {
+    "id": "A081",
+    "t": "Irregular plurals",
+    "c": "Nouns & Pronouns",
+    "a": "Irregular plurals: İngilizcede düzensiz çoğul isimler, standart -s/-es takısı almayan ve tekil formlarından belirgin şekilde farklılaşabilen yapılardır. Bazı isimlerin çoğul formunun tekil formundan çok farklı olması veya 'politics' örneğinde olduğu gibi bağlama göre tekil veya çoğul kabul edilmesi durumları, bu konunun tek bir kurala dayanmadığını gösterir. İsimlerin çoğul yazımını veya telaffuzunu tahmin etmenin evrensel bir yolu yoktur; bu nedenle düzensiz formları öğrenmek ve kullanım sırasında bir sözlükten faydalanmak, hata yapmamak adına en güvenilir yöntemdir.",
+    "r": ["R3"],
+    "s": ["R1", "R4", "R24"]
+  },
+  {
+    "id": "A082",
+    "t": "Possessive 's",
+    "c": "Nouns & Pronouns",
+    "a": "Possessive 's: Possessive 's (apostrophe s), bir şeyin kime ait olduğunu veya bir kişi ya da nesnenin diğeriyle bağlantısını ifade etmek için kullanılır. İsimlere veya isim tamlamalarına eklenerek, sadece sahiplik ilişkisini değil, farklı bağlantı türlerini de belirtebilir. Kişi isimleri '-s' harfi ile bitse dahi bu yapı eklenebilir.\nÖrnek: Kız kardeşimin botlarını giydim.",
+    "r": ["R3"],
+    "s": ["R2", "R5", "R6", "R8", "R9"]
+  }
+]

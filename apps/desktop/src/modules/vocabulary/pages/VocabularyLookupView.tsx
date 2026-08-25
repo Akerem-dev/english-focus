@@ -1,10 +1,7 @@
 import type { FormEvent, RefObject } from "react";
 
 import type { VocabularySearchState } from "../../search/state";
-import {
-  SearchRebuildView,
-  type SearchRebuildActivityItem
-} from "../../search-rebuild";
+import { SearchRebuildView, type SearchRebuildActivityItem } from "../../search-rebuild";
 
 export type VocabularyActivityItem = SearchRebuildActivityItem;
 

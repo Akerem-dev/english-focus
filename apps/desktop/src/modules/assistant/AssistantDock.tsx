@@ -58,7 +58,11 @@ function detectQuickAction(prompt: string): QuickAction | undefined {
   if (/\b(compare|difference|similar|synonym|karşılaştır|fark)\b/u.test(normalized)) {
     return "compare";
   }
-  if (/\b(break down|breakdown|pronounce|pronunciation|syllable|spell|parçala|telaffuz)\b/u.test(normalized)) {
+  if (
+    /\b(break down|breakdown|pronounce|pronunciation|syllable|spell|parçala|telaffuz)\b/u.test(
+      normalized
+    )
+  ) {
     return "breakdown";
   }
   if (/\b(quiz|test me|question me|beni test|soru sor)\b/u.test(normalized)) {
@@ -67,7 +71,11 @@ function detectQuickAction(prompt: string): QuickAction | undefined {
   if (/\b(example|examples|sentence|sentences|use in a sentence|örnek|cümle)\b/u.test(normalized)) {
     return "examples";
   }
-  if (/\b(explain|define|definition|meaning|simpler|simple|ne demek|açıkla|anlamı)\b/u.test(normalized)) {
+  if (
+    /\b(explain|define|definition|meaning|simpler|simple|ne demek|açıkla|anlamı)\b/u.test(
+      normalized
+    )
+  ) {
     return "simple";
   }
 
@@ -368,7 +376,9 @@ export function AssistantDock() {
       const review = inspectAssistantCandidate(preparation.value, word, contentSource);
 
       if (review.kind === "invalid") {
-        setAssistantMessage(`I couldn’t prepare a reliable explanation for “${word}”. Please try again.`);
+        setAssistantMessage(
+          `I couldn’t prepare a reliable explanation for “${word}”. Please try again.`
+        );
         setTypoSuggestions([]);
         setMascotState("confused");
         return;
@@ -613,7 +623,8 @@ export function AssistantDock() {
                           <div>
                             <h3>Meaning</h3>
                             <p>{meaningText}</p>
-                            {translationText === undefined || translationText.length === 0 ? null : (
+                            {translationText === undefined ||
+                            translationText.length === 0 ? null : (
                               <small className="wv84-wordie-answer__translation">
                                 {translationText}
                               </small>
@@ -666,7 +677,9 @@ export function AssistantDock() {
                         Open word
                       </button>
                     ) : null}
-                    {saveError === undefined ? null : <p className="wv84-answer-error">{saveError}</p>}
+                    {saveError === undefined ? null : (
+                      <p className="wv84-answer-error">{saveError}</p>
+                    )}
                   </article>
                 </>
               )}
@@ -676,21 +689,27 @@ export function AssistantDock() {
               <div className="wv84-quick-actions wv84-quick-actions--welcome">
                 <span className="wv84-quick-actions__label">TRY ASKING ME</span>
                 <button onClick={() => applyQuickAction("simple")} type="button">
-                  <span className="wv84-quick-actions__icon"><AppIcon name="search" size={22} /></span>
+                  <span className="wv84-quick-actions__icon">
+                    <AppIcon name="search" size={22} />
+                  </span>
                   <span className="wv84-quick-actions__copy">
                     <strong>Explain a word</strong>
                     <small>Ask naturally and get the core meaning first.</small>
                   </span>
                 </button>
                 <button onClick={() => applyQuickAction("examples")} type="button">
-                  <span className="wv84-quick-actions__icon"><AppIcon name="book-open" size={22} /></span>
+                  <span className="wv84-quick-actions__icon">
+                    <AppIcon name="book-open" size={22} />
+                  </span>
                   <span className="wv84-quick-actions__copy">
                     <strong>Explore in context</strong>
                     <small>See the word in a natural sentence.</small>
                   </span>
                 </button>
                 <button onClick={() => applyQuickAction("quiz")} type="button">
-                  <span className="wv84-quick-actions__icon"><AppIcon name="star" size={22} /></span>
+                  <span className="wv84-quick-actions__icon">
+                    <AppIcon name="star" size={22} />
+                  </span>
                   <span className="wv84-quick-actions__copy">
                     <strong>Quiz me</strong>
                     <small>Check recall without revealing the answer first.</small>
@@ -699,10 +718,18 @@ export function AssistantDock() {
               </div>
             ) : (
               <div className="wv84-quick-actions wv84-quick-actions--contextual">
-                <button onClick={() => applyQuickAction("examples")} type="button">Use in a sentence</button>
-                <button onClick={() => applyQuickAction("compare")} type="button">Compare a similar word</button>
-                <button onClick={() => applyQuickAction("breakdown")} type="button">Break it down</button>
-                <button onClick={() => applyQuickAction("quiz")} type="button">Quiz me on this</button>
+                <button onClick={() => applyQuickAction("examples")} type="button">
+                  Use in a sentence
+                </button>
+                <button onClick={() => applyQuickAction("compare")} type="button">
+                  Compare a similar word
+                </button>
+                <button onClick={() => applyQuickAction("breakdown")} type="button">
+                  Break it down
+                </button>
+                <button onClick={() => applyQuickAction("quiz")} type="button">
+                  Quiz me on this
+                </button>
               </div>
             )}
 

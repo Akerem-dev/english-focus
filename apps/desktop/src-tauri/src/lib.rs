@@ -1,6 +1,7 @@
 mod commands;
 mod contracts;
 mod database;
+mod grammar;
 mod state;
 mod validation;
 
@@ -20,6 +21,8 @@ pub fn run() {
             commands::assistant::assistant_save_api_key,
             commands::assistant::assistant_clear_api_key,
             commands::assistant::assistant_generate_vocabulary,
+            commands::grammar_local::assistant_answer_grammar_local,
+            commands::grammar_local::assistant_answer_grammar,
             commands::contract_commands::list_activity,
             commands::contract_commands::record_activity,
             commands::activity::clear_activity,

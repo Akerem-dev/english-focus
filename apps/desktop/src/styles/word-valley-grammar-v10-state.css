@@ -1,0 +1,12 @@
+/* Route-state polish: the curriculum home is a focused learning-path screen.
+   Wordie opens with a lesson, and the sidebar must not pretend a lesson is active
+   when the user has no current lesson open. */
+
+#root
+  .application-frame--grammar-cleanroom:has(.wvg-page[data-grammar-view="curriculum"])
+  .assistant-dock.wv84-assistant,
+#root
+  .application-frame--grammar-cleanroom:has(.wvg-page[data-grammar-view="curriculum"])
+  .wvclean-progress__continue {
+  display: none !important;
+}

@@ -1,4 +1,3 @@
-export * from "./EmptyState";
 export * from "./ErrorState";
 export * from "./InlineError";
 export * from "./LoadingSkeleton";

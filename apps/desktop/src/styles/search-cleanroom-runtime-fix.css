@@ -111,7 +111,7 @@
   gap: 8px !important;
   margin: 5px 4px 0 !important;
   padding: 8px 5px 2px !important;
-  border-top: 1px solid rgba(247, 242, 232, .12) !important;
+  border-top: 1px solid rgba(247, 242, 232, 0.12) !important;
   color: #f7f2e8 !important;
   text-decoration: none !important;
 }
@@ -128,14 +128,20 @@
 
 #root .application-frame--search-cleanroom .wvclean-progress__continue small {
   color: #c69a3a !important;
-  font: 600 9px/12px "Inter", system-ui, sans-serif !important;
-  letter-spacing: .07em !important;
+  font:
+    600 9px/12px "Inter",
+    system-ui,
+    sans-serif !important;
+  letter-spacing: 0.07em !important;
 }
 
 #root .application-frame--search-cleanroom .wvclean-progress__continue strong {
   overflow: hidden !important;
   color: #f7f2e8 !important;
-  font: 600 16px/18px "Cormorant Garamond", Georgia, serif !important;
+  font:
+    600 16px/18px "Cormorant Garamond",
+    Georgia,
+    serif !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
@@ -146,7 +152,7 @@
 }
 
 #root .application-frame--search-cleanroom .wvclean-progress__continue:hover {
-  background: rgba(255, 255, 255, .035) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
 }
 
 #root .application-frame--search-cleanroom .wvclean-progress__continue:focus-visible {
@@ -235,29 +241,62 @@
  * Turkish meaning, an English meaning/nuance explanation, then a natural example.
  * The old canned action strip is intentionally removed.
  */
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(1) h3,
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(2) h3,
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3 {
+#root
+  .application-frame--search-cleanroom
+  .wv84-wordie-answer:has(> section)
+  > section:nth-of-type(1)
+  h3,
+#root
+  .application-frame--search-cleanroom
+  .wv84-wordie-answer:has(> section)
+  > section:nth-of-type(2)
+  h3,
+#root
+  .application-frame--search-cleanroom
+  .wv84-wordie-answer:has(> section)
+  > section:nth-of-type(3)
+  h3 {
   font-size: 0 !important;
   line-height: 20px !important;
 }
 
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(1) h3::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-wordie-answer:has(> section)
+  > section:nth-of-type(1)
+  h3::before {
   content: "Türkçe karşılığı";
   color: #173b34;
-  font: 600 15px/20px "Inter", system-ui, sans-serif;
+  font:
+    600 15px/20px "Inter",
+    system-ui,
+    sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(2) h3::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-wordie-answer:has(> section)
+  > section:nth-of-type(2)
+  h3::before {
   content: "Meaning & nuance";
   color: #173b34;
-  font: 600 15px/20px "Inter", system-ui, sans-serif;
+  font:
+    600 15px/20px "Inter",
+    system-ui,
+    sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-wordie-answer:has(> section) > section:nth-of-type(3) h3::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-wordie-answer:has(> section)
+  > section:nth-of-type(3)
+  h3::before {
   content: "Natural example";
   color: #173b34;
-  font: 600 15px/20px "Inter", system-ui, sans-serif;
+  font:
+    600 15px/20px "Inter",
+    system-ui,
+    sans-serif;
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-answer > section {
@@ -280,35 +319,87 @@
   display: none !important;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy strong,
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy strong,
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy small,
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy small {
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(1)
+  .wv84-quick-actions__copy
+  strong,
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(2)
+  .wv84-quick-actions__copy
+  strong,
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(1)
+  .wv84-quick-actions__copy
+  small,
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(2)
+  .wv84-quick-actions__copy
+  small {
   font-size: 0 !important;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy strong::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(1)
+  .wv84-quick-actions__copy
+  strong::before {
   content: "Explain a word";
   color: #102d27;
-  font: 600 19px/23px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 19px/23px "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(1) .wv84-quick-actions__copy small::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(1)
+  .wv84-quick-actions__copy
+  small::before {
   content: "Meaning, Turkish equivalent, and nuance.";
   color: #59655f;
-  font: 400 13px/17px "Inter", system-ui, sans-serif;
+  font:
+    400 13px/17px "Inter",
+    system-ui,
+    sans-serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy strong::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(2)
+  .wv84-quick-actions__copy
+  strong::before {
   content: "Explore in context";
   color: #102d27;
-  font: 600 19px/23px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 19px/23px "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
-#root .application-frame--search-cleanroom .wv84-quick-actions--welcome > button:nth-of-type(2) .wv84-quick-actions__copy small::before {
+#root
+  .application-frame--search-cleanroom
+  .wv84-quick-actions--welcome
+  > button:nth-of-type(2)
+  .wv84-quick-actions__copy
+  small::before {
   content: "See how the word behaves in a natural sentence.";
   color: #59655f;
-  font: 400 13px/17px "Inter", system-ui, sans-serif;
+  font:
+    400 13px/17px "Inter",
+    system-ui,
+    sans-serif;
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-answer > header span,
@@ -335,7 +426,7 @@
 
   /* The previous unconditional shadow caused the vertical seam while Wordie was closed. */
   #root .application-frame--search-cleanroom .assistant-dock.wv84-assistant[data-open] {
-    box-shadow: -18px 0 42px rgba(8, 47, 41, .12) !important;
+    box-shadow: -18px 0 42px rgba(8, 47, 41, 0.12) !important;
   }
 
   #root .application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {

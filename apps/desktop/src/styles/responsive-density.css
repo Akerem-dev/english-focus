@@ -1,0 +1,58 @@
+/* Cross-route density safeguards for normal (non clean-room) application pages. */
+
+@media (max-height: 56rem) {
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-sidebar__brand {
+    min-height: 6.5rem;
+    padding: var(--space-4);
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-sidebar__mark {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-sidebar__nav {
+    gap: var(--space-1);
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .sidebar-nav-item {
+    min-height: 3rem;
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-sidebar__footer {
+    gap: 0;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-sidebar__runtime {
+    margin-bottom: var(--space-2);
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-topbar {
+    min-height: 4rem;
+    padding-inline: var(--space-5);
+  }
+}
+
+@media (max-width: 72rem) {
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-topbar {
+    gap: var(--space-3);
+    padding-inline: var(--space-4);
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-topbar__actions {
+    gap: var(--space-2);
+  }
+}
+
+@media (max-width: 48rem) {
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-topbar__keycap {
+    display: none;
+  }
+
+  #root .application-frame:not(.application-frame--search-cleanroom) .app-topbar__route {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

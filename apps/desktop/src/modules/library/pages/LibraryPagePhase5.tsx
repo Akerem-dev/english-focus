@@ -1,11 +1,19 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-import { useToast } from "../../../app/providers";
 import {
-  TauriCollectionsRepository,
+  useCollectionsRepository,
+  useToast,
   type PersistedCollection
-} from "../../../infrastructure/persistence";
+} from "../../../app/providers";
 import { LibraryPagePhase4 } from "./LibraryPagePhase4";
+
+import "../../../styles/word-valley-collections-cleanroom.css";
+import "../../../styles/word-valley-collections-phase1-runtime.css";
+import "../../../styles/word-valley-collections-phase1-sorting.css";
+import "../../../styles/word-valley-collections-phase2-all-words.css";
+import "../../../styles/word-valley-collections-phase3-rich-detail.css";
+import "../../../styles/word-valley-collections-phase4-editorial-polish.css";
+import "../../../styles/word-valley-collections-phase5-final-qa.css";
 
 const COLLECTION_TITLE_MAX = 64;
 const COLLECTION_DESCRIPTION_MAX = 180;
@@ -16,7 +24,7 @@ function normalizeCollectionTitle(value: string): string {
 
 function CollectionsFinalQaGuards() {
   const { showToast } = useToast();
-  const collectionsRepository = useMemo(() => new TauriCollectionsRepository(), []);
+  const collectionsRepository = useCollectionsRepository();
   const storedCollectionsRef = useRef<readonly PersistedCollection[]>([]);
 
   useEffect(() => {
@@ -98,12 +106,9 @@ function CollectionsFinalQaGuards() {
       const title = nameInput.value.trim().replace(/\s+/g, " ");
       const normalizedTitle = normalizeCollectionTitle(title);
       const editing =
-        editor.querySelector("#collection-editor-title")?.textContent?.trim() ===
-        "Edit collection";
+        editor.querySelector("#collection-editor-title")?.textContent?.trim() === "Edit collection";
       const currentTitle =
-        root
-          ?.querySelector<HTMLElement>(".wvc-collection-hero h1")
-          ?.textContent?.trim() ?? "";
+        root?.querySelector<HTMLElement>(".wvc-collection-hero h1")?.textContent?.trim() ?? "";
       const normalizedCurrentTitle = normalizeCollectionTitle(currentTitle);
       const visibleCollectionTitles = Array.from(
         root?.querySelectorAll<HTMLElement>(".wvc-card__body > strong") ?? []

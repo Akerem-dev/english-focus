@@ -153,7 +153,9 @@ export function VocabularyEntryEditorDialog({
           <div className="vocabulary-entry-editor__hero-meta" aria-label="Current word summary">
             <span>{draft.cefr}</span>
             <span>{displayWordType}</span>
-            <span>{draft.meanings.length} {draft.meanings.length === 1 ? "meaning" : "meanings"}</span>
+            <span>
+              {draft.meanings.length} {draft.meanings.length === 1 ? "meaning" : "meanings"}
+            </span>
           </div>
         </section>
 
@@ -183,10 +185,12 @@ export function VocabularyEntryEditorDialog({
         <details className="vocabulary-entry-editor__advanced vocabulary-entry-editor__advanced--language">
           <summary>Advanced language details</summary>
           <div className="vocabulary-entry-editor__advanced-body">
-            <p>
-              Pronunciation and word forms live here so the everyday edit flow stays focused.
-            </p>
-            <VocabularyEntryEditorLanguageSections draft={draft} issues={issues} setDraft={setDraft} />
+            <p>Pronunciation and word forms live here so the everyday edit flow stays focused.</p>
+            <VocabularyEntryEditorLanguageSections
+              draft={draft}
+              issues={issues}
+              setDraft={setDraft}
+            />
           </div>
         </details>
 

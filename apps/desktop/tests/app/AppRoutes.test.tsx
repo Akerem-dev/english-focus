@@ -19,10 +19,11 @@ function renderRoute(path: string) {
 }
 
 describe("application routes", () => {
-  it("defines exactly three primary routes", () => {
-    expect(APP_ROUTES).toHaveLength(3);
+  it("defines exactly four primary routes", () => {
+    expect(APP_ROUTES).toHaveLength(4);
     expect(APP_ROUTES.map((route) => route.path)).toEqual([
       ROUTE_PATHS.vocabulary,
+      ROUTE_PATHS.grammar,
       ROUTE_PATHS.library,
       ROUTE_PATHS.settings
     ]);
@@ -44,11 +45,19 @@ describe("application routes", () => {
     expect(markup).not.toContain("word-valley-backdrop__static");
   });
 
-  it("renders the library route loading boundary", () => {
+  it("renders the grammar route loading boundary", () => {
+    const markup = renderRoute(ROUTE_PATHS.grammar);
+
+    expect(markup).toContain("Loading Grammar");
+    expect(markup).toContain("Grammar page loaded");
+    expect(markup).toContain('aria-label="Window controls"');
+  });
+
+  it("renders the collections route loading boundary", () => {
     const markup = renderRoute(ROUTE_PATHS.library);
 
-    expect(markup).toContain("Loading Library");
-    expect(markup).toContain("Library page loaded");
+    expect(markup).toContain("Loading Collections");
+    expect(markup).toContain("Collections page loaded");
     expect(markup).toContain('aria-label="Window controls"');
   });
 

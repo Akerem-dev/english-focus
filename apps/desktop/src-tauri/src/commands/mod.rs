@@ -11,6 +11,7 @@ pub mod data_reset;
 pub mod database;
 pub mod diagnostic_coverage;
 pub mod diagnostics;
+pub mod grammar_local;
 pub mod resilient_records;
 pub mod runtime;
 pub mod settings;

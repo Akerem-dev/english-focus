@@ -124,17 +124,10 @@ function CollectionsModeNavPortal({
     return null;
   }
 
-  return createPortal(
-    <ModeNav mode="collections" onChange={onChange} portal />,
-    target
-  );
+  return createPortal(<ModeNav mode="collections" onChange={onChange} portal />, target);
 }
 
-function AllWordsPage({
-  onChangeMode
-}: {
-  readonly onChangeMode: (mode: LibraryMode) => void;
-}) {
+function AllWordsPage({ onChangeMode }: { readonly onChangeMode: (mode: LibraryMode) => void }) {
   const { contentSource, error, status } = useVocabularyRepository();
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -171,12 +164,9 @@ function AllWordsPage({
   }, [groupedEntries]);
 
   const [activeKey, setActiveKey] = useState<BrowseKey>(availableKeys[0] ?? "A");
-
-  useEffect(() => {
-    if (!availableKeys.includes(activeKey)) {
-      setActiveKey(availableKeys[0] ?? "A");
-    }
-  }, [activeKey, availableKeys]);
+  const displayedActiveKey = availableKeys.includes(activeKey)
+    ? activeKey
+    : (availableKeys[0] ?? "A");
 
   useEffect(() => {
     const page = pageRef.current;
@@ -232,10 +222,7 @@ function AllWordsPage({
 
   return (
     <div className="wvc-page wvc-page--all-words" ref={pageRef}>
-      <div
-        className="wvc-scene"
-        style={{ backgroundImage: `url("${valleyBackground}")` }}
-      />
+      <div className="wvc-scene" style={{ backgroundImage: `url("${valleyBackground}")` }} />
       <div className="wvc-mist" />
 
       <main className="wvc-shell wvc-shell--all-words">
@@ -246,7 +233,8 @@ function AllWordsPage({
               <p className="wvc-eyebrow">YOUR WORDBOOK</p>
               <h1>All Words</h1>
               <p>
-                {entries.length.toLocaleString()} {entries.length === 1 ? "word" : "words"}, arranged from A to Z.
+                {entries.length.toLocaleString()} {entries.length === 1 ? "word" : "words"},
+                arranged from A to Z.
               </p>
             </div>
             <span className="wvc-allwords-total" aria-label={`${entries.length} total words`}>
@@ -277,7 +265,7 @@ function AllWordsPage({
                 const available = groupedEntries.has(letter);
                 return (
                   <button
-                    aria-current={activeKey === letter ? "location" : undefined}
+                    aria-current={displayedActiveKey === letter ? "location" : undefined}
                     disabled={!available}
                     key={letter}
                     onClick={() => jumpTo(letter)}
@@ -289,7 +277,7 @@ function AllWordsPage({
               })}
               {groupedEntries.has("#") ? (
                 <button
-                  aria-current={activeKey === "#" ? "location" : undefined}
+                  aria-current={displayedActiveKey === "#" ? "location" : undefined}
                   onClick={() => jumpTo("#")}
                   type="button"
                 >
@@ -309,7 +297,9 @@ function AllWordsPage({
                     <div className="wvc-alpha-section__content">
                       <header>
                         <h2>{key === "#" ? "Other" : key}</h2>
-                        <span>{group.length} {group.length === 1 ? "word" : "words"}</span>
+                        <span>
+                          {group.length} {group.length === 1 ? "word" : "words"}
+                        </span>
                       </header>
 
                       <div className="wvc-alpha-rows">

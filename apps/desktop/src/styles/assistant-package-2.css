@@ -7,7 +7,7 @@
   display: grid;
   gap: 0;
   margin-top: 14px;
-  border-top: 1px solid rgba(217, 207, 189, .76);
+  border-top: 1px solid rgba(217, 207, 189, 0.76);
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-answer__section {
@@ -15,7 +15,7 @@
   grid-template-columns: 18px minmax(0, 1fr);
   gap: 10px;
   padding: 15px 0;
-  border-bottom: 1px solid rgba(217, 207, 189, .64);
+  border-bottom: 1px solid rgba(217, 207, 189, 0.64);
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-answer__section:last-of-type {
@@ -25,7 +25,10 @@
 #root .application-frame--search-cleanroom .wv84-wordie-answer__section h3 {
   margin: 0 0 6px;
   color: #102d27;
-  font: 600 16px/1.2 "Cormorant Garamond", Georgia, serif;
+  font:
+    600 16px/1.2 "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-answer__section p {
@@ -39,7 +42,10 @@
   display: block;
   margin-top: 6px;
   color: #6d746f;
-  font: italic 13px/1.45 "Cormorant Garamond", Georgia, serif;
+  font:
+    italic 13px/1.45 "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-answer__meta {
@@ -54,12 +60,12 @@
   min-height: 25px;
   align-items: center;
   padding: 0 9px;
-  border: 1px solid rgba(198, 154, 58, .32);
+  border: 1px solid rgba(198, 154, 58, 0.32);
   border-radius: 999px;
-  background: rgba(247, 242, 232, .78);
+  background: rgba(247, 242, 232, 0.78);
   color: #5d583f;
   font-size: 11px;
-  letter-spacing: .02em;
+  letter-spacing: 0.02em;
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-typo {
@@ -67,16 +73,16 @@
   gap: 8px;
   margin-top: 14px;
   padding: 12px;
-  border: 1px solid rgba(198, 154, 58, .34);
+  border: 1px solid rgba(198, 154, 58, 0.34);
   border-radius: 10px;
-  background: rgba(247, 242, 232, .74);
+  background: rgba(247, 242, 232, 0.74);
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-typo > span {
   color: #6b655a;
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: .07em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
@@ -94,7 +100,10 @@
   background: #fffdf8;
   color: #173a32;
   cursor: pointer;
-  font: 600 13px/1 "Cormorant Garamond", Georgia, serif;
+  font:
+    600 13px/1 "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 #root .application-frame--search-cleanroom .wv84-wordie-typo button:hover {

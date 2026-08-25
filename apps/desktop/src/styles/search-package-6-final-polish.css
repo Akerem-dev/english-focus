@@ -18,8 +18,8 @@
   background: #0a3a32 !important;
   color: #fbf8f1 !important;
   box-shadow:
-    0 6px 16px rgba(8, 47, 41, .10),
-    inset 0 1px rgba(255, 255, 255, .08) !important;
+    0 6px 16px rgba(8, 47, 41, 0.1),
+    inset 0 1px rgba(255, 255, 255, 0.08) !important;
   transition:
     background 140ms ease,
     border-color 140ms ease,
@@ -36,8 +36,8 @@
   background: linear-gradient(180deg, #eef1e5, #e5eadc) !important;
   color: #173a32 !important;
   box-shadow:
-    inset 0 0 0 1px rgba(82, 106, 67, .08),
-    0 3px 9px rgba(16, 45, 39, .05) !important;
+    inset 0 0 0 1px rgba(82, 106, 67, 0.08),
+    0 3px 9px rgba(16, 45, 39, 0.05) !important;
 }
 
 #root .application-frame--search-cleanroom .wvsr-detail-save[aria-pressed="true"]:hover {
@@ -60,7 +60,10 @@
   background: #f8faef;
   color: #526a43;
   content: "✓";
-  font: 700 12px/1 "Inter", system-ui, sans-serif;
+  font:
+    700 12px/1 "Inter",
+    system-ui,
+    sans-serif;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -87,16 +90,12 @@
 }
 
 /* Detail-context card uses the same visual weight when the assistant itself is closed. */
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card__copy {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__copy {
   width: 47% !important;
   max-width: 148px !important;
 }
 
-#root .application-frame--search-cleanroom
-  .wvsr-detail-context-rail
-  .wvsr-wordie-card__mascot {
+#root .application-frame--search-cleanroom .wvsr-detail-context-rail .wvsr-wordie-card__mascot {
   top: 24px !important;
   right: -12px !important;
   width: 168px !important;
@@ -114,13 +113,13 @@
   max-width: 1080px !important;
   max-height: calc(100vh - 44px) !important;
   border-radius: 20px !important;
-  box-shadow: 0 30px 82px rgba(8, 47, 41, .28) !important;
+  box-shadow: 0 30px 82px rgba(8, 47, 41, 0.28) !important;
 }
 
 .modal:has(.vocabulary-entry-editor--package-four) .modal__header {
   padding: 25px 30px 21px !important;
   background:
-    radial-gradient(circle at 88% -10%, rgba(198, 154, 58, .14), transparent 34%),
+    radial-gradient(circle at 88% -10%, rgba(198, 154, 58, 0.14), transparent 34%),
     linear-gradient(180deg, #fffdf8, #f8f3e9) !important;
 }
 
@@ -137,8 +136,7 @@
 .modal:has(.vocabulary-entry-editor--package-four) .modal__body {
   padding: 20px 26px 26px !important;
   background:
-    linear-gradient(180deg, rgba(255, 253, 248, .60), transparent 160px),
-    #f3eee4 !important;
+    linear-gradient(180deg, rgba(255, 253, 248, 0.6), transparent 160px), #f3eee4 !important;
 }
 
 .modal:has(.vocabulary-entry-editor--package-four) .modal__footer {
@@ -146,12 +144,12 @@
   bottom: 0 !important;
   z-index: 5 !important;
   padding: 14px 26px !important;
-  background: rgba(251, 248, 241, .96) !important;
+  background: rgba(251, 248, 241, 0.96) !important;
   backdrop-filter: blur(12px) !important;
 }
 
 .vocabulary-entry-editor--package-four {
-  grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr) !important;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr) !important;
   align-items: start !important;
   gap: 16px !important;
 }
@@ -182,9 +180,8 @@
   border: 1px solid #d7ccb8 !important;
   border-radius: 15px !important;
   background:
-    radial-gradient(circle at 9% 12%, rgba(198, 154, 58, .10), transparent 34%),
-    #fffdf8 !important;
-  box-shadow: inset 0 1px rgba(255, 255, 255, .82) !important;
+    radial-gradient(circle at 9% 12%, rgba(198, 154, 58, 0.1), transparent 34%), #fffdf8 !important;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.82) !important;
 }
 
 .vocabulary-entry-editor__hero > div:first-child {
@@ -194,13 +191,19 @@
 
 .vocabulary-entry-editor__hero > div:first-child > span {
   color: #8b682e !important;
-  font: 700 10px/13px "Inter", system-ui, sans-serif !important;
-  letter-spacing: .12em !important;
+  font:
+    700 10px/13px "Inter",
+    system-ui,
+    sans-serif !important;
+  letter-spacing: 0.12em !important;
 }
 
 .vocabulary-entry-editor__hero > div:first-child > strong {
   color: #102d27 !important;
-  font: 600 35px/39px "Cormorant Garamond", Georgia, serif !important;
+  font:
+    600 35px/39px "Cormorant Garamond",
+    Georgia,
+    serif !important;
 }
 
 .vocabulary-entry-editor__hero > div:first-child > p {
@@ -234,8 +237,8 @@
   padding: 18px !important;
   border: 1px solid #d8cebd !important;
   border-radius: 14px !important;
-  background: rgba(255, 253, 248, .90) !important;
-  box-shadow: 0 5px 14px rgba(16, 45, 39, .035) !important;
+  background: rgba(255, 253, 248, 0.9) !important;
+  box-shadow: 0 5px 14px rgba(16, 45, 39, 0.035) !important;
 }
 
 .vocabulary-entry-editor--package-four .vocabulary-entry-editor__section--identity {
@@ -249,7 +252,7 @@
 .vocabulary-entry-editor--package-four .vocabulary-entry-editor__section > header > span {
   width: 28px !important;
   height: 28px !important;
-  border-color: rgba(198, 154, 58, .30) !important;
+  border-color: rgba(198, 154, 58, 0.3) !important;
   background: #f5eddc !important;
 }
 
@@ -290,8 +293,11 @@
 
 .vocabulary-entry-editor--package-four .vocabulary-entry-editor__card > strong {
   color: #173a32 !important;
-  font: 700 12px/16px "Inter", system-ui, sans-serif !important;
-  letter-spacing: .02em !important;
+  font:
+    700 12px/16px "Inter",
+    system-ui,
+    sans-serif !important;
+  letter-spacing: 0.02em !important;
 }
 
 .vocabulary-entry-editor--package-four .vocabulary-entry-editor__advanced,
@@ -333,7 +339,7 @@
 .modal:has(.json-paste-dialog__metadata) .modal__header {
   padding: 25px 28px 20px !important;
   background:
-    radial-gradient(circle at 90% -4%, rgba(198, 154, 58, .12), transparent 32%),
+    radial-gradient(circle at 90% -4%, rgba(198, 154, 58, 0.12), transparent 32%),
     linear-gradient(180deg, #fffdf8, #f8f3e9) !important;
 }
 
@@ -346,7 +352,10 @@
   display: block !important;
   color: #102d27 !important;
   content: "Replace word data" !important;
-  font: 600 32px/36px "Cormorant Garamond", Georgia, serif !important;
+  font:
+    600 32px/36px "Cormorant Garamond",
+    Georgia,
+    serif !important;
 }
 
 .modal:has(.json-paste-dialog__metadata) .modal__header p {
@@ -360,7 +369,10 @@
   margin-top: 6px !important;
   color: #59655f !important;
   content: "Paste the replacement data below. Word Valley checks it locally, then lets you review everything before any existing word data changes." !important;
-  font: 400 13px/19px "Inter", system-ui, sans-serif !important;
+  font:
+    400 13px/19px "Inter",
+    system-ui,
+    sans-serif !important;
 }
 
 .modal:has(.json-paste-dialog__metadata) .modal__body {
@@ -424,8 +436,11 @@
   margin-bottom: 9px !important;
   color: #8b682e !important;
   content: "REPLACEMENT FLOW" !important;
-  font: 700 10px/13px "Inter", system-ui, sans-serif !important;
-  letter-spacing: .11em !important;
+  font:
+    700 10px/13px "Inter",
+    system-ui,
+    sans-serif !important;
+  letter-spacing: 0.11em !important;
 }
 
 .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar::after {
@@ -433,7 +448,10 @@
   margin-top: 12px !important;
   color: #173a32 !important;
   content: "Paste  →  Check locally  →  Review  →  Confirm" !important;
-  font: 600 13px/20px "Cormorant Garamond", Georgia, serif !important;
+  font:
+    600 13px/20px "Cormorant Garamond",
+    Georgia,
+    serif !important;
 }
 
 .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar p {
@@ -447,9 +465,7 @@
   display: none !important;
 }
 
-.modal:has(.json-paste-dialog__metadata)
-  .modal__body
-  > .field:has(.json-paste-dialog__text) {
+.modal:has(.json-paste-dialog__metadata) .modal__body > .field:has(.json-paste-dialog__text) {
   grid-column: 2 !important;
   grid-row: 1 / span 3 !important;
   display: grid !important;
@@ -460,7 +476,7 @@
   border: 1px solid #d8cebd !important;
   border-radius: 14px !important;
   background: #fffdf8 !important;
-  box-shadow: 0 6px 18px rgba(16, 45, 39, .04) !important;
+  box-shadow: 0 6px 18px rgba(16, 45, 39, 0.04) !important;
 }
 
 .modal:has(.json-paste-dialog__metadata)
@@ -468,7 +484,10 @@
   > .field:has(.json-paste-dialog__text)
   .field__label {
   color: #173a32 !important;
-  font: 700 12px/16px "Inter", system-ui, sans-serif !important;
+  font:
+    700 12px/16px "Inter",
+    system-ui,
+    sans-serif !important;
 }
 
 .modal:has(.json-paste-dialog__metadata) textarea.json-paste-dialog__text {
@@ -477,8 +496,7 @@
   padding: 16px !important;
   border-radius: 10px !important;
   background:
-    linear-gradient(180deg, rgba(247, 242, 232, .34), transparent 70px),
-    #fdfaf4 !important;
+    linear-gradient(180deg, rgba(247, 242, 232, 0.34), transparent 70px), #fdfaf4 !important;
   font-size: 12px !important;
   line-height: 1.55 !important;
 }
@@ -493,7 +511,7 @@
   bottom: 0 !important;
   z-index: 5 !important;
   padding: 14px 24px !important;
-  background: rgba(251, 248, 241, .96) !important;
+  background: rgba(251, 248, 241, 0.96) !important;
   backdrop-filter: blur(12px) !important;
 }
 
@@ -515,9 +533,7 @@
   .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__metadata,
   .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__privacy,
   .modal:has(.json-paste-dialog__metadata) .json-paste-dialog__toolbar,
-  .modal:has(.json-paste-dialog__metadata)
-    .modal__body
-    > .field:has(.json-paste-dialog__text) {
+  .modal:has(.json-paste-dialog__metadata) .modal__body > .field:has(.json-paste-dialog__text) {
     grid-column: 1 !important;
     grid-row: auto !important;
   }

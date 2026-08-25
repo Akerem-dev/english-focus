@@ -1,10 +1,4 @@
-import {
-  useMemo,
-  useState,
-  type FormEvent,
-  type KeyboardEvent,
-  type RefObject
-} from "react";
+import { useMemo, useState, type FormEvent, type KeyboardEvent, type RefObject } from "react";
 import { Link } from "react-router-dom";
 
 import { ROUTE_PATHS } from "../../app/router";
@@ -110,7 +104,9 @@ function ActivityList({ items, kind, onSearch, title }: ActivityListProps) {
 
         {items.length === 0 ? (
           <p className="wvsr-activity__empty">
-            {kind === "viewed" ? "Words you open will appear here." : "Saved words will appear here."}
+            {kind === "viewed"
+              ? "Words you open will appear here."
+              : "Saved words will appear here."}
           </p>
         ) : null}
       </div>
@@ -140,12 +136,16 @@ function SearchNotice({ onEditSearch, onSearch, state }: SearchNoticeProps) {
   if (state.kind === "invalid") {
     return (
       <div className="wvsr-notice wvsr-notice--warning" role="alert">
-        <span className="wvsr-notice__symbol" aria-hidden="true">!</span>
+        <span className="wvsr-notice__symbol" aria-hidden="true">
+          !
+        </span>
         <div>
           <strong>That search needs a small correction.</strong>
           <span>{state.message}</span>
         </div>
-        <button onClick={onEditSearch} type="button">Edit search</button>
+        <button onClick={onEditSearch} type="button">
+          Edit search
+        </button>
       </div>
     );
   }
@@ -153,7 +153,9 @@ function SearchNotice({ onEditSearch, onSearch, state }: SearchNoticeProps) {
   if (state.kind === "not-found") {
     return (
       <div className="wvsr-notice wvsr-notice--warning" role="status">
-        <span className="wvsr-notice__symbol" aria-hidden="true">?</span>
+        <span className="wvsr-notice__symbol" aria-hidden="true">
+          ?
+        </span>
         <div>
           <strong>No match for “{state.query}”.</strong>
           <span>
@@ -185,12 +187,16 @@ function SearchNotice({ onEditSearch, onSearch, state }: SearchNoticeProps) {
   if (state.kind === "repository-error") {
     return (
       <div className="wvsr-notice wvsr-notice--error" role="alert">
-        <span className="wvsr-notice__symbol" aria-hidden="true">!</span>
+        <span className="wvsr-notice__symbol" aria-hidden="true">
+          !
+        </span>
         <div>
           <strong>Search is unavailable right now.</strong>
           <span>Please try again in a moment.</span>
         </div>
-        <button onClick={() => onSearch(state.query)} type="button">Try again</button>
+        <button onClick={() => onSearch(state.query)} type="button">
+          Try again
+        </button>
       </div>
     );
   }
@@ -329,9 +335,7 @@ export function SearchRebuildView({
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      setSelectedSuggestion((current) =>
-        current <= 0 ? suggestions.length - 1 : current - 1
-      );
+      setSelectedSuggestion((current) => (current <= 0 ? suggestions.length - 1 : current - 1));
       return;
     }
 
@@ -364,7 +368,12 @@ export function SearchRebuildView({
           </div>
           <p>Search, understand, and grow your vocabulary.</p>
 
-          <form className="wvsr-search" onSubmit={onSubmit} role="search" aria-label="Vocabulary search">
+          <form
+            className="wvsr-search"
+            onSubmit={onSubmit}
+            role="search"
+            aria-label="Vocabulary search"
+          >
             <span className="wvsr-search__icon" aria-hidden="true">
               <AppIcon name="search" size={28} />
             </span>
@@ -422,9 +431,13 @@ export function SearchRebuildView({
                       role="option"
                       type="button"
                     >
-                      <span className="wvsr-suggestion__leaf" aria-hidden="true">⌁</span>
+                      <span className="wvsr-suggestion__leaf" aria-hidden="true">
+                        ⌁
+                      </span>
                       <strong>{suggestion.word}</strong>
-                      <span>{suggestion.definitionEn ?? "Open this word to see its definition."}</span>
+                      <span>
+                        {suggestion.definitionEn ?? "Open this word to see its definition."}
+                      </span>
                       <b aria-hidden="true">→</b>
                     </button>
                   ))}
@@ -468,7 +481,11 @@ export function SearchRebuildView({
         </div>
 
         <blockquote className="wvsr-quote">
-          <p>The limits of my language<br />are the limits of my world.</p>
+          <p>
+            The limits of my language
+            <br />
+            are the limits of my world.
+          </p>
           <cite>— Ludwig Wittgenstein</cite>
         </blockquote>
 
@@ -497,7 +514,9 @@ export function SearchRebuildView({
 
         <section className="wvsr-wordie-card" aria-label="Wordie vocabulary assistant">
           <header>
-            <span className="wvsr-wordie-card__status" aria-hidden="true">✓</span>
+            <span className="wvsr-wordie-card__status" aria-hidden="true">
+              ✓
+            </span>
             <h2>Wordie</h2>
             <img alt="" className="wvsr-wordie-card__sparkle" src={sparklePair} />
           </header>
@@ -506,10 +525,7 @@ export function SearchRebuildView({
             Need help finding the right word or understanding its nuance?
           </p>
           <img alt="" className="wvsr-wordie-card__mascot" src={wordieReading} />
-          <button
-            onClick={() => dispatchAssistantRequest({ kind: "open" })}
-            type="button"
-          >
+          <button onClick={() => dispatchAssistantRequest({ kind: "open" })} type="button">
             <span>Ask Wordie</span>
             <span aria-hidden="true">→</span>
           </button>

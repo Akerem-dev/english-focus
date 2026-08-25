@@ -6,5 +6,6 @@ import "../../../styles/word-valley-figma-84-assistant-states.css";
 import "../../../styles/word-valley-figma-84-result-states.css";
 import "../../../styles/word-valley-figma-84-asset-polish.css";
 import "../../../styles/word-valley-final-touch.css";
+import "../../../styles/search-package-6-final-polish.css";
 
 export { VocabularyPage } from "./VocabularyPage";

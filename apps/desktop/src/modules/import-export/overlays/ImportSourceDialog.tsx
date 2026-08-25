@@ -1,6 +1,8 @@
 import { Button, Modal } from "../../../components";
 import { AppIcon } from "../../../design-system";
 
+import "../../../styles/json-import.css";
+
 export interface ImportSourceDialogProps {
   readonly open: boolean;
   readonly onClose: () => void;

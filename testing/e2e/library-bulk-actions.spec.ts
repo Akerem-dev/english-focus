@@ -1,11 +1,23 @@
 import { expect, test } from "./app.fixture";
 
-test("Library selection enables bulk export without a separate toolbar", async ({ page }) => {
+test("Library selection enables bulk export in a collection detail", async ({ page }) => {
   await page.goto("/#/library");
-  await expect(page.getByRole("button", { name: "Export selected" })).toBeDisabled();
+  await expect(page.getByRole("heading", { name: "Your Collections", level: 1 })).toBeVisible();
+
+  const ieltsCollection = page.locator(".wvc-card").filter({ hasText: "IELTS Vocabulary" });
+  await ieltsCollection.locator(".wvc-card__open").click();
+  await expect(page.getByRole("heading", { name: "IELTS Vocabulary", level: 1 })).toBeVisible();
+  await expect(page.locator(".wvc-selection-bar")).toHaveCount(0);
+
   await page.getByLabel("Select maintain").check();
-  await expect(page.getByRole("button", { name: "Export selected (1)" })).toBeEnabled();
+  await expect(page.locator(".wvc-selection-bar")).toBeVisible();
+  await expect(
+    page.locator(".wvc-selection-bar").getByRole("button", { name: "Export" })
+  ).toBeEnabled();
+  await expect(
+    page.locator(".wvc-selection-bar").getByRole("button", { name: "Move" })
+  ).toBeEnabled();
+
   await page.getByLabel("Select maintain").uncheck();
-  await expect(page.getByRole("button", { name: "Export selected" })).toBeDisabled();
-  await expect(page.locator('[aria-label="Library selection"]')).toHaveCount(0);
+  await expect(page.locator(".wvc-selection-bar")).toHaveCount(0);
 });

@@ -17,16 +17,18 @@ describe("VocabularyEntryEditorDialog", () => {
       />
     );
 
-    expect(markup).toContain("Edit vocabulary entry");
+    expect(markup).toContain("Edit “maintain”");
     expect(markup).not.toContain("Creates local override");
     expect(markup).not.toContain("The bundled core record stays unchanged.");
-    expect(markup).toContain("Turkish translations");
+    expect(markup).toContain("Turkish meaning");
     expect(markup).toContain("Pronunciation");
     expect(markup).toContain("Word forms");
-    expect(markup).toContain("Short usage explanation");
-    expect(markup).toContain("Three example sentences");
-    expect(markup).toContain("Optional etymology");
-    expect(markup).toContain("Save entry");
+    expect(markup).toContain("Usage notes");
+    expect(markup).toContain("Example 1");
+    expect(markup).toContain("Example 2");
+    expect(markup).toContain("Example 3");
+    expect(markup).toContain("Word origin");
+    expect(markup).toContain("Save changes");
     expect(markup.match(/English sentence/g)).toHaveLength(3);
   });
 

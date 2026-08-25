@@ -14,7 +14,7 @@ interface MascotVisual {
   readonly mascot: string;
 }
 
-function isCleanSearchRoute(): boolean {
+function isWordValleyCompanionRoute(): boolean {
   if (typeof window === "undefined") {
     return false;
   }
@@ -23,11 +23,11 @@ function isCleanSearchRoute(): boolean {
     ? window.location.hash.slice(1)
     : window.location.hash;
   const pathname = rawHash.split("?", 1)[0] ?? "";
-  return pathname === "/" || pathname === "";
+  return pathname === "/" || pathname === "" || pathname === "/grammar";
 }
 
 function getPanelVisual(state: AssistantMascotState): MascotVisual {
-  if (isCleanSearchRoute()) {
+  if (isWordValleyCompanionRoute()) {
     return {
       mascot: state === "confused" ? wordieAvatarConfused : wordieAvatarDefault
     };
@@ -71,7 +71,7 @@ interface AssistantLauncherMascotProps {
 }
 
 export function AssistantLauncherMascot({ awake }: AssistantLauncherMascotProps) {
-  const cleanSearchRoute = isCleanSearchRoute();
+  const wordValleyCompanionRoute = isWordValleyCompanionRoute();
 
   return (
     <img
@@ -79,11 +79,7 @@ export function AssistantLauncherMascot({ awake }: AssistantLauncherMascotProps)
       className="assistant-launcher__mascot"
       key={`launcher-${awake ? "awake" : "closed"}`}
       src={
-        cleanSearchRoute
-          ? wordieCutoutReading
-          : awake
-            ? mascotReady
-            : mascotLauncherClosed
+        wordValleyCompanionRoute ? wordieCutoutReading : awake ? mascotReady : mascotLauncherClosed
       }
     />
   );

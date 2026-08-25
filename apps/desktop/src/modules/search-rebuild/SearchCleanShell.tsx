@@ -1,5 +1,11 @@
-import { useMemo, useState, type CSSProperties, type FocusEvent, type PropsWithChildren } from "react";
-import { Link, NavLink } from "react-router-dom";
+import {
+  useMemo,
+  useState,
+  type CSSProperties,
+  type FocusEvent,
+  type PropsWithChildren
+} from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 import type { ActivityRecord } from "@platform/domain";
 
@@ -153,8 +159,10 @@ function SearchCleanTopBar() {
 }
 
 function SearchCleanSidebar() {
+  const location = useLocation();
   const { activity, status: activityStatus } = useActivity();
   const { contentSource, status: vocabularyStatus } = useVocabularyRepository();
+  const grammarActive = location.pathname === ROUTE_PATHS.grammar;
 
   const progress = useMemo(() => {
     const today = localDayKey(new Date());
@@ -246,7 +254,9 @@ function SearchCleanSidebar() {
               <span>{loading ? "—" : `${progress.percentage}%`}</span>
             </div>
             <div>
-              <strong>{loading ? "—" : progress.wordsExploredToday} / {DAILY_WORD_GOAL}</strong>
+              <strong>
+                {loading ? "—" : progress.wordsExploredToday} / {DAILY_WORD_GOAL}
+              </strong>
               <span>words explored</span>
             </div>
           </div>
@@ -264,7 +274,16 @@ function SearchCleanSidebar() {
               <span>day streak</span>
             </div>
           </div>
-          {continueWord === undefined ? null : (
+          {grammarActive ? (
+            <Link className="wvclean-progress__continue" to={ROUTE_PATHS.grammar}>
+              <AppIcon name="book-open" size={18} />
+              <span>
+                <small>CONTINUE LEARNING</small>
+                <strong>Present Perfect</strong>
+              </span>
+              <span aria-hidden="true">→</span>
+            </Link>
+          ) : continueWord === undefined ? null : (
             <Link
               className="wvclean-progress__continue"
               to={buildVocabularyEntryPath(continueWord.normalizedWord)}

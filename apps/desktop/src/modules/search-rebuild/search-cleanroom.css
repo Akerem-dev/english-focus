@@ -48,7 +48,7 @@
   inset: 0 0 auto;
   z-index: 150;
   height: 46px;
-  border-bottom: 1px solid rgba(247, 242, 232, .08);
+  border-bottom: 1px solid rgba(247, 242, 232, 0.08);
   background: #082f29;
   color: #f7f2e8;
   user-select: none;
@@ -63,7 +63,10 @@
   align-items: center;
   gap: 7px;
   color: inherit;
-  font: 600 15px/18px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 15px/18px "Cormorant Garamond",
+    Georgia,
+    serif;
   text-decoration: none;
 }
 
@@ -105,7 +108,7 @@
 
 .wvclean-topbar__icon:hover,
 .wvclean-topbar__icon[aria-expanded="true"] {
-  background: rgba(255, 255, 255, .07);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .wvclean-topbar__icon:focus-visible,
@@ -128,7 +131,7 @@
   border-radius: 10px;
   background: #fbf8f1;
   color: #102d27;
-  box-shadow: 0 18px 40px rgba(8, 47, 41, .18);
+  box-shadow: 0 18px 40px rgba(8, 47, 41, 0.18);
   user-select: text;
 }
 
@@ -144,13 +147,19 @@
 
 .wvclean-notifications__popover strong {
   display: block;
-  font: 600 18px/22px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 18px/22px "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 .wvclean-notifications__popover p {
   margin: 4px 0 0;
   color: #59655f;
-  font: 400 12px/17px "Inter", system-ui, sans-serif;
+  font:
+    400 12px/17px "Inter",
+    system-ui,
+    sans-serif;
 }
 
 .wvclean-topbar__window-controls {
@@ -169,7 +178,7 @@
 }
 
 .wvclean-topbar__window-controls .window-controls__button:hover {
-  background: rgba(255, 255, 255, .07);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .wvclean-topbar__window-controls .window-controls__button--close:hover {
@@ -185,7 +194,7 @@
   z-index: 80;
   width: 318px;
   overflow: hidden;
-  border-right: 1px solid rgba(217, 207, 189, .13);
+  border-right: 1px solid rgba(217, 207, 189, 0.13);
   background: #0c3b33;
   color: #f7f2e8;
   font-family: "Inter", system-ui, sans-serif;
@@ -195,9 +204,9 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at 25% 8%, rgba(247,242,232,.035), transparent 38%);
+  background: radial-gradient(circle at 25% 8%, rgba(247, 242, 232, 0.035), transparent 38%);
   content: "";
-  opacity: .7;
+  opacity: 0.7;
 }
 
 .wvclean-sidebar__brand {
@@ -221,7 +230,10 @@
 
 .wvclean-sidebar__brand strong {
   margin-top: 1px;
-  font: 600 31px/38px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 31px/38px "Cormorant Garamond",
+    Georgia,
+    serif;
   letter-spacing: 0;
   white-space: nowrap;
 }
@@ -229,8 +241,11 @@
 .wvclean-sidebar__brand span {
   margin-top: 2px;
   color: #c69a3a;
-  font: 600 10px/12px "Inter", system-ui, sans-serif;
-  letter-spacing: .08em;
+  font:
+    600 10px/12px "Inter",
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.08em;
 }
 
 .wvclean-sidebar__brand i {
@@ -238,7 +253,13 @@
   width: 162px;
   height: 9px;
   margin-top: 8px;
-  background: linear-gradient(90deg, rgba(198,154,58,.45) 0 44%, transparent 44% 56%, rgba(198,154,58,.45) 56% 100%) center / 100% 1px no-repeat;
+  background: linear-gradient(
+      90deg,
+      rgba(198, 154, 58, 0.45) 0 44%,
+      transparent 44% 56%,
+      rgba(198, 154, 58, 0.45) 56% 100%
+    )
+    center / 100% 1px no-repeat;
 }
 
 .wvclean-sidebar__brand i::after {
@@ -278,16 +299,19 @@
   text-align: left;
   text-decoration: none;
   cursor: pointer;
-  font: 400 18px/22px "Cormorant Garamond", Georgia, serif;
+  font:
+    400 18px/22px "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 .wvclean-nav__item:hover:not(:disabled) {
-  background: rgba(255, 255, 255, .045);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .wvclean-nav__item:disabled {
   cursor: default;
-  opacity: .72;
+  opacity: 0.72;
 }
 
 .wvclean-nav__item--active {
@@ -317,7 +341,7 @@
   z-index: 2;
   width: 262px;
   height: 1px;
-  background: rgba(247, 242, 232, .17);
+  background: rgba(247, 242, 232, 0.17);
 }
 
 .wvclean-progress {
@@ -331,8 +355,11 @@
 .wvclean-progress h2 {
   margin: 0 0 7px;
   color: #c69a3a;
-  font: 600 12px/16px "Inter", system-ui, sans-serif;
-  letter-spacing: .2px;
+  font:
+    600 12px/16px "Inter",
+    system-ui,
+    sans-serif;
+  letter-spacing: 0.2px;
   text-align: center;
 }
 
@@ -353,7 +380,7 @@
   align-items: center;
   gap: 10px;
   padding: 0 0 8px;
-  border-bottom: 1px solid rgba(247, 242, 232, .12);
+  border-bottom: 1px solid rgba(247, 242, 232, 0.12);
 }
 
 .wvclean-progress__ring {
@@ -369,7 +396,10 @@
 
 .wvclean-progress__ring span {
   color: #f7f2e8;
-  font: 600 15px/18px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 15px/18px "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 .wvclean-progress__goal > div:last-child,
@@ -381,13 +411,19 @@
 .wvclean-progress__goal strong,
 .wvclean-progress__metric strong {
   color: #f7f2e8;
-  font: 600 18px/22px "Cormorant Garamond", Georgia, serif;
+  font:
+    600 18px/22px "Cormorant Garamond",
+    Georgia,
+    serif;
 }
 
 .wvclean-progress__goal span,
 .wvclean-progress__metric span {
   color: #f7f2e8;
-  font: 400 12px/15px "Inter", system-ui, sans-serif;
+  font:
+    400 12px/15px "Inter",
+    system-ui,
+    sans-serif;
 }
 
 .wvclean-progress__metric {
@@ -651,7 +687,7 @@
   max-height: none !important;
   margin: 0 !important;
   border: 0 !important;
-  border-left: 1px solid rgba(217, 207, 189, .8) !important;
+  border-left: 1px solid rgba(217, 207, 189, 0.8) !important;
   border-radius: 0 !important;
   background: #fbf8f1 !important;
   box-shadow: none !important;
@@ -662,8 +698,8 @@
   .application-frame--search-cleanroom *::before,
   .application-frame--search-cleanroom *::after {
     scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
-    animation-duration: .01ms !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
 }

@@ -22,6 +22,14 @@ import {
   type SettingsManagementView
 } from "../components";
 
+import "../../../styles/settings.css";
+import "../../../styles/assistant-settings.css";
+import "../../../styles/settings-management.css";
+import "../../../styles/settings-polish.css";
+import "../../../styles/settings-surface-simplification.css";
+import "../../../styles/settings-task-simplification.css";
+import "../../../styles/settings-task-flow-polish.css";
+
 interface SettingsPreferenceListProps {
   readonly ariaLabel: string;
   readonly children: ReactNode;

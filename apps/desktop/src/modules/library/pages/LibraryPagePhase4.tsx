@@ -15,7 +15,8 @@ const COPY_REPLACEMENTS: Readonly<Record<string, string>> = Object.freeze({
   "MAKE IT YOURS": "COLLECTION DETAILS",
   "A NEW PLACE TO GROW": "NEW COLLECTION",
   "Refresh the cover, name, or description.": "Update the cover, name, or description.",
-  "Give this collection a look and a purpose of its own.": "Choose a cover and name your collection.",
+  "Give this collection a look and a purpose of its own.":
+    "Choose a cover and name your collection.",
   "GROW THIS COLLECTION": "ADD WORDS",
   "Pick words you already know you want together.": "Choose words to add to this collection.",
   "A NEW HOME": "MOVE WORDS",
@@ -39,23 +40,20 @@ const PRESET_COVERS: Readonly<Record<string, string>> = Object.freeze({
   sunrise: usefulExpressionsCover
 });
 
-const COVER_GRADIENT =
-  "linear-gradient(180deg, rgba(8,47,41,.03), rgba(8,47,41,.28))";
+const COVER_GRADIENT = "linear-gradient(180deg, rgba(8,47,41,.03), rgba(8,47,41,.28))";
 
 function isUserCover(backgroundImage: string): boolean {
   return backgroundImage.includes("data:image/") || backgroundImage.includes("blob:");
 }
 
 function applyFinalCollectionArtwork(root: HTMLElement) {
-  const sceneImage = `url(\"${collectionsBackground}\")`;
+  const sceneImage = `url("${collectionsBackground}")`;
 
-  root
-    .querySelectorAll<HTMLElement>(".wvc-scene, .wvc-phase3-scene")
-    .forEach((scene) => {
-      if (scene.style.backgroundImage !== sceneImage) {
-        scene.style.backgroundImage = sceneImage;
-      }
-    });
+  root.querySelectorAll<HTMLElement>(".wvc-scene, .wvc-phase3-scene").forEach((scene) => {
+    if (scene.style.backgroundImage !== sceneImage) {
+      scene.style.backgroundImage = sceneImage;
+    }
+  });
 
   root.querySelectorAll<HTMLElement>("[data-cover]").forEach((cover) => {
     const preset = cover.dataset.cover;
@@ -68,7 +66,7 @@ function applyFinalCollectionArtwork(root: HTMLElement) {
       return;
     }
 
-    const backgroundImage = `${COVER_GRADIENT}, url(\"${artwork}\")`;
+    const backgroundImage = `${COVER_GRADIENT}, url("${artwork}")`;
     if (cover.style.backgroundImage !== backgroundImage) {
       cover.style.backgroundImage = backgroundImage;
     }
@@ -82,42 +80,42 @@ function CollectionsPhase4EditorialCleanup() {
     const applyCleanup = () => {
       scheduled = false;
 
-      const root = document.querySelector<HTMLElement>(
-        ".application-frame--collections-cleanroom"
-      );
+      const root = document.querySelector<HTMLElement>(".application-frame--collections-cleanroom");
       if (root === null) {
         return;
       }
 
       applyFinalCollectionArtwork(root);
 
-      root.querySelectorAll<HTMLElement>(
-        ".wvc-sort-button > span, .wvc-sort-menu button > span, .wvc-eyebrow, .wvc-modal__header p, .wvc-inline-empty strong, .wvc-inline-empty p, .wvc-phase3-empty-copy, .wvc-word-panel p, .wvc-word-panel h2"
-      ).forEach((node) => {
-        const current = node.textContent?.trim();
-        if (current === undefined) {
-          return;
-        }
+      root
+        .querySelectorAll<HTMLElement>(
+          ".wvc-sort-button > span, .wvc-sort-menu button > span, .wvc-eyebrow, .wvc-modal__header p, .wvc-inline-empty strong, .wvc-inline-empty p, .wvc-phase3-empty-copy, .wvc-word-panel p, .wvc-word-panel h2"
+        )
+        .forEach((node) => {
+          const current = node.textContent?.trim();
+          if (current === undefined) {
+            return;
+          }
 
-        const replacement = COPY_REPLACEMENTS[current];
-        if (replacement !== undefined && replacement !== current) {
-          node.textContent = replacement;
-        }
-      });
+          const replacement = COPY_REPLACEMENTS[current];
+          if (replacement !== undefined && replacement !== current) {
+            node.textContent = replacement;
+          }
+        });
 
-      root.querySelectorAll<HTMLElement>(".wvc-card__footer > span:first-child")
+      root
+        .querySelectorAll<HTMLElement>(".wvc-card__footer > span:first-child")
         .forEach((label) => {
           if (label.textContent?.trim() === "Explore collection") {
             label.setAttribute("aria-hidden", "true");
           }
         });
 
-      root.querySelectorAll<HTMLElement>(".wvc-phase3-example__notes span")
-        .forEach((note) => {
-          if (note.textContent?.trim().startsWith("Target form:")) {
-            note.hidden = true;
-          }
-        });
+      root.querySelectorAll<HTMLElement>(".wvc-phase3-example__notes span").forEach((note) => {
+        if (note.textContent?.trim().startsWith("Target form:")) {
+          note.hidden = true;
+        }
+      });
     };
 
     const schedule = () => {
