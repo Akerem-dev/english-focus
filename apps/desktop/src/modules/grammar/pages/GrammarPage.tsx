@@ -16,6 +16,7 @@ import "../../../styles/word-valley-grammar-responsive.css";
 import "../../../styles/word-valley-grammar-v10-responsive.css";
 import "../../../styles/word-valley-grammar-v10-state.css";
 import "../../../styles/word-valley-grammar-v12.css";
+import "../../../styles/word-valley-grammar-v12-layout-guard.css";
 
 const LAST_GRAMMAR_LESSON_KEY = "word-valley:grammar:last-lesson";
 
