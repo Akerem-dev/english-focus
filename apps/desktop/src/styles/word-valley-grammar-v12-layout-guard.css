@@ -1,0 +1,28 @@
+/* V12 lesson/Wordie seam guard.
+   The grammar shell already exposes --wvg-rail-width at each desktop breakpoint.
+   Reserve that exact live rail width instead of the old fixed 344px value. */
+
+#root
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-v12-lesson {
+  right: var(--wvg-rail-width, 344px);
+}
+
+/* When Wordie is closed, return the released space to the lesson. */
+#root
+  .application-frame--grammar-cleanroom:not(:has(.assistant-dock.wv84-assistant[data-open="true"]))
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-v12-lesson {
+  right: 0;
+}
+
+/* At the minimum desktop width Wordie intentionally becomes an overlay. */
+@media (max-width: 900px) {
+  #root
+    .application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-v12-lesson {
+    right: 0;
+  }
+}
