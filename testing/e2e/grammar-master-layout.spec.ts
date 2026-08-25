@@ -59,7 +59,7 @@ test("first Grammar visit opens the ordered curriculum, then the approved lesson
   await expect(helper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
 
-  await page.getByRole("button", { name: "Grammar", exact: true }).click();
+  await page.getByRole("button", { name: /B1 · TENSES & TIME/i }).click();
   await expect(
     page.getByRole("heading", { name: "Learn grammar in the right order.", level: 1 })
   ).toBeVisible();
