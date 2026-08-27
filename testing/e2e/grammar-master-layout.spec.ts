@@ -61,6 +61,10 @@ test("first Grammar visit opens the V13 bookshelf home, then the approved lesson
   await expect(helper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
 
+  const assistantBox = await helper.boundingBox();
+  expect(assistantBox).not.toBeNull();
+  expect(assistantBox!.width).toBeCloseTo(382, 0);
+
   await page.getByRole("button", { name: /B1 · TENSES & TIME/i }).click();
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Choose a grammar lesson" })).toHaveCount(0);
@@ -73,13 +77,13 @@ test("first Grammar visit opens the V13 bookshelf home, then the approved lesson
   await expect(page.getByText(/prototip|prototype|yakında eklenecek/i)).toHaveCount(0);
 });
 
-test("Grammar V13 home preserves the Figma paper geometry at desktop and default-window widths", async ({
+test("Grammar keeps the exact shared Word Valley shell at desktop and windowed widths", async ({
   page
 }) => {
   const viewports = [
-    { width: 1920, height: 1080, expectedSidebar: 233 },
-    { width: 1366, height: 768, expectedSidebar: 233 },
-    { width: 1180, height: 760, expectedSidebar: 72 }
+    { width: 1920, height: 1080 },
+    { width: 1366, height: 768 },
+    { width: 1180, height: 760 }
   ];
 
   await clearLastGrammarLesson(page);
@@ -99,25 +103,31 @@ test("Grammar V13 home preserves the Figma paper geometry at desktop and default
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
+    const topbar = page.locator(".wvclean-topbar");
     const sidebar = page.locator(".wvclean-sidebar");
     const paper = page.locator(".wvg-v13-home__paper");
     const hero = page.locator(".wvg-v13-hero");
     const firstBook = page.locator(".wvg-v13-book").first();
     const shelf = page.locator(".wvg-v13-shelf__wood").first();
 
+    const topbarBox = await topbar.boundingBox();
     const sidebarBox = await sidebar.boundingBox();
     const paperBox = await paper.boundingBox();
     const heroBox = await hero.boundingBox();
     const bookBox = await firstBook.boundingBox();
     const shelfBox = await shelf.boundingBox();
 
+    expect(topbarBox).not.toBeNull();
     expect(sidebarBox).not.toBeNull();
     expect(paperBox).not.toBeNull();
     expect(heroBox).not.toBeNull();
     expect(bookBox).not.toBeNull();
     expect(shelfBox).not.toBeNull();
 
-    expect(sidebarBox!.width).toBeCloseTo(viewport.expectedSidebar, 0);
+    expect(topbarBox!.height).toBeCloseTo(46, 0);
+    expect(sidebarBox!.x).toBeCloseTo(0, 0);
+    expect(sidebarBox!.y).toBeCloseTo(46, 0);
+    expect(sidebarBox!.width).toBeCloseTo(318, 0);
     expect(paperBox!.width).toBeCloseTo(1054, 0);
     expect(heroBox!.height).toBeCloseTo(219, 0);
     expect(bookBox!.width).toBeCloseTo(158, 0);
