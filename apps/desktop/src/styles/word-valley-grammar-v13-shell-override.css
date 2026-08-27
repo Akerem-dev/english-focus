@@ -1,23 +1,166 @@
-/* Final Grammar-only shell geometry from Figma 285:2.
-   Keep this import after the legacy V10/V12 responsive layers. */
+/*
+ * Grammar shell parity lock.
+ *
+ * Search, Grammar, and Collections are sections of the same Word Valley app.
+ * Grammar therefore must never resize or restyle the shared chrome. The rules
+ * below intentionally restore the exact Search/Collections desktop shell after
+ * the legacy Grammar-specific V10/V12 layers have loaded.
+ */
 
-@media (min-width: 1181px) {
-  #root .application-frame--grammar-cleanroom {
-    --wvg-sidebar-width: 233px;
-  }
+/* ───────────────────────── Shared sidebar ───────────────────────── */
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar {
+  width: 318px !important;
 }
 
-@media (max-width: 1180px) {
-  #root .application-frame--grammar-cleanroom {
-    --wvg-sidebar-width: 72px;
-  }
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar__brand {
+  top: 32px !important;
+  left: 37px !important;
+  width: 244px !important;
+}
 
-  #root .application-frame--grammar-cleanroom .wvclean-nav {
-    left: 8px;
-    width: 56px;
-  }
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar__brand
+  img {
+  width: 156px !important;
+  height: 98px !important;
+  margin-bottom: -19px !important;
+}
 
-  #root .application-frame--grammar-cleanroom .wvclean-nav__item {
-    width: 56px;
-  }
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar__brand
+  strong {
+  margin-top: 1px !important;
+  font-size: 31px !important;
+  line-height: 38px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar__brand
+  span {
+  margin-top: 2px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar__brand
+  i {
+  width: 162px !important;
+  margin-top: 8px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-nav {
+  top: 203px !important;
+  left: 20px !important;
+  width: 278px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-nav__item {
+  width: 278px !important;
+  padding: 0 23px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-sidebar__divider {
+  top: 537px !important;
+  left: 28px !important;
+  width: 262px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-progress {
+  top: auto !important;
+  right: auto !important;
+  bottom: 28px !important;
+  left: 28px !important;
+  width: 262px !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-progress__card {
+  width: 262px !important;
+  height: auto !important;
+  min-height: 194px !important;
+}
+
+/* ───────────────────────── Grammar content slot ───────────────────────── */
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvg-page {
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 318px !important;
+}
+
+/* ───────────────────────── Shared Wordie rail ───────────────────────── */
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .assistant-dock.wv84-assistant[data-open="true"] {
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 382px !important;
+  height: calc(100vh - 46px) !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .assistant-panel.wv84-assistant-panel,
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
+  width: 382px !important;
+  max-width: 382px !important;
+  height: calc(100vh - 46px) !important;
+  max-height: none !important;
+}
+
+/* The rail grew from the old Grammar-only 344 px to the shared 382 px width.
+   Let the controls fill the available inner width instead of preserving the
+   obsolete fixed 312 px measurements that caused the horizontal scrollbar. */
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wv84-quick-actions--welcome {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wv84-quick-actions--welcome
+  > button {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wv84-assistant-composer {
+  width: calc(100% - 32px) !important;
+  max-width: none !important;
+}
+
+/* Generic Grammar lessons reserve the same 382 px rail used by Search when
+   Wordie is open; the route must not reflow the global chrome. */
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom:has(
+    .assistant-dock.wv84-assistant[data-open="true"]
+  )
+  .wvg-v12-lesson {
+  right: 382px !important;
 }
