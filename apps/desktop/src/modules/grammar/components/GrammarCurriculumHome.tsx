@@ -174,7 +174,13 @@ function bookMatches(book: V13Book, query: string): boolean {
   return `${book.title} ${book.subtitle}`.toLocaleLowerCase("en").includes(query);
 }
 
-function BookCard({ book, onOpenLesson }: { readonly book: V13Book; readonly onOpenLesson: (lesson: GrammarKnowledgeLesson) => void }) {
+function BookCard({
+  book,
+  onOpenLesson
+}: {
+  readonly book: V13Book;
+  readonly onOpenLesson: (lesson: GrammarKnowledgeLesson) => void;
+}) {
   const lesson = LESSON_BY_ID.get(book.lessonId);
   const progressPercent = `${Math.max(0, Math.min(5, book.progress)) * 20}%`;
 
@@ -202,7 +208,10 @@ function BookCard({ book, onOpenLesson }: { readonly book: V13Book; readonly onO
   );
 }
 
-export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }: GrammarCurriculumHomeProps) {
+export function GrammarCurriculumHome({
+  lastLesson: _lastLesson,
+  onOpenLesson
+}: GrammarCurriculumHomeProps) {
   const [query, setQuery] = useState("");
   const normalizedQuery = useMemo(() => normalize(query), [query]);
   const heroArtwork = getGrammarLessonArtwork("present-perfect");
@@ -228,7 +237,13 @@ export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }:
         </h1>
 
         <section className="wvg-v13-hero" aria-label="Recommended next lesson">
-          <img alt="" aria-hidden="true" className="wvg-v13-hero__art" draggable={false} src={heroArtwork} />
+          <img
+            alt=""
+            aria-hidden="true"
+            className="wvg-v13-hero__art"
+            draggable={false}
+            src={heroArtwork}
+          />
           <span aria-hidden="true" className="wvg-v13-hero__wash" />
           <div className="wvg-v13-hero__content">
             <p className="wvg-v13-hero__eyebrow">RECOMMENDED NEXT LESSON</p>
@@ -244,7 +259,10 @@ export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }:
                 <span aria-hidden="true">◉</span> Mark as complete
               </button>
             </div>
-            <p className="wvg-v13-hero__meta">Level A2&nbsp;&nbsp; • &nbsp;&nbsp;Grammar Foundation&nbsp;&nbsp; • &nbsp;&nbsp;~15 min</p>
+            <p className="wvg-v13-hero__meta">
+              Level A2&nbsp;&nbsp; • &nbsp;&nbsp;Grammar Foundation&nbsp;&nbsp; • &nbsp;&nbsp;~15
+              min
+            </p>
           </div>
         </section>
 
@@ -264,7 +282,9 @@ export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }:
             <button type="button">All levels</button>
             <button type="button">All topics</button>
             <button type="button">All statuses</button>
-            <button className="wvg-v13-filters__recommended" type="button">Recommended</button>
+            <button className="wvg-v13-filters__recommended" type="button">
+              Recommended
+            </button>
           </div>
         </div>
 
@@ -272,7 +292,9 @@ export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }:
           {shelves.length === 0 ? (
             <div className="wvg-v13-empty">
               <strong>No grammar topics found.</strong>
-              <button onClick={() => setQuery("")} type="button">Clear search</button>
+              <button onClick={() => setQuery("")} type="button">
+                Clear search
+              </button>
             </div>
           ) : (
             shelves.map((shelf) => (
@@ -287,7 +309,11 @@ export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }:
 
                 <div className="wvg-v13-shelf__books">
                   {shelf.books.map((book) => (
-                    <BookCard book={book} key={`${shelf.id}-${book.title}`} onOpenLesson={onOpenLesson} />
+                    <BookCard
+                      book={book}
+                      key={`${shelf.id}-${book.title}`}
+                      onOpenLesson={onOpenLesson}
+                    />
                   ))}
                 </div>
                 <div aria-hidden="true" className="wvg-v13-shelf__wood" />
@@ -296,7 +322,10 @@ export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }:
           )}
 
           {normalizedQuery.length === 0 ? (
-            <section className="wvg-v13-shelf wvg-v13-shelf--preview" aria-label="B2 and above">
+            <section
+              className="wvg-v13-shelf wvg-v13-shelf--preview"
+              aria-label="B2 and above"
+            >
               <header className="wvg-v13-shelf__heading">
                 <div>
                   <h2>B2+ · Refine &amp; Master</h2>
