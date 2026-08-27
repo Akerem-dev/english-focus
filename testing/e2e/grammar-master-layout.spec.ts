@@ -9,30 +9,32 @@ async function clearLastGrammarLesson(page: Page) {
   await page.evaluate((key) => window.localStorage.removeItem(key), LAST_GRAMMAR_LESSON_KEY);
 }
 
-async function openPresentPerfectFromCurriculum(page: Page) {
-  await page.getByRole("button", { name: /Present Perfect & Past Simple/i }).click();
+async function openPresentPerfectFromHome(page: Page) {
+  await page.getByRole("button", { name: /Resume lesson/i }).click();
   await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toBeVisible();
 }
 
-test("first Grammar visit opens the ordered curriculum, then the approved lesson master", async ({
+test("first Grammar visit opens the V13 bookshelf home, then the approved lesson master", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearLastGrammarLesson(page);
   await page.goto("/#/grammar");
 
-  await expect(
-    page.getByRole("heading", { name: "Learn grammar in the right order.", level: 1 })
-  ).toBeVisible();
-  await expect(page.getByText("EASIER", { exact: false })).toBeVisible();
-  for (const level of ["A1", "A2", "B1", "B2", "C1"]) {
-    await expect(page.getByText(level, { exact: true }).first()).toBeVisible();
-  }
-  await expect(page.getByRole("button", { name: /Start learning/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
+  await expect(page.getByText("RECOMMENDED NEXT LESSON", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Present Perfect", level: 2 })).toBeVisible();
+  await expect(page.getByText("A1 · Grammar Foundation", { exact: true })).toBeVisible();
+  await expect(page.getByText("A2 · Building Confidence", { exact: true })).toBeVisible();
+  await expect(page.getByText("B1 · Express Yourself", { exact: true })).toBeVisible();
+  await expect(page.getByText("B2+ · Refine & Master", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Present Simple/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Present Perfect/i })).toBeVisible();
+  await expect(page.getByPlaceholder("Search grammar topics...")).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Grammar helper" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "English Grammar", level: 1 })).toHaveCount(0);
 
-  await openPresentPerfectFromCurriculum(page);
+  await openPresentPerfectFromHome(page);
 
   await expect(page.getByRole("tab", { name: "Rule", exact: true })).toHaveAttribute(
     "aria-selected",
@@ -60,9 +62,7 @@ test("first Grammar visit opens the ordered curriculum, then the approved lesson
   await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
 
   await page.getByRole("button", { name: /B1 · TENSES & TIME/i }).click();
-  await expect(
-    page.getByRole("heading", { name: "Learn grammar in the right order.", level: 1 })
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Choose a grammar lesson" })).toHaveCount(0);
 
   await expect(
@@ -73,25 +73,21 @@ test("first Grammar visit opens the ordered curriculum, then the approved lesson
   await expect(page.getByText(/prototip|prototype|yakında eklenecek/i)).toHaveCount(0);
 });
 
-test("Grammar lesson paper meets Wordie cleanly at common desktop and laptop resolutions", async ({
+test("Grammar V13 home preserves the Figma paper geometry at desktop and default-window widths", async ({
   page
 }) => {
   const viewports = [
-    { width: 1920, height: 1080 },
-    { width: 1536, height: 864 },
-    { width: 1366, height: 768 },
-    { width: 900, height: 600 }
+    { width: 1920, height: 1080, expectedSidebar: 233 },
+    { width: 1366, height: 768, expectedSidebar: 233 },
+    { width: 1180, height: 760, expectedSidebar: 72 }
   ];
 
-  await page.setViewportSize(viewports[0]);
   await clearLastGrammarLesson(page);
-  await page.goto("/#/grammar");
-  await openPresentPerfectFromCurriculum(page);
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
     await page.goto("/#/grammar");
-    await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
@@ -103,32 +99,29 @@ test("Grammar lesson paper meets Wordie cleanly at common desktop and laptop res
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
-    const stage = page.locator(".word-valley-stage");
-    const lesson = page.locator(".wvg-v12-lesson");
-    const rail = page.locator('.assistant-dock.wv84-assistant[data-open="true"]');
-    const stageBox = await stage.boundingBox();
-    const lessonBox = await lesson.boundingBox();
-    const railBox = await rail.boundingBox();
+    const sidebar = page.locator(".wvclean-sidebar");
+    const paper = page.locator(".wvg-v13-home__paper");
+    const hero = page.locator(".wvg-v13-hero");
+    const firstBook = page.locator(".wvg-v13-book").first();
+    const shelf = page.locator(".wvg-v13-shelf__wood").first();
 
-    expect(stageBox).not.toBeNull();
-    expect(lessonBox).not.toBeNull();
-    expect(railBox).not.toBeNull();
-    expect(stageBox!.x).toBeGreaterThanOrEqual(-1);
-    expect(stageBox!.y).toBeGreaterThanOrEqual(-1);
-    expect(stageBox!.width).toBeCloseTo(viewport.width, 0);
-    expect(stageBox!.height).toBeCloseTo(viewport.height, 0);
+    const sidebarBox = await sidebar.boundingBox();
+    const paperBox = await paper.boundingBox();
+    const heroBox = await hero.boundingBox();
+    const bookBox = await firstBook.boundingBox();
+    const shelfBox = await shelf.boundingBox();
 
-    const lessonRight = lessonBox!.x + lessonBox!.width;
-    const railRight = railBox!.x + railBox!.width;
-    expect(lessonRight).toBeLessThanOrEqual(viewport.width + 1);
-    expect(railRight).toBeLessThanOrEqual(viewport.width + 1);
+    expect(sidebarBox).not.toBeNull();
+    expect(paperBox).not.toBeNull();
+    expect(heroBox).not.toBeNull();
+    expect(bookBox).not.toBeNull();
+    expect(shelfBox).not.toBeNull();
 
-    if (viewport.width > 900) {
-      const seam = Math.abs(lessonRight - railBox!.x);
-      expect(seam).toBeLessThanOrEqual(2);
-    } else {
-      const overlay = lessonRight - railBox!.x;
-      expect(overlay).toBeGreaterThan(0);
-    }
+    expect(sidebarBox!.width).toBeCloseTo(viewport.expectedSidebar, 0);
+    expect(paperBox!.width).toBeCloseTo(1054, 0);
+    expect(heroBox!.height).toBeCloseTo(219, 0);
+    expect(bookBox!.width).toBeCloseTo(158, 0);
+    expect(bookBox!.height).toBeCloseTo(88, 0);
+    expect(shelfBox!.height).toBeCloseTo(14, 0);
   }
 });
