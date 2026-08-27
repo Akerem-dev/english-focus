@@ -1,0 +1,23 @@
+/* Final Grammar-only shell geometry from Figma 285:2.
+   Keep this import after the legacy V10/V12 responsive layers. */
+
+@media (min-width: 1181px) {
+  #root .application-frame--grammar-cleanroom {
+    --wvg-sidebar-width: 233px;
+  }
+}
+
+@media (max-width: 1180px) {
+  #root .application-frame--grammar-cleanroom {
+    --wvg-sidebar-width: 72px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvclean-nav {
+    left: 8px;
+    width: 56px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvclean-nav__item {
+    width: 56px;
+  }
+}
