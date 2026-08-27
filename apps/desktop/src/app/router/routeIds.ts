@@ -1,5 +1,6 @@
 export const ROUTE_PATHS = {
   vocabulary: "/",
+  grammar: "/grammar",
   library: "/library",
   settings: "/settings"
 } as const;
