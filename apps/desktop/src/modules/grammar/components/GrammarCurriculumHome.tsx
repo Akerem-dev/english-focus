@@ -322,10 +322,7 @@ export function GrammarCurriculumHome({
           )}
 
           {normalizedQuery.length === 0 ? (
-            <section
-              className="wvg-v13-shelf wvg-v13-shelf--preview"
-              aria-label="B2 and above"
-            >
+            <section className="wvg-v13-shelf wvg-v13-shelf--preview" aria-label="B2 and above">
               <header className="wvg-v13-shelf__heading">
                 <div>
                   <h2>B2+ · Refine &amp; Master</h2>
