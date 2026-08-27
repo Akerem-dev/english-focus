@@ -7,256 +7,304 @@ import {
 } from "../knowledge/grammarKnowledgeIndex";
 import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 
-import "../../../styles/word-valley-grammar-curriculum.css";
+import "../../../styles/word-valley-grammar-v13-home.css";
 
 interface GrammarCurriculumHomeProps {
   readonly lastLesson: GrammarKnowledgeLesson | undefined;
   readonly onOpenLesson: (lesson: GrammarKnowledgeLesson) => void;
 }
 
-interface CurriculumLevel {
-  readonly code: "A1" | "A2" | "B1" | "B2" | "C1";
-  readonly eyebrow: string;
-  readonly description: string;
-  readonly lessonIds: readonly string[];
+interface V13Book {
+  readonly title: string;
+  readonly subtitle: string;
+  readonly progress: number;
+  readonly lessonId: string;
+  readonly featured?: boolean;
 }
 
-const CURRICULUM_LEVELS: readonly CurriculumLevel[] = Object.freeze([
+interface V13Shelf {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly books: readonly V13Book[];
+}
+
+const BOOKSHELVES: readonly V13Shelf[] = Object.freeze([
   {
-    code: "A1",
-    eyebrow: "FOUNDATIONS",
-    description: "Build the sentence basics.",
-    lessonIds: Object.freeze([
-      "present-simple-continuous",
-      "articles",
-      "demonstratives",
-      "countability-quantifiers"
+    id: "a1",
+    title: "A1 · Grammar Foundation",
+    description: "Build your core grammar skills.",
+    books: Object.freeze([
+      {
+        title: "Present Simple",
+        subtitle: "S · V(s/es) · O",
+        progress: 3,
+        lessonId: "present-simple-continuous",
+        featured: true
+      },
+      {
+        title: "Be: am / is / are",
+        subtitle: "S · am / is / are · O",
+        progress: 2,
+        lessonId: "word-order-agreement"
+      },
+      {
+        title: "There is / There are",
+        subtitle: "There is / are · N",
+        progress: 0,
+        lessonId: "word-order-agreement"
+      },
+      {
+        title: "Present Continuous",
+        subtitle: "S · am/is/are · V-ing · O",
+        progress: 1,
+        lessonId: "present-simple-continuous"
+      },
+      {
+        title: "Can / Could",
+        subtitle: "Ability & possibility",
+        progress: 0,
+        lessonId: "modal-verbs"
+      },
+      {
+        title: "Wh- Questions",
+        subtitle: "Who, what, when, where",
+        progress: 0,
+        lessonId: "questions-auxiliaries"
+      }
     ])
   },
   {
-    code: "A2",
-    eyebrow: "BUILDING BLOCKS",
-    description: "Past, future, quantity, comparison.",
-    lessonIds: Object.freeze(["past-narrative", "future-forms", "modal-verbs", "time-prepositions"])
-  },
-  {
-    code: "B1",
-    eyebrow: "CONNECTED IDEAS",
-    description: "Tense choice, clauses, and conditions.",
-    lessonIds: Object.freeze([
-      "present-perfect",
-      "conditionals",
-      "relative-clauses",
-      "gerunds-infinitives"
+    id: "a2",
+    title: "A2 · Building Confidence",
+    description: "Expand your expression and connect ideas.",
+    books: Object.freeze([
+      {
+        title: "Past Simple",
+        subtitle: "S · V-ed · O",
+        progress: 1,
+        lessonId: "past-narrative"
+      },
+      {
+        title: "Used to",
+        subtitle: "Past habits & states",
+        progress: 0,
+        lessonId: "used-to-family"
+      },
+      {
+        title: "Present Perfect",
+        subtitle: "have / has · past participle",
+        progress: 0,
+        lessonId: "present-perfect"
+      },
+      {
+        title: "Past Continuous",
+        subtitle: "S · was / were · V-ing",
+        progress: 0,
+        lessonId: "past-narrative"
+      },
+      {
+        title: "Going to",
+        subtitle: "Plans & intentions",
+        progress: 0,
+        lessonId: "future-forms"
+      },
+      {
+        title: "Comparatives",
+        subtitle: "-er / more ... than",
+        progress: 0,
+        lessonId: "comparison"
+      }
     ])
   },
   {
-    code: "B2",
-    eyebrow: "PRECISION",
-    description: "Sequence, deduction, and precision.",
-    lessonIds: Object.freeze([
-      "present-perfect-continuous",
-      "past-perfect-family",
-      "active-passive",
-      "reported-speech"
-    ])
-  },
-  {
-    code: "C1",
-    eyebrow: "NATURAL CONTROL",
-    description: "Emphasis, nuance, and advanced style.",
-    lessonIds: Object.freeze([
-      "emphasis-advanced",
-      "dependent-prepositions",
-      "causative-reporting-passive",
-      "comparison"
+    id: "b1",
+    title: "B1 · Express Yourself",
+    description: "Share opinions, make arguments, and tell stories.",
+    books: Object.freeze([
+      {
+        title: "Future Continuous",
+        subtitle: "S · will be · V-ing · O",
+        progress: 0,
+        lessonId: "future-forms"
+      },
+      {
+        title: "Present Perfect Continuous",
+        subtitle: "have been · V-ing",
+        progress: 0,
+        lessonId: "present-perfect-continuous"
+      },
+      {
+        title: "Modal Perfects",
+        subtitle: "must have, should have",
+        progress: 0,
+        lessonId: "modal-verbs"
+      },
+      {
+        title: "Relative Clauses",
+        subtitle: "who, which, that",
+        progress: 0,
+        lessonId: "relative-clauses"
+      },
+      {
+        title: "Passive Voice",
+        subtitle: "be + past participle",
+        progress: 0,
+        lessonId: "active-passive"
+      },
+      {
+        title: "Reported Speech",
+        subtitle: "say / tell / ask",
+        progress: 0,
+        lessonId: "reported-speech"
+      }
     ])
   }
 ]);
 
 const LESSON_BY_ID = new Map(GRAMMAR_KNOWLEDGE_LESSONS.map((lesson) => [lesson.id, lesson]));
-const FIRST_LESSON = LESSON_BY_ID.get("present-simple-continuous");
+const PRESENT_PERFECT = LESSON_BY_ID.get("present-perfect");
 
-function normalizeSearch(value: string): readonly string[] {
-  return value.trim().toLocaleLowerCase("en").split(/\s+/).filter(Boolean);
+function normalize(value: string): string {
+  return value.trim().toLocaleLowerCase("en");
 }
 
-function searchText(lesson: GrammarKnowledgeLesson): string {
-  return [
-    lesson.title,
-    lesson.category,
-    lesson.level,
-    lesson.description,
-    ...lesson.keywords,
-    ...lesson.coreTopics,
-    ...lesson.subtopics.map((topic) => topic.title)
-  ]
-    .join(" ")
-    .toLocaleLowerCase("en");
+function bookMatches(book: V13Book, query: string): boolean {
+  if (query.length === 0) return true;
+  return `${book.title} ${book.subtitle}`.toLocaleLowerCase("en").includes(query);
 }
 
-function levelLessons(level: CurriculumLevel): readonly GrammarKnowledgeLesson[] {
-  return level.lessonIds
-    .map((lessonId) => LESSON_BY_ID.get(lessonId))
-    .filter((lesson): lesson is GrammarKnowledgeLesson => lesson !== undefined);
-}
-
-export function GrammarCurriculumHome({ lastLesson, onOpenLesson }: GrammarCurriculumHomeProps) {
-  const [query, setQuery] = useState("");
-  const tokens = useMemo(() => normalizeSearch(query), [query]);
-  const searchResults = useMemo(() => {
-    if (tokens.length === 0) return [];
-    return GRAMMAR_KNOWLEDGE_LESSONS.filter((lesson) => {
-      const haystack = searchText(lesson);
-      return tokens.every((token) => haystack.includes(token));
-    }).slice(0, 12);
-  }, [tokens]);
-
-  const heroLesson = lastLesson ?? FIRST_LESSON;
-  const continuing = lastLesson !== undefined;
-  const heroArtwork = getGrammarLessonArtwork(heroLesson?.id ?? "present-simple-continuous");
+function BookCard({ book, onOpenLesson }: { readonly book: V13Book; readonly onOpenLesson: (lesson: GrammarKnowledgeLesson) => void }) {
+  const lesson = LESSON_BY_ID.get(book.lessonId);
+  const progressPercent = `${Math.max(0, Math.min(5, book.progress)) * 20}%`;
 
   return (
-    <main className="wvg-curriculum" aria-labelledby="grammar-curriculum-title">
-      <section className="wvg-curriculum__surface">
-        <header className="wvg-curriculum__header">
-          <div>
-            <p className="wvg-curriculum__eyebrow">YOUR GRAMMAR PATH</p>
-            <h1 id="grammar-curriculum-title">Learn grammar in the right order.</h1>
-            <p className="wvg-curriculum__intro">
-              Start with foundations, build control step by step, and always know what comes next.
-            </p>
-          </div>
+    <button
+      className="wvg-v13-book"
+      data-featured={book.featured || undefined}
+      disabled={lesson === undefined}
+      onClick={() => {
+        if (lesson !== undefined) onOpenLesson(lesson);
+      }}
+      type="button"
+    >
+      <span aria-hidden="true" className="wvg-v13-book__spine" />
+      <span className="wvg-v13-book__title">{book.title}</span>
+      <span className="wvg-v13-book__subtitle">{book.subtitle}</span>
+      <span aria-hidden="true" className="wvg-v13-book__status">
+        {book.featured ? "★" : "◉"}
+      </span>
+      <span aria-hidden="true" className="wvg-v13-book__track">
+        <span style={{ width: progressPercent }} />
+      </span>
+      <span className="wvg-v13-book__count">{book.progress} / 5</span>
+    </button>
+  );
+}
 
-          <label className="wvg-curriculum__search">
+export function GrammarCurriculumHome({ lastLesson: _lastLesson, onOpenLesson }: GrammarCurriculumHomeProps) {
+  const [query, setQuery] = useState("");
+  const normalizedQuery = useMemo(() => normalize(query), [query]);
+  const heroArtwork = getGrammarLessonArtwork("present-perfect");
+
+  const shelves = useMemo(
+    () =>
+      BOOKSHELVES.map((shelf) => ({
+        ...shelf,
+        books: shelf.books.filter((book) => bookMatches(book, normalizedQuery))
+      })).filter((shelf) => normalizedQuery.length === 0 || shelf.books.length > 0),
+    [normalizedQuery]
+  );
+
+  function openPresentPerfect() {
+    if (PRESENT_PERFECT !== undefined) onOpenLesson(PRESENT_PERFECT);
+  }
+
+  return (
+    <main className="wvg-v13-home" aria-labelledby="grammar-home-title">
+      <section className="wvg-v13-home__paper">
+        <h1 className="wvg-v13-home__breadcrumb" id="grammar-home-title">
+          Grammar Home
+        </h1>
+
+        <section className="wvg-v13-hero" aria-label="Recommended next lesson">
+          <img alt="" aria-hidden="true" className="wvg-v13-hero__art" draggable={false} src={heroArtwork} />
+          <span aria-hidden="true" className="wvg-v13-hero__wash" />
+          <div className="wvg-v13-hero__content">
+            <p className="wvg-v13-hero__eyebrow">RECOMMENDED NEXT LESSON</p>
+            <h2>Present Perfect</h2>
+            <p className="wvg-v13-hero__copy">
+              Focus on life experiences and results that continue to the present.
+            </p>
+            <div className="wvg-v13-hero__actions">
+              <button onClick={openPresentPerfect} type="button">
+                Resume lesson <span aria-hidden="true">›</span>
+              </button>
+              <button className="wvg-v13-hero__complete" type="button">
+                <span aria-hidden="true">◉</span> Mark as complete
+              </button>
+            </div>
+            <p className="wvg-v13-hero__meta">Level A2&nbsp;&nbsp; • &nbsp;&nbsp;Grammar Foundation&nbsp;&nbsp; • &nbsp;&nbsp;~15 min</p>
+          </div>
+        </section>
+
+        <div className="wvg-v13-toolbar">
+          <label className="wvg-v13-search">
             <AppIcon name="search" size={17} />
             <input
-              aria-label="Search grammar lessons"
+              aria-label="Search grammar topics"
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="Search grammar lessons…"
+              placeholder="Search grammar topics..."
               type="search"
               value={query}
             />
           </label>
-        </header>
 
-        {heroLesson === undefined ? null : (
-          <section
-            className="wvg-curriculum__hero"
-            data-continuing={continuing || undefined}
-            aria-label={continuing ? "Continue learning" : "Start here"}
-          >
-            <div className="wvg-curriculum__hero-copy">
-              <p>{continuing ? "CONTINUE LEARNING" : "START HERE"}</p>
-              <h2>{continuing ? heroLesson.title : "A1 · Foundations"}</h2>
-              <span>
-                {continuing
-                  ? `${heroLesson.level} · ${heroLesson.category}`
-                  : "4 core lessons · sentence basics"}
-              </span>
+          <div className="wvg-v13-filters" aria-label="Grammar filters">
+            <button type="button">All levels</button>
+            <button type="button">All topics</button>
+            <button type="button">All statuses</button>
+            <button className="wvg-v13-filters__recommended" type="button">Recommended</button>
+          </div>
+        </div>
+
+        <div className="wvg-v13-shelves" aria-live="polite">
+          {shelves.length === 0 ? (
+            <div className="wvg-v13-empty">
+              <strong>No grammar topics found.</strong>
+              <button onClick={() => setQuery("")} type="button">Clear search</button>
             </div>
+          ) : (
+            shelves.map((shelf) => (
+              <section className="wvg-v13-shelf" key={shelf.id}>
+                <header className="wvg-v13-shelf__heading">
+                  <div>
+                    <h2>{shelf.title}</h2>
+                    <p>{shelf.description}</p>
+                  </div>
+                  <button type="button">View all</button>
+                </header>
 
-            <img
-              alt=""
-              aria-hidden="true"
-              className="wvg-curriculum__hero-art"
-              draggable={false}
-              src={heroArtwork}
-            />
+                <div className="wvg-v13-shelf__books">
+                  {shelf.books.map((book) => (
+                    <BookCard book={book} key={`${shelf.id}-${book.title}`} onOpenLesson={onOpenLesson} />
+                  ))}
+                </div>
+                <div aria-hidden="true" className="wvg-v13-shelf__wood" />
+              </section>
+            ))
+          )}
 
-            <button onClick={() => onOpenLesson(heroLesson)} type="button">
-              {continuing ? "Continue lesson" : "Start learning"}
-              <AppIcon name="chevron-right" size={17} />
-            </button>
-          </section>
-        )}
-
-        {tokens.length > 0 ? (
-          <section
-            className="wvg-curriculum__results"
-            aria-labelledby="grammar-search-results-title"
-          >
-            <div className="wvg-curriculum__section-heading">
-              <div>
-                <h2 id="grammar-search-results-title">Search results</h2>
-                <p>
-                  {searchResults.length === 0
-                    ? `No lesson matched “${query.trim()}”.`
-                    : `${searchResults.length} lesson${searchResults.length === 1 ? "" : "s"} matched “${query.trim()}”.`}
-                </p>
-              </div>
-              <button onClick={() => setQuery("")} type="button">
-                Back to learning path
-              </button>
-            </div>
-
-            {searchResults.length === 0 ? (
-              <div className="wvg-curriculum__empty-search">
-                <strong>Try a broader grammar word.</strong>
-                <span>For example: tense, article, modal, conditional, or preposition.</span>
-              </div>
-            ) : (
-              <div className="wvg-curriculum__result-grid">
-                {searchResults.map((lesson) => (
-                  <button key={lesson.id} onClick={() => onOpenLesson(lesson)} type="button">
-                    <span>
-                      <small>{lesson.category}</small>
-                      <strong>{lesson.title}</strong>
-                      <p>{lesson.description}</p>
-                    </span>
-                    <b>{lesson.level}</b>
-                    <AppIcon name="chevron-right" size={17} />
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-        ) : (
-          <section className="wvg-curriculum__path" aria-labelledby="grammar-path-title">
-            <div className="wvg-curriculum__section-heading">
-              <div>
-                <h2 id="grammar-path-title">Your learning path</h2>
-                <p>
-                  Five levels, one clear sequence. You can open any lesson, but this is the
-                  recommended order.
-                </p>
-              </div>
-              <span>EASIER&nbsp;&nbsp;→&nbsp;&nbsp;HARDER</span>
-            </div>
-
-            <div className="wvg-curriculum__levels">
-              {CURRICULUM_LEVELS.map((level) => {
-                const lessons = levelLessons(level);
-                return (
-                  <article
-                    className="wvg-curriculum__level"
-                    data-level={level.code}
-                    key={level.code}
-                  >
-                    <div className="wvg-curriculum__level-meta">
-                      <b>{level.code}</b>
-                      <div>
-                        <small>{level.eyebrow}</small>
-                        <strong>{level.description}</strong>
-                        <span>{lessons.length} featured lessons</span>
-                      </div>
-                    </div>
-
-                    <div className="wvg-curriculum__lesson-grid">
-                      {lessons.map((lesson) => (
-                        <button key={lesson.id} onClick={() => onOpenLesson(lesson)} type="button">
-                          <small>LESSON</small>
-                          <strong>{lesson.title}</strong>
-                          <AppIcon name="chevron-right" size={15} />
-                        </button>
-                      ))}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-        )}
+          {normalizedQuery.length === 0 ? (
+            <section className="wvg-v13-shelf wvg-v13-shelf--preview" aria-label="B2 and above">
+              <header className="wvg-v13-shelf__heading">
+                <div>
+                  <h2>B2+ · Refine &amp; Master</h2>
+                </div>
+              </header>
+            </section>
+          ) : null}
+        </div>
       </section>
     </main>
   );
