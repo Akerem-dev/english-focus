@@ -208,10 +208,7 @@ function BookCard({
   );
 }
 
-export function GrammarCurriculumHome({
-  lastLesson: _lastLesson,
-  onOpenLesson
-}: GrammarCurriculumHomeProps) {
+export function GrammarCurriculumHome({ onOpenLesson }: GrammarCurriculumHomeProps) {
   const [query, setQuery] = useState("");
   const normalizedQuery = useMemo(() => normalize(query), [query]);
   const heroArtwork = getGrammarLessonArtwork("present-perfect");
