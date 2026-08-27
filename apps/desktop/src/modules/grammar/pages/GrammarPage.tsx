@@ -85,7 +85,11 @@ function Hero({ onResume }: { readonly onResume: () => void }) {
         <h1>Present Perfect</h1>
         <p>Focus on life experiences and results that continue to the present.</p>
         <div className="grammar-hero__actions">
-          <button className="grammar-button grammar-button--outline" onClick={onResume} type="button">
+          <button
+            className="grammar-button grammar-button--outline"
+            onClick={onResume}
+            type="button"
+          >
             Resume lesson <span aria-hidden="true">›</span>
           </button>
           <button className="grammar-link-button" type="button">
@@ -103,7 +107,13 @@ function Hero({ onResume }: { readonly onResume: () => void }) {
   );
 }
 
-function TopicCard({ topic, onOpen }: { readonly topic: GrammarTopic; readonly onOpen: () => void }) {
+function TopicCard({
+  topic,
+  onOpen
+}: {
+  readonly topic: GrammarTopic;
+  readonly onOpen: () => void;
+}) {
   const clickable = topic.lesson !== undefined;
 
   return (
@@ -162,10 +172,18 @@ function GrammarHome({ openLesson }: { readonly openLesson: () => void }) {
             value={query}
           />
         </label>
-        <button className="grammar-filter-pill" type="button">All levels</button>
-        <button className="grammar-filter-pill" type="button">All topics</button>
-        <button className="grammar-filter-pill" type="button">All statuses</button>
-        <button className="grammar-filter-pill grammar-filter-pill--push" type="button">Recommended</button>
+        <button className="grammar-filter-pill" type="button">
+          All levels
+        </button>
+        <button className="grammar-filter-pill" type="button">
+          All topics
+        </button>
+        <button className="grammar-filter-pill" type="button">
+          All statuses
+        </button>
+        <button className="grammar-filter-pill grammar-filter-pill--push" type="button">
+          Recommended
+        </button>
       </div>
 
       <div className="grammar-shelves">
@@ -173,7 +191,9 @@ function GrammarHome({ openLesson }: { readonly openLesson: () => void }) {
           <section className="grammar-shelf" key={shelf.level}>
             <header className="grammar-shelf__header">
               <div>
-                <h2>{shelf.level} · {shelf.title}</h2>
+                <h2>
+                  {shelf.level} · {shelf.title}
+                </h2>
                 <p>{shelf.description}</p>
               </div>
               <button type="button">View all</button>
@@ -234,7 +254,9 @@ function PresentPerfectLesson({ backHome }: { readonly backHome: () => void }) {
   return (
     <div className="grammar-paper grammar-paper--lesson">
       <div className="grammar-breadcrumb grammar-breadcrumb--lesson">
-        <button onClick={backHome} type="button">Grammar</button>
+        <button onClick={backHome} type="button">
+          Grammar
+        </button>
         <span>›</span>
         <span>Tenses &amp; Time</span>
         <span>›</span>
@@ -249,7 +271,9 @@ function PresentPerfectLesson({ backHome }: { readonly backHome: () => void }) {
           <div className="grammar-hero__actions">
             <button
               className="grammar-button grammar-button--outline"
-              onClick={() => practiceRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })}
+              onClick={() =>
+                practiceRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+              }
               type="button"
             >
               Resume lesson <span aria-hidden="true">›</span>
@@ -270,7 +294,9 @@ function PresentPerfectLesson({ backHome }: { readonly backHome: () => void }) {
       <div className="grammar-lesson-grid">
         <LessonCard number="1" title="Core Formula">
           <div className="grammar-formula-box">
-            <span>have / has</span><strong>+</strong><span>past participle</span>
+            <span>have / has</span>
+            <strong>+</strong>
+            <span>past participle</span>
           </div>
           <h3>Examples</h3>
           <ul>
@@ -281,21 +307,61 @@ function PresentPerfectLesson({ backHome }: { readonly backHome: () => void }) {
 
         <LessonCard number="2" title="When to Use">
           <div className="grammar-use-list">
-            <div><span>✦</span><p><strong>Experiences in life</strong><small>I have never been to Japan.</small></p></div>
-            <div><span>●</span><p><strong>Results that continue now</strong><small>He has lost his keys.</small></p></div>
-            <div><span>◷</span><p><strong>Unspecified time before now</strong><small>We have seen that movie.</small></p></div>
+            <div>
+              <span>✦</span>
+              <p>
+                <strong>Experiences in life</strong>
+                <small>I have never been to Japan.</small>
+              </p>
+            </div>
+            <div>
+              <span>●</span>
+              <p>
+                <strong>Results that continue now</strong>
+                <small>He has lost his keys.</small>
+              </p>
+            </div>
+            <div>
+              <span>◷</span>
+              <p>
+                <strong>Unspecified time before now</strong>
+                <small>We have seen that movie.</small>
+              </p>
+            </div>
           </div>
         </LessonCard>
 
         <LessonCard number="3" title="Examples">
           <div className="grammar-use-list">
-            <div><span>◇</span><p><strong>Life experience</strong><small>They have travelled to five countries.</small></p></div>
-            <div><span>↔</span><p><strong>Result now</strong><small>The ground is wet. It has rained.</small></p></div>
-            <div><span>△</span><p><strong>Unspecified time</strong><small>I’ve read this book three times.</small></p></div>
+            <div>
+              <span>◇</span>
+              <p>
+                <strong>Life experience</strong>
+                <small>They have travelled to five countries.</small>
+              </p>
+            </div>
+            <div>
+              <span>↔</span>
+              <p>
+                <strong>Result now</strong>
+                <small>The ground is wet. It has rained.</small>
+              </p>
+            </div>
+            <div>
+              <span>△</span>
+              <p>
+                <strong>Unspecified time</strong>
+                <small>I’ve read this book three times.</small>
+              </p>
+            </div>
           </div>
         </LessonCard>
 
-        <LessonCard className="grammar-lesson-card--comparison" number="4" title="Comparison with Past Simple">
+        <LessonCard
+          className="grammar-lesson-card--comparison"
+          number="4"
+          title="Comparison with Past Simple"
+        >
           <div className="grammar-comparison">
             <div>
               <span>PAST SIMPLE</span>
@@ -315,28 +381,60 @@ function PresentPerfectLesson({ backHome }: { readonly backHome: () => void }) {
 
         <LessonCard number="5" title="Common Mistake">
           <div className="grammar-mistake grammar-mistake--wrong">
-            <span>×</span><p><strong>I have went to the store.</strong><small>× Incorrect</small></p>
+            <span>×</span>
+            <p>
+              <strong>I have went to the store.</strong>
+              <small>× Incorrect</small>
+            </p>
           </div>
           <div className="grammar-mistake grammar-mistake--right">
-            <span>✓</span><p><strong>I have gone to the store.</strong><small>✓ Correct</small></p>
+            <span>✓</span>
+            <p>
+              <strong>I have gone to the store.</strong>
+              <small>✓ Correct</small>
+            </p>
           </div>
         </LessonCard>
 
         <LessonCard number="6" title="Signal Words">
           <div className="grammar-chip-list">
-            {['already', 'just', 'yet', 'ever', 'never', 'so far', 'recently', 'up to now', 'since', 'for'].map((word) => (
+            {[
+              "already",
+              "just",
+              "yet",
+              "ever",
+              "never",
+              "so far",
+              "recently",
+              "up to now",
+              "since",
+              "for"
+            ].map((word) => (
               <span key={word}>{word}</span>
             ))}
           </div>
         </LessonCard>
 
-        <div ref={(node) => { practiceRef.current = node; }}>
+        <div
+          ref={(node) => {
+            practiceRef.current = node;
+          }}
+        >
           <LessonCard number="7" title="Practice">
             <p className="grammar-card-intro">Try a quick check to see how well you understand.</p>
             <div className="grammar-practice-actions">
-              <button type="button"><strong>Guided Practice</strong><small>Step-by-step help</small></button>
-              <button type="button"><strong>Quick Quiz</strong><small>5 short questions</small></button>
-              <button type="button"><strong>Challenge</strong><small>Test your skills</small></button>
+              <button type="button">
+                <strong>Guided Practice</strong>
+                <small>Step-by-step help</small>
+              </button>
+              <button type="button">
+                <strong>Quick Quiz</strong>
+                <small>5 short questions</small>
+              </button>
+              <button type="button">
+                <strong>Challenge</strong>
+                <small>Test your skills</small>
+              </button>
             </div>
           </LessonCard>
         </div>
@@ -371,7 +469,11 @@ export function GrammarPage() {
 
   return (
     <main className="grammar-experience" data-view={isLesson ? "lesson" : "home"}>
-      {isLesson ? <PresentPerfectLesson backHome={backHome} /> : <GrammarHome openLesson={openLesson} />}
+      {isLesson ? (
+        <PresentPerfectLesson backHome={backHome} />
+      ) : (
+        <GrammarHome openLesson={openLesson} />
+      )}
     </main>
   );
 }
