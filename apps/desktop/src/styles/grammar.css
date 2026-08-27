@@ -1,0 +1,889 @@
+.grammar-experience {
+  --grammar-forest: #0c3b33;
+  --grammar-forest-deep: #082f29;
+  --grammar-forest-mid: #174a3f;
+  --grammar-paper: #fbf8f1;
+  --grammar-cream: #f7f2e8;
+  --grammar-cream-strong: #efe6d7;
+  --grammar-border: #d9cfbd;
+  --grammar-ink: #102d27;
+  --grammar-muted: #6a706b;
+  --grammar-gold: #c69a3a;
+  --grammar-gold-deep: #9b7226;
+  --grammar-success: #2e7a63;
+  --grammar-danger: #a84e3c;
+  min-height: 100%;
+  padding: clamp(1rem, 2.1vw, 2rem);
+  background: var(--color-background);
+  color: var(--grammar-ink);
+}
+
+.grammar-experience button,
+.grammar-experience input {
+  font: inherit;
+}
+
+.grammar-paper {
+  width: min(100%, 82rem);
+  min-height: calc(100vh - 8.75rem);
+  margin: 0 auto;
+  padding: clamp(1rem, 2vw, 1.75rem);
+  border: 1px solid color-mix(in srgb, var(--grammar-border) 78%, transparent);
+  border-radius: 1rem;
+  background: var(--grammar-paper);
+  box-shadow: 0 1.2rem 3rem rgb(54 45 34 / 8%);
+}
+
+.grammar-breadcrumb {
+  margin-bottom: 0.9rem;
+  color: var(--grammar-muted);
+  font-size: 0.75rem;
+}
+
+.grammar-breadcrumb--lesson {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.grammar-breadcrumb--lesson button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.grammar-breadcrumb--lesson button:hover {
+  color: var(--grammar-forest);
+}
+
+.grammar-hero,
+.grammar-lesson-hero {
+  position: relative;
+  display: grid;
+  min-height: 13.7rem;
+  grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background: var(--grammar-forest);
+}
+
+.grammar-hero__copy,
+.grammar-lesson-hero__copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1.25rem, 2.4vw, 2.25rem);
+  background:
+    linear-gradient(90deg, rgb(8 67 57 / 98%), rgb(10 85 71 / 94%) 76%, rgb(10 85 71 / 86%));
+  color: #fffdf7;
+}
+
+.grammar-hero__eyebrow {
+  display: block;
+  margin-bottom: 0.55rem;
+  color: #e5bc48;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+}
+
+.grammar-hero h1,
+.grammar-lesson-hero h1 {
+  margin: 0;
+  color: #fffdf8;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: clamp(2.3rem, 4vw, 3.6rem);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+}
+
+.grammar-hero__copy > p,
+.grammar-lesson-hero__copy > p {
+  max-width: 40rem;
+  margin: 0.45rem 0 0;
+  color: rgb(255 255 255 / 89%);
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+
+.grammar-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.grammar-button {
+  min-height: 2.45rem;
+  padding: 0 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.79rem;
+  font-weight: 600;
+}
+
+.grammar-button--outline {
+  border: 1px solid var(--grammar-gold);
+  background: transparent;
+  color: #fff;
+}
+
+.grammar-button--outline:hover {
+  background: rgb(255 255 255 / 7%);
+}
+
+.grammar-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: rgb(255 255 255 / 90%);
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.grammar-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  color: rgb(255 255 255 / 78%);
+  font-size: 0.68rem;
+}
+
+.grammar-hero__meta span:not(:last-child)::after {
+  margin-left: 0.5rem;
+  color: #fff;
+  content: "•";
+}
+
+.grammar-artwork {
+  position: relative;
+  min-height: 13.7rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 16% 78%, rgb(219 204 115 / 68%) 0 2%, transparent 2.2%),
+    linear-gradient(180deg, #eff1e8 0 24%, #d8dfd3 25% 46%, #9eb59b 47% 65%, #657f67 66% 100%);
+}
+
+.grammar-artwork::before {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 72% 15%, rgb(255 255 255 / 75%), transparent 15%),
+    linear-gradient(180deg, rgb(255 255 255 / 28%), transparent 48%);
+  content: "";
+}
+
+.grammar-artwork__mountain {
+  position: absolute;
+  width: 68%;
+  aspect-ratio: 1.8;
+  clip-path: polygon(0 100%, 27% 46%, 39% 68%, 58% 22%, 100% 100%);
+}
+
+.grammar-artwork__mountain--far {
+  top: 4%;
+  left: 3%;
+  background: linear-gradient(145deg, #f5f5eb 0 28%, #b9c5bb 29% 58%, #8ea28f 59% 100%);
+  opacity: 0.82;
+}
+
+.grammar-artwork__mountain--near {
+  top: 18%;
+  right: -8%;
+  background: linear-gradient(145deg, #f3f2df 0 20%, #9dac98 21% 52%, #627f66 53% 100%);
+}
+
+.grammar-artwork__bridge {
+  position: absolute;
+  right: 5%;
+  bottom: 23%;
+  width: 86%;
+  height: 10%;
+  border-top: 0.42rem solid #8b7653;
+  border-bottom: 0.22rem solid #6f5b3d;
+  background: repeating-linear-gradient(90deg, #9d8966 0 4%, #826e4e 4% 5.5%);
+  transform: rotate(-1deg);
+}
+
+.grammar-artwork__bridge::before {
+  position: absolute;
+  right: 4%;
+  bottom: -2.9rem;
+  left: 4%;
+  height: 3.2rem;
+  background:
+    radial-gradient(ellipse at 12% 0, transparent 0 29%, #806d4f 30% 37%, transparent 38%),
+    radial-gradient(ellipse at 37% 0, transparent 0 29%, #806d4f 30% 37%, transparent 38%),
+    radial-gradient(ellipse at 62% 0, transparent 0 29%, #806d4f 30% 37%, transparent 38%),
+    radial-gradient(ellipse at 87% 0, transparent 0 29%, #806d4f 30% 37%, transparent 38%);
+  content: "";
+}
+
+.grammar-artwork__trees {
+  position: absolute;
+  bottom: 12%;
+  z-index: 2;
+  color: #294d3c;
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  letter-spacing: -0.4em;
+  line-height: 1;
+  text-shadow: 0.25rem 0.45rem 0 #395c43;
+}
+
+.grammar-artwork__trees--left {
+  left: 4%;
+}
+
+.grammar-artwork__trees--right {
+  right: 7%;
+}
+
+.grammar-filter-row {
+  display: grid;
+  grid-template-columns: minmax(15rem, 2fr) repeat(3, minmax(6rem, auto)) minmax(7.6rem, auto);
+  gap: 0.75rem;
+  margin: 1rem 0 1.2rem;
+}
+
+.grammar-search-field {
+  display: flex;
+  min-height: 2.4rem;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--grammar-border);
+  border-radius: 0.6rem;
+  background: #fffcf6;
+  color: var(--grammar-muted);
+}
+
+.grammar-search-field:focus-within {
+  border-color: var(--grammar-gold);
+  box-shadow: 0 0 0 2px rgb(198 154 58 / 13%);
+}
+
+.grammar-search-field input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--grammar-ink);
+  font-size: 0.8rem;
+}
+
+.grammar-filter-pill {
+  min-height: 2.4rem;
+  padding: 0 1rem;
+  border: 1px solid var(--grammar-border);
+  border-radius: 999px;
+  background: #fffcf6;
+  color: var(--grammar-muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+}
+
+.grammar-filter-pill:hover {
+  border-color: var(--grammar-gold);
+  color: var(--grammar-ink);
+}
+
+.grammar-shelves {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.grammar-shelf {
+  min-width: 0;
+}
+
+.grammar-shelf__header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.45rem;
+}
+
+.grammar-shelf__header h2 {
+  margin: 0;
+  color: var(--grammar-ink);
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: 1.28rem;
+  font-weight: 600;
+}
+
+.grammar-shelf__header p {
+  margin: 0.06rem 0 0;
+  color: var(--grammar-muted);
+  font-size: 0.68rem;
+}
+
+.grammar-shelf__header button {
+  padding: 0.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--grammar-ink);
+  cursor: pointer;
+  font-size: 0.68rem;
+}
+
+.grammar-shelf__books {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.35rem;
+  padding: 0 0.35rem;
+}
+
+.grammar-topic-card {
+  display: flex;
+  min-width: 0;
+  min-height: 6.1rem;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0.72rem 0.65rem 0.58rem;
+  border: 1px solid var(--grammar-border);
+  border-bottom: 0;
+  border-radius: 0.28rem 0.28rem 0 0;
+  background: #faf5eb;
+  color: var(--grammar-ink);
+  text-align: left;
+}
+
+.grammar-topic-card:not(:disabled) {
+  cursor: pointer;
+}
+
+.grammar-topic-card:disabled {
+  opacity: 1;
+}
+
+.grammar-topic-card:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.35rem 0.9rem rgb(41 48 42 / 8%);
+}
+
+.grammar-topic-card[data-featured] {
+  border-color: var(--grammar-forest);
+  background: var(--grammar-forest);
+  color: #fffef8;
+}
+
+.grammar-topic-card__topline {
+  display: flex;
+  min-width: 0;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.grammar-topic-card__topline strong {
+  overflow: hidden;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+}
+
+.grammar-topic-card__status {
+  flex: 0 0 auto;
+  color: var(--grammar-gold);
+  font-size: 0.62rem;
+}
+
+.grammar-topic-card__formula {
+  min-height: 1.8rem;
+  margin-top: 0.42rem;
+  color: var(--grammar-muted);
+  font-size: 0.57rem;
+  line-height: 1.28;
+}
+
+.grammar-topic-card[data-featured] .grammar-topic-card__formula {
+  color: rgb(255 255 255 / 72%);
+}
+
+.grammar-topic-card__progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.grammar-topic-card__track {
+  height: 0.22rem;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #ded5c6;
+}
+
+.grammar-topic-card__track > span {
+  display: block;
+  height: 100%;
+  background: var(--grammar-success);
+}
+
+.grammar-topic-card[data-featured] .grammar-topic-card__track {
+  background: rgb(255 255 255 / 25%);
+}
+
+.grammar-topic-card[data-featured] .grammar-topic-card__track > span {
+  background: var(--grammar-gold);
+}
+
+.grammar-topic-card__progress-row small {
+  flex: 0 0 auto;
+  color: var(--grammar-muted);
+  font-size: 0.52rem;
+}
+
+.grammar-topic-card[data-featured] .grammar-topic-card__progress-row small {
+  color: rgb(255 255 255 / 82%);
+}
+
+.grammar-shelf__wood {
+  position: relative;
+  z-index: 2;
+  height: 0.52rem;
+  margin-top: -1px;
+  border-radius: 0.08rem;
+  background: linear-gradient(180deg, #95622e, #75471f);
+  box-shadow: 0 0.2rem 0.1rem rgb(70 39 18 / 10%);
+}
+
+.grammar-shelf--next {
+  padding-bottom: 0.25rem;
+}
+
+.grammar-lesson-hero {
+  min-height: 12.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.grammar-lesson-hero .grammar-artwork {
+  min-height: 12.3rem;
+}
+
+.grammar-lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.grammar-lesson-card {
+  grid-column: span 4;
+  min-width: 0;
+  padding: 0.9rem 0.95rem;
+  border: 1px solid var(--grammar-border);
+  border-radius: 0.7rem;
+  background: #fffaf1;
+}
+
+.grammar-lesson-card > header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.72rem;
+}
+
+.grammar-step-badge {
+  display: grid;
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--grammar-forest);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.grammar-lesson-card h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.grammar-lesson-card h3 {
+  margin: 0.8rem 0 0.35rem;
+  font-size: 0.66rem;
+}
+
+.grammar-lesson-card ul {
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.grammar-lesson-card li {
+  margin: 0.3rem 0;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.grammar-formula-box {
+  display: grid;
+  grid-template-columns: 1fr auto 1.25fr;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem;
+  border-radius: 0.45rem;
+  background: #f7ecd3;
+  text-align: center;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 0.85rem;
+}
+
+.grammar-use-list {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.grammar-use-list > div {
+  display: grid;
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.grammar-use-list > div > span {
+  display: grid;
+  width: 1.55rem;
+  height: 1.55rem;
+  place-items: center;
+  border: 1px solid var(--grammar-border);
+  border-radius: 50%;
+  color: var(--grammar-forest);
+  font-size: 0.7rem;
+}
+
+.grammar-use-list p {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+}
+
+.grammar-use-list strong {
+  font-size: 0.66rem;
+}
+
+.grammar-use-list small {
+  color: var(--grammar-muted);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 0.62rem;
+}
+
+.grammar-lesson-card--comparison {
+  grid-column: span 8;
+}
+
+.grammar-comparison {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.grammar-comparison > div {
+  display: grid;
+  gap: 0.22rem;
+  padding: 0.72rem;
+  border: 1px solid var(--grammar-border);
+  border-radius: 0.45rem;
+  background: #f9f5ec;
+}
+
+.grammar-comparison > div > span {
+  color: var(--grammar-muted);
+  font-size: 0.52rem;
+  font-weight: 600;
+}
+
+.grammar-comparison strong,
+.grammar-comparison p,
+.grammar-comparison small {
+  margin: 0;
+  font-size: 0.63rem;
+  line-height: 1.35;
+}
+
+.grammar-comparison small {
+  color: var(--grammar-muted);
+}
+
+.grammar-comparison__vs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--grammar-border);
+  border-radius: 50%;
+  background: var(--grammar-paper);
+  font-size: 0.55rem;
+  font-weight: 700;
+  transform: translate(-50%, -50%);
+}
+
+.grammar-mistake {
+  display: grid;
+  grid-template-columns: 1.25rem minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.55rem;
+  border-radius: 0.42rem;
+}
+
+.grammar-mistake + .grammar-mistake {
+  margin-top: 0.42rem;
+}
+
+.grammar-mistake--wrong {
+  background: #f8e3de;
+  color: #7d3428;
+}
+
+.grammar-mistake--right {
+  background: #e6f0e8;
+  color: #245c49;
+}
+
+.grammar-mistake p {
+  display: grid;
+  gap: 0.08rem;
+  margin: 0;
+}
+
+.grammar-mistake strong {
+  color: var(--grammar-ink);
+  font-size: 0.64rem;
+}
+
+.grammar-mistake small {
+  font-size: 0.53rem;
+}
+
+.grammar-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.grammar-chip-list span {
+  padding: 0.28rem 0.58rem;
+  border: 1px solid #e5d4ac;
+  border-radius: 0.32rem;
+  background: #f7ecd3;
+  color: var(--grammar-muted);
+  font-size: 0.55rem;
+}
+
+.grammar-lesson-grid > div {
+  grid-column: span 5;
+}
+
+.grammar-lesson-grid > div .grammar-lesson-card {
+  height: 100%;
+}
+
+.grammar-card-intro {
+  margin: -0.35rem 0 0.65rem;
+  color: var(--grammar-muted);
+  font-size: 0.58rem;
+}
+
+.grammar-practice-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.grammar-practice-actions button {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+  padding: 0.55rem;
+  border: 1px solid var(--grammar-border);
+  border-radius: 0.35rem;
+  background: #fffaf1;
+  color: var(--grammar-ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.grammar-practice-actions button:hover {
+  border-color: var(--grammar-gold);
+  background: #fffdf8;
+}
+
+.grammar-practice-actions strong {
+  font-size: 0.57rem;
+}
+
+.grammar-practice-actions small {
+  color: var(--grammar-muted);
+  font-size: 0.49rem;
+}
+
+.grammar-lesson-card--rule {
+  grid-column: span 3;
+  background: #eef4ed;
+}
+
+.grammar-rule-list {
+  list-style: "☆  ";
+}
+
+.grammar-memory-strip {
+  display: flex;
+  width: min(36rem, 100%);
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  margin: 0.65rem auto 0;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--grammar-border);
+  border-radius: 0.45rem;
+  color: var(--grammar-muted);
+  font-size: 0.58rem;
+}
+
+.grammar-memory-strip p {
+  margin: 0;
+}
+
+@media (max-width: 84rem) {
+  .grammar-paper {
+    width: 100%;
+  }
+
+  .grammar-filter-row {
+    grid-template-columns: minmax(14rem, 2fr) repeat(3, auto);
+  }
+
+  .grammar-filter-pill--push {
+    display: none;
+  }
+
+  .grammar-shelf__books {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 70rem) {
+  .grammar-hero,
+  .grammar-lesson-hero {
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+  }
+
+  .grammar-lesson-card {
+    grid-column: span 6;
+  }
+
+  .grammar-lesson-card--comparison {
+    grid-column: span 12;
+  }
+
+  .grammar-lesson-grid > div {
+    grid-column: span 7;
+  }
+
+  .grammar-lesson-card--rule {
+    grid-column: span 5;
+  }
+}
+
+@media (max-width: 58rem) {
+  .grammar-experience {
+    padding: 0.9rem;
+  }
+
+  .grammar-paper {
+    min-height: calc(100vh - 7rem);
+    padding: 1rem;
+  }
+
+  .grammar-hero,
+  .grammar-lesson-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .grammar-artwork {
+    min-height: 9rem;
+    order: -1;
+  }
+
+  .grammar-lesson-hero .grammar-artwork {
+    min-height: 9rem;
+  }
+
+  .grammar-filter-row {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .grammar-search-field {
+    grid-column: 1 / -1;
+  }
+
+  .grammar-shelf__books {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grammar-lesson-card,
+  .grammar-lesson-card--comparison,
+  .grammar-lesson-grid > div,
+  .grammar-lesson-card--rule {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 40rem) {
+  .grammar-filter-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grammar-filter-row .grammar-filter-pill:nth-of-type(3) {
+    grid-column: 1 / -1;
+  }
+
+  .grammar-shelf__books {
+    grid-template-columns: 1fr;
+  }
+
+  .grammar-practice-actions,
+  .grammar-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .grammar-comparison__vs {
+    position: static;
+    margin: -0.25rem auto;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grammar-topic-card,
+  .grammar-button,
+  .grammar-practice-actions button {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
