@@ -1,13 +1,18 @@
 /*
  * Grammar content-slot alignment only.
  *
- * SearchCleanShell owns the Word Valley topbar, sidebar, navigation, progress
- * and Wordie presentation. Grammar may reserve space inside that shell, but it
- * must never restyle the shared chrome itself.
+ * The Grammar scope lives around the center content only. SearchCleanShell owns
+ * the Word Valley topbar, sidebar, navigation, progress and Wordie presentation,
+ * so route-specific CSS cannot reach or mutate those shared elements.
  */
 
+#root .application-frame--grammar-cleanroom.grammar-route-scope {
+  display: contents;
+}
+
 #root
-  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .application-frame--search-cleanroom
+  .application-frame--grammar-cleanroom
   .wvg-page {
   top: 46px !important;
   right: 0 !important;
@@ -18,37 +23,37 @@
 }
 
 /* On large desktop canvases an explicitly opened Wordie panel is a persistent
-   382 px rail. The rail itself is styled by the shared Search assistant CSS. */
+   382 px rail. The rail itself remains entirely shared Search styling. */
 @media (min-width: 1500px) {
   #root
-    .application-frame--search-cleanroom.application-frame--grammar-cleanroom:has(
-      .assistant-dock.wv84-assistant[data-open="true"]
-    )
+    .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant[data-open="true"])
+    .application-frame--grammar-cleanroom
     .wvg-v12-lesson {
     right: 382px !important;
   }
 
   #root
-    .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+    .application-frame--search-cleanroom
+    .application-frame--grammar-cleanroom
     .wvg-page[data-grammar-view="lesson"]
     .wvg-reference-lesson {
     right: 382px !important;
   }
 }
 
-/* In a normal window Wordie overlays the Grammar content instead of changing
-   the shared application geometry. */
+/* In normal windows Wordie overlays Grammar content instead of changing any
+   shared application geometry. */
 @media (max-width: 1499px) {
   #root
-    .application-frame--search-cleanroom.application-frame--grammar-cleanroom:has(
-      .assistant-dock.wv84-assistant[data-open="true"]
-    )
+    .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant[data-open="true"])
+    .application-frame--grammar-cleanroom
     .wvg-v12-lesson {
     right: 0 !important;
   }
 
   #root
-    .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+    .application-frame--search-cleanroom
+    .application-frame--grammar-cleanroom
     .wvg-page[data-grammar-view="lesson"]
     .wvg-reference-lesson {
     right: 0 !important;
