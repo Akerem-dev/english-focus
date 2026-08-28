@@ -78,16 +78,28 @@ test("Grammar Home controls work and Present Perfect uses the single V13 overvie
 
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expect(page.getByText("RECOMMENDED NEXT LESSON", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "B1 · Express Yourself", level: 2 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "B1 · Express Yourself", level: 2 })
+  ).toBeVisible();
 
   await page.getByLabel("Filter by level").selectOption("A2");
-  await expect(page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
+  ).toBeVisible();
 
   await page.getByLabel("Filter by status").selectOption("not-started");
-  await expect(page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: /Past Simple, 1 of 5 complete/i })).toHaveCount(0);
 
   await page.getByLabel("Filter by status").selectOption("all");
@@ -96,22 +108,34 @@ test("Grammar Home controls work and Present Perfect uses the single V13 overvie
   const recommended = page.getByRole("button", { name: "Recommended", exact: true });
   await recommended.click();
   await expect(recommended).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("button", { name: /Present Simple, 3 of 5 complete/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Present Simple, 3 of 5 complete/i })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: /There is \/ There are/i })).toHaveCount(0);
   await recommended.click();
 
   const a1Shelf = page.locator(".wvg-v13-shelf").filter({ hasText: "A1 · Grammar Foundation" });
   await a1Shelf.getByRole("button", { name: "View all" }).click();
-  await expect(page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
+  ).toHaveCount(0);
   await a1Shelf.getByRole("button", { name: "Show all" }).click();
-  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
+  ).toBeVisible();
 
   const complete = page.getByRole("button", { name: /Mark as complete/i }).first();
   await complete.click();
   await expect(page.getByRole("button", { name: "Completed", exact: true }).first()).toBeVisible();
-  await expect(page.getByRole("button", { name: /Present Perfect, 5 of 5 complete/i })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Present Perfect, 5 of 5 complete/i })
+  ).toBeVisible();
 
   await openPresentPerfectFromHome(page);
 
@@ -119,7 +143,9 @@ test("Grammar Home controls work and Present Perfect uses the single V13 overvie
   await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "When to Use", level: 2 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Examples", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Comparison with Past Simple", level: 2 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Comparison with Past Simple", level: 2 })
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Common Mistake", level: 2 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Signal Words", level: 2 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Practice", level: 2 })).toBeVisible();
@@ -142,7 +168,9 @@ test("each bookshelf card opens the topic it actually names", async ({ page }) =
 
   await page.getByRole("button", { name: /There is \/ There are, 0 of 5 complete/i }).click();
   await expect(page.getByRole("heading", { name: "There is / There are", level: 1 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Word Order & Agreement", level: 1 })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Word Order & Agreement", level: 1 })).toHaveCount(
+    0
+  );
   await expect(page.getByRole("tab")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
 
@@ -182,7 +210,9 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
     await page.setViewportSize(viewport);
 
     await page.goto("/#/");
-    await expect(page.getByRole("heading", { name: "Discover a new word.", level: 1 })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Discover a new word.", level: 1 })
+    ).toBeVisible();
     const searchChrome = await readSharedChrome(page);
 
     await page.goto("/#/grammar");
