@@ -2,11 +2,18 @@ import type { Page } from "@playwright/test";
 
 import { expect, test } from "./app.fixture";
 
-const LAST_GRAMMAR_LESSON_KEY = "word-valley:grammar:last-lesson";
+const LEGACY_LAST_GRAMMAR_LESSON_KEY = "word-valley:grammar:last-lesson";
+const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 
-async function clearLastGrammarLesson(page: Page) {
+async function clearGrammarState(page: Page) {
   await page.goto("/");
-  await page.evaluate((key) => window.localStorage.removeItem(key), LAST_GRAMMAR_LESSON_KEY);
+  await page.evaluate(
+    ([legacyKey, progressKey]) => {
+      window.localStorage.removeItem(legacyKey);
+      window.localStorage.removeItem(progressKey);
+    },
+    [LEGACY_LAST_GRAMMAR_LESSON_KEY, GRAMMAR_PROGRESS_KEY]
+  );
 }
 
 async function openPresentPerfectFromHome(page: Page) {
@@ -62,68 +69,104 @@ async function readAssistantShell(page: Page) {
   };
 }
 
-test("first Grammar visit opens the V13 bookshelf home, then the approved lesson master", async ({
+test("Grammar Home controls work and Present Perfect uses the single V13 overview", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
-  await clearLastGrammarLesson(page);
+  await clearGrammarState(page);
   await page.goto("/#/grammar");
 
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expect(page.getByText("RECOMMENDED NEXT LESSON", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Present Perfect", level: 2 })).toBeVisible();
-  await expect(page.getByText("A1 · Grammar Foundation", { exact: true })).toBeVisible();
-  await expect(page.getByText("A2 · Building Confidence", { exact: true })).toBeVisible();
-  await expect(page.getByText("B1 · Express Yourself", { exact: true })).toBeVisible();
-  await expect(page.getByText("B2+ · Refine & Master", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Present Simple/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Present Perfect/i })).toBeVisible();
-  await expect(page.getByPlaceholder("Search grammar topics...")).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Grammar helper" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "English Grammar", level: 1 })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "B1 · Express Yourself", level: 2 })).toBeVisible();
+
+  await page.getByLabel("Filter by level").selectOption("A2");
+  await expect(page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toBeVisible();
+
+  await page.getByLabel("Filter by status").selectOption("not-started");
+  await expect(page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Past Simple, 1 of 5 complete/i })).toHaveCount(0);
+
+  await page.getByLabel("Filter by status").selectOption("all");
+  await page.getByLabel("Filter by level").selectOption("all");
+
+  const recommended = page.getByRole("button", { name: "Recommended", exact: true });
+  await recommended.click();
+  await expect(recommended).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /Present Simple, 3 of 5 complete/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /There is \/ There are/i })).toHaveCount(0);
+  await recommended.click();
+
+  const a1Shelf = page.locator(".wvg-v13-shelf").filter({ hasText: "A1 · Grammar Foundation" });
+  await a1Shelf.getByRole("button", { name: "View all" }).click();
+  await expect(page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toHaveCount(0);
+  await a1Shelf.getByRole("button", { name: "Show all" }).click();
+  await expect(page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })).toBeVisible();
+
+  const complete = page.getByRole("button", { name: /Mark as complete/i }).first();
+  await complete.click();
+  await expect(page.getByRole("button", { name: "Completed", exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /Present Perfect, 5 of 5 complete/i })).toBeVisible();
 
   await openPresentPerfectFromHome(page);
 
-  await expect(page.getByRole("tab", { name: "Rule", exact: true })).toHaveAttribute(
-    "aria-selected",
-    "true"
-  );
-  await expect(page.getByText("CORE FORMULA", { exact: true })).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: /have \/ has.*past participle/i, level: 2 })
-  ).toBeVisible();
-  await expect(page.getByText("WHEN TO USE", { exact: true })).toBeVisible();
-  await expect(page.getByText("SIGNAL WORDS", { exact: true })).toBeVisible();
-  await expect(page.getByText("QUICK DECISION", { exact: true })).toBeVisible();
-  await expect(page.getByText("EXAMPLES", { exact: true })).toBeVisible();
+  await expect(page.getByRole("tab")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "When to Use", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Examples", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comparison with Past Simple", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Common Mistake", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Signal Words", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Practice", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quick Rule", level: 2 })).toBeVisible();
+  await expect(page.getByText("I have went to the store.", { exact: true })).toBeVisible();
+  await expect(page.getByText("I have gone to the store.", { exact: true })).toBeVisible();
 
-  const launcher = page.getByRole("button", { name: "Open Wordie" });
-  const helper = page.getByRole("dialog", { name: "Grammar helper" });
-  await expect(helper).toHaveCount(0);
-  await expect(launcher).toBeVisible();
-  await launcher.click();
+  const quickQuiz = page.getByRole("button", { name: /Quick Quiz/i });
+  await quickQuiz.click();
+  await expect(quickQuiz).toHaveAttribute("aria-pressed", "true");
 
-  await expect(helper).toBeVisible();
-  await expect(helper.getByRole("heading", { name: "Wordie AI", level: 2 })).toBeVisible();
-  await expect(helper.getByText("Explain this rule", { exact: true })).toBeVisible();
-  await expect(helper.getByText("Compare with Past Simple", { exact: true })).toBeVisible();
-  await expect(helper.getByText("Give another example", { exact: true })).toBeVisible();
-  await expect(helper.getByText("Quiz me", { exact: true })).toBeVisible();
-  await expect(helper.getByText("Why is this wrong?", { exact: true })).toBeVisible();
-  await expect(helper.getByText("Explain a word", { exact: true })).toHaveCount(0);
-  await expect(helper.getByText("Explore in context", { exact: true })).toHaveCount(0);
-  await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
-
-  await page.getByRole("button", { name: /B1 · TENSES & TIME/i }).click();
+  await page.getByRole("button", { name: "Grammar", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Choose a grammar lesson" })).toHaveCount(0);
+});
 
+test("each bookshelf card opens the topic it actually names", async ({ page }) => {
+  await page.setViewportSize({ width: 1664, height: 936 });
+  await clearGrammarState(page);
+  await page.goto("/#/grammar");
+
+  await page.getByRole("button", { name: /There is \/ There are, 0 of 5 complete/i }).click();
+  await expect(page.getByRole("heading", { name: "There is / There are", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Word Order & Agreement", level: 1 })).toHaveCount(0);
+  await expect(page.getByRole("tab")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
+
+  await page.getByRole("button", { name: "Grammar", exact: true }).click();
+  await page.getByRole("button", { name: /Present Continuous, 1 of 5 complete/i }).click();
+  await expect(page.getByRole("heading", { name: "Present Continuous", level: 1 })).toBeVisible();
   await expect(
-    page.getByText(
-      /LOCAL CACHE|LOCAL KNOWLEDGE|REVIEW QUEUE|TOKEN DURUMU|knowledge base|cache-safe/i
-    )
+    page.getByRole("heading", { name: "Present Simple vs Present Continuous", level: 1 })
   ).toHaveCount(0);
-  await expect(page.getByText(/prototip|prototype|yakında eklenecek/i)).toHaveCount(0);
+});
+
+test("Grammar always enters through Home instead of restoring an overlapping legacy lesson", async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 1664, height: 936 });
+  await clearGrammarState(page);
+  await page.goto("/#/grammar");
+  await openPresentPerfectFromHome(page);
+
+  await page.goto("/#/");
+  await page.goto("/#/grammar");
+
+  await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toHaveCount(0);
 });
 
 test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({ page }) => {
@@ -133,7 +176,7 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
     { width: 1180, height: 760 }
   ];
 
-  await clearLastGrammarLesson(page);
+  await clearGrammarState(page);
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
@@ -158,12 +201,10 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
-    const paperBox = await page.locator(".wvg-v13-home__paper").boundingBox();
     const heroBox = await page.locator(".wvg-v13-hero").boundingBox();
     const bookBox = await page.locator(".wvg-v13-book").first().boundingBox();
     const shelfBox = await page.locator(".wvg-v13-shelf__wood").first().boundingBox();
 
-    expect(paperBox).not.toBeNull();
     expect(heroBox).not.toBeNull();
     expect(bookBox).not.toBeNull();
     expect(shelfBox).not.toBeNull();
@@ -176,7 +217,7 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
 
 test("Grammar Wordie uses the same shared panel shell as Search", async ({ page }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
-  await clearLastGrammarLesson(page);
+  await clearGrammarState(page);
 
   await page.goto("/#/");
   await expect(page.getByRole("heading", { name: "Discover a new word.", level: 1 })).toBeVisible();
@@ -197,7 +238,7 @@ test("windowed Grammar keeps shared navigation expanded and Wordie non-blocking"
   page
 }) => {
   await page.setViewportSize({ width: 1180, height: 760 });
-  await clearLastGrammarLesson(page);
+  await clearGrammarState(page);
   await page.goto("/#/grammar");
 
   const navigation = page.locator(".wvclean-nav");
