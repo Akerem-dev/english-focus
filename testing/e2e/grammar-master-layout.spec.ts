@@ -14,6 +14,54 @@ async function openPresentPerfectFromHome(page: Page) {
   await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toBeVisible();
 }
 
+async function readElementSnapshot(page: Page, selector: string) {
+  return page.locator(selector).evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const style = window.getComputedStyle(element);
+    const round = (value: number) => Math.round(value * 100) / 100;
+
+    return {
+      backgroundColor: style.backgroundColor,
+      color: style.color,
+      display: style.display,
+      fontFamily: style.fontFamily,
+      height: round(rect.height),
+      visibility: style.visibility,
+      width: round(rect.width),
+      x: round(rect.x),
+      y: round(rect.y)
+    };
+  });
+}
+
+async function readSharedChrome(page: Page) {
+  const selectors = {
+    brand: ".wvclean-sidebar__brand",
+    divider: ".wvclean-sidebar__divider",
+    navigation: ".wvclean-nav",
+    progress: ".wvclean-progress",
+    sidebar: ".wvclean-sidebar",
+    topbar: ".wvclean-topbar"
+  } as const;
+
+  return {
+    brand: await readElementSnapshot(page, selectors.brand),
+    divider: await readElementSnapshot(page, selectors.divider),
+    navigation: await readElementSnapshot(page, selectors.navigation),
+    progress: await readElementSnapshot(page, selectors.progress),
+    sidebar: await readElementSnapshot(page, selectors.sidebar),
+    topbar: await readElementSnapshot(page, selectors.topbar)
+  };
+}
+
+async function readAssistantShell(page: Page) {
+  return {
+    composer: await readElementSnapshot(page, ".wv84-assistant-composer"),
+    header: await readElementSnapshot(page, ".wv84-assistant-panel__header"),
+    panel: await readElementSnapshot(page, ".assistant-panel.wv84-assistant-panel")
+  };
+}
+
 test("first Grammar visit opens the V13 bookshelf home, then the approved lesson master", async ({
   page
 }) => {
@@ -49,7 +97,12 @@ test("first Grammar visit opens the V13 bookshelf home, then the approved lesson
   await expect(page.getByText("QUICK DECISION", { exact: true })).toBeVisible();
   await expect(page.getByText("EXAMPLES", { exact: true })).toBeVisible();
 
+  const launcher = page.getByRole("button", { name: "Open Wordie" });
   const helper = page.getByRole("dialog", { name: "Grammar helper" });
+  await expect(helper).toHaveCount(0);
+  await expect(launcher).toBeVisible();
+  await launcher.click();
+
   await expect(helper).toBeVisible();
   await expect(helper.getByRole("heading", { name: "Wordie AI", level: 2 })).toBeVisible();
   await expect(helper.getByText("Explain this rule", { exact: true })).toBeVisible();
@@ -60,10 +113,6 @@ test("first Grammar visit opens the V13 bookshelf home, then the approved lesson
   await expect(helper.getByText("Explain a word", { exact: true })).toHaveCount(0);
   await expect(helper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await expect(helper.getByPlaceholder("Ask about this grammar...")).toBeVisible();
-
-  const assistantBox = await helper.boundingBox();
-  expect(assistantBox).not.toBeNull();
-  expect(assistantBox!.width).toBeCloseTo(382, 0);
 
   await page.getByRole("button", { name: /B1 · TENSES & TIME/i }).click();
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
@@ -77,11 +126,9 @@ test("first Grammar visit opens the V13 bookshelf home, then the approved lesson
   await expect(page.getByText(/prototip|prototype|yakında eklenecek/i)).toHaveCount(0);
 });
 
-test("Grammar keeps the exact shared Word Valley shell at desktop and windowed widths", async ({
-  page
-}) => {
+test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({ page }) => {
   const viewports = [
-    { width: 1920, height: 1080 },
+    { width: 1664, height: 936 },
     { width: 1366, height: 768 },
     { width: 1180, height: 760 }
   ];
@@ -90,45 +137,36 @@ test("Grammar keeps the exact shared Word Valley shell at desktop and windowed w
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
+
+    await page.goto("/#/");
+    await expect(page.getByRole("heading", { name: "Discover a new word.", level: 1 })).toBeVisible();
+    const searchChrome = await readSharedChrome(page);
+
     await page.goto("/#/grammar");
     await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
+    const grammarChrome = await readSharedChrome(page);
+
+    expect(grammarChrome).toEqual(searchChrome);
 
     const dimensions = await page.evaluate(() => ({
-      clientWidth: document.documentElement.clientWidth,
       clientHeight: document.documentElement.clientHeight,
-      scrollWidth: document.documentElement.scrollWidth,
-      scrollHeight: document.documentElement.scrollHeight
+      clientWidth: document.documentElement.clientWidth,
+      scrollHeight: document.documentElement.scrollHeight,
+      scrollWidth: document.documentElement.scrollWidth
     }));
 
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
-    const topbar = page.locator(".wvclean-topbar");
-    const sidebar = page.locator(".wvclean-sidebar");
-    const paper = page.locator(".wvg-v13-home__paper");
-    const hero = page.locator(".wvg-v13-hero");
-    const firstBook = page.locator(".wvg-v13-book").first();
-    const shelf = page.locator(".wvg-v13-shelf__wood").first();
+    const paperBox = await page.locator(".wvg-v13-home__paper").boundingBox();
+    const heroBox = await page.locator(".wvg-v13-hero").boundingBox();
+    const bookBox = await page.locator(".wvg-v13-book").first().boundingBox();
+    const shelfBox = await page.locator(".wvg-v13-shelf__wood").first().boundingBox();
 
-    const topbarBox = await topbar.boundingBox();
-    const sidebarBox = await sidebar.boundingBox();
-    const paperBox = await paper.boundingBox();
-    const heroBox = await hero.boundingBox();
-    const bookBox = await firstBook.boundingBox();
-    const shelfBox = await shelf.boundingBox();
-
-    expect(topbarBox).not.toBeNull();
-    expect(sidebarBox).not.toBeNull();
     expect(paperBox).not.toBeNull();
     expect(heroBox).not.toBeNull();
     expect(bookBox).not.toBeNull();
     expect(shelfBox).not.toBeNull();
-
-    expect(topbarBox!.height).toBeCloseTo(46, 0);
-    expect(sidebarBox!.x).toBeCloseTo(0, 0);
-    expect(sidebarBox!.y).toBeCloseTo(46, 0);
-    expect(sidebarBox!.width).toBeCloseTo(318, 0);
-    expect(paperBox!.width).toBeCloseTo(1054, 0);
     expect(heroBox!.height).toBeCloseTo(219, 0);
     expect(bookBox!.width).toBeCloseTo(158, 0);
     expect(bookBox!.height).toBeCloseTo(88, 0);
@@ -136,28 +174,40 @@ test("Grammar keeps the exact shared Word Valley shell at desktop and windowed w
   }
 });
 
-test("windowed Grammar keeps the shared navigation expanded and Wordie non-blocking", async ({
+test("Grammar Wordie uses the same shared panel shell as Search", async ({ page }) => {
+  await page.setViewportSize({ width: 1664, height: 936 });
+  await clearLastGrammarLesson(page);
+
+  await page.goto("/#/");
+  await expect(page.getByRole("heading", { name: "Discover a new word.", level: 1 })).toBeVisible();
+  await page.getByRole("button", { name: "Ask Wordie", exact: true }).click();
+  await expect(page.locator(".assistant-panel.wv84-assistant-panel")).toBeVisible();
+  const searchAssistant = await readAssistantShell(page);
+
+  await page.goto("/#/grammar");
+  await openPresentPerfectFromHome(page);
+  await page.getByRole("button", { name: "Open Wordie" }).click();
+  await expect(page.getByRole("dialog", { name: "Grammar helper" })).toBeVisible();
+  const grammarAssistant = await readAssistantShell(page);
+
+  expect(grammarAssistant).toEqual(searchAssistant);
+});
+
+test("windowed Grammar keeps shared navigation expanded and Wordie non-blocking", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1180, height: 760 });
   await clearLastGrammarLesson(page);
   await page.goto("/#/grammar");
 
-  const sidebar = page.locator(".wvclean-sidebar");
-  const sidebarBrand = page.locator(".wvclean-sidebar__brand strong");
   const navigation = page.locator(".wvclean-nav");
-
-  await expect(sidebarBrand).toBeVisible();
+  await expect(page.locator(".wvclean-sidebar__brand strong")).toBeVisible();
   await expect(navigation.getByText("Search", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Grammar", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Collections", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Practice", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Favorites", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Settings", { exact: true })).toBeVisible();
-
-  const sidebarBox = await sidebar.boundingBox();
-  expect(sidebarBox).not.toBeNull();
-  expect(sidebarBox!.width).toBeCloseTo(318, 0);
 
   await openPresentPerfectFromHome(page);
 
@@ -170,17 +220,11 @@ test("windowed Grammar keeps the shared navigation expanded and Wordie non-block
 
   const pageBeforeWordie = await grammarPage.boundingBox();
   expect(pageBeforeWordie).not.toBeNull();
-  expect(pageBeforeWordie!.x).toBeCloseTo(318, 0);
-  expect(pageBeforeWordie!.width).toBeCloseTo(862, 0);
 
   await launcher.click();
   await expect(helper).toBeVisible();
 
-  const helperBox = await helper.boundingBox();
   const pageAfterWordie = await grammarPage.boundingBox();
-  expect(helperBox).not.toBeNull();
   expect(pageAfterWordie).not.toBeNull();
-  expect(helperBox!.width).toBeCloseTo(382, 0);
-  expect(pageAfterWordie!.x).toBeCloseTo(318, 0);
-  expect(pageAfterWordie!.width).toBeCloseTo(862, 0);
+  expect(pageAfterWordie).toEqual(pageBeforeWordie);
 });
