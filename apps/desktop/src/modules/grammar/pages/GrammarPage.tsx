@@ -17,6 +17,7 @@ import "../../../styles/word-valley-grammar-v10-state.css";
 import "../../../styles/word-valley-grammar-v12.css";
 import "../../../styles/word-valley-grammar-v12-layout-guard.css";
 import "../../../styles/word-valley-grammar-v13-shell-override.css";
+import "../../../styles/word-valley-grammar-v13-large-desktop.css";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 
