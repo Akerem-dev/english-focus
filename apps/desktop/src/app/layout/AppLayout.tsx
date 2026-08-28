@@ -152,7 +152,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       <div
         className={`application-frame application-frame--search-cleanroom${
           isWordValleyCollections ? " application-frame--collections-cleanroom" : ""
-        }${isWordValleyGrammar ? " application-frame--grammar-cleanroom" : ""}`}
+        }`}
       >
         <a className="skip-link" href="#main-content">
           Skip to content
@@ -162,7 +162,13 @@ export function AppLayout({ children }: PropsWithChildren) {
           <div className="word-valley-stage">
             <SearchCleanShell>
               <RouteAccessibilityManager />
-              {children}
+              {isWordValleyGrammar ? (
+                <div className="application-frame--grammar-cleanroom grammar-route-scope">
+                  {children}
+                </div>
+              ) : (
+                children
+              )}
             </SearchCleanShell>
             {isWordValleySearch ? <AssistantDock /> : null}
             {isWordValleyGrammar ? <GrammarAssistantDock /> : null}
