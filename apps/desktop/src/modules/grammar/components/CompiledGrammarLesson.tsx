@@ -73,7 +73,8 @@ function compactText(value: string, maxLength = 150): string {
 }
 
 function pointSummary(point: LoadedGrammarPoint | undefined, fallback: string): string {
-  const paragraph = point?.answer === undefined ? undefined : splitParagraphs(point.answer.answerText)[0];
+  const paragraph =
+    point?.answer === undefined ? undefined : splitParagraphs(point.answer.answerText)[0];
   return paragraph === undefined ? fallback : compactText(paragraph);
 }
 
@@ -106,7 +107,8 @@ export function CompiledGrammarLesson({
             ...lesson.coreTopics.map((topic) => ({ key: `core:${topic}`, title: topic })),
             ...lesson.subtopics.map((subtopic) => ({ key: subtopic.cardId, title: subtopic.title }))
           ].filter(
-            (request, index, all) => all.findIndex((candidate) => candidate.title === request.title) === index
+            (request, index, all) =>
+              all.findIndex((candidate) => candidate.title === request.title) === index
           ),
     [isPresentPerfect, lesson]
   );
@@ -154,7 +156,9 @@ export function CompiledGrammarLesson({
   }, [answerGrammarQuestion, requestKey, requests]);
 
   const points = loadedState.requestKey === requestKey ? loadedState.points : loadingPoints;
-  const readyPoints = points.filter((point) => point.status === "ready" && point.answer !== undefined);
+  const readyPoints = points.filter(
+    (point) => point.status === "ready" && point.answer !== undefined
+  );
   const usablePoints = readyPoints.length > 0 ? readyPoints : points;
 
   const genericUses = Array.from({ length: 3 }, (_, index) => {
@@ -171,7 +175,10 @@ export function CompiledGrammarLesson({
     return {
       mark: index === 0 ? "✧" : index === 1 ? "⌁" : "♙",
       title: point?.title ?? `Example ${index + 1}`,
-      example: pointSummary(point, `Use ${lesson.title} in a natural sentence and check the meaning.`)
+      example: pointSummary(
+        point,
+        `Use ${lesson.title} in a natural sentence and check the meaning.`
+      )
     };
   });
 
@@ -195,7 +202,9 @@ export function CompiledGrammarLesson({
     <main className="wvg-v13-lesson" aria-labelledby="grammar-topic-title">
       <section className="wvg-v13-lesson__paper">
         <nav aria-label="Grammar breadcrumb" className="wvg-v13-lesson__breadcrumb">
-          <button onClick={onBack} type="button">Grammar</button>
+          <button onClick={onBack} type="button">
+            Grammar
+          </button>
           <span aria-hidden="true">›</span>
           <span>{lesson.category}</span>
           <span aria-hidden="true">›</span>
@@ -223,14 +232,18 @@ export function CompiledGrammarLesson({
               </button>
             </div>
             <small>
-              Level {lesson.level}&nbsp;&nbsp; • &nbsp;&nbsp;{lessonBand(lesson)}&nbsp;&nbsp; • &nbsp;&nbsp;~15 min
+              Level {lesson.level}&nbsp;&nbsp; • &nbsp;&nbsp;{lessonBand(lesson)}&nbsp;&nbsp; •
+              &nbsp;&nbsp;~15 min
             </small>
           </div>
         </header>
 
         <div className="wvg-v13-lesson__grid">
           <article className="wvg-v13-overview-card wvg-v13-overview-card--formula">
-            <header><b>1</b><h2>Core Formula</h2></header>
+            <header>
+              <b>1</b>
+              <h2>Core Formula</h2>
+            </header>
             <div className="wvg-v13-formula">
               {isPresentPerfect ? "have / has    +    past participle" : lesson.title}
             </div>
@@ -246,101 +259,187 @@ export function CompiledGrammarLesson({
           </article>
 
           <article className="wvg-v13-overview-card wvg-v13-overview-card--uses">
-            <header><b>2</b><h2>When to Use</h2></header>
+            <header>
+              <b>2</b>
+              <h2>When to Use</h2>
+            </header>
             <div className="wvg-v13-mini-list">
               {uses.map((item) => (
                 <div key={`${item.title}-${item.example}`}>
                   <span aria-hidden="true">{item.mark}</span>
-                  <p><strong>{item.title}</strong><small>{item.example}</small></p>
+                  <p>
+                    <strong>{item.title}</strong>
+                    <small>{item.example}</small>
+                  </p>
                 </div>
               ))}
             </div>
           </article>
 
           <article className="wvg-v13-overview-card wvg-v13-overview-card--examples">
-            <header><b>3</b><h2>Examples</h2></header>
+            <header>
+              <b>3</b>
+              <h2>Examples</h2>
+            </header>
             <div className="wvg-v13-mini-list">
               {examples.map((item) => (
                 <div key={`${item.title}-${item.example}`}>
                   <span aria-hidden="true">{item.mark}</span>
-                  <p><strong>{item.title}</strong><small>{item.example}</small></p>
+                  <p>
+                    <strong>{item.title}</strong>
+                    <small>{item.example}</small>
+                  </p>
                 </div>
               ))}
             </div>
           </article>
 
           <article className="wvg-v13-overview-card wvg-v13-overview-card--comparison">
-            <header><b>4</b><h2>{isPresentPerfect ? "Comparison with Past Simple" : "Meaning & Form"}</h2></header>
+            <header>
+              <b>4</b>
+              <h2>{isPresentPerfect ? "Comparison with Past Simple" : "Meaning & Form"}</h2>
+            </header>
             <div className="wvg-v13-comparison">
               <section>
                 <small>{isPresentPerfect ? "PAST SIMPLE" : "MEANING FIRST"}</small>
                 <strong>{isPresentPerfect ? "Finished time in the past." : lesson.title}</strong>
-                <p>{isPresentPerfect ? "I visited Paris last summer." : pointSummary(usablePoints[0], lesson.description)}</p>
-                <em>{isPresentPerfect ? "When? Last summer." : "Choose the meaning before the form."}</em>
+                <p>
+                  {isPresentPerfect
+                    ? "I visited Paris last summer."
+                    : pointSummary(usablePoints[0], lesson.description)}
+                </p>
+                <em>
+                  {isPresentPerfect ? "When? Last summer." : "Choose the meaning before the form."}
+                </em>
               </section>
               <span aria-hidden="true">VS</span>
               <section>
                 <small>{isPresentPerfect ? "PRESENT PERFECT" : "FORM IN CONTEXT"}</small>
-                <strong>{isPresentPerfect ? "Time not finished or result now." : "Build the form after the meaning is clear."}</strong>
-                <p>{isPresentPerfect ? "I have visited Paris." : pointSummary(usablePoints[1], lesson.description)}</p>
-                <em>{isPresentPerfect ? "No specific time / It matters now." : "Check word order and the surrounding context."}</em>
+                <strong>
+                  {isPresentPerfect
+                    ? "Time not finished or result now."
+                    : "Build the form after the meaning is clear."}
+                </strong>
+                <p>
+                  {isPresentPerfect
+                    ? "I have visited Paris."
+                    : pointSummary(usablePoints[1], lesson.description)}
+                </p>
+                <em>
+                  {isPresentPerfect
+                    ? "No specific time / It matters now."
+                    : "Check word order and the surrounding context."}
+                </em>
               </section>
             </div>
           </article>
 
           <article className="wvg-v13-overview-card wvg-v13-overview-card--mistake">
-            <header><b>5</b><h2>Common Mistake</h2></header>
+            <header>
+              <b>5</b>
+              <h2>Common Mistake</h2>
+            </header>
             {isPresentPerfect ? (
               <>
                 <div className="wvg-v13-mistake wvg-v13-mistake--wrong">
-                  <b>×</b><p>I have went to the store.<small>× Incorrect</small></p>
+                  <b>×</b>
+                  <p>
+                    I have went to the store.<small>× Incorrect</small>
+                  </p>
                 </div>
                 <div className="wvg-v13-mistake wvg-v13-mistake--right">
-                  <b>✓</b><p>I have gone to the store.<small>✓ Correct</small></p>
+                  <b>✓</b>
+                  <p>
+                    I have gone to the store.<small>✓ Correct</small>
+                  </p>
                 </div>
               </>
             ) : (
               <>
                 <div className="wvg-v13-mistake wvg-v13-mistake--wrong">
-                  <b>×</b><p>Choosing the form before checking the meaning.<small>× Avoid</small></p>
+                  <b>×</b>
+                  <p>
+                    Choosing the form before checking the meaning.<small>× Avoid</small>
+                  </p>
                 </div>
                 <div className="wvg-v13-mistake wvg-v13-mistake--right">
-                  <b>✓</b><p>{compactText(pointSummary(usablePoints[0], lesson.description), 78)}<small>✓ Check context</small></p>
+                  <b>✓</b>
+                  <p>
+                    {compactText(pointSummary(usablePoints[0], lesson.description), 78)}
+                    <small>✓ Check context</small>
+                  </p>
                 </div>
               </>
             )}
           </article>
 
           <article className="wvg-v13-overview-card wvg-v13-overview-card--signals">
-            <header><b>6</b><h2>Signal Words</h2></header>
+            <header>
+              <b>6</b>
+              <h2>Signal Words</h2>
+            </header>
             <div className="wvg-v13-signal-pills">
-              {signals.map((signal) => <span key={signal}>{signal}</span>)}
+              {signals.map((signal) => (
+                <span key={signal}>{signal}</span>
+              ))}
             </div>
           </article>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--practice" id="grammar-overview-practice">
-            <header><b>7</b><h2>Practice</h2></header>
+          <article
+            className="wvg-v13-overview-card wvg-v13-overview-card--practice"
+            id="grammar-overview-practice"
+          >
+            <header>
+              <b>7</b>
+              <h2>Practice</h2>
+            </header>
             <p>Try a quick check to see how well you understand.</p>
             <div className="wvg-v13-practice-options">
-              <button aria-pressed={practiceMode === "guided"} onClick={() => setPracticeMode("guided")} type="button">
-                <strong>Guided Practice</strong><small>Step-by-step help</small>
+              <button
+                aria-pressed={practiceMode === "guided"}
+                onClick={() => setPracticeMode("guided")}
+                type="button"
+              >
+                <strong>Guided Practice</strong>
+                <small>Step-by-step help</small>
               </button>
-              <button aria-pressed={practiceMode === "quiz"} onClick={() => setPracticeMode("quiz")} type="button">
-                <strong>Quick Quiz</strong><small>5 short questions</small>
+              <button
+                aria-pressed={practiceMode === "quiz"}
+                onClick={() => setPracticeMode("quiz")}
+                type="button"
+              >
+                <strong>Quick Quiz</strong>
+                <small>5 short questions</small>
               </button>
-              <button aria-pressed={practiceMode === "challenge"} onClick={() => setPracticeMode("challenge")} type="button">
-                <strong>Challenge</strong><small>Test your skills</small>
+              <button
+                aria-pressed={practiceMode === "challenge"}
+                onClick={() => setPracticeMode("challenge")}
+                type="button"
+              >
+                <strong>Challenge</strong>
+                <small>Test your skills</small>
               </button>
             </div>
           </article>
 
           <article className="wvg-v13-overview-card wvg-v13-overview-card--quick-rule">
-            <header><b>8</b><h2>Quick Rule</h2></header>
+            <header>
+              <b>8</b>
+              <h2>Quick Rule</h2>
+            </header>
             <div className="wvg-v13-quick-rule">
               <span aria-hidden="true">☆</span>
               <div>
-                <p>{isPresentPerfect ? "Use Present Perfect for experiences or results that connect to now." : compactText(pointSummary(usablePoints[0], lesson.description), 95)}</p>
-                <p>{isPresentPerfect ? "Use Past Simple for finished time in the past." : "Meaning first; form second; then check the sentence in context."}</p>
+                <p>
+                  {isPresentPerfect
+                    ? "Use Present Perfect for experiences or results that connect to now."
+                    : compactText(pointSummary(usablePoints[0], lesson.description), 95)}
+                </p>
+                <p>
+                  {isPresentPerfect
+                    ? "Use Past Simple for finished time in the past."
+                    : "Meaning first; form second; then check the sentence in context."}
+                </p>
               </div>
             </div>
           </article>
