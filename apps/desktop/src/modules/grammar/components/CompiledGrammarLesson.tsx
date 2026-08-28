@@ -32,6 +32,8 @@ interface LoadedGrammarState {
 
 type PracticeMode = "guided" | "quiz" | "challenge";
 
+const EMPTY_LOADED_POINTS: readonly LoadedGrammarPoint[] = Object.freeze([]);
+
 const PRESENT_PERFECT_USES = Object.freeze([
   { mark: "✦", title: "Experiences in life", example: "I have never been to Japan." },
   { mark: "◉", title: "Results that continue now", example: "He has lost his keys." },
@@ -127,10 +129,7 @@ export function CompiledGrammarLesson({
   }));
 
   useEffect(() => {
-    if (requests.length === 0) {
-      setLoadedState({ requestKey, points: Object.freeze([]) });
-      return;
-    }
+    if (requests.length === 0) return;
 
     let cancelled = false;
 
@@ -155,7 +154,12 @@ export function CompiledGrammarLesson({
     };
   }, [answerGrammarQuestion, requestKey, requests]);
 
-  const points = loadedState.requestKey === requestKey ? loadedState.points : loadingPoints;
+  const points =
+    requests.length === 0
+      ? EMPTY_LOADED_POINTS
+      : loadedState.requestKey === requestKey
+        ? loadedState.points
+        : loadingPoints;
   const readyPoints = points.filter(
     (point) => point.status === "ready" && point.answer !== undefined
   );
