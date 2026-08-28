@@ -11,6 +11,8 @@ import {
 
 import "../../styles/word-valley-grammar-reference-rail.css";
 
+const PERSISTENT_GRAMMAR_RAIL_MIN_WIDTH = 1500;
+
 interface GrammarStarter {
   readonly title: string;
   readonly description: string;
@@ -97,7 +99,9 @@ function GrammarAssistantSession() {
   const launcherRef = useRef<HTMLButtonElement>(null);
   const requestSequence = useRef(0);
 
-  const [open, setOpen] = useState(lessonFocus !== undefined);
+  const [open, setOpen] = useState(
+    () => lessonFocus !== undefined && window.innerWidth >= PERSISTENT_GRAMMAR_RAIL_MIN_WIDTH
+  );
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState<string | undefined>();
   const [answerText, setAnswerText] = useState<string | undefined>();
