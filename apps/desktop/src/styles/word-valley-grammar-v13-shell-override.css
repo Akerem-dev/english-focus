@@ -2,10 +2,16 @@
  * Grammar shell parity lock.
  *
  * Search, Grammar, and Collections are sections of the same Word Valley app.
- * Grammar therefore must never resize or restyle the shared chrome. The rules
- * below intentionally restore the exact Search/Collections desktop shell after
- * the legacy Grammar-specific V10/V12 layers have loaded.
+ * Grammar therefore must never resize, collapse, or restyle the shared chrome.
+ * The route-local rules below only reserve Grammar content / Wordie space.
  */
+
+/* Keep legacy Grammar layout variables aligned with the real shared shell so
+   older lesson selectors cannot silently reintroduce 272/236/92 px chrome. */
+#root .application-frame--search-cleanroom.application-frame--grammar-cleanroom {
+  --wvg-sidebar-width: 318px !important;
+  --wvg-rail-width: 382px !important;
+}
 
 /* ───────────────────────── Shared sidebar ───────────────────────── */
 #root
@@ -19,13 +25,16 @@
   .wvclean-sidebar__brand {
   top: 32px !important;
   left: 37px !important;
+  display: flex !important;
   width: 244px !important;
+  transform: none !important;
 }
 
 #root
   .application-frame--search-cleanroom.application-frame--grammar-cleanroom
   .wvclean-sidebar__brand
   img {
+  display: block !important;
   width: 156px !important;
   height: 98px !important;
   margin-bottom: -19px !important;
@@ -35,6 +44,7 @@
   .application-frame--search-cleanroom.application-frame--grammar-cleanroom
   .wvclean-sidebar__brand
   strong {
+  display: block !important;
   margin-top: 1px !important;
   font-size: 31px !important;
   line-height: 38px !important;
@@ -44,6 +54,7 @@
   .application-frame--search-cleanroom.application-frame--grammar-cleanroom
   .wvclean-sidebar__brand
   span {
+  display: block !important;
   margin-top: 2px !important;
 }
 
@@ -51,6 +62,7 @@
   .application-frame--search-cleanroom.application-frame--grammar-cleanroom
   .wvclean-sidebar__brand
   i {
+  display: block !important;
   width: 162px !important;
   margin-top: 8px !important;
 }
@@ -60,14 +72,31 @@
   .wvclean-nav {
   top: 203px !important;
   left: 20px !important;
+  display: grid !important;
   width: 278px !important;
+  gap: 6px !important;
 }
 
 #root
   .application-frame--search-cleanroom.application-frame--grammar-cleanroom
   .wvclean-nav__item {
+  display: grid !important;
   width: 278px !important;
+  height: 48px !important;
+  grid-template-columns: 21px minmax(0, 1fr) !important;
+  align-items: center !important;
+  justify-items: stretch !important;
+  gap: 15px !important;
   padding: 0 23px !important;
+  text-align: left !important;
+}
+
+#root
+  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+  .wvclean-nav__item
+  > span {
+  display: inline !important;
+  min-width: 0 !important;
 }
 
 #root
@@ -75,6 +104,7 @@
   .wvclean-sidebar__divider {
   top: 537px !important;
   left: 28px !important;
+  display: block !important;
   width: 262px !important;
 }
 
@@ -86,6 +116,16 @@
   bottom: 28px !important;
   left: 28px !important;
   width: 262px !important;
+}
+
+/* Search also drops the progress card in short windows. Preserve that vertical
+   behaviour, but never hide it merely because the window is narrower. */
+@media (min-height: 781px) {
+  #root
+    .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+    .wvclean-progress {
+    display: block !important;
+  }
 }
 
 #root
@@ -104,6 +144,8 @@
   right: 0 !important;
   bottom: 0 !important;
   left: 318px !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 /* ───────────────────────── Shared Wordie rail ───────────────────────── */
@@ -130,8 +172,8 @@
 }
 
 /* The rail grew from the old Grammar-only 344 px to the shared 382 px width.
-   Let the controls fill the available inner width instead of preserving the
-   obsolete fixed 312 px measurements that caused the horizontal scrollbar. */
+   Let the controls fill the available inner width instead of preserving old
+   fixed measurements that caused horizontal scrolling. */
 #root
   .application-frame--search-cleanroom.application-frame--grammar-cleanroom
   .wv84-quick-actions--welcome {
@@ -155,12 +197,40 @@
   max-width: none !important;
 }
 
-/* Generic Grammar lessons reserve the same 382 px rail used by Search when
-   Wordie is open; the route must not reflow the global chrome. */
-#root
-  .application-frame--search-cleanroom.application-frame--grammar-cleanroom:has(
-    .assistant-dock.wv84-assistant[data-open="true"]
-  )
-  .wvg-v12-lesson {
-  right: 382px !important;
+/* On the authored large desktop canvas Wordie is a real persistent rail. */
+@media (min-width: 1500px) {
+  #root
+    .application-frame--search-cleanroom.application-frame--grammar-cleanroom:has(
+      .assistant-dock.wv84-assistant[data-open="true"]
+    )
+    .wvg-v12-lesson {
+    right: 382px !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-reference-lesson {
+    right: 382px !important;
+  }
+}
+
+/* At normal laptop/windowed sizes the global shell stays identical to Search
+   and Collections. If Wordie is opened it behaves as an overlay drawer instead
+   of stealing 382 px from the lesson and forcing headings/cards to collapse. */
+@media (max-width: 1499px) {
+  #root
+    .application-frame--search-cleanroom.application-frame--grammar-cleanroom:has(
+      .assistant-dock.wv84-assistant[data-open="true"]
+    )
+    .wvg-v12-lesson {
+    right: 0 !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom.application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-reference-lesson {
+    right: 0 !important;
+  }
 }
