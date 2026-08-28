@@ -3,12 +3,11 @@ import { useEffect, useState } from "react";
 import { useGrammar } from "../../../app/providers";
 import grammarBackground from "../../../assets/collections/collections-background.png";
 import { CompiledGrammarLesson } from "../components/CompiledGrammarLesson";
-import { GrammarCurriculumHome } from "../components/GrammarCurriculumHome";
-import { PresentPerfectReferenceLesson } from "../components/PresentPerfectReferenceLesson";
 import {
-  GRAMMAR_KNOWLEDGE_LESSONS,
-  type GrammarKnowledgeLesson
-} from "../knowledge/grammarKnowledgeIndex";
+  GrammarCurriculumHome,
+  type GrammarLessonSelection,
+  type GrammarProgressMap
+} from "../components/GrammarCurriculumHome";
 
 import "../../../styles/word-valley-grammar-reference-final.css";
 import "../../../styles/word-valley-grammar-shell-final.css";
@@ -19,34 +18,46 @@ import "../../../styles/word-valley-grammar-v12.css";
 import "../../../styles/word-valley-grammar-v12-layout-guard.css";
 import "../../../styles/word-valley-grammar-v13-shell-override.css";
 
-const LAST_GRAMMAR_LESSON_KEY = "word-valley:grammar:last-lesson";
+const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 
-function readLastGrammarLesson(): GrammarKnowledgeLesson | undefined {
+function clampProgress(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(5, Math.round(value)));
+}
+
+function readGrammarProgress(): GrammarProgressMap {
   try {
-    const lessonId = window.localStorage.getItem(LAST_GRAMMAR_LESSON_KEY);
-    if (lessonId === null) return undefined;
-    return GRAMMAR_KNOWLEDGE_LESSONS.find((lesson) => lesson.id === lessonId);
+    const raw = window.localStorage.getItem(GRAMMAR_PROGRESS_KEY);
+    if (raw === null) return Object.freeze({});
+
+    const parsed: unknown = JSON.parse(raw);
+    if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return Object.freeze({});
+    }
+
+    const progress: Record<string, number> = {};
+    for (const [lessonId, value] of Object.entries(parsed)) {
+      if (typeof value === "number") progress[lessonId] = clampProgress(value);
+    }
+
+    return Object.freeze(progress);
   } catch {
-    return undefined;
+    return Object.freeze({});
   }
 }
 
-function rememberGrammarLesson(lesson: GrammarKnowledgeLesson): void {
+function persistGrammarProgress(progress: GrammarProgressMap): void {
   try {
-    window.localStorage.setItem(LAST_GRAMMAR_LESSON_KEY, lesson.id);
+    window.localStorage.setItem(GRAMMAR_PROGRESS_KEY, JSON.stringify(progress));
   } catch {
-    // Storage can be unavailable in hardened/browser test contexts. The in-memory state still works.
+    // Hardened/browser test contexts can disable storage. In-memory state still works.
   }
 }
 
 export function GrammarPage() {
   const { setLessonFocus } = useGrammar();
-  const [lastLesson, setLastLesson] = useState<GrammarKnowledgeLesson | undefined>(() =>
-    readLastGrammarLesson()
-  );
-  const [selectedLesson, setSelectedLesson] = useState<GrammarKnowledgeLesson | undefined>(() =>
-    readLastGrammarLesson()
-  );
+  const [selectedLesson, setSelectedLesson] = useState<GrammarLessonSelection | undefined>();
+  const [progress, setProgress] = useState<GrammarProgressMap>(() => readGrammarProgress());
 
   useEffect(() => {
     if (selectedLesson === undefined) {
@@ -54,32 +65,31 @@ export function GrammarPage() {
       return () => setLessonFocus(undefined);
     }
 
-    if (selectedLesson.id === "present-perfect") {
-      setLessonFocus({
-        id: selectedLesson.id,
-        title: selectedLesson.title,
-        category: selectedLesson.category,
-        compareWith: "Past Simple"
-      });
-    } else {
-      setLessonFocus({
-        id: selectedLesson.id,
-        title: selectedLesson.title,
-        category: selectedLesson.category
-      });
-    }
+    setLessonFocus({
+      id: selectedLesson.id,
+      title: selectedLesson.title,
+      category: selectedLesson.category,
+      ...(selectedLesson.id === "present-perfect" ? { compareWith: "Past Simple" } : {})
+    });
 
     return () => setLessonFocus(undefined);
   }, [selectedLesson, setLessonFocus]);
 
-  function openLesson(lesson: GrammarKnowledgeLesson) {
-    rememberGrammarLesson(lesson);
-    setLastLesson(lesson);
+  function openLesson(lesson: GrammarLessonSelection) {
     setSelectedLesson(lesson);
   }
 
   function openCurriculum() {
     setSelectedLesson(undefined);
+  }
+
+  function markComplete(lessonId: string) {
+    setProgress((current) => {
+      if (current[lessonId] === 5) return current;
+      const next = Object.freeze({ ...current, [lessonId]: 5 });
+      persistGrammarProgress(next);
+      return next;
+    });
   }
 
   return (
@@ -95,11 +105,18 @@ export function GrammarPage() {
       <div aria-hidden="true" className="wvg-scene-veil" />
 
       {selectedLesson === undefined ? (
-        <GrammarCurriculumHome lastLesson={lastLesson} onOpenLesson={openLesson} />
-      ) : selectedLesson.id === "present-perfect" ? (
-        <PresentPerfectReferenceLesson onBrowseLessons={openCurriculum} />
+        <GrammarCurriculumHome
+          onMarkComplete={markComplete}
+          onOpenLesson={openLesson}
+          progress={progress}
+        />
       ) : (
-        <CompiledGrammarLesson lesson={selectedLesson} onBack={openCurriculum} />
+        <CompiledGrammarLesson
+          lesson={selectedLesson}
+          onBack={openCurriculum}
+          onMarkComplete={() => markComplete(selectedLesson.id)}
+          progress={progress[selectedLesson.id] ?? selectedLesson.initialProgress}
+        />
       )}
     </div>
   );
