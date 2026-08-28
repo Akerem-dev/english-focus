@@ -135,3 +135,52 @@ test("Grammar keeps the exact shared Word Valley shell at desktop and windowed w
     expect(shelfBox!.height).toBeCloseTo(14, 0);
   }
 });
+
+test("windowed Grammar keeps the shared navigation expanded and Wordie non-blocking", async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 1180, height: 760 });
+  await clearLastGrammarLesson(page);
+  await page.goto("/#/grammar");
+
+  const sidebar = page.locator(".wvclean-sidebar");
+  const sidebarBrand = page.locator(".wvclean-sidebar__brand strong");
+  const navigation = page.locator(".wvclean-nav");
+
+  await expect(sidebarBrand).toBeVisible();
+  await expect(navigation.getByText("Search", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Grammar", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Collections", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Practice", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Favorites", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Settings", { exact: true })).toBeVisible();
+
+  const sidebarBox = await sidebar.boundingBox();
+  expect(sidebarBox).not.toBeNull();
+  expect(sidebarBox!.width).toBeCloseTo(318, 0);
+
+  await openPresentPerfectFromHome(page);
+
+  const grammarPage = page.locator(".wvg-page");
+  const launcher = page.getByRole("button", { name: "Open Wordie" });
+  const helper = page.getByRole("dialog", { name: "Grammar helper" });
+
+  await expect(helper).toHaveCount(0);
+  await expect(launcher).toBeVisible();
+
+  const pageBeforeWordie = await grammarPage.boundingBox();
+  expect(pageBeforeWordie).not.toBeNull();
+  expect(pageBeforeWordie!.x).toBeCloseTo(318, 0);
+  expect(pageBeforeWordie!.width).toBeCloseTo(862, 0);
+
+  await launcher.click();
+  await expect(helper).toBeVisible();
+
+  const helperBox = await helper.boundingBox();
+  const pageAfterWordie = await grammarPage.boundingBox();
+  expect(helperBox).not.toBeNull();
+  expect(pageAfterWordie).not.toBeNull();
+  expect(helperBox!.width).toBeCloseTo(382, 0);
+  expect(pageAfterWordie!.x).toBeCloseTo(318, 0);
+  expect(pageAfterWordie!.width).toBeCloseTo(862, 0);
+});
