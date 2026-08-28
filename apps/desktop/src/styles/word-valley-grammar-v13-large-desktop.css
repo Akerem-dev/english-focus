@@ -1,0 +1,80 @@
+/* Wide-desktop sizing pass for the V13 Grammar experience.
+   Keeps the shared Word Valley chrome untouched and only lets Grammar use more
+   of the center canvas when the window has enough room. */
+
+@media (min-width: 1500px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper,
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__paper {
+    width: min(1240px, calc(100% - 48px));
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 7px;
+    margin-left: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book {
+    width: 100%;
+    min-width: 0;
+    height: 96px;
+    padding: 13px 13px 10px 19px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__title,
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__subtitle {
+    width: auto;
+    max-width: none;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading {
+    height: 50px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf + .wvg-v13-shelf {
+    margin-top: 23px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__paper {
+    min-height: 100%;
+    padding: 20px 36px 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__hero {
+    height: 250px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__hero-copy {
+    top: 28px;
+    left: 34px;
+    width: min(520px, 50%);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__grid {
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--formula,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--uses,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--examples {
+    min-height: 220px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--comparison,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--mistake {
+    min-height: 168px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--signals,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--practice,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--quick-rule {
+    min-height: 138px;
+  }
+}
