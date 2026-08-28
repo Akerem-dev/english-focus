@@ -401,8 +401,8 @@ export function GrammarCurriculumHome({
     setIsolatedShelfId(undefined);
   }
 
-  function showShelf(shelf: V13Shelf) {
-    if (isolatedShelfId === shelf.id) {
+  function showShelf(shelfId: string) {
+    if (isolatedShelfId === shelfId) {
       resetFilters();
       return;
     }
@@ -412,7 +412,7 @@ export function GrammarCurriculumHome({
     setTopicFilter("all");
     setStatusFilter("all");
     setRecommendedOnly(false);
-    setIsolatedShelfId(shelf.id);
+    setIsolatedShelfId(shelfId);
   }
 
   return (
@@ -554,7 +554,7 @@ export function GrammarCurriculumHome({
                     <h2>{shelf.title}</h2>
                     <p>{shelf.description}</p>
                   </div>
-                  <button onClick={() => showShelf(shelf)} type="button">
+                  <button onClick={() => showShelf(shelf.id)} type="button">
                     {isolatedShelfId === shelf.id ? "Show all" : "View all"}
                   </button>
                 </header>
