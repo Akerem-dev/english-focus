@@ -254,9 +254,15 @@ function buildLessonSelection(book: V13Book, shelf: V13Shelf): GrammarLessonSele
   });
 }
 
-function bookMatches(book: V13Book, lesson: GrammarLessonSelection | undefined, query: string): boolean {
+function bookMatches(
+  book: V13Book,
+  lesson: GrammarLessonSelection | undefined,
+  query: string
+): boolean {
   if (query.length === 0) return true;
-  const searchable = `${book.title} ${book.subtitle} ${lesson?.category ?? ""}`.toLocaleLowerCase("en");
+  const searchable = `${book.title} ${book.subtitle} ${lesson?.category ?? ""}`.toLocaleLowerCase(
+    "en"
+  );
   return searchable.includes(query);
 }
 
@@ -364,11 +370,21 @@ export function GrammarCurriculumHome({
             return true;
           })
       })).filter((shelf) => shelf.books.length > 0),
-    [isolatedShelfId, levelFilter, normalizedQuery, progress, recommendedOnly, statusFilter, topicFilter]
+    [
+      isolatedShelfId,
+      levelFilter,
+      normalizedQuery,
+      progress,
+      recommendedOnly,
+      statusFilter,
+      topicFilter
+    ]
   );
 
   const presentPerfectShelf = BOOKSHELVES.find((shelf) => shelf.id === "a2");
-  const presentPerfectBook = presentPerfectShelf?.books.find((book) => book.id === "present-perfect");
+  const presentPerfectBook = presentPerfectShelf?.books.find(
+    (book) => book.id === "present-perfect"
+  );
   const presentPerfectSelection =
     presentPerfectShelf !== undefined && presentPerfectBook !== undefined
       ? buildLessonSelection(presentPerfectBook, presentPerfectShelf)
@@ -442,7 +458,8 @@ export function GrammarCurriculumHome({
               </button>
             </div>
             <p className="wvg-v13-hero__meta">
-              Level A2&nbsp;&nbsp; • &nbsp;&nbsp;Grammar Foundation&nbsp;&nbsp; • &nbsp;&nbsp;~15 min
+              Level A2&nbsp;&nbsp; • &nbsp;&nbsp;Grammar Foundation&nbsp;&nbsp; • &nbsp;&nbsp;~15
+              min
             </p>
           </div>
         </section>
@@ -558,7 +575,9 @@ export function GrammarCurriculumHome({
             ))
           )}
 
-          {normalizedQuery.length === 0 && isolatedShelfId === undefined && levelFilter === "all" ? (
+          {normalizedQuery.length === 0 &&
+          isolatedShelfId === undefined &&
+          levelFilter === "all" ? (
             <section className="wvg-v13-shelf wvg-v13-shelf--preview" aria-label="B2 and above">
               <header className="wvg-v13-shelf__heading">
                 <div>
