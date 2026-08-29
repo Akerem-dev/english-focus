@@ -39,25 +39,32 @@ test("curated Be lesson teaches form meaning examples errors and recall", async 
   ).toBeVisible();
 
   await page.getByRole("button", { name: "When to Use →" }).click();
-  await expect(page.getByRole("heading", { name: "Choose the structure because of the meaning", level: 2 })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Choose the structure because of the meaning", level: 2 })
+  ).toBeVisible();
   await expect(page.getByText("Maya is a doctor.", { exact: true })).toBeVisible();
   await expect(page.getByText("TR · Maya bir doktordur.", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "Examples →" }).click();
   await expect(page.getByText("Are you busy?", { exact: true })).toBeVisible();
-  await expect(page.getByText("Move be before the subject; do not add do.", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Move be before the subject; do not add do.", { exact: true })
+  ).toBeVisible();
 
-  await page.getByRole("button", { name: /Common Mistakes/ }).click();
+  const lessonMap = page.locator(".wvg-v15-lesson-map");
+  await lessonMap.getByRole("button", { name: "5 Common Mistakes", exact: true }).click();
   await expect(page.getByText(/Do you are ready\?/)).toBeVisible();
   await expect(page.getByText(/Are you ready\?/)).toBeVisible();
-  await expect(page.getByText("Do is not used when be is the main verb.", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Do is not used when be is the main verb.", { exact: true })
+  ).toBeVisible();
 
-  await page.getByRole("button", { name: /Common Patterns/ }).click();
+  await lessonMap.getByRole("button", { name: "6 Common Patterns", exact: true }).click();
   await expect(page.getByText("be + adjective", { exact: true })).toBeVisible();
   await expect(page.getByText("be + interested in", { exact: true })).toBeVisible();
   await expect(page.getByText(/not ‘signal words’ in the tense sense/i)).toBeVisible();
 
-  await page.getByRole("button", { name: /^Practice$/ }).click();
+  await lessonMap.getByRole("button", { name: "7 Practice", exact: true }).click();
   await expect(page.getByText("___ you from Ankara?", { exact: true })).toBeVisible();
   await expect(page.getByText("Are", { exact: true })).toBeVisible();
   await expect(page.getByText("5-question Quick Quiz", { exact: true })).toBeVisible();
