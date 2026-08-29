@@ -146,7 +146,7 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
 
   await page.getByRole("button", { name: "Open Core Formula section" }).click();
   await expect(page.getByRole("heading", { name: "Core Formula", level: 1 })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Core Formula", exact: true })).toHaveAttribute(
+  await expect(page.getByRole("button", { name: /Core Formula/ })).toHaveAttribute(
     "aria-current",
     "step"
   );
@@ -169,7 +169,9 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
 });
 
-test("Start lesson enters section one instead of scrolling to a fake practice control", async ({ page }) => {
+test("Start lesson enters section one instead of scrolling to a fake practice control", async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearGrammarState(page);
   await page.goto("/#/grammar");
