@@ -30,7 +30,7 @@ const SECTION_DEFINITIONS: readonly SectionDefinition[] = Object.freeze([
   { id: "comparison", number: 4, defaultTitle: "Compare & Contrast" },
   { id: "mistake", number: 5, defaultTitle: "Common Mistakes" },
   { id: "signals", number: 6, defaultTitle: "Useful Clues" },
-  { id: "practice", number: 7, defaultTitle: "Checkpoint" },
+  { id: "practice", number: 7, defaultTitle: "Practice" },
   { id: "quick-rule", number: 8, defaultTitle: "Quick Rule" }
 ]);
 
@@ -58,7 +58,7 @@ function SectionPreviewCard({
     <article className="wvg-v15-overview-card">
       <button aria-label={`Open ${title} section`} onClick={onOpen} type="button">
         <span className="wvg-v15-overview-card__number">{number}</span>
-        <span className="wvg-v15-overview-card__title">{title}</span>
+        <h2 className="wvg-v15-overview-card__title">{title}</h2>
         <span aria-hidden="true" className="wvg-v15-overview-card__open">
           Open →
         </span>
@@ -473,7 +473,9 @@ export function CuratedGrammarLesson({
             <aside className="wvg-v15-lesson-map" aria-label="Lesson sections">
               <header>
                 <span>LESSON MAP</span>
-                <small>{section.number} / {sections.length}</small>
+                <small>
+                  {section.number} / {sections.length}
+                </small>
               </header>
               {sections.map((item) => (
                 <button
@@ -495,6 +497,7 @@ export function CuratedGrammarLesson({
 
           <footer className="wvg-v15-detail-footer">
             <button
+              aria-label={previous === undefined ? "Start of lesson" : `← ${previous.title}`}
               disabled={previous === undefined}
               onClick={() => previous !== undefined && setSelectedSection(previous.id)}
               type="button"
@@ -506,6 +509,7 @@ export function CuratedGrammarLesson({
               Lesson overview
             </button>
             <button
+              aria-label={next === undefined ? "End of lesson" : `${next.title} →`}
               disabled={next === undefined}
               onClick={() => next !== undefined && setSelectedSection(next.id)}
               type="button"
@@ -524,7 +528,7 @@ export function CuratedGrammarLesson({
       <section className="wvg-v15-paper wvg-v15-paper--overview">
         <nav aria-label="Grammar breadcrumb" className="wvg-v15-breadcrumb">
           <button onClick={onBack} type="button">
-            ← Grammar Home
+            ← Grammar
           </button>
           <span aria-hidden="true">›</span>
           <span>{lesson.category}</span>
@@ -555,12 +559,10 @@ export function CuratedGrammarLesson({
 
         <div className="wvg-v15-overview-intro">
           <div>
-            <span>LESSON MAP</span>
+            <span>Lesson map</span>
             <h2>Study in order, or jump straight to what you need.</h2>
           </div>
-          <p>
-            Every card below is a preview. Open it for the full explanation, examples and reasoning.
-          </p>
+          <p>These cards are short previews, not the full lesson. Open one for the full explanation, examples and reasoning.</p>
         </div>
 
         <div className="wvg-v15-overview-grid">
