@@ -190,7 +190,9 @@ function ComparisonSection({ content }: { readonly content: GrammarTeachingConte
       <header className="wvg-v15-section-heading">
         <span>MAKE THE DECISION EXPLICIT</span>
         <h2>{content.comparison.title}</h2>
-        <p>Compare meaning and sentence-building side by side instead of memorising isolated forms.</p>
+        <p>
+          Compare meaning and sentence-building side by side instead of memorising isolated forms.
+        </p>
       </header>
 
       <div className="wvg-v15-compare-grid">
@@ -445,7 +447,10 @@ export function CuratedGrammarLesson({
     const next = sectionIndex < sections.length - 1 ? sections[sectionIndex + 1] : undefined;
 
     return (
-      <main className="wvg-v15-lesson wvg-v15-lesson--detail" aria-labelledby="grammar-section-title">
+      <main
+        className="wvg-v15-lesson wvg-v15-lesson--detail"
+        aria-labelledby="grammar-section-title"
+      >
         <section className="wvg-v15-paper">
           <nav aria-label="Grammar section breadcrumb" className="wvg-v15-breadcrumb">
             <button onClick={() => setSelectedSection(undefined)} type="button">
@@ -562,7 +567,10 @@ export function CuratedGrammarLesson({
             <span>Lesson map</span>
             <h2>Study in order, or jump straight to what you need.</h2>
           </div>
-          <p>These cards are short previews, not the full lesson. Open one for the full explanation, examples and reasoning.</p>
+          <p>
+            These cards are short previews, not the full lesson. Open one for the full explanation,
+            examples and reasoning.
+          </p>
         </div>
 
         <div className="wvg-v15-overview-grid">
