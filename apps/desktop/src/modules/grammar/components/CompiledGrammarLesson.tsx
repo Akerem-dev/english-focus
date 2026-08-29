@@ -5,6 +5,7 @@ import type { GrammarLessonSelection } from "./GrammarCurriculumHome";
 import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 
 import "../../../styles/word-valley-grammar-v13-lesson.css";
+import "../../../styles/word-valley-grammar-v14-section-navigation.css";
 
 interface CompiledGrammarLessonProps {
   readonly lesson: GrammarLessonSelection;
@@ -30,7 +31,21 @@ interface LoadedGrammarState {
   readonly points: readonly LoadedGrammarPoint[];
 }
 
-type PracticeMode = "guided" | "quiz" | "challenge";
+type OverviewSectionId =
+  | "formula"
+  | "uses"
+  | "examples"
+  | "comparison"
+  | "mistake"
+  | "signals"
+  | "practice"
+  | "quick-rule";
+
+interface OverviewSectionDefinition {
+  readonly id: OverviewSectionId;
+  readonly number: number;
+  readonly title: string;
+}
 
 const EMPTY_LOADED_POINTS: readonly LoadedGrammarPoint[] = Object.freeze([]);
 
@@ -89,6 +104,53 @@ function lessonBand(lesson: GrammarLessonSelection): string {
   return band?.trim() || "Grammar Foundation";
 }
 
+function sectionDefinitions(isPresentPerfect: boolean): readonly OverviewSectionDefinition[] {
+  return Object.freeze([
+    { id: "formula", number: 1, title: "Core Formula" },
+    { id: "uses", number: 2, title: "When to Use" },
+    { id: "examples", number: 3, title: "Examples" },
+    {
+      id: "comparison",
+      number: 4,
+      title: isPresentPerfect ? "Comparison with Past Simple" : "Meaning & Form"
+    },
+    { id: "mistake", number: 5, title: "Common Mistake" },
+    { id: "signals", number: 6, title: "Signal Words" },
+    { id: "practice", number: 7, title: "Practice" },
+    { id: "quick-rule", number: 8, title: "Quick Rule" }
+  ]);
+}
+
+interface SectionCardProps {
+  readonly className: string;
+  readonly id: OverviewSectionId;
+  readonly number: number;
+  readonly onOpen: (sectionId: OverviewSectionId) => void;
+  readonly title: string;
+  readonly children: React.ReactNode;
+}
+
+function SectionCard({ className, id, number, onOpen, title, children }: SectionCardProps) {
+  return (
+    <article className={`wvg-v13-overview-card wvg-v14-section-card ${className}`}>
+      <button
+        aria-label={`Open ${title} section`}
+        className="wvg-v14-section-card__hitbox"
+        onClick={() => onOpen(id)}
+        type="button"
+      />
+      <header>
+        <b>{number}</b>
+        <h2>{title}</h2>
+        <span className="wvg-v14-section-card__cta" aria-hidden="true">
+          Open <b>›</b>
+        </span>
+      </header>
+      {children}
+    </article>
+  );
+}
+
 export function CompiledGrammarLesson({
   lesson,
   onBack,
@@ -97,9 +159,10 @@ export function CompiledGrammarLesson({
 }: CompiledGrammarLessonProps) {
   const { answerGrammarQuestion } = useGrammar();
   const artwork = getGrammarLessonArtwork(lesson.sourceLessonId);
-  const [practiceMode, setPracticeMode] = useState<PracticeMode>("guided");
+  const [selectedSection, setSelectedSection] = useState<OverviewSectionId>();
   const isPresentPerfect = lesson.id === "present-perfect";
   const isComplete = progress >= 5;
+  const sections = useMemo(() => sectionDefinitions(isPresentPerfect), [isPresentPerfect]);
 
   const requests = useMemo(
     () =>
@@ -195,11 +258,295 @@ export function CompiledGrammarLesson({
         .filter((word) => word.length > 1)
         .slice(0, 10);
 
+  function openSection(sectionId: OverviewSectionId) {
+    setSelectedSection(sectionId);
+  }
+
   function resumeLesson() {
-    document.getElementById("grammar-overview-practice")?.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
+    setSelectedSection("formula");
+  }
+
+  function renderComparison() {
+    return (
+      <div className="wvg-v13-comparison">
+        <section>
+          <small>{isPresentPerfect ? "PAST SIMPLE" : "MEANING FIRST"}</small>
+          <strong>{isPresentPerfect ? "Finished time in the past." : lesson.title}</strong>
+          <p>
+            {isPresentPerfect
+              ? "I visited Paris last summer."
+              : pointSummary(usablePoints[0], lesson.description)}
+          </p>
+          <em>
+            {isPresentPerfect ? "When? Last summer." : "Choose the meaning before the form."}
+          </em>
+        </section>
+        <span aria-hidden="true">VS</span>
+        <section>
+          <small>{isPresentPerfect ? "PRESENT PERFECT" : "FORM IN CONTEXT"}</small>
+          <strong>
+            {isPresentPerfect
+              ? "Time not finished or result now."
+              : "Build the form after the meaning is clear."}
+          </strong>
+          <p>
+            {isPresentPerfect
+              ? "I have visited Paris."
+              : pointSummary(usablePoints[1], lesson.description)}
+          </p>
+          <em>
+            {isPresentPerfect
+              ? "No specific time / It matters now."
+              : "Check word order and the surrounding context."}
+          </em>
+        </section>
+      </div>
+    );
+  }
+
+  function renderMistake() {
+    return isPresentPerfect ? (
+      <>
+        <div className="wvg-v13-mistake wvg-v13-mistake--wrong">
+          <b>×</b>
+          <p>
+            I have went to the store.<small>× Incorrect</small>
+          </p>
+        </div>
+        <div className="wvg-v13-mistake wvg-v13-mistake--right">
+          <b>✓</b>
+          <p>
+            I have gone to the store.<small>✓ Correct</small>
+          </p>
+        </div>
+      </>
+    ) : (
+      <>
+        <div className="wvg-v13-mistake wvg-v13-mistake--wrong">
+          <b>×</b>
+          <p>
+            Choosing the form before checking the meaning.<small>× Avoid</small>
+          </p>
+        </div>
+        <div className="wvg-v13-mistake wvg-v13-mistake--right">
+          <b>✓</b>
+          <p>
+            {compactText(pointSummary(usablePoints[0], lesson.description), 78)}
+            <small>✓ Check context</small>
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  function renderSectionDetail(sectionId: OverviewSectionId) {
+    const sectionIndex = sections.findIndex((section) => section.id === sectionId);
+    const section = sections[sectionIndex];
+    const previous = sectionIndex > 0 ? sections[sectionIndex - 1] : undefined;
+    const next = sectionIndex < sections.length - 1 ? sections[sectionIndex + 1] : undefined;
+
+    return (
+      <main className="wvg-v13-lesson wvg-v14-section-detail" aria-labelledby="grammar-section-title">
+        <section className="wvg-v13-lesson__paper wvg-v14-section-detail__paper">
+          <nav aria-label="Grammar section breadcrumb" className="wvg-v13-lesson__breadcrumb">
+            <button onClick={() => setSelectedSection(undefined)} type="button">
+              ← Lesson overview
+            </button>
+            <span aria-hidden="true">›</span>
+            <span>{lesson.title}</span>
+            <span aria-hidden="true">›</span>
+            <strong>{section.title}</strong>
+          </nav>
+
+          <header className="wvg-v14-section-detail__hero">
+            <img alt="" aria-hidden="true" draggable={false} src={artwork} />
+            <span aria-hidden="true" />
+            <div>
+              <p>
+                SECTION {section.number} OF {sections.length}
+              </p>
+              <h1 id="grammar-section-title">{section.title}</h1>
+              <small>{lesson.title}</small>
+            </div>
+          </header>
+
+          <div className="wvg-v14-section-detail__layout">
+            <aside className="wvg-v14-section-map" aria-label="Lesson sections">
+              <p>LESSON MAP</p>
+              {sections.map((item) => (
+                <button
+                  aria-current={item.id === sectionId ? "step" : undefined}
+                  key={item.id}
+                  onClick={() => setSelectedSection(item.id)}
+                  type="button"
+                >
+                  <span>{item.number}</span>
+                  {item.title}
+                </button>
+              ))}
+            </aside>
+
+            <article className="wvg-v14-section-content">
+              {sectionId === "formula" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">BUILD THE FORM</p>
+                  <h2>The structure at a glance</h2>
+                  <div className="wvg-v13-formula wvg-v14-section-formula">
+                    {isPresentPerfect ? "have / has + past participle" : lesson.title}
+                  </div>
+                  <p>{pointSummary(usablePoints[0], lesson.description)}</p>
+                  {isPresentPerfect && (
+                    <ul>
+                      <li>I have finished my homework.</li>
+                      <li>She has visited Paris.</li>
+                    </ul>
+                  )}
+                </>
+              )}
+
+              {sectionId === "uses" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">CHOOSE THE RIGHT CONTEXT</p>
+                  <h2>When this grammar belongs in a sentence</h2>
+                  <div className="wvg-v13-mini-list wvg-v14-section-mini-list">
+                    {uses.map((item) => (
+                      <div key={`${item.title}-${item.example}`}>
+                        <span aria-hidden="true">{item.mark}</span>
+                        <p>
+                          <strong>{item.title}</strong>
+                          <small>{item.example}</small>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {sectionId === "examples" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">SEE IT IN CONTEXT</p>
+                  <h2>Natural examples</h2>
+                  <div className="wvg-v13-mini-list wvg-v14-section-mini-list">
+                    {examples.map((item) => (
+                      <div key={`${item.title}-${item.example}`}>
+                        <span aria-hidden="true">{item.mark}</span>
+                        <p>
+                          <strong>{item.title}</strong>
+                          <small>{item.example}</small>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {sectionId === "comparison" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">MAKE THE CONTRAST CLEAR</p>
+                  <h2>{section.title}</h2>
+                  <div className="wvg-v14-section-comparison">{renderComparison()}</div>
+                </>
+              )}
+
+              {sectionId === "mistake" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">SPOT THE ERROR</p>
+                  <h2>What learners often get wrong</h2>
+                  <div className="wvg-v14-section-mistakes">{renderMistake()}</div>
+                </>
+              )}
+
+              {sectionId === "signals" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">NOTICE THE CLUES</p>
+                  <h2>Words that often signal this structure</h2>
+                  <div className="wvg-v13-signal-pills wvg-v14-section-signals">
+                    {signals.map((signal) => (
+                      <span key={signal}>{signal}</span>
+                    ))}
+                  </div>
+                  <p>
+                    Signal words are clues, not automatic rules. Check the meaning and time context
+                    before choosing the form.
+                  </p>
+                </>
+              )}
+
+              {sectionId === "practice" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">APPLY WHAT YOU LEARNED</p>
+                  <h2>Three ways to practise</h2>
+                  <p>
+                    This lesson will use three practice modes. Their full question flows are the next
+                    implementation stage; this screen now acts as the single honest entry point.
+                  </p>
+                  <div className="wvg-v14-practice-mode-list">
+                    <div>
+                      <strong>Guided Practice</strong>
+                      <small>Step-by-step help and explanations.</small>
+                    </div>
+                    <div>
+                      <strong>Quick Quiz</strong>
+                      <small>Five short checks for fast recall.</small>
+                    </div>
+                    <div>
+                      <strong>Challenge</strong>
+                      <small>Harder production and error-correction tasks.</small>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {sectionId === "quick-rule" && (
+                <>
+                  <p className="wvg-v14-section-content__eyebrow">LEAVE WITH ONE RULE</p>
+                  <h2>Quick Rule</h2>
+                  <div className="wvg-v13-quick-rule wvg-v14-section-quick-rule">
+                    <span aria-hidden="true">☆</span>
+                    <div>
+                      <p>
+                        {isPresentPerfect
+                          ? "Use Present Perfect for experiences or results that connect to now."
+                          : compactText(pointSummary(usablePoints[0], lesson.description), 140)}
+                      </p>
+                      <p>
+                        {isPresentPerfect
+                          ? "Use Past Simple for finished time in the past."
+                          : "Meaning first; form second; then check the sentence in context."}
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </article>
+          </div>
+
+          <footer className="wvg-v14-section-detail__footer">
+            <button
+              disabled={previous === undefined}
+              onClick={() => previous !== undefined && setSelectedSection(previous.id)}
+              type="button"
+            >
+              {previous === undefined ? "Start of lesson" : `← ${previous.title}`}
+            </button>
+            <button onClick={() => setSelectedSection(undefined)} type="button">
+              Lesson overview
+            </button>
+            <button
+              disabled={next === undefined}
+              onClick={() => next !== undefined && setSelectedSection(next.id)}
+              type="button"
+            >
+              {next === undefined ? "End of lesson" : `${next.title} →`}
+            </button>
+          </footer>
+        </section>
+      </main>
+    );
+  }
+
+  if (selectedSection !== undefined) {
+    return renderSectionDetail(selectedSection);
   }
 
   return (
@@ -207,7 +554,7 @@ export function CompiledGrammarLesson({
       <section className="wvg-v13-lesson__paper">
         <nav aria-label="Grammar breadcrumb" className="wvg-v13-lesson__breadcrumb">
           <button onClick={onBack} type="button">
-            Grammar
+            ← Grammar
           </button>
           <span aria-hidden="true">›</span>
           <span>{lesson.category}</span>
@@ -228,7 +575,7 @@ export function CompiledGrammarLesson({
             </div>
             <div className="wvg-v13-lesson__hero-actions">
               <button onClick={resumeLesson} type="button">
-                Resume lesson <span aria-hidden="true">›</span>
+                Start lesson <span aria-hidden="true">›</span>
               </button>
               <button aria-pressed={isComplete} onClick={onMarkComplete} type="button">
                 <span aria-hidden="true">{isComplete ? "✓" : "◉"}</span>{" "}
@@ -242,33 +589,37 @@ export function CompiledGrammarLesson({
           </div>
         </header>
 
+        <div className="wvg-v14-overview-guide">
+          <div>
+            <strong>Lesson map</strong>
+            <span>Choose a section to study. These cards are short previews, not the full lesson.</span>
+          </div>
+          <small>1 → 8 recommended order</small>
+        </div>
+
         <div className="wvg-v13-lesson__grid">
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--formula">
-            <header>
-              <b>1</b>
-              <h2>Core Formula</h2>
-            </header>
+          <SectionCard
+            className="wvg-v13-overview-card--formula"
+            id="formula"
+            number={1}
+            onOpen={openSection}
+            title="Core Formula"
+          >
             <div className="wvg-v13-formula">
-              {isPresentPerfect ? "have / has    +    past participle" : lesson.title}
+              {isPresentPerfect ? "have / has + past participle" : lesson.title}
             </div>
-            <strong>Examples</strong>
-            {isPresentPerfect ? (
-              <ul>
-                <li>I have finished my homework.</li>
-                <li>She has visited Paris.</li>
-              </ul>
-            ) : (
-              <p>{pointSummary(usablePoints[0], lesson.description)}</p>
-            )}
-          </article>
+            <p>{pointSummary(usablePoints[0], lesson.description)}</p>
+          </SectionCard>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--uses">
-            <header>
-              <b>2</b>
-              <h2>When to Use</h2>
-            </header>
-            <div className="wvg-v13-mini-list">
-              {uses.map((item) => (
+          <SectionCard
+            className="wvg-v13-overview-card--uses"
+            id="uses"
+            number={2}
+            onOpen={openSection}
+            title="When to Use"
+          >
+            <div className="wvg-v13-mini-list wvg-v14-preview-list">
+              {uses.slice(0, 2).map((item) => (
                 <div key={`${item.title}-${item.example}`}>
                   <span aria-hidden="true">{item.mark}</span>
                   <p>
@@ -278,15 +629,17 @@ export function CompiledGrammarLesson({
                 </div>
               ))}
             </div>
-          </article>
+          </SectionCard>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--examples">
-            <header>
-              <b>3</b>
-              <h2>Examples</h2>
-            </header>
-            <div className="wvg-v13-mini-list">
-              {examples.map((item) => (
+          <SectionCard
+            className="wvg-v13-overview-card--examples"
+            id="examples"
+            number={3}
+            onOpen={openSection}
+            title="Examples"
+          >
+            <div className="wvg-v13-mini-list wvg-v14-preview-list">
+              {examples.slice(0, 2).map((item) => (
                 <div key={`${item.title}-${item.example}`}>
                   <span aria-hidden="true">{item.mark}</span>
                   <p>
@@ -296,157 +649,82 @@ export function CompiledGrammarLesson({
                 </div>
               ))}
             </div>
-          </article>
+          </SectionCard>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--comparison">
-            <header>
-              <b>4</b>
-              <h2>{isPresentPerfect ? "Comparison with Past Simple" : "Meaning & Form"}</h2>
-            </header>
-            <div className="wvg-v13-comparison">
-              <section>
-                <small>{isPresentPerfect ? "PAST SIMPLE" : "MEANING FIRST"}</small>
-                <strong>{isPresentPerfect ? "Finished time in the past." : lesson.title}</strong>
-                <p>
-                  {isPresentPerfect
-                    ? "I visited Paris last summer."
-                    : pointSummary(usablePoints[0], lesson.description)}
-                </p>
-                <em>
-                  {isPresentPerfect ? "When? Last summer." : "Choose the meaning before the form."}
-                </em>
-              </section>
-              <span aria-hidden="true">VS</span>
-              <section>
-                <small>{isPresentPerfect ? "PRESENT PERFECT" : "FORM IN CONTEXT"}</small>
-                <strong>
-                  {isPresentPerfect
-                    ? "Time not finished or result now."
-                    : "Build the form after the meaning is clear."}
-                </strong>
-                <p>
-                  {isPresentPerfect
-                    ? "I have visited Paris."
-                    : pointSummary(usablePoints[1], lesson.description)}
-                </p>
-                <em>
-                  {isPresentPerfect
-                    ? "No specific time / It matters now."
-                    : "Check word order and the surrounding context."}
-                </em>
-              </section>
+          <SectionCard
+            className="wvg-v13-overview-card--comparison"
+            id="comparison"
+            number={4}
+            onOpen={openSection}
+            title={isPresentPerfect ? "Comparison with Past Simple" : "Meaning & Form"}
+          >
+            <div className="wvg-v14-comparison-preview">
+              <span>{isPresentPerfect ? "Past Simple: finished past time" : "Meaning first"}</span>
+              <b>VS</b>
+              <span>{isPresentPerfect ? "Present Perfect: connected to now" : "Form in context"}</span>
             </div>
-          </article>
+          </SectionCard>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--mistake">
-            <header>
-              <b>5</b>
-              <h2>Common Mistake</h2>
-            </header>
-            {isPresentPerfect ? (
-              <>
-                <div className="wvg-v13-mistake wvg-v13-mistake--wrong">
-                  <b>×</b>
-                  <p>
-                    I have went to the store.<small>× Incorrect</small>
-                  </p>
-                </div>
-                <div className="wvg-v13-mistake wvg-v13-mistake--right">
-                  <b>✓</b>
-                  <p>
-                    I have gone to the store.<small>✓ Correct</small>
-                  </p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="wvg-v13-mistake wvg-v13-mistake--wrong">
-                  <b>×</b>
-                  <p>
-                    Choosing the form before checking the meaning.<small>× Avoid</small>
-                  </p>
-                </div>
-                <div className="wvg-v13-mistake wvg-v13-mistake--right">
-                  <b>✓</b>
-                  <p>
-                    {compactText(pointSummary(usablePoints[0], lesson.description), 78)}
-                    <small>✓ Check context</small>
-                  </p>
-                </div>
-              </>
-            )}
-          </article>
+          <SectionCard
+            className="wvg-v13-overview-card--mistake"
+            id="mistake"
+            number={5}
+            onOpen={openSection}
+            title="Common Mistake"
+          >
+            <div className="wvg-v14-mistake-preview">
+              <span>× {isPresentPerfect ? "I have went..." : "Form before meaning"}</span>
+              <span>✓ {isPresentPerfect ? "I have gone..." : "Check the context first"}</span>
+            </div>
+          </SectionCard>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--signals">
-            <header>
-              <b>6</b>
-              <h2>Signal Words</h2>
-            </header>
+          <SectionCard
+            className="wvg-v13-overview-card--signals"
+            id="signals"
+            number={6}
+            onOpen={openSection}
+            title="Signal Words"
+          >
             <div className="wvg-v13-signal-pills">
-              {signals.map((signal) => (
+              {signals.slice(0, 6).map((signal) => (
                 <span key={signal}>{signal}</span>
               ))}
             </div>
-          </article>
+          </SectionCard>
 
-          <article
-            className="wvg-v13-overview-card wvg-v13-overview-card--practice"
-            id="grammar-overview-practice"
+          <SectionCard
+            className="wvg-v13-overview-card--practice"
+            id="practice"
+            number={7}
+            onOpen={openSection}
+            title="Practice"
           >
-            <header>
-              <b>7</b>
-              <h2>Practice</h2>
-            </header>
-            <p>Try a quick check to see how well you understand.</p>
-            <div className="wvg-v13-practice-options">
-              <button
-                aria-pressed={practiceMode === "guided"}
-                onClick={() => setPracticeMode("guided")}
-                type="button"
-              >
-                <strong>Guided Practice</strong>
-                <small>Step-by-step help</small>
-              </button>
-              <button
-                aria-pressed={practiceMode === "quiz"}
-                onClick={() => setPracticeMode("quiz")}
-                type="button"
-              >
-                <strong>Quick Quiz</strong>
-                <small>5 short questions</small>
-              </button>
-              <button
-                aria-pressed={practiceMode === "challenge"}
-                onClick={() => setPracticeMode("challenge")}
-                type="button"
-              >
-                <strong>Challenge</strong>
-                <small>Test your skills</small>
-              </button>
+            <p>Three practice modes will live inside this section.</p>
+            <div className="wvg-v14-practice-preview">
+              <span>Guided</span>
+              <span>5-question Quiz</span>
+              <span>Challenge</span>
             </div>
-          </article>
+          </SectionCard>
 
-          <article className="wvg-v13-overview-card wvg-v13-overview-card--quick-rule">
-            <header>
-              <b>8</b>
-              <h2>Quick Rule</h2>
-            </header>
+          <SectionCard
+            className="wvg-v13-overview-card--quick-rule"
+            id="quick-rule"
+            number={8}
+            onOpen={openSection}
+            title="Quick Rule"
+          >
             <div className="wvg-v13-quick-rule">
               <span aria-hidden="true">☆</span>
               <div>
                 <p>
                   {isPresentPerfect
-                    ? "Use Present Perfect for experiences or results that connect to now."
+                    ? "Use Present Perfect when the past still connects to now."
                     : compactText(pointSummary(usablePoints[0], lesson.description), 95)}
-                </p>
-                <p>
-                  {isPresentPerfect
-                    ? "Use Past Simple for finished time in the past."
-                    : "Meaning first; form second; then check the sentence in context."}
                 </p>
               </div>
             </div>
-          </article>
+          </SectionCard>
         </div>
 
         <aside className="wvg-v13-memory-strip">
