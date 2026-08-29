@@ -160,7 +160,7 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await page.getByRole("button", { name: "Open Practice section" }).click();
   await expect(page.getByRole("heading", { name: "Practice", level: 1 })).toBeVisible();
   await expect(page.getByText("Guided Practice", { exact: true })).toBeVisible();
-  await expect(page.getByText("Quick Quiz", { exact: true })).toBeVisible();
+  await expect(page.getByText("5-question Quick Quiz", { exact: true })).toBeVisible();
   await expect(page.getByText("Challenge", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Quick Quiz", exact: true })).toHaveCount(0);
 
