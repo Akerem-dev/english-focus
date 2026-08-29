@@ -27,7 +27,9 @@ test("curated Be lesson teaches form meaning examples errors and recall", async 
   await page.setViewportSize({ width: 1664, height: 936 });
   await openBeLesson(page);
 
-  await expect(page.getByText("Subject + am / is / are + complement", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Subject + am / is / are + complement", { exact: true })
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: /^Open .* section$/ })).toHaveCount(8);
 
   await page.getByRole("button", { name: "Open Core Formula section" }).click();
