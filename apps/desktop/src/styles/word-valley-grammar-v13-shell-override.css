@@ -1,9 +1,9 @@
 /*
  * Grammar content-slot alignment only.
  *
- * The Grammar scope lives around the center content only. SearchCleanShell owns
- * the Word Valley topbar, sidebar, navigation, progress and Wordie presentation,
- * so route-specific CSS cannot reach or mutate those shared elements.
+ * SearchCleanShell owns the Word Valley topbar, sidebar and Wordie shell. Grammar
+ * must never reflow when Wordie opens: the assistant overlays the content at every
+ * desktop width so lesson geometry stays stable between closed/open states.
  */
 
 #root .application-frame--grammar-cleanroom.grammar-route-scope {
@@ -22,40 +22,14 @@
   height: auto !important;
 }
 
-/* On large desktop canvases an explicitly opened Wordie panel is a persistent
-   382 px rail. The rail itself remains entirely shared Search styling. */
-@media (min-width: 1500px) {
-  #root
-    .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant[data-open="true"])
-    .application-frame--grammar-cleanroom
-    .wvg-v12-lesson {
-    right: 382px !important;
-  }
-
-  #root
-    .application-frame--search-cleanroom
-    .application-frame--grammar-cleanroom
-    .wvg-page[data-grammar-view="lesson"]
-    .wvg-reference-lesson {
-    right: 382px !important;
-  }
-}
-
-/* In normal windows Wordie overlays Grammar content instead of changing any
-   shared application geometry. */
-@media (max-width: 1499px) {
-  #root
-    .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant[data-open="true"])
-    .application-frame--grammar-cleanroom
-    .wvg-v12-lesson {
-    right: 0 !important;
-  }
-
-  #root
-    .application-frame--search-cleanroom
-    .application-frame--grammar-cleanroom
-    .wvg-page[data-grammar-view="lesson"]
-    .wvg-reference-lesson {
-    right: 0 !important;
-  }
+#root
+  .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant[data-open="true"])
+  .application-frame--grammar-cleanroom
+  .wvg-v12-lesson,
+#root
+  .application-frame--search-cleanroom
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-reference-lesson {
+  right: 0 !important;
 }
