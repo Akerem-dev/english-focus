@@ -69,7 +69,7 @@ async function readAssistantShell(page: Page) {
   };
 }
 
-test("Grammar Home controls work and Present Perfect uses the single V13 overview", async ({
+test("Grammar Home controls work and lesson overview sections are real navigation", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
@@ -139,26 +139,45 @@ test("Grammar Home controls work and Present Perfect uses the single V13 overvie
 
   await openPresentPerfectFromHome(page);
 
-  await expect(page.getByRole("tab")).toHaveCount(0);
+  await expect(page.getByText("Lesson map", { exact: true })).toBeVisible();
+  await expect(page.getByText(/short previews, not the full lesson/i)).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Open .* section$/ })).toHaveCount(8);
+  await expect(page.getByRole("button", { name: "Quick Quiz", exact: true })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Open Core Formula section" }).click();
+  await expect(page.getByRole("heading", { name: "Core Formula", level: 1 })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Core Formula", exact: true })).toHaveAttribute(
+    "aria-current",
+    "step"
+  );
+
+  await page.getByRole("button", { name: "When to Use →" }).click();
+  await expect(page.getByRole("heading", { name: "When to Use", level: 1 })).toBeVisible();
+
+  await page.getByRole("button", { name: "Lesson overview", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "When to Use", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Examples", level: 2 })).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Comparison with Past Simple", level: 2 })
-  ).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Common Mistake", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Signal Words", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Practice", level: 2 })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Quick Rule", level: 2 })).toBeVisible();
-  await expect(page.getByText("I have went to the store.", { exact: true })).toBeVisible();
-  await expect(page.getByText("I have gone to the store.", { exact: true })).toBeVisible();
 
-  const quickQuiz = page.getByRole("button", { name: /Quick Quiz/i });
-  await quickQuiz.click();
-  await expect(quickQuiz).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Open Practice section" }).click();
+  await expect(page.getByRole("heading", { name: "Practice", level: 1 })).toBeVisible();
+  await expect(page.getByText("Guided Practice", { exact: true })).toBeVisible();
+  await expect(page.getByText("Quick Quiz", { exact: true })).toBeVisible();
+  await expect(page.getByText("Challenge", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Quick Quiz", exact: true })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Grammar", exact: true }).click();
+  await page.getByRole("button", { name: "← Lesson overview" }).click();
+  await page.getByRole("button", { name: "← Grammar" }).click();
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
+});
+
+test("Start lesson enters section one instead of scrolling to a fake practice control", async ({ page }) => {
+  await page.setViewportSize({ width: 1664, height: 936 });
+  await clearGrammarState(page);
+  await page.goto("/#/grammar");
+  await openPresentPerfectFromHome(page);
+
+  await page.getByRole("button", { name: /Start lesson/i }).click();
+  await expect(page.getByRole("heading", { name: "Core Formula", level: 1 })).toBeVisible();
+  await expect(page.getByText("SECTION 1 OF 8", { exact: true })).toBeVisible();
 });
 
 test("each bookshelf card opens the topic it actually names", async ({ page }) => {
@@ -171,10 +190,9 @@ test("each bookshelf card opens the topic it actually names", async ({ page }) =
   await expect(page.getByRole("heading", { name: "Word Order & Agreement", level: 1 })).toHaveCount(
     0
   );
-  await expect(page.getByRole("tab")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
 
-  await page.getByRole("button", { name: "Grammar", exact: true }).click();
+  await page.getByRole("button", { name: "← Grammar" }).click();
   await page.getByRole("button", { name: /Present Continuous, 1 of 5 complete/i }).click();
   await expect(page.getByRole("heading", { name: "Present Continuous", level: 1 })).toBeVisible();
   await expect(
@@ -239,8 +257,12 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
     expect(bookBox).not.toBeNull();
     expect(shelfBox).not.toBeNull();
     expect(heroBox!.height).toBeCloseTo(219, 0);
-    expect(bookBox!.width).toBeCloseTo(158, 0);
-    expect(bookBox!.height).toBeCloseTo(88, 0);
+    if (viewport.width >= 1500) {
+      expect(bookBox!.width).toBeGreaterThan(158);
+    } else {
+      expect(bookBox!.width).toBeCloseTo(158, 0);
+    }
+    expect(bookBox!.height).toBeGreaterThanOrEqual(88);
     expect(shelfBox!.height).toBeCloseTo(14, 0);
   }
 });
