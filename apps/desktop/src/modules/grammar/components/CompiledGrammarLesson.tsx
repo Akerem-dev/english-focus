@@ -340,6 +340,8 @@ export function CompiledGrammarLesson({
   function renderSectionDetail(sectionId: OverviewSectionId) {
     const sectionIndex = sections.findIndex((section) => section.id === sectionId);
     const section = sections[sectionIndex];
+    if (section === undefined) return null;
+
     const previous = sectionIndex > 0 ? sections[sectionIndex - 1] : undefined;
     const next = sectionIndex < sections.length - 1 ? sections[sectionIndex + 1] : undefined;
 
