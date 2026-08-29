@@ -2,8 +2,22 @@
  * Grammar intentionally inherits the canonical Word Valley Wordie presentation
  * from the shared `.application-frame--search-cleanroom` assistant styles.
  *
- * Do not add Grammar-specific geometry, spacing, colors, typography or
- * responsive chrome rules here. Grammar-specific behavior and copy belong in
- * GrammarAssistantDock; the visual shell must remain identical to Search and
- * Collections.
+ * Do not add Grammar-specific panel geometry, spacing, colors or typography
+ * here. Grammar-specific behavior and copy belong in GrammarAssistantDock; the
+ * open visual shell must remain identical to Search and Collections.
+ *
+ * Search has an in-page “Ask Wordie” card that can open its otherwise hidden
+ * dock launcher. Grammar has no equivalent context-rail card while the lesson
+ * uses the full center canvas, so its closed launcher must remain reachable.
  */
+
+.application-frame--search-cleanroom
+  > .word-valley-stage-viewport
+  .word-valley-stage
+  > .assistant-dock.wv84-assistant:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
