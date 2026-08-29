@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 
 import { useGrammar } from "../../../app/providers";
 import type { GrammarLessonSelection } from "./GrammarCurriculumHome";
@@ -127,7 +127,7 @@ interface SectionCardProps {
   readonly number: number;
   readonly onOpen: (sectionId: OverviewSectionId) => void;
   readonly title: string;
-  readonly children: React.ReactNode;
+  readonly children: ReactNode;
 }
 
 function SectionCard({ className, id, number, onOpen, title, children }: SectionCardProps) {
@@ -277,9 +277,7 @@ export function CompiledGrammarLesson({
               ? "I visited Paris last summer."
               : pointSummary(usablePoints[0], lesson.description)}
           </p>
-          <em>
-            {isPresentPerfect ? "When? Last summer." : "Choose the meaning before the form."}
-          </em>
+          <em>{isPresentPerfect ? "When? Last summer." : "Choose the meaning before the form."}</em>
         </section>
         <span aria-hidden="true">VS</span>
         <section>
@@ -346,7 +344,10 @@ export function CompiledGrammarLesson({
     const next = sectionIndex < sections.length - 1 ? sections[sectionIndex + 1] : undefined;
 
     return (
-      <main className="wvg-v13-lesson wvg-v14-section-detail" aria-labelledby="grammar-section-title">
+      <main
+        className="wvg-v13-lesson wvg-v14-section-detail"
+        aria-labelledby="grammar-section-title"
+      >
         <section className="wvg-v13-lesson__paper wvg-v14-section-detail__paper">
           <nav aria-label="Grammar section breadcrumb" className="wvg-v13-lesson__breadcrumb">
             <button onClick={() => setSelectedSection(undefined)} type="button">
@@ -477,8 +478,9 @@ export function CompiledGrammarLesson({
                   <p className="wvg-v14-section-content__eyebrow">APPLY WHAT YOU LEARNED</p>
                   <h2>Three ways to practise</h2>
                   <p>
-                    This lesson will use three practice modes. Their full question flows are the next
-                    implementation stage; this screen now acts as the single honest entry point.
+                    This lesson will use three practice modes. Their full question flows are the
+                    next implementation stage; this screen now acts as the single honest entry
+                    point.
                   </p>
                   <div className="wvg-v14-practice-mode-list">
                     <div>
@@ -592,7 +594,9 @@ export function CompiledGrammarLesson({
         <div className="wvg-v14-overview-guide">
           <div>
             <strong>Lesson map</strong>
-            <span>Choose a section to study. These cards are short previews, not the full lesson.</span>
+            <span>
+              Choose a section to study. These cards are short previews, not the full lesson.
+            </span>
           </div>
           <small>1 → 8 recommended order</small>
         </div>
@@ -661,7 +665,9 @@ export function CompiledGrammarLesson({
             <div className="wvg-v14-comparison-preview">
               <span>{isPresentPerfect ? "Past Simple: finished past time" : "Meaning first"}</span>
               <b>VS</b>
-              <span>{isPresentPerfect ? "Present Perfect: connected to now" : "Form in context"}</span>
+              <span>
+                {isPresentPerfect ? "Present Perfect: connected to now" : "Form in context"}
+              </span>
             </div>
           </SectionCard>
 
