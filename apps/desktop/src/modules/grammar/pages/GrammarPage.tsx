@@ -113,6 +113,7 @@ export function GrammarPage() {
         />
       ) : (
         <CompiledGrammarLesson
+          key={selectedLesson.id}
           lesson={selectedLesson}
           onBack={openCurriculum}
           onMarkComplete={() => markComplete(selectedLesson.id)}
