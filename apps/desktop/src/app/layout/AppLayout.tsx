@@ -54,15 +54,8 @@ export function AppLayout({ children }: PropsWithChildren) {
     const updateScale = () => {
       window.cancelAnimationFrame(animationFrame);
       animationFrame = window.requestAnimationFrame(() => {
-        const visualViewport = window.visualViewport;
-        const viewportWidth = Math.max(
-          visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth,
-          1
-        );
-        const viewportHeight = Math.max(
-          visualViewport?.height ?? document.documentElement.clientHeight ?? window.innerHeight,
-          1
-        );
+        const viewportWidth = Math.max(window.innerWidth, 1);
+        const viewportHeight = Math.max(window.innerHeight, 1);
         const scale = Math.max(
           Math.min(
             viewportWidth / WORD_VALLEY_STAGE_WIDTH,
@@ -78,12 +71,10 @@ export function AppLayout({ children }: PropsWithChildren) {
 
     updateScale();
     window.addEventListener("resize", updateScale);
-    window.visualViewport?.addEventListener("resize", updateScale);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", updateScale);
-      window.visualViewport?.removeEventListener("resize", updateScale);
     };
   }, [isWordValleyCleanRoom]);
 
