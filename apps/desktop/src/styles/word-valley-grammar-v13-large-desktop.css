@@ -2,15 +2,30 @@
    Keeps the shared Word Valley chrome untouched and only lets Grammar use more
    of the center canvas when the window has enough room. */
 
+/* The first breadcrumb item is the real back action. Make that affordance
+   obvious without changing the shared shell or the Figma-derived hierarchy. */
+#root .application-frame--grammar-cleanroom .wvg-v13-lesson__breadcrumb button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0a4a40;
+  font-weight: 600;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-lesson__breadcrumb button::before {
+  content: "←";
+  font: 600 13px/18px "Inter", system-ui, sans-serif;
+}
+
 @media (min-width: 1500px) {
   #root .application-frame--grammar-cleanroom .wvg-v13-home__paper,
   #root .application-frame--grammar-cleanroom .wvg-v13-lesson__paper {
-    width: min(1240px, calc(100% - 48px));
+    width: min(1400px, calc(100% - 32px));
   }
 
   #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
-    padding-right: 28px;
-    padding-left: 28px;
+    padding-right: 30px;
+    padding-left: 30px;
   }
 
   #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
@@ -43,7 +58,7 @@
 
   #root .application-frame--grammar-cleanroom .wvg-v13-lesson__paper {
     min-height: 100%;
-    padding: 20px 36px 24px;
+    padding: 20px 38px 24px;
   }
 
   #root .application-frame--grammar-cleanroom .wvg-v13-lesson__hero {
@@ -53,7 +68,7 @@
   #root .application-frame--grammar-cleanroom .wvg-v13-lesson__hero-copy {
     top: 28px;
     left: 34px;
-    width: min(520px, 50%);
+    width: min(540px, 50%);
   }
 
   #root .application-frame--grammar-cleanroom .wvg-v13-lesson__grid {
