@@ -9,7 +9,13 @@ import {
   type GrammarLessonSelection,
   type GrammarProgressMap
 } from "../components/GrammarCurriculumHome";
-import { getGrammarTeachingContent } from "../knowledge/grammarTeachingContent";
+import {
+  getGrammarTeachingContent,
+  type GrammarTeachingComparisonSide,
+  type GrammarTeachingExample,
+  type GrammarTeachingMistake,
+  type GrammarTeachingUse
+} from "../knowledge/grammarTeachingContent";
 
 import "../../../styles/word-valley-grammar-reference-final.css";
 import "../../../styles/word-valley-grammar-shell-final.css";
@@ -57,6 +63,26 @@ function persistGrammarProgress(progress: GrammarProgressMap): void {
   }
 }
 
+function hasRenderableCuratedContent(lessonId: string): boolean {
+  const content = getGrammarTeachingContent(lessonId);
+  if (content === undefined) return false;
+
+  const firstUse: GrammarTeachingUse | undefined = content.uses[0];
+  const firstExample: GrammarTeachingExample | undefined = content.examples[0];
+  const comparisonSide: GrammarTeachingComparisonSide = content.comparison.left;
+  const firstMistake: GrammarTeachingMistake | undefined = content.mistakes[0];
+
+  return (
+    content.formulaParts.length > 0 &&
+    firstUse !== undefined &&
+    firstExample !== undefined &&
+    comparisonSide.label.trim().length > 0 &&
+    firstMistake !== undefined &&
+    content.practiceChecks.length > 0 &&
+    content.quickRules.length > 0
+  );
+}
+
 export function GrammarPage() {
   const { setLessonFocus } = useGrammar();
   const [selectedLesson, setSelectedLesson] = useState<GrammarLessonSelection | undefined>();
@@ -100,7 +126,7 @@ export function GrammarPage() {
       ? 0
       : (progress[selectedLesson.id] ?? selectedLesson.initialProgress);
   const selectedHasCuratedContent =
-    selectedLesson !== undefined && getGrammarTeachingContent(selectedLesson.id) !== undefined;
+    selectedLesson !== undefined && hasRenderableCuratedContent(selectedLesson.id);
 
   return (
     <div
