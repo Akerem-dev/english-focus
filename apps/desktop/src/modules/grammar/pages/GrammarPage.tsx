@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useGrammar } from "../../../app/providers";
 import grammarBackground from "../../../assets/collections/collections-background.png";
 import { CompiledGrammarLesson } from "../components/CompiledGrammarLesson";
+import { CuratedGrammarLesson } from "../components/CuratedGrammarLesson";
 import {
   GrammarCurriculumHome,
   type GrammarLessonSelection,
   type GrammarProgressMap
 } from "../components/GrammarCurriculumHome";
+import { getGrammarTeachingContent } from "../knowledge/grammarTeachingContent";
 
 import "../../../styles/word-valley-grammar-reference-final.css";
 import "../../../styles/word-valley-grammar-shell-final.css";
@@ -93,6 +95,13 @@ export function GrammarPage() {
     });
   }
 
+  const selectedProgress =
+    selectedLesson === undefined
+      ? 0
+      : (progress[selectedLesson.id] ?? selectedLesson.initialProgress);
+  const selectedHasCuratedContent =
+    selectedLesson !== undefined && getGrammarTeachingContent(selectedLesson.id) !== undefined;
+
   return (
     <div
       className="wvg-page"
@@ -111,13 +120,21 @@ export function GrammarPage() {
           onOpenLesson={openLesson}
           progress={progress}
         />
+      ) : selectedHasCuratedContent ? (
+        <CuratedGrammarLesson
+          key={selectedLesson.id}
+          lesson={selectedLesson}
+          onBack={openCurriculum}
+          onMarkComplete={() => markComplete(selectedLesson.id)}
+          progress={selectedProgress}
+        />
       ) : (
         <CompiledGrammarLesson
           key={selectedLesson.id}
           lesson={selectedLesson}
           onBack={openCurriculum}
           onMarkComplete={() => markComplete(selectedLesson.id)}
-          progress={progress[selectedLesson.id] ?? selectedLesson.initialProgress}
+          progress={selectedProgress}
         />
       )}
     </div>
