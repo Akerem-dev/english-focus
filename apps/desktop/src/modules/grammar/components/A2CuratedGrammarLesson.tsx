@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from "react";
 
+import { GrammarPracticeExperience } from "./GrammarPracticeExperience";
 import type { GrammarLessonSelection } from "./GrammarCurriculumHome";
 import type {
   GrammarTeachingContent,
@@ -13,7 +14,7 @@ import "../../../styles/word-valley-grammar-v15-curated-lesson.css";
 interface A2CuratedGrammarLessonProps {
   readonly lesson: GrammarLessonSelection;
   readonly onBack: () => void;
-  readonly onMarkComplete: () => void;
+  readonly onMasteryChange: (mastery: number) => void;
   readonly progress: number;
 }
 
@@ -267,39 +268,31 @@ function SignalsSection({ content }: { readonly content: GrammarTeachingContent 
   );
 }
 
-function PracticeSection({ content }: { readonly content: GrammarTeachingContent }) {
+function PracticeSection({
+  content,
+  mastery,
+  onMasteryChange
+}: {
+  readonly content: GrammarTeachingContent;
+  readonly mastery: number;
+  readonly onMasteryChange: (mastery: number) => void;
+}) {
   return (
     <div className="wvg-v15-teaching-stack">
       <header className="wvg-v15-section-heading">
-        <span>CHECK YOUR UNDERSTANDING</span>
-        <h2>Three worked checkpoints before the real quiz</h2>
+        <span>TRAIN → TEST → PROVE</span>
+        <h2>Turn the rule into usable skill</h2>
         <p>
-          These are teaching checkpoints with answers and reasons. Guided Practice, Quick Quiz and
-          Challenge become interactive in the dedicated practice stage.
+          Guided Practice teaches with feedback, Quick Quiz gives you an objective 0–5 score, and
+          Challenge tests whether you can explain why an error is wrong.
         </p>
       </header>
 
-      <div className="wvg-v15-checkpoint-list">
-        {content.practiceChecks.map((check, index) => (
-          <article key={check.prompt}>
-            <header>
-              <span>CHECK {index + 1}</span>
-              <strong>{check.prompt}</strong>
-            </header>
-            <div>
-              <small>ANSWER</small>
-              <b>{check.answer}</b>
-              <p>{check.explanation}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      <div className="wvg-v15-practice-roadmap" aria-label="Upcoming interactive practice modes">
-        <span>Guided Practice</span>
-        <span>5-question Quick Quiz</span>
-        <span>Challenge</span>
-      </div>
+      <GrammarPracticeExperience
+        content={content}
+        mastery={mastery}
+        onMasteryChange={onMasteryChange}
+      />
     </div>
   );
 }
@@ -332,9 +325,13 @@ function QuickRuleSection({ content }: { readonly content: GrammarTeachingConten
 
 function SectionBody({
   content,
+  mastery,
+  onMasteryChange,
   sectionId
 }: {
   readonly content: GrammarTeachingContent;
+  readonly mastery: number;
+  readonly onMasteryChange: (mastery: number) => void;
   readonly sectionId: GrammarTeachingSectionId;
 }) {
   switch (sectionId) {
@@ -351,7 +348,13 @@ function SectionBody({
     case "signals":
       return <SignalsSection content={content} />;
     case "practice":
-      return <PracticeSection content={content} />;
+      return (
+        <PracticeSection
+          content={content}
+          mastery={mastery}
+          onMasteryChange={onMasteryChange}
+        />
+      );
     case "quick-rule":
       return <QuickRuleSection content={content} />;
   }
@@ -406,7 +409,7 @@ function previewForSection(content: GrammarTeachingContent, sectionId: GrammarTe
         </div>
       );
     case "practice":
-      return <p>{content.practiceChecks.length} worked checkpoints before interactive practice.</p>;
+      return <p>Guided Practice · 5-question Quick Quiz · Challenge · saved mastery</p>;
     case "quick-rule":
       return <p>{content.quickRules[0]}</p>;
   }
@@ -415,13 +418,14 @@ function previewForSection(content: GrammarTeachingContent, sectionId: GrammarTe
 export function A2CuratedGrammarLesson({
   lesson,
   onBack,
-  onMarkComplete,
+  onMasteryChange,
   progress
 }: A2CuratedGrammarLessonProps) {
   const content = getA2GrammarTeachingContent(lesson.id);
   const artwork = getGrammarLessonArtwork(lesson.sourceLessonId);
-  const [selectedSection, setSelectedSection] = useState<GrammarTeachingSectionId>();
-  const isComplete = progress >= 5;
+  const [selectedSection, setSelectedSection] = useState<GrammarTeachingSectionId>(
+    lesson.initialSection
+  );
   const sections = useMemo(
     () =>
       SECTION_DEFINITIONS.map((section) => ({
@@ -491,7 +495,12 @@ export function A2CuratedGrammarLesson({
             </aside>
 
             <article className="wvg-v15-section-content">
-              <SectionBody content={content} sectionId={selectedSection} />
+              <SectionBody
+                content={content}
+                mastery={progress}
+                onMasteryChange={onMasteryChange}
+                sectionId={selectedSection}
+              />
             </article>
           </div>
 
@@ -544,11 +553,14 @@ export function A2CuratedGrammarLesson({
             <h1 id="grammar-topic-title">{lesson.title}</h1>
             <p>{content.intro}</p>
             <div>
-              <button onClick={() => setSelectedSection("formula")} type="button">
-                Start lesson →
+              <button
+                onClick={() => setSelectedSection(progress > 0 ? "practice" : "formula")}
+                type="button"
+              >
+                {progress > 0 ? "Resume learning →" : "Start lesson →"}
               </button>
-              <button aria-pressed={isComplete} onClick={onMarkComplete} type="button">
-                {isComplete ? "✓ Completed" : "○ Mark as complete"}
+              <button onClick={() => setSelectedSection("practice")} type="button">
+                {progress >= 5 ? "✓ Mastered · Review" : `Mastery ${progress}/5 · Practice`}
               </button>
             </div>
             <em>
