@@ -263,6 +263,14 @@
   }
 }
 
+/* Word Valley renders Wordie as a fixed rail. The legacy floating-panel
+   entrance briefly scales/translates the rail and causes visible geometry
+   drift, so paint it at its final coordinates from the first frame. */
+.application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
+  animation: none !important;
+  transform: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .assistant-panel {
     animation: none;
