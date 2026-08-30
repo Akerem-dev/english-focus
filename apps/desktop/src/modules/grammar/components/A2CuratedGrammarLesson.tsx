@@ -419,7 +419,7 @@ export function A2CuratedGrammarLesson({
 }: A2CuratedGrammarLessonProps) {
   const content = getA2GrammarTeachingContent(lesson.id);
   const artwork = getGrammarLessonArtwork(lesson.sourceLessonId);
-  const [selectedSection, setSelectedSection] = useState<GrammarTeachingSectionId>(
+  const [selectedSection, setSelectedSection] = useState<GrammarTeachingSectionId | undefined>(
     lesson.initialSection
   );
   const sections = useMemo(
