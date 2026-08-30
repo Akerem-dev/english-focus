@@ -58,7 +58,8 @@ export const PASSIVE_VOICE_TEACHING_CONTENT: GrammarTeachingContent = {
     },
     {
       title: "Mention an important agent with by",
-      explanation: "Add by + agent when the identity of the performer is informative or surprising.",
+      explanation:
+        "Add by + agent when the identity of the performer is informative or surprising.",
       example: "The novel was written by George Orwell.",
       translationTr: "Roman George Orwell tarafından yazıldı."
     }
@@ -171,5 +172,6 @@ export const PASSIVE_VOICE_TEACHING_CONTENT: GrammarTeachingContent = {
     "Use it when the receiver, action, process, or result deserves the focus.",
     "Keep by + agent only when the performer adds useful information."
   ]),
-  memoryHook: "Keep the tense on BE, put the action in V3, and move the camera from the doer to the receiver."
+  memoryHook:
+    "Keep the tense on BE, put the action in V3, and move the camera from the doer to the receiver."
 };
