@@ -32,7 +32,11 @@ export const REPORTED_SPEECH_TEACHING_CONTENT: GrammarTeachingContent = {
     headers: Object.freeze(["Direct form", "Common backshift", "Example"]),
     rows: Object.freeze([
       Object.freeze(["Present Simple", "Past Simple", "‘I work.’ → He said he worked."]),
-      Object.freeze(["Present Continuous", "Past Continuous", "‘I’m leaving.’ → She said she was leaving."]),
+      Object.freeze([
+        "Present Continuous",
+        "Past Continuous",
+        "‘I’m leaving.’ → She said she was leaving."
+      ]),
       Object.freeze(["Past Simple", "Past Perfect", "‘I saw it.’ → He said he had seen it."]),
       Object.freeze(["will", "would", "‘I’ll call.’ → She said she would call."])
     ])
@@ -52,7 +56,8 @@ export const REPORTED_SPEECH_TEACHING_CONTENT: GrammarTeachingContent = {
     },
     {
       title: "Report yes/no questions",
-      explanation: "Use ask + if/whether and statement word order; do not keep do/does/did question order.",
+      explanation:
+        "Use ask + if/whether and statement word order; do not keep do/does/did question order.",
       example: "She asked if I was ready.",
       translationTr: "Hazır olup olmadığımı sordu."
     },
@@ -153,17 +158,20 @@ export const REPORTED_SPEECH_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       prompt: "Report: ‘I am working from home,’ Alex said.",
       answer: "Alex said that he was working from home.",
-      explanation: "A past reporting verb commonly shifts am working to was working and the pronoun changes with the speaker."
+      explanation:
+        "A past reporting verb commonly shifts am working to was working and the pronoun changes with the speaker."
     },
     {
       prompt: "Correct: She asked where did I buy it.",
       answer: "She asked where I had bought it. / She asked where I bought it.",
-      explanation: "Reported wh-questions use statement order; did disappears. The exact backshift depends on context."
+      explanation:
+        "Reported wh-questions use statement order; did disappears. The exact backshift depends on context."
     },
     {
       prompt: "Report: ‘Are you free tomorrow?’ she asked me.",
       answer: "She asked me if I was free the next day.",
-      explanation: "Yes/no questions use if/whether, statement order, and a changed time reference when needed."
+      explanation:
+        "Yes/no questions use if/whether, statement order, and a changed time reference when needed."
     }
   ]),
   quickRules: Object.freeze([
@@ -171,5 +179,6 @@ export const REPORTED_SPEECH_TEACHING_CONTENT: GrammarTeachingContent = {
     "After a past reporting verb, tense often shifts one step back when the viewpoint changes.",
     "Adjust pronouns and time/place words only when the new context requires it."
   ]),
-  memoryHook: "Reported speech is a camera change: retell the same message from a new speaker, time, and place."
+  memoryHook:
+    "Reported speech is a camera change: retell the same message from a new speaker, time, and place."
 };
