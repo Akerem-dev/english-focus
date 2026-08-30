@@ -23,7 +23,9 @@ async function readDetailGeometry(page: Page) {
   };
 }
 
-test("curated Be lesson teaches form meaning examples errors and real practice", async ({ page }) => {
+test("curated Be lesson teaches form meaning examples errors and real practice", async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await openBeLesson(page);
 
