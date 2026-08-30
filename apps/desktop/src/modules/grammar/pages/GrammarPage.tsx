@@ -114,19 +114,25 @@ export function GrammarPage() {
     setSelectedLesson(undefined);
   }
 
-  function markComplete(lessonId: string) {
+  function updateProgress(lessonId: string, value: number) {
+    const nextValue = clampProgress(value);
+
     setProgress((current) => {
-      if (current[lessonId] === 5) return current;
-      const next = Object.freeze({ ...current, [lessonId]: 5 });
+      if (current[lessonId] === nextValue) return current;
+      const next = Object.freeze({ ...current, [lessonId]: nextValue });
       persistGrammarProgress(next);
       return next;
     });
   }
 
+  function markComplete(lessonId: string) {
+    updateProgress(lessonId, 5);
+  }
+
   const selectedProgress =
     selectedLesson === undefined
       ? 0
-      : (progress[selectedLesson.id] ?? selectedLesson.initialProgress);
+      : clampProgress(progress[selectedLesson.id] ?? selectedLesson.initialProgress);
   const selectedUsesExpandedCuratedLesson =
     selectedLesson?.level === "A2" || selectedLesson?.level === "B1";
   const selectedHasCuratedContent =
@@ -145,17 +151,13 @@ export function GrammarPage() {
       <div aria-hidden="true" className="wvg-scene-veil" />
 
       {selectedLesson === undefined ? (
-        <GrammarCurriculumHome
-          onMarkComplete={markComplete}
-          onOpenLesson={openLesson}
-          progress={progress}
-        />
+        <GrammarCurriculumHome onOpenLesson={openLesson} progress={progress} />
       ) : selectedUsesExpandedCuratedLesson ? (
         <A2CuratedGrammarLesson
-          key={selectedLesson.id}
+          key={`${selectedLesson.id}-${selectedLesson.initialSection ?? "overview"}`}
           lesson={selectedLesson}
           onBack={openCurriculum}
-          onMarkComplete={() => markComplete(selectedLesson.id)}
+          onMasteryChange={(mastery) => updateProgress(selectedLesson.id, mastery)}
           progress={selectedProgress}
         />
       ) : selectedHasCuratedContent ? (
