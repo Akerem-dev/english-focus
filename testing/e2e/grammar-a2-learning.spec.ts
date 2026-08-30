@@ -94,8 +94,15 @@ test("Present Perfect A2 lesson teaches form meaning timing and high-value confu
   await expect(page.getByText("for", { exact: true })).toBeVisible();
 
   await lessonMap.getByRole("button", { name: "7 Practice", exact: true }).click();
+  await expect(page.getByRole("button", { name: /Guided Practice/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Quick Quiz/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Challenge/i })).toBeVisible();
+  await expect(page.getByLabel("Grammar mastery 0 of 5")).toBeVisible();
+
+  await page.getByRole("button", { name: /Guided Practice/i }).click();
   await expect(
-    page.getByText("Choose since or for: We have known each other ___ 2019.", { exact: true })
+    page.getByText("Complete: She ___ already ___ (finish) the report.", { exact: true })
   ).toBeVisible();
-  await expect(page.getByText("since", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Reveal answer", exact: true }).click();
+  await expect(page.getByText("has already finished", { exact: true })).toBeVisible();
 });
