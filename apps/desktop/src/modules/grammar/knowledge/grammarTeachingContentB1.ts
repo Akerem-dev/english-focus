@@ -19,8 +19,6 @@ const B1_CONTENT_BY_ID = new Map(
   B1_GRAMMAR_TEACHING_CONTENT.map((content) => [content.id, content])
 );
 
-export function getB1GrammarTeachingContent(
-  lessonId: string
-): GrammarTeachingContent | undefined {
+export function getB1GrammarTeachingContent(lessonId: string): GrammarTeachingContent | undefined {
   return B1_CONTENT_BY_ID.get(lessonId);
 }
