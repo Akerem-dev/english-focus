@@ -348,13 +348,7 @@ function SectionBody({
     case "signals":
       return <SignalsSection content={content} />;
     case "practice":
-      return (
-        <PracticeSection
-          content={content}
-          mastery={mastery}
-          onMasteryChange={onMasteryChange}
-        />
-      );
+      return <PracticeSection content={content} mastery={mastery} onMasteryChange={onMasteryChange} />;
     case "quick-rule":
       return <QuickRuleSection content={content} />;
   }
