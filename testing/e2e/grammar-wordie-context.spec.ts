@@ -1,8 +1,10 @@
+import type { Page } from "@playwright/test";
+
 import { expect, test } from "./app.fixture";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 
-async function clearGrammarProgress(page: import("@playwright/test").Page) {
+async function clearGrammarProgress(page: Page) {
   await page.goto("/");
   await page.evaluate((key) => window.localStorage.removeItem(key), GRAMMAR_PROGRESS_KEY);
 }
