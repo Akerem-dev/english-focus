@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useGrammar } from "../../../app/providers";
 import grammarBackground from "../../../assets/collections/collections-background.png";
+import { A2CuratedGrammarLesson } from "../components/A2CuratedGrammarLesson";
 import { CompiledGrammarLesson } from "../components/CompiledGrammarLesson";
 import { CuratedGrammarLesson } from "../components/CuratedGrammarLesson";
 import {
@@ -126,6 +127,7 @@ export function GrammarPage() {
     selectedLesson === undefined
       ? 0
       : (progress[selectedLesson.id] ?? selectedLesson.initialProgress);
+  const selectedIsA2 = selectedLesson?.level === "A2";
   const selectedHasCuratedContent =
     selectedLesson !== undefined && hasRenderableCuratedContent(selectedLesson.id);
 
@@ -146,6 +148,14 @@ export function GrammarPage() {
           onMarkComplete={markComplete}
           onOpenLesson={openLesson}
           progress={progress}
+        />
+      ) : selectedIsA2 ? (
+        <A2CuratedGrammarLesson
+          key={selectedLesson.id}
+          lesson={selectedLesson}
+          onBack={openCurriculum}
+          onMarkComplete={() => markComplete(selectedLesson.id)}
+          progress={selectedProgress}
         />
       ) : selectedHasCuratedContent ? (
         <CuratedGrammarLesson
