@@ -41,25 +41,29 @@ export const RELATIVE_CLAUSES_TEACHING_CONTENT: GrammarTeachingContent = {
   uses: Object.freeze([
     {
       title: "Identify exactly which noun you mean",
-      explanation: "Use a defining relative clause when the information is necessary to identify the person or thing.",
+      explanation:
+        "Use a defining relative clause when the information is necessary to identify the person or thing.",
       example: "The woman who works upstairs is a lawyer.",
       translationTr: "Üst katta çalışan kadın bir avukat."
     },
     {
       title: "Add extra information",
-      explanation: "Use a non-defining clause when the noun is already clear and the clause only adds extra detail.",
+      explanation:
+        "Use a non-defining clause when the noun is already clear and the clause only adds extra detail.",
       example: "Maya, who works upstairs, is a lawyer.",
       translationTr: "Maya, üst katta çalışıyor, bir avukat."
     },
     {
       title: "Show possession",
-      explanation: "Use whose to connect a person or thing to something they possess or are associated with.",
+      explanation:
+        "Use whose to connect a person or thing to something they possess or are associated with.",
       example: "I met a writer whose books are translated worldwide.",
       translationTr: "Kitapları dünya çapında çevrilen bir yazarla tanıştım."
     },
     {
       title: "Connect places and times",
-      explanation: "Use where for places and when for times when that relationship is the important link.",
+      explanation:
+        "Use where for places and when for times when that relationship is the important link.",
       example: "That’s the park where we first met.",
       translationTr: "İlk tanıştığımız park orası."
     }
@@ -86,8 +90,8 @@ export const RELATIVE_CLAUSES_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       label: "Place",
       sentence: "This is the town where my father grew up.",
-      translationTr: "Burası babamın büyüdüğü kasaba."
-      ,note: "Where links the place to what happened there."
+      translationTr: "Burası babamın büyüdüğü kasaba.",
+      note: "Where links the place to what happened there."
     },
     {
       label: "Non-defining",
@@ -159,7 +163,8 @@ export const RELATIVE_CLAUSES_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       prompt: "Correct: My uncle, that lives in London, is visiting us.",
       answer: "My uncle, who lives in London, is visiting us.",
-      explanation: "The commas mark a non-defining clause, where standard English uses who rather than that."
+      explanation:
+        "The commas mark a non-defining clause, where standard English uses who rather than that."
     },
     {
       prompt: "Complete: That’s the restaurant ___ we had our first date.",
@@ -172,5 +177,6 @@ export const RELATIVE_CLAUSES_TEACHING_CONTENT: GrammarTeachingContent = {
     "Defining clauses identify the noun and normally have no commas.",
     "Non-defining clauses add extra information, use commas, and normally do not use that."
   ]),
-  memoryHook: "Relative clauses are noun zoom-ins: identify the noun, then choose the connector that explains it."
+  memoryHook:
+    "Relative clauses are noun zoom-ins: identify the noun, then choose the connector that explains it."
 };
