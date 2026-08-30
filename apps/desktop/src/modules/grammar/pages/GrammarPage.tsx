@@ -162,10 +162,10 @@ export function GrammarPage() {
         />
       ) : selectedHasCuratedContent ? (
         <CuratedGrammarLesson
-          key={selectedLesson.id}
+          key={`${selectedLesson.id}-${selectedLesson.initialSection ?? "overview"}`}
           lesson={selectedLesson}
           onBack={openCurriculum}
-          onMarkComplete={() => markComplete(selectedLesson.id)}
+          onMasteryChange={(mastery) => updateProgress(selectedLesson.id, mastery)}
           progress={selectedProgress}
         />
       ) : (
