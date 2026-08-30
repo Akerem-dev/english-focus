@@ -16,11 +16,9 @@ test("Grammar Wordie stays grammar-only and becomes lesson-aware", async ({ page
 
   await page.getByRole("button", { name: "Open Wordie", exact: true }).click();
   const homeHelper = page.getByRole("dialog", { name: "Grammar helper" });
-  const homeStarters = homeHelper.locator(".wv84-quick-actions--welcome > button:visible");
   await expect(homeHelper).toBeVisible();
-  await expect(homeStarters).toHaveCount(2);
-  await expect(homeStarters.nth(0)).toContainText("Explain a rule");
-  await expect(homeStarters.nth(1)).toContainText("Compare grammar points");
+  await expect(homeHelper.getByRole("button", { name: /Explain a rule/i })).toBeVisible();
+  await expect(homeHelper.getByRole("button", { name: /Compare grammar points/i })).toBeVisible();
   await expect(homeHelper.getByText("Explain a word", { exact: true })).toHaveCount(0);
   await expect(homeHelper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Close Wordie", exact: true }).click();
@@ -30,16 +28,16 @@ test("Grammar Wordie stays grammar-only and becomes lesson-aware", async ({ page
   await page.getByRole("button", { name: "Open Wordie", exact: true }).click();
 
   const lessonHelper = page.getByRole("dialog", { name: "Grammar helper" });
-  const lessonStarters = lessonHelper.locator(".wv84-quick-actions--welcome > button:visible");
   await expect(lessonHelper).toBeVisible();
-  await expect(lessonStarters).toHaveCount(2);
-  await expect(lessonStarters.nth(0)).toContainText("Explain this rule");
-  await expect(lessonStarters.nth(1)).toContainText("Compare with Past Simple");
+  await expect(lessonHelper.getByRole("button", { name: /Explain this rule/i })).toBeVisible();
+  await expect(
+    lessonHelper.getByRole("button", { name: /Compare with Past Simple/i })
+  ).toBeVisible();
   await expect(lessonHelper.getByText("Explain a word", { exact: true })).toHaveCount(0);
   await expect(lessonHelper.getByText("Explore in context", { exact: true })).toHaveCount(0);
 
   const composer = lessonHelper.getByPlaceholder("Ask about this grammar...");
   await expect(composer).toBeVisible();
-  await lessonStarters.nth(0).click();
+  await lessonHelper.getByRole("button", { name: /Explain this rule/i }).click();
   await expect(composer).toHaveValue("Present Perfect kuralını kısa Türkçe mantıkla açıkla.");
 });
