@@ -246,17 +246,23 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
     const heroBox = await page.locator(".wvg-v13-hero").boundingBox();
+    const booksBox = await page.locator(".wvg-v13-shelf__books").first().boundingBox();
     const bookBox = await page.locator(".wvg-v13-book").first().boundingBox();
     const shelfBox = await page.locator(".wvg-v13-shelf__wood").first().boundingBox();
 
     expect(heroBox).not.toBeNull();
+    expect(booksBox).not.toBeNull();
     expect(bookBox).not.toBeNull();
     expect(shelfBox).not.toBeNull();
     expect(heroBox!.height).toBeCloseTo(219, 0);
     if (viewport.width >= 1500) {
       expect(bookBox!.width).toBeGreaterThan(158);
-    } else {
+    } else if (viewport.width > 1280) {
       expect(bookBox!.width).toBeCloseTo(158, 0);
+    } else {
+      const expectedFourColumnWidth = (booksBox!.width - 3 * 8) / 4;
+      expect(bookBox!.width).toBeCloseTo(expectedFourColumnWidth, 0);
+      expect(bookBox!.width).toBeGreaterThan(158);
     }
     expect(bookBox!.height).toBeGreaterThanOrEqual(88);
     expect(shelfBox!.height).toBeCloseTo(14, 0);
