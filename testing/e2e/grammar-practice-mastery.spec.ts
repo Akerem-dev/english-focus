@@ -72,7 +72,10 @@ test("Present Perfect practice drives mastery and persists it back to the booksh
   await page.getByRole("button", { name: "Practice menu", exact: true }).click();
   await expect(page.getByLabel("Grammar mastery 5 of 5")).toBeVisible();
 
-  const storedProgress = await page.evaluate((key) => window.localStorage.getItem(key), GRAMMAR_PROGRESS_KEY);
+  const storedProgress = await page.evaluate(
+    (key) => window.localStorage.getItem(key),
+    GRAMMAR_PROGRESS_KEY
+  );
   expect(storedProgress).not.toBeNull();
   expect(JSON.parse(storedProgress!)).toMatchObject({ "present-perfect": 5 });
 
