@@ -114,8 +114,7 @@ export const GOING_TO_TEACHING_CONTENT: GrammarTeachingContent = {
     },
     right: {
       label: "WILL",
-      rule:
-        "Often an instant decision, offer, promise, or a prediction presented as an opinion.",
+      rule: "Often an instant decision, offer, promise, or a prediction presented as an opinion.",
       example: "The phone is ringing. I'll answer it.",
       translationTr: "Telefon çalıyor. Ben açarım."
     },
@@ -136,8 +135,7 @@ export const GOING_TO_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       wrong: "Do you going to travel?",
       right: "Are you going to travel?",
-      why:
-        "The auxiliary is be, so questions move are/is/am before the subject; do is not used."
+      why: "The auxiliary is be, so questions move are/is/am before the subject; do is not used."
     },
     {
       wrong: "They are going visit us.",
