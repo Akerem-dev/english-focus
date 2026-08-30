@@ -1,6 +1,6 @@
-/* Wide-desktop sizing pass for the V13 Grammar experience.
-   Keeps the shared Word Valley chrome untouched and only lets Grammar use more
-   of the center canvas when the window has enough room. */
+/* Wide-desktop and shared-shell responsive sizing for the V13 Grammar experience.
+   Keeps the shared Word Valley chrome untouched and only adapts Grammar content
+   to the center slot that remains after the canonical 318px sidebar. */
 
 /* The first breadcrumb item is the real back action. Make that affordance
    obvious without changing the shared shell or the Figma-derived hierarchy. */
@@ -91,5 +91,99 @@
   #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--practice,
   #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--quick-rule {
     min-height: 138px;
+  }
+}
+
+/* With the shared 318px sidebar, the 1366px window has 85px less content width
+   than the standalone Figma laptop frame. Recover that room from paper padding so
+   the six 158px books still fit without clipping into the right edge. */
+@media (min-width: 1281px) and (max-width: 1499px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding-right: 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* The approved 1180px Figma frame uses a 72px icon-only sidebar. Word Valley's
+   actual application shell intentionally keeps the full 318px sidebar instead,
+   so Grammar must adapt inside the smaller center slot rather than collapsing
+   shared navigation. */
+@media (max-width: 1280px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-toolbar {
+    height: auto;
+    flex-wrap: wrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-search {
+    width: min(392px, 100%);
+    flex-basis: min(392px, 100%);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-filters {
+    flex: 1 1 100%;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-filters .wvg-v13-filters__recommended {
+    margin-left: auto;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-left: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__title,
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__subtitle {
+    width: auto;
+    max-width: none;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__wood {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1120px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero__content {
+    right: 20px;
+    left: 20px;
+    width: auto;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero h2 {
+    font-size: 36px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero__copy {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
