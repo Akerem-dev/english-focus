@@ -107,8 +107,7 @@ export const USED_TO_TEACHING_CONTENT: GrammarTeachingContent = {
     },
     right: {
       label: "PAST SIMPLE",
-      rule:
-        "A finished event, or repeated past action when no 'different now' contrast is needed.",
+      rule: "A finished event, or repeated past action when no 'different now' contrast is needed.",
       example: "I walked to school yesterday.",
       translationTr: "Dün okula yürüdüm."
     },
@@ -134,8 +133,7 @@ export const USED_TO_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       wrong: "I am used to live alone.",
       right: "I used to live alone.",
-      why:
-        "Used to + verb means a past habit/state. Be used to has a different meaning: being accustomed to something."
+      why: "Used to + verb means a past habit/state. Be used to has a different meaning: being accustomed to something."
     }
   ]),
   signalsLabel: "Language that often creates a past-vs-present contrast",
@@ -175,6 +173,5 @@ export const USED_TO_TEACHING_CONTENT: GrammarTeachingContent = {
     "After did/didn't, write use to + base verb.",
     "Do not confuse used to do with be used to doing; they express different meanings."
   ]),
-  memoryHook:
-    "Used to draws a bridge between THEN and NOW — and shows that the situation changed."
+  memoryHook: "Used to draws a bridge between THEN and NOW — and shows that the situation changed."
 };
