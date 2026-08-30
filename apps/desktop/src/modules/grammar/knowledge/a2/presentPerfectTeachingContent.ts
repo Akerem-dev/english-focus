@@ -20,8 +20,7 @@ export const PRESENT_PERFECT_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       label: "PAST PARTICIPLE",
       value: "worked / seen / gone / written",
-      note:
-        "Use V3, not the Past Simple form when an irregular verb has a different participle."
+      note: "Use V3, not the Past Simple form when an irregular verb has a different participle."
     },
     {
       label: "QUESTION / NEGATIVE",
@@ -62,8 +61,7 @@ export const PRESENT_PERFECT_TEACHING_CONTENT: GrammarTeachingContent = {
     },
     {
       title: "Unfinished time period",
-      explanation:
-        "Use it when the time period includes now, such as today, this week, or so far.",
+      explanation: "Use it when the time period includes now, such as today, this week, or so far.",
       example: "We have had three meetings this week.",
       translationTr: "Bu hafta üç toplantı yaptık."
     },
@@ -104,16 +102,14 @@ export const PRESENT_PERFECT_TEACHING_CONTENT: GrammarTeachingContent = {
       label: "Been vs gone",
       sentence: "Maya has been to Rome, but Leo has gone to Rome.",
       translationTr: "Maya Roma'ya gidip döndü; Leo ise Roma'ya gitti ve hâlâ orada/yolda.",
-      note:
-        "Has been to usually means visited and returned; has gone to means the person has not returned yet."
+      note: "Has been to usually means visited and returned; has gone to means the person has not returned yet."
     }
   ]),
   comparison: {
     title: "Does the sentence belong to a finished past time, or connect the past to now?",
     left: {
       label: "PRESENT PERFECT",
-      rule:
-        "Experience/result/unfinished time with a connection to now; no finished past time is named.",
+      rule: "Experience/result/unfinished time with a connection to now; no finished past time is named.",
       example: "I have visited Paris.",
       translationTr: "Paris'i ziyaret ettim."
     },
@@ -145,8 +141,7 @@ export const PRESENT_PERFECT_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       wrong: "Did you ever been to Spain?",
       right: "Have you ever been to Spain?",
-      why:
-        "Life experience with ever normally uses Have/Has + past participle, not did + V3."
+      why: "Life experience with ever normally uses Have/Has + past participle, not did + V3."
     }
   ]),
   signalsLabel: "Frequent clues for experience, recency, unfinished time, and duration",
