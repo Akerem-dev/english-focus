@@ -33,7 +33,11 @@ export const PRESENT_PERFECT_CONTINUOUS_TEACHING_CONTENT: GrammarTeachingContent
     rows: Object.freeze([
       Object.freeze(["Positive", "have/has been + V-ing", "She has been studying."]),
       Object.freeze(["Negative", "haven’t/hasn’t been + V-ing", "We haven’t been sleeping well."]),
-      Object.freeze(["Question", "Have/Has + subject + been + V-ing?", "Have you been waiting long?"])
+      Object.freeze([
+        "Question",
+        "Have/Has + subject + been + V-ing?",
+        "Have you been waiting long?"
+      ])
     ])
   },
   uses: Object.freeze([
@@ -45,7 +49,8 @@ export const PRESENT_PERFECT_CONTINUOUS_TEACHING_CONTENT: GrammarTeachingContent
     },
     {
       title: "Recent activity with a present result",
-      explanation: "Talk about an activity that may have just stopped but explains what we can see now.",
+      explanation:
+        "Talk about an activity that may have just stopped but explains what we can see now.",
       example: "You’re wet. Have you been walking in the rain?",
       translationTr: "Islanmışsın. Yağmurda mı yürüyordun?"
     },
@@ -57,7 +62,8 @@ export const PRESENT_PERFECT_CONTINUOUS_TEACHING_CONTENT: GrammarTeachingContent
     },
     {
       title: "Duration as the main idea",
-      explanation: "Choose the continuous form when how long the activity has been happening matters most.",
+      explanation:
+        "Choose the continuous form when how long the activity has been happening matters most.",
       example: "How long have you been working here?",
       translationTr: "Ne zamandır burada çalışıyorsun?"
     }
