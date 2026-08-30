@@ -102,7 +102,9 @@ test("Present Perfect practice drives mastery and persists it back to the booksh
   ).toBeVisible();
 });
 
-test("A1 curated practice promotes Be mastery and persists it to the bookshelf", async ({ page }) => {
+test("A1 curated practice promotes Be mastery and persists it to the bookshelf", async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearGrammarProgress(page);
   await page.goto("/#/grammar");
