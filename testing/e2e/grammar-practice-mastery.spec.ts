@@ -12,6 +12,14 @@ const QUICK_QUIZ_ANSWERS = Object.freeze([
   "Experience/result/unfinished time with a connection to now; no finished past time is named."
 ]);
 
+const BE_QUICK_QUIZ_ANSWERS = Object.freeze([
+  "I am tired.",
+  "They are at home.",
+  "Are you ready?",
+  "Subject + am / is / are + complement",
+  "Move be before the subject to make a question."
+]);
+
 const CHALLENGE_ANSWERS = Object.freeze([
   "Present Perfect needs the past participle V3: go → went → gone.",
   "Have/has must be followed by a past participle.",
@@ -91,6 +99,48 @@ test("Present Perfect practice drives mastery and persists it back to the booksh
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Present Perfect, 5 of 5 complete", exact: true })
+  ).toBeVisible();
+});
+
+test("A1 curated practice promotes Be mastery and persists it to the bookshelf", async ({ page }) => {
+  await page.setViewportSize({ width: 1664, height: 936 });
+  await clearGrammarProgress(page);
+  await page.goto("/#/grammar");
+
+  await page
+    .getByRole("button", { name: "Be: am / is / are, 2 of 5 complete", exact: true })
+    .click();
+  await expect(page.getByRole("heading", { name: "Be: am / is / are", level: 1 })).toBeVisible();
+  await page.getByRole("button", { name: "Mastery 2/5 · Practice", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Practice", level: 1 })).toBeVisible();
+  await expect(page.getByLabel("Grammar mastery 2 of 5")).toBeVisible();
+
+  await page.getByRole("button", { name: /Quick Quiz/i }).click();
+  await expect(page.getByText("QUICK QUIZ 1 / 5", { exact: true })).toBeVisible();
+  await answerChoiceSession(page, BE_QUICK_QUIZ_ANSWERS);
+  await expect(page.getByText("QUICK QUIZ COMPLETE", { exact: true })).toBeVisible();
+  await expect(page.getByText("5 / 5 correct", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Practice menu", exact: true }).click();
+  await expect(page.getByLabel("Grammar mastery 5 of 5")).toBeVisible();
+
+  const storedProgress = await page.evaluate(
+    (key) => window.localStorage.getItem(key),
+    GRAMMAR_PROGRESS_KEY
+  );
+  expect(storedProgress).not.toBeNull();
+  expect(JSON.parse(storedProgress!)).toMatchObject({ "be-am-is-are": 5 });
+
+  await page.getByRole("button", { name: "← Lesson overview", exact: true }).click();
+  await expect(page.getByRole("button", { name: /Mastered · Review/i })).toBeVisible();
+  await page.getByRole("button", { name: "← Grammar", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Be: am / is / are, 5 of 5 complete", exact: true })
+  ).toBeVisible();
+
+  await page.reload();
+  await expect(
+    page.getByRole("button", { name: "Be: am / is / are, 5 of 5 complete", exact: true })
   ).toBeVisible();
 });
 
