@@ -54,6 +54,9 @@ test("every A2 bookshelf topic opens a complete curated eight-section lesson", a
     await expect(page.getByRole("button", { name: /^Open .* section$/ })).toHaveCount(8);
     await expect(page.getByText(lesson.formula, { exact: true })).toBeVisible();
     await expect(page.getByText("Level A2", { exact: false })).toBeVisible();
+
+    await page.getByRole("button", { name: "← Grammar", exact: true }).click();
+    await expect(page.getByRole("heading", { name: /Grammar/i, level: 1 })).toBeVisible();
   }
 });
 
@@ -78,7 +81,7 @@ test("Present Perfect A2 lesson teaches form meaning timing and high-value confu
     .getByRole("button", { name: "4 Present Perfect vs Past Simple", exact: true })
     .click();
   await expect(page.getByText("I visited Paris last summer.", { exact: true })).toBeVisible();
-  await expect(page.getByText(/finished 'When\?'/i)).toBeVisible();
+  await expect(page.getByText(/Ask 'When\?'/i)).toBeVisible();
 
   await lessonMap.getByRole("button", { name: "5 Common Mistakes", exact: true }).click();
   await expect(page.getByText(/I have went to the store\./)).toBeVisible();
