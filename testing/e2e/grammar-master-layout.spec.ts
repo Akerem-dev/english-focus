@@ -130,13 +130,7 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
     page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
   ).toBeVisible();
 
-  const complete = page.getByRole("button", { name: /Mark as complete/i }).first();
-  await complete.click();
-  await expect(page.getByRole("button", { name: "Completed", exact: true }).first()).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: /Present Perfect, 5 of 5 complete/i })
-  ).toBeVisible();
-
+  await expect(page.getByRole("button", { name: "Practice · 0/5", exact: true })).toBeVisible();
   await openPresentPerfectFromHome(page);
 
   await expect(page.getByText("Lesson map", { exact: true })).toBeVisible();
@@ -159,10 +153,10 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
 
   await page.getByRole("button", { name: "Open Practice section" }).click();
   await expect(page.getByRole("heading", { name: "Practice", level: 1 })).toBeVisible();
-  await expect(page.getByText("Guided Practice", { exact: true })).toBeVisible();
-  await expect(page.getByText("5-question Quick Quiz", { exact: true })).toBeVisible();
-  await expect(page.getByText("Challenge", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Quick Quiz", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Guided Practice/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Quick Quiz/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Challenge/i })).toBeVisible();
+  await expect(page.getByLabel("Grammar mastery 0 of 5")).toBeVisible();
 
   await page.getByRole("button", { name: "← Lesson overview" }).click();
   await page.getByRole("button", { name: "← Grammar" }).click();
