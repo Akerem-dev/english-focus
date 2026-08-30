@@ -42,9 +42,16 @@ function rotateChoices(values: readonly string[], offset: number): readonly stri
 }
 
 function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestion[] {
-  const mistakeQuestions = content.mistakes.slice(0, 4).map((mistake, index) => {
-    const nextWrong = content.mistakes[(index + 1) % content.mistakes.length]?.wrong ?? mistake.wrong;
-    const choices = rotateChoices(uniqueChoices([mistake.right, mistake.wrong, nextWrong]), index + 1);
+  const mistakeQuestions = Array.from({ length: 3 }, (_, index) => {
+    const mistake = content.mistakes[index % content.mistakes.length];
+    const nextMistake = content.mistakes[(index + 1) % content.mistakes.length];
+
+    if (mistake === undefined) return undefined;
+
+    const choices = rotateChoices(
+      uniqueChoices([mistake.right, mistake.wrong, nextMistake?.wrong ?? content.formula]),
+      index + 1
+    );
 
     return Object.freeze({
       id: `mistake-${index}`,
@@ -54,8 +61,12 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
       correctAnswer: mistake.right,
       explanation: mistake.why
     });
-  });
+  }).filter((question): question is ChoiceQuestion => question !== undefined);
 
+  const formulaChoices = rotateChoices(
+    uniqueChoices([content.formula, content.comparison.left.rule, content.comparison.right.rule]),
+    1
+  );
   const comparisonChoices = rotateChoices(
     uniqueChoices([
       content.comparison.left.rule,
@@ -68,6 +79,13 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
   return Object.freeze([
     ...mistakeQuestions,
     Object.freeze({
+      id: "formula",
+      prompt: "Which formula belongs to this grammar topic?",
+      choices: formulaChoices,
+      correctAnswer: content.formula,
+      explanation: content.formulaExplanation
+    }),
+    Object.freeze({
       id: "comparison",
       prompt: `Which description best matches ${content.comparison.left.label}?`,
       choices: comparisonChoices,
@@ -78,7 +96,9 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
 }
 
 function buildChallenge(content: GrammarTeachingContent): readonly ChoiceQuestion[] {
-  const mistakes = content.mistakes.slice(0, 3);
+  const mistakes = Array.from({ length: 3 }, (_, index) => {
+    return content.mistakes[index % content.mistakes.length];
+  }).filter((mistake): mistake is NonNullable<typeof mistake> => mistake !== undefined);
 
   return Object.freeze(
     mistakes.map((mistake, index) => {
@@ -245,7 +265,11 @@ function GuidedPractice({
             <p>{check.explanation}</p>
           </div>
         ) : (
-          <button className="wvg-v16-primary-action" onClick={() => setRevealed(true)} type="button">
+          <button
+            className="wvg-v16-primary-action"
+            onClick={() => setRevealed(true)}
+            type="button"
+          >
             Reveal answer
           </button>
         )}
@@ -297,7 +321,6 @@ function ChoiceSession({
   function checkAnswer() {
     if (selected === undefined || answered || question === undefined) return;
     setAnswered(true);
-    if (selected === question.correctAnswer) setCorrectCount((current) => current + 1);
   }
 
   function continueSession() {
@@ -311,6 +334,7 @@ function ChoiceSession({
       return;
     }
 
+    setCorrectCount(scoreAfterQuestion);
     setIndex((current) => current + 1);
     setSelected(undefined);
     setAnswered(false);
@@ -357,12 +381,20 @@ function ChoiceSession({
       <article className="wvg-v16-prompt-card">
         <small>{question.prompt}</small>
         {question.context === undefined ? null : <h3>“{question.context}”</h3>}
-        <div className="wvg-v16-choice-list" role="group" aria-label={`${modeLabel} answer choices`}>
+        <div
+          className="wvg-v16-choice-list"
+          role="group"
+          aria-label={`${modeLabel} answer choices`}
+        >
           {question.choices.map((choice, choiceIndex) => (
             <button
               aria-pressed={selected === choice}
               data-correct={answered && choice === question.correctAnswer ? true : undefined}
-              data-wrong={answered && selected === choice && choice !== question.correctAnswer ? true : undefined}
+              data-wrong={
+                answered && selected === choice && choice !== question.correctAnswer
+                  ? true
+                  : undefined
+              }
               disabled={answered}
               key={choice}
               onClick={() => setSelected(choice)}
@@ -375,7 +407,11 @@ function ChoiceSession({
         </div>
 
         {answered ? (
-          <div className="wvg-v16-feedback" data-correct={isCorrect || undefined} aria-live="polite">
+          <div
+            className="wvg-v16-feedback"
+            data-correct={isCorrect || undefined}
+            aria-live="polite"
+          >
             <strong>{isCorrect ? "✓ Correct" : "Not quite"}</strong>
             <p>{question.explanation}</p>
             {isCorrect ? null : (
