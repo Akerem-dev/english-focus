@@ -1,9 +1,0 @@
-/*
- * Word Valley uses a fixed assistant rail, not the legacy floating-panel entrance.
- * Keep the panel at its canonical geometry from the first painted frame so route
- * changes and opening Wordie never introduce a visible scale/translation shift.
- */
-.application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
-  animation: none !important;
-  transform: none !important;
-}
