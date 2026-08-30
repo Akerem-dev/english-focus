@@ -154,8 +154,7 @@ export const PAST_SIMPLE_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       prompt: "She ___ (buy) this phone last month.",
       answer: "bought",
-      explanation:
-        "Last month is a finished past time, and buy has the irregular past form bought."
+      explanation: "Last month is a finished past time, and buy has the irregular past form bought."
     },
     {
       prompt: "Correct the question: Did they arrived on time?",
@@ -173,6 +172,5 @@ export const PAST_SIMPLE_TEACHING_CONTENT: GrammarTeachingContent = {
     "With did/didn't, the main verb always returns to base form.",
     "Finished past time named? Prefer Past Simple, not Present Perfect."
   ]),
-  memoryHook:
-    "Closed past time = Past Simple. Did carries the past, so the main verb stays simple."
+  memoryHook: "Closed past time = Past Simple. Did carries the past, so the main verb stays simple."
 };
