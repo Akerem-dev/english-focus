@@ -83,8 +83,7 @@ export const PAST_CONTINUOUS_TEACHING_CONTENT: GrammarTeachingContent = {
       label: "Interruption",
       sentence: "She was sleeping when the alarm went off.",
       translationTr: "Alarm çaldığında uyuyordu.",
-      note:
-        "Was sleeping is the background action; went off is the shorter completed event."
+      note: "Was sleeping is the background action; went off is the shorter completed event."
     },
     {
       label: "While",
@@ -141,8 +140,7 @@ export const PAST_CONTINUOUS_TEACHING_CONTENT: GrammarTeachingContent = {
     {
       wrong: "I was cooking when the phone was ringing.",
       right: "I was cooking when the phone rang.",
-      why:
-        "For a short completed interruption, Past Simple is normally the natural choice."
+      why: "For a short completed interruption, Past Simple is normally the natural choice."
     }
   ]),
   signalsLabel: "Expressions that often frame an action in progress",
