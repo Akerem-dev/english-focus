@@ -127,7 +127,8 @@ export function GrammarPage() {
     selectedLesson === undefined
       ? 0
       : (progress[selectedLesson.id] ?? selectedLesson.initialProgress);
-  const selectedIsA2 = selectedLesson?.level === "A2";
+  const selectedUsesExpandedCuratedLesson =
+    selectedLesson?.level === "A2" || selectedLesson?.level === "B1";
   const selectedHasCuratedContent =
     selectedLesson !== undefined && hasRenderableCuratedContent(selectedLesson.id);
 
@@ -149,7 +150,7 @@ export function GrammarPage() {
           onOpenLesson={openLesson}
           progress={progress}
         />
-      ) : selectedIsA2 ? (
+      ) : selectedUsesExpandedCuratedLesson ? (
         <A2CuratedGrammarLesson
           key={selectedLesson.id}
           lesson={selectedLesson}
