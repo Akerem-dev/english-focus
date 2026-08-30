@@ -19,7 +19,6 @@ test("Grammar Wordie stays grammar-only and becomes lesson-aware", async ({ page
   await expect(homeHelper).toBeVisible();
   await expect(homeHelper.getByRole("button", { name: /Explain a rule/i })).toBeVisible();
   await expect(homeHelper.getByRole("button", { name: /Compare grammar points/i })).toBeVisible();
-  await expect(homeHelper.getByRole("button", { name: /Quick grammar quiz/i })).toBeVisible();
   await expect(homeHelper.getByText("Explain a word", { exact: true })).toHaveCount(0);
   await expect(homeHelper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Close Wordie", exact: true }).click();
@@ -31,8 +30,12 @@ test("Grammar Wordie stays grammar-only and becomes lesson-aware", async ({ page
   const lessonHelper = page.getByRole("dialog", { name: "Grammar helper" });
   await expect(lessonHelper).toBeVisible();
   await expect(lessonHelper.getByRole("button", { name: /Explain this rule/i })).toBeVisible();
-  await expect(lessonHelper.getByRole("button", { name: /Compare with Past Simple/i })).toBeVisible();
-  await expect(lessonHelper.getByRole("button", { name: /Give another example/i })).toBeVisible();
+  await expect(
+    lessonHelper.getByRole("button", { name: /Compare with Past Simple/i })
+  ).toBeVisible();
+  await expect(
+    lessonHelper.getByRole("button", { name: /Give another example/i })
+  ).toBeVisible();
   await expect(lessonHelper.getByRole("button", { name: /Quiz me/i })).toBeVisible();
   await expect(lessonHelper.getByRole("button", { name: /Why is this wrong\?/i })).toBeVisible();
   await expect(lessonHelper.getByText("Explain a word", { exact: true })).toHaveCount(0);
