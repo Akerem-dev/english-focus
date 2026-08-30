@@ -201,12 +201,17 @@ test("Grammar always enters through Home instead of restoring an overlapping leg
 }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearGrammarState(page);
+  await page.evaluate(
+    ([key, lessonId]) => window.localStorage.setItem(key, lessonId),
+    [LEGACY_LAST_GRAMMAR_LESSON_KEY, "present-perfect"]
+  );
+
   await page.goto("/#/grammar");
-  await openPresentPerfectFromHome(page);
+  await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toHaveCount(0);
 
   await page.goto("/#/");
   await page.goto("/#/grammar");
-
   await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toHaveCount(0);
 });
