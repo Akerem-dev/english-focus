@@ -16,6 +16,7 @@ interface A2CuratedGrammarLessonProps {
   readonly onBack: () => void;
   readonly onMasteryChange: (mastery: number) => void;
   readonly progress: number;
+  readonly teachingContent?: GrammarTeachingContent;
 }
 
 interface SectionDefinition {
@@ -415,9 +416,10 @@ export function A2CuratedGrammarLesson({
   lesson,
   onBack,
   onMasteryChange,
-  progress
+  progress,
+  teachingContent
 }: A2CuratedGrammarLessonProps) {
-  const content = getA2GrammarTeachingContent(lesson.id);
+  const content = teachingContent ?? getA2GrammarTeachingContent(lesson.id);
   const artwork = getGrammarLessonArtwork(lesson.sourceLessonId);
   const [selectedSection, setSelectedSection] = useState<GrammarTeachingSectionId | undefined>(
     lesson.initialSection
