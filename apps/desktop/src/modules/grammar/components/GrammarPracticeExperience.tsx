@@ -1,6 +1,9 @@
 import { useMemo, useState } from "react";
 
-import type { GrammarTeachingContent } from "../knowledge/grammarTeachingContent";
+import type {
+  GrammarTeachingContent,
+  GrammarTeachingMistake
+} from "../knowledge/grammarTeachingContent";
 
 import "../../../styles/word-valley-grammar-v16-practice.css";
 
@@ -41,27 +44,37 @@ function rotateChoices(values: readonly string[], offset: number): readonly stri
   return Object.freeze([...values.slice(normalizedOffset), ...values.slice(0, normalizedOffset)]);
 }
 
+function cycleMistakes(
+  content: GrammarTeachingContent,
+  count: number
+): readonly GrammarTeachingMistake[] {
+  if (content.mistakes.length === 0) return Object.freeze([]);
+
+  return Object.freeze(
+    Array.from({ length: count }, (_, index) => content.mistakes[index % content.mistakes.length]!)
+  );
+}
+
 function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestion[] {
-  const mistakeQuestions = Array.from({ length: 3 }, (_, index) => {
-    const mistake = content.mistakes[index % content.mistakes.length];
-    const nextMistake = content.mistakes[(index + 1) % content.mistakes.length];
+  const mistakes = cycleMistakes(content, 3);
+  const mistakeQuestions: readonly ChoiceQuestion[] = Object.freeze(
+    mistakes.map((mistake, index): ChoiceQuestion => {
+      const nextMistake = mistakes[(index + 1) % mistakes.length];
+      const choices = rotateChoices(
+        uniqueChoices([mistake.right, mistake.wrong, nextMistake?.wrong ?? content.formula]),
+        index + 1
+      );
 
-    if (mistake === undefined) return undefined;
-
-    const choices = rotateChoices(
-      uniqueChoices([mistake.right, mistake.wrong, nextMistake?.wrong ?? content.formula]),
-      index + 1
-    );
-
-    return Object.freeze({
-      id: `mistake-${index}`,
-      prompt: "Which sentence is correct?",
-      context: mistake.wrong,
-      choices,
-      correctAnswer: mistake.right,
-      explanation: mistake.why
-    });
-  }).filter((question): question is ChoiceQuestion => question !== undefined);
+      return Object.freeze({
+        id: `mistake-${index}`,
+        prompt: "Which sentence is correct?",
+        context: mistake.wrong,
+        choices,
+        correctAnswer: mistake.right,
+        explanation: mistake.why
+      });
+    })
+  );
 
   const formulaChoices = rotateChoices(
     uniqueChoices([content.formula, content.comparison.left.rule, content.comparison.right.rule]),
@@ -76,7 +89,7 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
     2
   );
 
-  return Object.freeze([
+  const questions: readonly ChoiceQuestion[] = Object.freeze([
     ...mistakeQuestions,
     Object.freeze({
       id: "formula",
@@ -92,16 +105,16 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
       correctAnswer: content.comparison.left.rule,
       explanation: content.comparison.takeaway
     })
-  ]).slice(0, 5);
+  ]);
+
+  return Object.freeze(questions.slice(0, 5));
 }
 
 function buildChallenge(content: GrammarTeachingContent): readonly ChoiceQuestion[] {
-  const mistakes = Array.from({ length: 3 }, (_, index) => {
-    return content.mistakes[index % content.mistakes.length];
-  }).filter((mistake): mistake is NonNullable<typeof mistake> => mistake !== undefined);
+  const mistakes = cycleMistakes(content, 3);
 
   return Object.freeze(
-    mistakes.map((mistake, index) => {
+    mistakes.map((mistake, index): ChoiceQuestion => {
       const distractors = mistakes
         .filter((candidate) => candidate.wrong !== mistake.wrong)
         .map((candidate) => candidate.why);
