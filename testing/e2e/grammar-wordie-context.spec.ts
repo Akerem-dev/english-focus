@@ -33,9 +33,7 @@ test("Grammar Wordie stays grammar-only and becomes lesson-aware", async ({ page
   await expect(
     lessonHelper.getByRole("button", { name: /Compare with Past Simple/i })
   ).toBeVisible();
-  await expect(
-    lessonHelper.getByRole("button", { name: /Give another example/i })
-  ).toBeVisible();
+  await expect(lessonHelper.getByRole("button", { name: /Give another example/i })).toBeVisible();
   await expect(lessonHelper.getByRole("button", { name: /Quiz me/i })).toBeVisible();
   await expect(lessonHelper.getByRole("button", { name: /Why is this wrong\?/i })).toBeVisible();
   await expect(lessonHelper.getByText("Explain a word", { exact: true })).toHaveCount(0);
