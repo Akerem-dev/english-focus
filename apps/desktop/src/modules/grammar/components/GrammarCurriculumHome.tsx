@@ -7,6 +7,7 @@ import {
   type GrammarSubtopic
 } from "../knowledge/grammarKnowledgeIndex";
 import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
+import type { GrammarTeachingSectionId } from "../knowledge/grammarTeachingContent";
 
 import "../../../styles/word-valley-grammar-v13-home.css";
 import "../../../styles/word-valley-grammar-v13-interactions.css";
@@ -15,6 +16,7 @@ export type GrammarProgressMap = Readonly<Record<string, number>>;
 
 export interface GrammarLessonSelection extends GrammarKnowledgeLesson {
   readonly initialProgress: number;
+  readonly initialSection?: GrammarTeachingSectionId;
   readonly shelfId: string;
   readonly shelfTitle: string;
   readonly sourceLessonId: string;
@@ -22,7 +24,6 @@ export interface GrammarLessonSelection extends GrammarKnowledgeLesson {
 
 interface GrammarCurriculumHomeProps {
   readonly progress: GrammarProgressMap;
-  readonly onMarkComplete: (lessonId: string) => void;
   readonly onOpenLesson: (lesson: GrammarLessonSelection) => void;
 }
 
@@ -313,7 +314,6 @@ function BookCard({
 }
 
 export function GrammarCurriculumHome({
-  onMarkComplete,
   onOpenLesson,
   progress
 }: GrammarCurriculumHomeProps) {
@@ -448,13 +448,20 @@ export function GrammarCurriculumHome({
                 Resume lesson <span aria-hidden="true">›</span>
               </button>
               <button
-                aria-pressed={presentPerfectProgress === 5}
                 className="wvg-v13-hero__complete"
-                onClick={() => onMarkComplete("present-perfect")}
+                disabled={presentPerfectSelection === undefined}
+                onClick={() => {
+                  if (presentPerfectSelection === undefined) return;
+                  onOpenLesson(
+                    Object.freeze({ ...presentPerfectSelection, initialSection: "practice" })
+                  );
+                }}
                 type="button"
               >
-                <span aria-hidden="true">{presentPerfectProgress === 5 ? "✓" : "◉"}</span>{" "}
-                {presentPerfectProgress === 5 ? "Completed" : "Mark as complete"}
+                <span aria-hidden="true">{presentPerfectProgress === 5 ? "✓" : "◎"}</span>{" "}
+                {presentPerfectProgress === 5
+                  ? "Mastered · Review"
+                  : `Practice · ${presentPerfectProgress}/5`}
               </button>
             </div>
             <p className="wvg-v13-hero__meta">
