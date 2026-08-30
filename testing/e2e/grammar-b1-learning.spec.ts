@@ -59,29 +59,29 @@ test("every B1 bookshelf topic opens the curated eight-section lesson experience
   }
 });
 
-test("B1 lessons teach high-value contrasts instead of generic source summaries", async ({ page }) => {
+test("B1 lessons teach high-value contrasts instead of generic source summaries", async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await openB1Lesson(page, "Passive Voice");
 
   await page.getByRole("button", { name: "Open Active vs Passive Voice section" }).click();
-  await expect(page.getByText("The company launched the product in May.", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("The company launched the product in May.", { exact: true })
+  ).toBeVisible();
   await expect(page.getByText("The product was launched in May.", { exact: true })).toBeVisible();
   await expect(page.getByText(/focus choice/i)).toBeVisible();
 
   await page.getByRole("button", { name: "← Lesson overview", exact: true }).click();
   await page.getByRole("button", { name: "← Grammar", exact: true }).click();
-  await page
-    .getByRole("button", { name: /^Reported Speech, \d of 5 complete$/i })
-    .click();
+  await page.getByRole("button", { name: /^Reported Speech, \d of 5 complete$/i }).click();
 
   await page.getByRole("button", { name: "Open Common Mistakes section" }).click();
   await expect(page.getByText(/She asked where did I live\./)).toBeVisible();
   await expect(page.getByText(/statement word order/i)).toBeVisible();
 
   const lessonMap = page.locator(".wvg-v15-lesson-map");
-  await lessonMap
-    .getByRole("button", { name: "4 Direct vs Reported Speech", exact: true })
-    .click();
+  await lessonMap.getByRole("button", { name: "4 Direct vs Reported Speech", exact: true }).click();
   await expect(page.getByText("Maya said, ‘I am tired.’", { exact: true })).toBeVisible();
   await expect(page.getByText("Maya said that she was tired.", { exact: true })).toBeVisible();
 });
