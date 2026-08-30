@@ -313,10 +313,7 @@ function BookCard({
   );
 }
 
-export function GrammarCurriculumHome({
-  onOpenLesson,
-  progress
-}: GrammarCurriculumHomeProps) {
+export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurriculumHomeProps) {
   const [query, setQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState("all");
   const [topicFilter, setTopicFilter] = useState("all");
