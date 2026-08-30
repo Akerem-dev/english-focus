@@ -45,13 +45,15 @@ export const FUTURE_CONTINUOUS_TEACHING_CONTENT: GrammarTeachingContent = {
     },
     {
       title: "Expected future routine",
-      explanation: "Describe something expected to happen as part of a normal schedule or course of events.",
+      explanation:
+        "Describe something expected to happen as part of a normal schedule or course of events.",
       example: "I’ll be working from home next week.",
       translationTr: "Gelecek hafta evden çalışıyor olacağım."
     },
     {
       title: "Polite neutral questions about plans",
-      explanation: "Ask about future arrangements without sounding as if you are requesting or pressuring someone.",
+      explanation:
+        "Ask about future arrangements without sounding as if you are requesting or pressuring someone.",
       example: "Will you be using the car this evening?",
       translationTr: "Bu akşam arabayı kullanıyor olacak mısın?"
     },
