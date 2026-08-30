@@ -23,7 +23,7 @@ async function readDetailGeometry(page: Page) {
   };
 }
 
-test("curated Be lesson teaches form meaning examples errors and recall", async ({ page }) => {
+test("curated Be lesson teaches form meaning examples errors and real practice", async ({ page }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await openBeLesson(page);
 
@@ -67,9 +67,13 @@ test("curated Be lesson teaches form meaning examples errors and recall", async 
   await expect(page.getByText(/not ‘signal words’ in the tense sense/i)).toBeVisible();
 
   await lessonMap.getByRole("button", { name: "7 Practice", exact: true }).click();
-  await expect(page.getByText("___ you from Ankara?", { exact: true })).toBeVisible();
-  await expect(page.getByText("Are", { exact: true })).toBeVisible();
-  await expect(page.getByText("5-question Quick Quiz", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Turn the rule into usable skill", level: 2 })
+  ).toBeVisible();
+  await expect(page.getByLabel("Grammar mastery 2 of 5")).toBeVisible();
+  await expect(page.getByRole("button", { name: /Guided Practice/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Quick Quiz/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Challenge/i })).toBeVisible();
 });
 
 test("curated lesson geometry stays fixed across sections and Wordie overlay", async ({ page }) => {
