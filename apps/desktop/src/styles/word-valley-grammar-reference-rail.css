@@ -21,3 +21,14 @@
   opacity: 1 !important;
   pointer-events: auto !important;
 }
+
+/*
+ * The legacy floating assistant animates in with scale(.985) + translateY().
+ * Grammar uses a fixed Word Valley rail, so that entrance creates a visible
+ * geometry jump and briefly makes the rail differ from Search. Paint the rail
+ * at its final geometry from the first frame instead.
+ */
+.application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+  animation: none !important;
+  transform: none !important;
+}
