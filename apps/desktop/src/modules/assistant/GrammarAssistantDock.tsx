@@ -232,10 +232,7 @@ function GrammarAssistantSession() {
         : `${lessonFocus.title} çalışırken kuralı açıklamamı, benzer yapılarla karşılaştırmamı, detaylı lesson template hazırlamamı veya sana kısa bir quiz vermemi isteyebilirsin.`;
 
   return (
-    <aside
-      className="assistant-dock wv84-assistant wvg-wordie-dock"
-      data-open={open || undefined}
-    >
+    <aside className="assistant-dock wv84-assistant wvg-wordie-dock" data-open={open || undefined}>
       {open ? (
         <section
           aria-label="Grammar helper"
@@ -351,11 +348,7 @@ function GrammarAssistantSession() {
               spellCheck={false}
               value={input}
             />
-            <button
-              aria-label="Send"
-              disabled={input.trim().length === 0 || isBusy}
-              type="submit"
-            >
+            <button aria-label="Send" disabled={input.trim().length === 0 || isBusy} type="submit">
               <AppIcon name="chevron-right" size={22} />
             </button>
           </form>
