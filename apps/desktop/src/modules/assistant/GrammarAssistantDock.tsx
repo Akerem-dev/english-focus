@@ -11,6 +11,7 @@ import {
 
 import "../../styles/word-valley-grammar-reference-rail.css";
 import "../../styles/word-valley-grammar-v17-wordie.css";
+import "../../styles/word-valley-grammar-v17-wordie-isolation.css";
 
 interface GrammarStarter {
   readonly title: string;
