@@ -306,6 +306,7 @@ function GrammarAssistantSession() {
               <span className="wv84-quick-actions__label">TRY ASKING ME</span>
               {starters.map((starter) => (
                 <button
+                  aria-label={starter.title}
                   key={starter.title}
                   onClick={() => focusStarter(starter.prompt)}
                   type="button"
