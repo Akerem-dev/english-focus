@@ -327,14 +327,19 @@ test("Grammar Wordie uses a compact bubble, real grammar starters, and the share
   expect(grammarAssistant).toEqual(searchAssistant);
 
   await expect(page.getByRole("button", { name: "Explain this rule", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Compare with Past Simple", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Draft lesson template", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Compare with Past Simple", exact: true })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Draft lesson template", exact: true })
+  ).toBeVisible();
   await expect(page.getByRole("button", { name: "Explain a word", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Explore in context", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Explore in context", exact: true })).toHaveCount(
+    0
+  );
 
   await page.getByRole("button", { name: "Draft lesson template", exact: true }).click();
   const composer = page.getByLabel("Ask Wordie a grammar question");
-  await expect(composer).toContainText("");
   await expect(composer).toHaveValue(/Present Perfect.*8 bölümü/s);
   await expect(composer).toHaveValue(/Core formula.*Common mistakes.*Quick rule/s);
 
