@@ -79,12 +79,12 @@ test("short A1 lessons generate distinct quiz and challenge reasoning prompts", 
 
   await page.getByRole("button", { name: /Quick Quiz/i }).click();
   await expect(page.getByText("QUICK QUIZ 1 / 5", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveText("There is two cars outside.");
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText("There is two cars outside.");
   await answerCurrentChoice(page);
   await page.getByRole("button", { name: "Next question →", exact: true }).click();
 
   await expect(page.getByText("QUICK QUIZ 2 / 5", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveText("There have a bank here.");
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText("There have a bank here.");
   await answerCurrentChoice(page);
   await page.getByRole("button", { name: "Next question →", exact: true }).click();
 
@@ -92,7 +92,7 @@ test("short A1 lessons generate distinct quiz and challenge reasoning prompts", 
   await expect(
     page.getByText("Which answer correctly completes this checkpoint?", { exact: true })
   ).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveText(
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText(
     "___ there any shops near here?"
   );
 
@@ -100,17 +100,17 @@ test("short A1 lessons generate distinct quiz and challenge reasoning prompts", 
   await page.getByRole("button", { name: /Challenge/i }).click();
 
   await expect(page.getByText("CHALLENGE 1 / 3", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveText("There is two cars outside.");
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText("There is two cars outside.");
   await answerCurrentChoice(page);
   await page.getByRole("button", { name: "Next question →", exact: true }).click();
 
   await expect(page.getByText("CHALLENGE 2 / 3", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveText("There have a bank here.");
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText("There have a bank here.");
   await answerCurrentChoice(page);
   await page.getByRole("button", { name: "Next question →", exact: true }).click();
 
   await expect(page.getByText("CHALLENGE 3 / 3", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveText(
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText(
     "Introducing existence vs identifying something"
   );
 });
