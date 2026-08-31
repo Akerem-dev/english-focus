@@ -44,8 +44,11 @@
   .application-frame--search-cleanroom
   .wvg-wordie-dock:not([data-open])
   > .wvg-wordie-bubble {
-  position: relative !important;
-  inset: auto !important;
+  position: fixed !important;
+  top: auto !important;
+  right: 24px !important;
+  bottom: 24px !important;
+  left: auto !important;
   display: grid !important;
   visibility: visible !important;
   width: 58px !important;
@@ -243,6 +246,14 @@
 
 @media (max-width: 1180px) {
   #root .application-frame--search-cleanroom .wvg-wordie-dock:not([data-open]) {
+    right: 18px !important;
+    bottom: 18px !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom
+    .wvg-wordie-dock:not([data-open])
+    > .wvg-wordie-bubble {
     right: 18px !important;
     bottom: 18px !important;
   }
