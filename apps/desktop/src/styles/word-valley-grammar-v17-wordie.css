@@ -1,0 +1,267 @@
+/*
+ * V17 — Grammar Wordie launcher and assistant isolation.
+ *
+ * Search keeps its in-page Ask Wordie card. Grammar uses a compact fixed bubble
+ * instead of painting the full mascot over the lesson. The open panel remains
+ * the canonical shared 382px Word Valley assistant rail and overlays the route
+ * without resizing the learning canvas.
+ */
+
+/* Search already has an explicit in-page Wordie CTA. Do not also float the
+   legacy mascot over Recently Viewed / the scenic hero. */
+#root
+  .application-frame--search-cleanroom:has(.wvsr-root)
+  .assistant-dock.wv84-assistant:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher,
+#root
+  .application-frame--search-cleanroom:has(.wvsr-detail-root)
+  .assistant-dock.wv84-assistant:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher {
+  display: none !important;
+}
+
+/* Grammar closed state: a real bottom-right action, not a 382px invisible rail
+   containing a giant mascot. */
+#root .application-frame--search-cleanroom .wvg-wordie-dock:not([data-open]) {
+  position: fixed !important;
+  top: auto !important;
+  right: 24px !important;
+  bottom: 24px !important;
+  left: auto !important;
+  z-index: 90 !important;
+  width: 58px !important;
+  min-width: 58px !important;
+  max-width: 58px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  max-height: 58px !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock:not([data-open])
+  > .wvg-wordie-bubble {
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  visibility: visible !important;
+  width: 58px !important;
+  min-width: 58px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  place-items: center !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  border: 1px solid #b28b34 !important;
+  border-radius: 50% !important;
+  background: linear-gradient(180deg, #fffdf7 0%, #eee6d5 100%) !important;
+  color: #0d5145 !important;
+  opacity: 1 !important;
+  box-shadow:
+    0 10px 26px rgba(7, 48, 41, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94) !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock:not([data-open])
+  > .wvg-wordie-bubble:hover {
+  border-color: #d0a43e !important;
+  box-shadow:
+    0 13px 30px rgba(7, 48, 41, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96) !important;
+  transform: translateY(-2px) !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock:not([data-open])
+  > .wvg-wordie-bubble:focus-visible {
+  outline: 3px solid rgba(198, 154, 58, 0.55) !important;
+  outline-offset: 3px !important;
+}
+
+/* The source cutout has transparent padding. Crop it optically inside the
+   58px bubble so the owl reads as an icon rather than a page illustration. */
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-bubble
+  > .assistant-launcher__mascot {
+  position: absolute !important;
+  top: 3px !important;
+  right: -7px !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  height: 70px !important;
+  min-height: 70px !important;
+  max-height: 70px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: scale(1.28) !important;
+  transform-origin: center !important;
+}
+
+/* Small hover/focus tooltip. It is deliberately not part of the bubble's
+   geometry, so the launcher itself stays compact. */
+#root .application-frame--search-cleanroom .wvg-wordie-bubble__label {
+  position: fixed !important;
+  right: 88px !important;
+  bottom: 38px !important;
+  z-index: 1 !important;
+  width: max-content !important;
+  padding: 5px 9px !important;
+  border: 1px solid rgba(178, 139, 52, 0.45) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 253, 247, 0.97) !important;
+  color: #164b42 !important;
+  opacity: 0 !important;
+  box-shadow: 0 6px 16px rgba(7, 48, 41, 0.12) !important;
+  font: 700 11px/15px "Inter", system-ui, sans-serif !important;
+  pointer-events: none !important;
+  transform: translateX(5px) !important;
+  transition:
+    opacity 100ms ease,
+    transform 100ms ease !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-bubble:is(:hover, :focus-visible)
+  > .wvg-wordie-bubble__label {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+/* Open Grammar Wordie is an overlay rail. The Grammar page underneath must
+   preserve its exact bounding box while the helper is open. */
+#root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] {
+  position: fixed !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  z-index: 95 !important;
+  width: 382px !important;
+  height: auto !important;
+  overflow: visible !important;
+  box-shadow: -18px 0 42px rgba(8, 47, 41, 0.13) !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  > .assistant-panel.wv84-assistant-panel {
+  width: 382px !important;
+  height: 100% !important;
+  max-height: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Search's welcome labels are vocabulary-specific and are intentionally
+   rewritten in search-cleanroom-runtime-fix.css. Restore the real Grammar
+   starter content for the Grammar helper instead of leaking "Explain a word"
+   and "Explore in context" into this panel. */
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  > button {
+  display: grid !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  .wv84-quick-actions__copy
+  strong {
+  color: #102d27 !important;
+  font:
+    600 17px/20px "Cormorant Garamond",
+    Georgia,
+    serif !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  .wv84-quick-actions__copy
+  small {
+  color: #59655f !important;
+  font:
+    400 11px/15px "Inter",
+    system-ui,
+    sans-serif !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  .wv84-quick-actions__copy
+  :is(strong, small)::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome {
+  min-height: 0 !important;
+  max-height: min(390px, 46vh) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  scrollbar-color: rgba(22, 75, 66, 0.35) transparent !important;
+  scrollbar-width: thin !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  > button {
+  min-height: 58px !important;
+}
+
+@media (max-width: 1180px) {
+  #root .application-frame--search-cleanroom .wvg-wordie-dock:not([data-open]) {
+    right: 18px !important;
+    bottom: 18px !important;
+  }
+
+  #root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] {
+    width: min(382px, calc(100vw - 318px)) !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom
+    .wvg-wordie-dock[data-open]
+    > .assistant-panel.wv84-assistant-panel {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] {
+    left: 0 !important;
+    width: 100% !important;
+  }
+}
