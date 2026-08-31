@@ -138,6 +138,21 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await expect(page.getByRole("button", { name: /^Open .* section$/ })).toHaveCount(8);
   await expect(page.getByRole("button", { name: "Quick Quiz", exact: true })).toHaveCount(0);
 
+  const grammarBack = page.getByRole("button", { name: "← Grammar" });
+  await expect(grammarBack).toBeVisible();
+  const grammarBackStyle = await grammarBack.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const style = window.getComputedStyle(element);
+    return {
+      borderWidth: Number.parseFloat(style.borderTopWidth),
+      height: rect.height,
+      opacity: Number.parseFloat(style.opacity)
+    };
+  });
+  expect(grammarBackStyle.height).toBeGreaterThanOrEqual(30);
+  expect(grammarBackStyle.borderWidth).toBeGreaterThan(0);
+  expect(grammarBackStyle.opacity).toBe(1);
+
   await page.getByRole("button", { name: "Open Core Formula section" }).click();
   await expect(page.getByRole("heading", { name: "Core Formula", level: 1 })).toBeVisible();
   await expect(page.getByRole("button", { name: /Core Formula/ })).toHaveAttribute(
@@ -147,6 +162,12 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
 
   await page.getByRole("button", { name: "When to Use →" }).click();
   await expect(page.getByRole("heading", { name: "When to Use", level: 1 })).toBeVisible();
+
+  const overviewBack = page.getByRole("button", { name: "← Lesson overview" });
+  await expect(overviewBack).toBeVisible();
+  const overviewBackBox = await overviewBack.boundingBox();
+  expect(overviewBackBox).not.toBeNull();
+  expect(overviewBackBox!.height).toBeGreaterThanOrEqual(30);
 
   await page.getByRole("button", { name: "Lesson overview", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
@@ -274,23 +295,58 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
   }
 });
 
-test("Grammar Wordie uses the same shared panel shell as Search", async ({ page }) => {
+test("Grammar Wordie uses a compact bubble, real grammar starters, and the shared panel shell", async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearGrammarState(page);
 
   await page.goto("/#/");
   await expect(page.getByRole("heading", { name: "Discover a new word.", level: 1 })).toBeVisible();
+  await expect(page.locator(".assistant-dock > .assistant-launcher")).toBeHidden();
   await page.getByRole("button", { name: "Ask Wordie", exact: true }).click();
   await expect(page.locator(".assistant-panel.wv84-assistant-panel")).toBeVisible();
   const searchAssistant = await readAssistantShell(page);
 
   await page.goto("/#/grammar");
   await openPresentPerfectFromHome(page);
-  await page.getByRole("button", { name: "Open Wordie" }).click();
-  await expect(page.getByRole("dialog", { name: "Grammar helper" })).toBeVisible();
-  const grammarAssistant = await readAssistantShell(page);
 
+  const launcher = page.getByRole("button", { name: "Open Wordie" });
+  await expect(launcher).toBeVisible();
+  const launcherBox = await launcher.boundingBox();
+  expect(launcherBox).not.toBeNull();
+  expect(launcherBox!.width).toBeCloseTo(58, 0);
+  expect(launcherBox!.height).toBeCloseTo(58, 0);
+  expect(launcherBox!.x).toBeGreaterThan(1550);
+  expect(launcherBox!.y).toBeGreaterThan(840);
+
+  await launcher.click();
+  const helper = page.getByRole("dialog", { name: "Grammar helper" });
+  await expect(helper).toBeVisible();
+  const grammarAssistant = await readAssistantShell(page);
   expect(grammarAssistant).toEqual(searchAssistant);
+
+  await expect(page.getByRole("button", { name: "Explain this rule", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Compare with Past Simple", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Draft lesson template", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Explain a word", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Explore in context", exact: true })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Draft lesson template", exact: true }).click();
+  const composer = page.getByLabel("Ask Wordie a grammar question");
+  await expect(composer).toContainText("");
+  await expect(composer).toHaveValue(/Present Perfect.*8 bölümü/s);
+  await expect(composer).toHaveValue(/Core formula.*Common mistakes.*Quick rule/s);
+
+  await page.keyboard.press("Escape");
+  await expect(helper).toHaveCount(0);
+  await expect(launcher).toBeVisible();
+  await expect(launcher).toBeFocused();
+
+  await launcher.click();
+  await expect(helper).toBeVisible();
+  await page.getByRole("button", { name: "Close Wordie" }).click();
+  await expect(helper).toHaveCount(0);
 });
 
 test("windowed Grammar keeps shared navigation expanded and Wordie non-blocking", async ({
@@ -317,6 +373,11 @@ test("windowed Grammar keeps shared navigation expanded and Wordie non-blocking"
 
   await expect(helper).toHaveCount(0);
   await expect(launcher).toBeVisible();
+
+  const launcherBox = await launcher.boundingBox();
+  expect(launcherBox).not.toBeNull();
+  expect(launcherBox!.width).toBeCloseTo(58, 0);
+  expect(launcherBox!.height).toBeCloseTo(58, 0);
 
   const pageBeforeWordie = await grammarPage.boundingBox();
   expect(pageBeforeWordie).not.toBeNull();
