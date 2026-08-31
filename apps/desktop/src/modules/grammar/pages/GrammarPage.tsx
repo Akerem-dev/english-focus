@@ -108,10 +108,17 @@ export function GrammarPage() {
   }, [selectedLesson, setLessonFocus]);
 
   function openLesson(lesson: GrammarLessonSelection) {
+    setLessonFocus({
+      id: lesson.id,
+      title: lesson.title,
+      category: lesson.category,
+      ...(lesson.id === "present-perfect" ? { compareWith: "Past Simple" } : {})
+    });
     setSelectedLesson(lesson);
   }
 
   function openCurriculum() {
+    setLessonFocus(undefined);
     setSelectedLesson(undefined);
   }
 
