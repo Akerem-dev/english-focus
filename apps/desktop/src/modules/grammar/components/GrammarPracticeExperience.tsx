@@ -1,9 +1,6 @@
 import { useMemo, useState } from "react";
 
-import type {
-  GrammarTeachingContent,
-  GrammarTeachingMistake
-} from "../knowledge/grammarTeachingContent";
+import type { GrammarTeachingContent } from "../knowledge/grammarTeachingContent";
 
 import "../../../styles/word-valley-grammar-v16-practice.css";
 
@@ -44,24 +41,17 @@ function rotateChoices(values: readonly string[], offset: number): readonly stri
   return Object.freeze([...values.slice(normalizedOffset), ...values.slice(0, normalizedOffset)]);
 }
 
-function cycleMistakes(
-  content: GrammarTeachingContent,
-  count: number
-): readonly GrammarTeachingMistake[] {
-  if (content.mistakes.length === 0) return Object.freeze([]);
-
-  return Object.freeze(
-    Array.from({ length: count }, (_, index) => content.mistakes[index % content.mistakes.length]!)
-  );
-}
-
 function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestion[] {
-  const mistakes = cycleMistakes(content, 3);
+  const mistakes = content.mistakes.slice(0, 3);
   const mistakeQuestions: readonly ChoiceQuestion[] = Object.freeze(
     mistakes.map((mistake, index): ChoiceQuestion => {
       const nextMistake = mistakes[(index + 1) % mistakes.length];
       const choices = rotateChoices(
-        uniqueChoices([mistake.right, mistake.wrong, nextMistake?.wrong ?? content.formula]),
+        uniqueChoices([
+          mistake.right,
+          mistake.wrong,
+          nextMistake?.wrong ?? content.comparison.right.example
+        ]),
         index + 1
       );
 
@@ -72,6 +62,28 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
         choices,
         correctAnswer: mistake.right,
         explanation: mistake.why
+      });
+    })
+  );
+
+  const checkpointCount = Math.max(0, 3 - mistakeQuestions.length);
+  const checkpointQuestions: readonly ChoiceQuestion[] = Object.freeze(
+    content.practiceChecks.slice(0, checkpointCount).map((check, index): ChoiceQuestion => {
+      const distractors = content.practiceChecks
+        .filter((candidate) => candidate.prompt !== check.prompt)
+        .map((candidate) => candidate.answer);
+      const choices = rotateChoices(
+        uniqueChoices([check.answer, ...distractors, content.comparison.right.example]),
+        index + mistakeQuestions.length + 1
+      );
+
+      return Object.freeze({
+        id: `checkpoint-${index}`,
+        prompt: "Which answer correctly completes this checkpoint?",
+        context: check.prompt,
+        choices,
+        correctAnswer: check.answer,
+        explanation: check.explanation
       });
     })
   );
@@ -91,6 +103,7 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
 
   const questions: readonly ChoiceQuestion[] = Object.freeze([
     ...mistakeQuestions,
+    ...checkpointQuestions,
     Object.freeze({
       id: "formula",
       prompt: "Which formula belongs to this grammar topic?",
@@ -111,14 +124,21 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
 }
 
 function buildChallenge(content: GrammarTeachingContent): readonly ChoiceQuestion[] {
-  const mistakes = cycleMistakes(content, 3);
-
-  return Object.freeze(
+  const mistakes = content.mistakes.slice(0, 3);
+  const mistakeQuestions: readonly ChoiceQuestion[] = Object.freeze(
     mistakes.map((mistake, index): ChoiceQuestion => {
       const distractors = mistakes
         .filter((candidate) => candidate.wrong !== mistake.wrong)
         .map((candidate) => candidate.why);
-      const choices = rotateChoices(uniqueChoices([mistake.why, ...distractors]), index + 1);
+      const choices = rotateChoices(
+        uniqueChoices([
+          mistake.why,
+          ...distractors,
+          content.comparison.takeaway,
+          content.formulaExplanation
+        ]),
+        index + 1
+      );
 
       return Object.freeze({
         id: `reason-${index}`,
@@ -130,6 +150,51 @@ function buildChallenge(content: GrammarTeachingContent): readonly ChoiceQuestio
       });
     })
   );
+
+  const fallbackQuestions: readonly ChoiceQuestion[] = Object.freeze([
+    Object.freeze({
+      id: "reason-comparison",
+      prompt: "What is the key decision in this comparison?",
+      context: content.comparison.title,
+      choices: rotateChoices(
+        uniqueChoices([
+          content.comparison.takeaway,
+          content.comparison.left.rule,
+          content.comparison.right.rule
+        ]),
+        1
+      ),
+      correctAnswer: content.comparison.takeaway,
+      explanation: content.comparison.takeaway
+    }),
+    Object.freeze({
+      id: "reason-formula",
+      prompt: "Which explanation best describes how this form works?",
+      context: content.formula,
+      choices: rotateChoices(
+        uniqueChoices([
+          content.formulaExplanation,
+          content.comparison.left.rule,
+          content.comparison.right.rule
+        ]),
+        2
+      ),
+      correctAnswer: content.formulaExplanation,
+      explanation: content.formulaExplanation
+    }),
+    Object.freeze({
+      id: "reason-summary",
+      prompt: "Which reminder best summarizes this grammar topic?",
+      choices: rotateChoices(
+        uniqueChoices([content.memoryHook, content.signalsNote, content.comparison.takeaway]),
+        1
+      ),
+      correctAnswer: content.memoryHook,
+      explanation: content.memoryHook
+    })
+  ]);
+
+  return Object.freeze([...mistakeQuestions, ...fallbackQuestions].slice(0, 3));
 }
 
 function MasteryMeter({ mastery }: { readonly mastery: number }) {
