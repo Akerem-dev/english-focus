@@ -32,9 +32,9 @@ test("Stage 2 gives Home, Overview, and Detail a dominant readable canvas", asyn
   const firstBook = page.locator(".wvg-v13-book").first();
   const firstBookBox = await firstBook.boundingBox();
   const firstBookTitleSize = numericCss(
-    await firstBook.locator(".wvg-v13-book__title").evaluate(
-      (element) => window.getComputedStyle(element).fontSize
-    )
+    await firstBook
+      .locator(".wvg-v13-book__title")
+      .evaluate((element) => window.getComputedStyle(element).fontSize)
   );
 
   expect(homePaper).not.toBeNull();
