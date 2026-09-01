@@ -125,9 +125,11 @@ function GrammarAssistantSession() {
   const { answerGrammarQuestion, lessonFocus } = useGrammar();
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
+  const minimizeTimerRef = useRef<number | undefined>();
   const requestSequence = useRef(0);
 
   const [open, setOpen] = useState(false);
+  const [isMinimizing, setIsMinimizing] = useState(false);
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState<string | undefined>();
   const [answerText, setAnswerText] = useState<string | undefined>();
@@ -140,15 +142,48 @@ function GrammarAssistantSession() {
   const isBusy = mascotState === "thinking";
   const isWelcome = question === undefined && answerText === undefined;
 
+  function focusLauncher() {
+    window.requestAnimationFrame(() => launcherRef.current?.focus());
+  }
+
   function openAssistant() {
+    if (minimizeTimerRef.current !== undefined) {
+      window.clearTimeout(minimizeTimerRef.current);
+      minimizeTimerRef.current = undefined;
+    }
+    setIsMinimizing(false);
     setOpen(true);
   }
 
   function closeAssistant() {
+    if (minimizeTimerRef.current !== undefined) {
+      window.clearTimeout(minimizeTimerRef.current);
+      minimizeTimerRef.current = undefined;
+    }
     requestSequence.current += 1;
+    setIsMinimizing(false);
     setOpen(false);
-    window.requestAnimationFrame(() => launcherRef.current?.focus());
+    focusLauncher();
   }
+
+  function minimizeAssistant() {
+    if (isMinimizing) return;
+    setIsMinimizing(true);
+    minimizeTimerRef.current = window.setTimeout(() => {
+      minimizeTimerRef.current = undefined;
+      setOpen(false);
+      setIsMinimizing(false);
+      focusLauncher();
+    }, 210);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (minimizeTimerRef.current !== undefined) {
+        window.clearTimeout(minimizeTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -233,7 +268,11 @@ function GrammarAssistantSession() {
         : `${lessonFocus.title} çalışırken kuralı açıklamamı, benzer yapılarla karşılaştırmamı, detaylı lesson template hazırlamamı veya sana kısa bir quiz vermemi isteyebilirsin.`;
 
   return (
-    <aside className="assistant-dock wv84-assistant wvg-wordie-dock" data-open={open || undefined}>
+    <aside
+      className="assistant-dock wv84-assistant wvg-wordie-dock"
+      data-minimizing={isMinimizing || undefined}
+      data-open={open || undefined}
+    >
       {open ? (
         <section
           aria-label="Grammar helper"
@@ -247,13 +286,24 @@ function GrammarAssistantSession() {
               <h2>Wordie AI</h2>
               <p>Your grammar companion</p>
             </div>
-            <IconButton
-              className="wv84-assistant-panel__close"
-              icon={<AppIcon name="close" size={18} />}
-              label="Close Wordie"
-              onClick={closeAssistant}
-              size="small"
-            />
+            <div className="wvg-wordie-panel__controls">
+              <button
+                aria-label="Minimize Wordie"
+                className="wvg-wordie-panel__minimize"
+                onClick={minimizeAssistant}
+                title="Minimize Wordie"
+                type="button"
+              >
+                <span aria-hidden="true">−</span>
+              </button>
+              <IconButton
+                className="wv84-assistant-panel__close"
+                icon={<AppIcon name="close" size={18} />}
+                label="Close Wordie"
+                onClick={closeAssistant}
+                size="small"
+              />
+            </div>
           </header>
 
           <div className="wv84-assistant-panel__conversation">
@@ -357,6 +407,7 @@ function GrammarAssistantSession() {
         </section>
       ) : (
         <button
+          aria-expanded={false}
           aria-label="Open Wordie"
           className="assistant-launcher wv84-assistant-launcher wvg-wordie-bubble"
           onClick={openAssistant}
