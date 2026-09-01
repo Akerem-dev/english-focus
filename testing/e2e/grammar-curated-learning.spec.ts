@@ -23,6 +23,15 @@ async function readDetailGeometry(page: Page) {
   };
 }
 
+type DetailGeometry = Awaited<ReturnType<typeof readDetailGeometry>>;
+
+function expectSameHorizontalGeometry(actual: DetailGeometry, expected: DetailGeometry) {
+  for (const key of ["paper", "layout", "map", "content"] as const) {
+    expect(actual[key].x).toBeCloseTo(expected[key].x, 1);
+    expect(actual[key].width).toBeCloseTo(expected[key].width, 1);
+  }
+}
+
 test("curated Be lesson teaches form meaning examples errors and real practice", async ({
   page
 }) => {
@@ -78,7 +87,9 @@ test("curated Be lesson teaches form meaning examples errors and real practice",
   await expect(page.getByRole("button", { name: /Challenge/i })).toBeVisible();
 });
 
-test("curated lesson geometry stays fixed across sections and Wordie overlay", async ({ page }) => {
+test("curated lesson keeps horizontal geometry stable while sections use natural height", async ({
+  page
+}) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await openBeLesson(page);
   await page.getByRole("button", { name: "Open Core Formula section" }).click();
@@ -87,11 +98,11 @@ test("curated lesson geometry stays fixed across sections and Wordie overlay", a
 
   await page.getByRole("button", { name: "When to Use →" }).click();
   const usesGeometry = await readDetailGeometry(page);
-  expect(usesGeometry).toEqual(formulaGeometry);
+  expectSameHorizontalGeometry(usesGeometry, formulaGeometry);
 
   await page.getByRole("button", { name: "Examples →" }).click();
   const examplesGeometry = await readDetailGeometry(page);
-  expect(examplesGeometry).toEqual(formulaGeometry);
+  expectSameHorizontalGeometry(examplesGeometry, formulaGeometry);
 
   const paperBeforeWordie = await box(page.locator(".wvg-v15-paper"));
   await page.getByRole("button", { name: "Open Wordie" }).click();
