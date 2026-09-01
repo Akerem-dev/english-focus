@@ -243,7 +243,9 @@ test("Grammar always enters through Home instead of restoring an overlapping leg
   await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toHaveCount(0);
 });
 
-test("Grammar preserves shared chrome while the v18 home grid responds cleanly", async ({ page }) => {
+test("Grammar preserves shared chrome while the v18 home grid responds cleanly", async ({
+  page
+}) => {
   const viewports = [
     { width: 1664, height: 936, expectedColumns: 4 },
     { width: 1366, height: 768, expectedColumns: 4 },
@@ -286,11 +288,12 @@ test("Grammar preserves shared chrome while the v18 home grid responds cleanly",
     expect(bookBox).not.toBeNull();
     expect(bookBox!.height).toBeGreaterThanOrEqual(132);
 
-    const columnCount = await books.evaluate((element) =>
-      window
-        .getComputedStyle(element)
-        .gridTemplateColumns.split(" ")
-        .filter((column) => column.length > 0).length
+    const columnCount = await books.evaluate(
+      (element) =>
+        window
+          .getComputedStyle(element)
+          .gridTemplateColumns.split(" ")
+          .filter((column) => column.length > 0).length
     );
     expect(columnCount).toBe(viewport.expectedColumns);
   }
