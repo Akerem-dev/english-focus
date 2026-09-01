@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { useGrammar } from "../../app/providers";
 import { IconButton } from "../../components";
@@ -125,7 +125,7 @@ function GrammarAssistantSession() {
   const { answerGrammarQuestion, lessonFocus } = useGrammar();
   const inputRef = useRef<HTMLInputElement>(null);
   const launcherRef = useRef<HTMLButtonElement>(null);
-  const minimizeTimerRef = useRef<number | undefined>();
+  const minimizeTimerRef = useRef<number | undefined>(undefined);
   const requestSequence = useRef(0);
 
   const [open, setOpen] = useState(false);
@@ -142,9 +142,9 @@ function GrammarAssistantSession() {
   const isBusy = mascotState === "thinking";
   const isWelcome = question === undefined && answerText === undefined;
 
-  function focusLauncher() {
+  const focusLauncher = useCallback(() => {
     window.requestAnimationFrame(() => launcherRef.current?.focus());
-  }
+  }, []);
 
   function openAssistant() {
     if (minimizeTimerRef.current !== undefined) {
@@ -155,7 +155,7 @@ function GrammarAssistantSession() {
     setOpen(true);
   }
 
-  function closeAssistant() {
+  const closeAssistant = useCallback(() => {
     if (minimizeTimerRef.current !== undefined) {
       window.clearTimeout(minimizeTimerRef.current);
       minimizeTimerRef.current = undefined;
@@ -164,7 +164,7 @@ function GrammarAssistantSession() {
     setIsMinimizing(false);
     setOpen(false);
     focusLauncher();
-  }
+  }, [focusLauncher]);
 
   function minimizeAssistant() {
     if (isMinimizing) return;
@@ -199,7 +199,7 @@ function GrammarAssistantSession() {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [closeAssistant, open]);
 
   function focusStarter(starter: string) {
     setInput(starter);
