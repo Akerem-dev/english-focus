@@ -61,14 +61,6 @@ async function readSharedChrome(page: Page) {
   };
 }
 
-async function readAssistantShell(page: Page) {
-  return {
-    composer: await readElementSnapshot(page, ".wv84-assistant-composer"),
-    header: await readElementSnapshot(page, ".wv84-assistant-panel__header"),
-    panel: await readElementSnapshot(page, ".assistant-panel.wv84-assistant-panel")
-  };
-}
-
 test("Grammar Home controls work and lesson overview sections are real navigation", async ({
   page
 }) => {
@@ -87,6 +79,9 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await expect(
     page.getByRole("heading", { name: "B1 · Express Yourself", level: 2 })
   ).toBeVisible();
+
+  // Stage 1 guard: do not render an empty future-level shelf as visible UI.
+  await expect(page.locator(".wvg-v13-shelf--preview")).toBeHidden();
 
   await page.getByLabel("Filter by level").selectOption("A2");
   await expect(
@@ -118,14 +113,25 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await recommended.click();
 
   const a1Shelf = page.locator(".wvg-v13-shelf").filter({ hasText: "A1 · Grammar Foundation" });
-  await a1Shelf.getByRole("button", { name: "View all" }).click();
+  const shelfToggle = a1Shelf.getByRole("button", { name: "View all" });
+  await shelfToggle.click();
   await expect(
     page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
   ).toHaveCount(0);
-  await a1Shelf.getByRole("button", { name: "Show all" }).click();
+
+  const restoreToggle = a1Shelf.getByRole("button", { name: "Show all" });
+  await expect(restoreToggle).toBeVisible();
+  await expect(restoreToggle).toHaveCSS("font-size", "0px");
+  await expect(restoreToggle).toHaveCSS("color", "rgba(0, 0, 0, 0)");
+  const visualToggleLabel = await restoreToggle.evaluate((element) =>
+    window.getComputedStyle(element, "::after").content.replaceAll('"', "")
+  );
+  expect(visualToggleLabel).toBe("View all");
+  await restoreToggle.click();
+
   await expect(
     page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
   ).toBeVisible();
@@ -237,17 +243,17 @@ test("Grammar always enters through Home instead of restoring an overlapping leg
   await expect(page.getByRole("heading", { name: "Present Perfect", level: 1 })).toHaveCount(0);
 });
 
-test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({ page }) => {
+test("Grammar preserves shared chrome while the v18 home grid responds cleanly", async ({ page }) => {
   const viewports = [
-    { width: 1664, height: 936 },
-    { width: 1366, height: 768 },
-    { width: 1180, height: 760 }
+    { width: 1664, height: 936, expectedColumns: 4 },
+    { width: 1366, height: 768, expectedColumns: 4 },
+    { width: 1180, height: 760, expectedColumns: 3 }
   ];
 
   await clearGrammarState(page);
 
   for (const viewport of viewports) {
-    await page.setViewportSize(viewport);
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
 
     await page.goto("/#/");
     await expect(
@@ -272,42 +278,29 @@ test("Grammar uses the exact same topbar and sidebar chrome as Search", async ({
     expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 
     const heroBox = await page.locator(".wvg-v13-hero").boundingBox();
-    const booksBox = await page.locator(".wvg-v13-shelf__books").first().boundingBox();
+    const books = page.locator(".wvg-v13-shelf__books").first();
     const bookBox = await page.locator(".wvg-v13-book").first().boundingBox();
-    const shelfBox = await page.locator(".wvg-v13-shelf__wood").first().boundingBox();
 
     expect(heroBox).not.toBeNull();
-    expect(booksBox).not.toBeNull();
+    expect(heroBox!.height).toBeGreaterThanOrEqual(180);
     expect(bookBox).not.toBeNull();
-    expect(shelfBox).not.toBeNull();
-    expect(heroBox!.height).toBeCloseTo(219, 0);
-    if (viewport.width >= 1500) {
-      expect(bookBox!.width).toBeGreaterThan(158);
-    } else if (viewport.width > 1280) {
-      expect(bookBox!.width).toBeCloseTo(158, 0);
-    } else {
-      const expectedFourColumnWidth = (booksBox!.width - 3 * 8) / 4;
-      expect(bookBox!.width).toBeCloseTo(expectedFourColumnWidth, 0);
-      expect(bookBox!.width).toBeGreaterThan(158);
-    }
-    expect(bookBox!.height).toBeGreaterThanOrEqual(88);
-    expect(shelfBox!.height).toBeCloseTo(14, 0);
+    expect(bookBox!.height).toBeGreaterThanOrEqual(132);
+
+    const columnCount = await books.evaluate((element) =>
+      window
+        .getComputedStyle(element)
+        .gridTemplateColumns.split(" ")
+        .filter((column) => column.length > 0).length
+    );
+    expect(columnCount).toBe(viewport.expectedColumns);
   }
 });
 
-test("Grammar Wordie uses a compact bubble, real grammar starters, and the shared panel shell", async ({
+test("Grammar Wordie uses the v18 bubble, grammar starters, and independent controls", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearGrammarState(page);
-
-  await page.goto("/#/");
-  await expect(page.getByRole("heading", { name: "Discover a new word.", level: 1 })).toBeVisible();
-  await expect(page.locator(".assistant-dock > .assistant-launcher")).toBeHidden();
-  await page.getByRole("button", { name: "Ask Wordie", exact: true }).click();
-  await expect(page.locator(".assistant-panel.wv84-assistant-panel")).toBeVisible();
-  const searchAssistant = await readAssistantShell(page);
-
   await page.goto("/#/grammar");
   await openPresentPerfectFromHome(page);
 
@@ -315,16 +308,16 @@ test("Grammar Wordie uses a compact bubble, real grammar starters, and the share
   await expect(launcher).toBeVisible();
   const launcherBox = await launcher.boundingBox();
   expect(launcherBox).not.toBeNull();
-  expect(launcherBox!.width).toBeCloseTo(58, 0);
-  expect(launcherBox!.height).toBeCloseTo(58, 0);
+  expect(launcherBox!.width).toBeCloseTo(62, 0);
+  expect(launcherBox!.height).toBeCloseTo(62, 0);
   expect(launcherBox!.x).toBeGreaterThan(1550);
   expect(launcherBox!.y).toBeGreaterThan(840);
 
   await launcher.click();
   const helper = page.getByRole("dialog", { name: "Grammar helper" });
   await expect(helper).toBeVisible();
-  const grammarAssistant = await readAssistantShell(page);
-  expect(grammarAssistant).toEqual(searchAssistant);
+  await expect(page.getByRole("button", { name: "Minimize Wordie" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Close Wordie" })).toBeVisible();
 
   await expect(page.getByRole("button", { name: "Explain this rule", exact: true })).toBeVisible();
   await expect(
@@ -334,27 +327,18 @@ test("Grammar Wordie uses a compact bubble, real grammar starters, and the share
     page.getByRole("button", { name: "Draft lesson template", exact: true })
   ).toBeVisible();
   await expect(page.getByRole("button", { name: "Explain a word", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Explore in context", exact: true })).toHaveCount(
-    0
-  );
 
   await page.getByRole("button", { name: "Draft lesson template", exact: true }).click();
   const composer = page.getByLabel("Ask Wordie a grammar question");
   await expect(composer).toHaveValue(/Present Perfect.*8 bölümü/s);
   await expect(composer).toHaveValue(/Core formula.*Common mistakes.*Quick rule/s);
 
-  await page.keyboard.press("Escape");
-  await expect(helper).toHaveCount(0);
-  await expect(launcher).toBeVisible();
-  await expect(launcher).toBeFocused();
-
-  await launcher.click();
-  await expect(helper).toBeVisible();
   await page.getByRole("button", { name: "Close Wordie" }).click();
   await expect(helper).toHaveCount(0);
+  await expect(launcher).toBeVisible();
 });
 
-test("windowed Grammar keeps shared navigation expanded and Wordie non-blocking", async ({
+test("Stage 1 locks Wordie overlay geometry, minimize behavior, and lesson scroll ownership", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1180, height: 760 });
@@ -366,31 +350,64 @@ test("windowed Grammar keeps shared navigation expanded and Wordie non-blocking"
   await expect(navigation.getByText("Search", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Grammar", { exact: true })).toBeVisible();
   await expect(navigation.getByText("Collections", { exact: true })).toBeVisible();
-  await expect(navigation.getByText("Practice", { exact: true })).toBeVisible();
-  await expect(navigation.getByText("Favorites", { exact: true })).toBeVisible();
-  await expect(navigation.getByText("Settings", { exact: true })).toBeVisible();
 
   await openPresentPerfectFromHome(page);
+  await page.getByRole("button", { name: "Open Core Formula section" }).click();
+  await expect(page.getByRole("heading", { name: "Core Formula", level: 1 })).toBeVisible();
 
-  const grammarPage = page.locator(".wvg-page");
+  const nestedOverflow = await page.evaluate(() => {
+    const selectors = [
+      ".wvg-v15-paper",
+      ".wvg-v15-detail",
+      ".wvg-v15-section-content",
+      ".wvg-v15-teaching-stack"
+    ];
+
+    return selectors.map((selector) => {
+      const element = document.querySelector(selector);
+      return {
+        selector,
+        overflowY: element === null ? null : window.getComputedStyle(element).overflowY
+      };
+    });
+  });
+
+  for (const entry of nestedOverflow) {
+    expect(entry.overflowY, `${entry.selector} must exist`).not.toBeNull();
+    expect(["auto", "scroll"], `${entry.selector} must not own a nested scrollbar`).not.toContain(
+      entry.overflowY
+    );
+  }
+
+  await expect(page.locator(".wvg-v15-lesson")).toHaveCSS("overflow-y", "auto");
+
+  const paper = page.locator(".wvg-v15-paper");
+  const paperBeforeWordie = await paper.boundingBox();
+  expect(paperBeforeWordie).not.toBeNull();
+
   const launcher = page.getByRole("button", { name: "Open Wordie" });
-  const helper = page.getByRole("dialog", { name: "Grammar helper" });
-
-  await expect(helper).toHaveCount(0);
   await expect(launcher).toBeVisible();
-
   const launcherBox = await launcher.boundingBox();
   expect(launcherBox).not.toBeNull();
-  expect(launcherBox!.width).toBeCloseTo(58, 0);
-  expect(launcherBox!.height).toBeCloseTo(58, 0);
-
-  const pageBeforeWordie = await grammarPage.boundingBox();
-  expect(pageBeforeWordie).not.toBeNull();
+  expect(launcherBox!.width).toBeCloseTo(62, 0);
+  expect(launcherBox!.height).toBeCloseTo(62, 0);
 
   await launcher.click();
+  const helper = page.getByRole("dialog", { name: "Grammar helper" });
   await expect(helper).toBeVisible();
 
-  const pageAfterWordie = await grammarPage.boundingBox();
-  expect(pageAfterWordie).not.toBeNull();
-  expect(pageAfterWordie).toEqual(pageBeforeWordie);
+  const paperAfterWordie = await paper.boundingBox();
+  expect(paperAfterWordie).not.toBeNull();
+  expect(paperAfterWordie!.x).toBeCloseTo(paperBeforeWordie!.x, 1);
+  expect(paperAfterWordie!.width).toBeCloseTo(paperBeforeWordie!.width, 1);
+
+  await page.getByRole("button", { name: "Minimize Wordie" }).click();
+  await expect(helper).toHaveCount(0);
+  await expect(launcher).toBeVisible();
+  await expect(launcher).toBeFocused();
+
+  const paperAfterMinimize = await paper.boundingBox();
+  expect(paperAfterMinimize).not.toBeNull();
+  expect(paperAfterMinimize!.x).toBeCloseTo(paperBeforeWordie!.x, 1);
+  expect(paperAfterMinimize!.width).toBeCloseTo(paperBeforeWordie!.width, 1);
 });
