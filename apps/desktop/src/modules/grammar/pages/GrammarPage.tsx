@@ -32,6 +32,7 @@ import "../../../styles/word-valley-grammar-v17-navigation.css";
 import "../../../styles/word-valley-grammar-v18-final-polish.css";
 import "../../../styles/word-valley-grammar-v18-stage1-guards.css";
 import "../../../styles/word-valley-grammar-v19-stage2-readability.css";
+import "../../../styles/word-valley-grammar-v19-stage2-geometry-guard.css";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 
