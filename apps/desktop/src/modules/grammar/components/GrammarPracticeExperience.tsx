@@ -262,6 +262,31 @@ function ModeMenu({
   );
 }
 
+function SessionProgress({
+  current,
+  label,
+  total
+}: {
+  readonly current: number;
+  readonly label: string;
+  readonly total: number;
+}) {
+  const safeTotal = Math.max(1, total);
+  const safeCurrent = Math.max(1, Math.min(current, safeTotal));
+
+  return (
+    <div className="wvg-v22-session-progress">
+      <div>
+        <span>{label}</span>
+        <strong>
+          {safeCurrent} of {safeTotal}
+        </strong>
+      </div>
+      <progress aria-label={`${label} progress`} max={safeTotal} value={safeCurrent} />
+    </div>
+  );
+}
+
 function GuidedPractice({
   content,
   mastery,
@@ -273,14 +298,16 @@ function GuidedPractice({
   const [gotItCount, setGotItCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const check = content.practiceChecks[index];
+  const earnedMastery = gotItCount >= 2 ? 2 : gotItCount >= 1 ? 1 : 0;
+  const savedMastery = Math.max(mastery, earnedMastery);
 
   function recordResult(gotIt: boolean) {
     const nextGotItCount = gotIt ? gotItCount + 1 : gotItCount;
     setGotItCount(nextGotItCount);
 
     if (index >= content.practiceChecks.length - 1) {
-      const earnedMastery = nextGotItCount >= 2 ? 2 : nextGotItCount >= 1 ? 1 : 0;
-      onMasteryChange(Math.max(mastery, earnedMastery));
+      const nextEarnedMastery = nextGotItCount >= 2 ? 2 : nextGotItCount >= 1 ? 1 : 0;
+      onMasteryChange(Math.max(mastery, nextEarnedMastery));
       setCompleted(true);
       return;
     }
@@ -307,6 +334,16 @@ function GuidedPractice({
           Guided Practice can build familiarity up to 2/5 mastery. Use Quick Quiz and Challenge to
           prove higher mastery.
         </p>
+        <div className="wvg-v22-result-summary">
+          <article>
+            <span>SAVED MASTERY</span>
+            <strong>{savedMastery} / 5</strong>
+          </article>
+          <article>
+            <span>NEXT BEST STEP</span>
+            <strong>{savedMastery >= 2 ? "Quick Quiz" : "Repeat Guided"}</strong>
+          </article>
+        </div>
         <div>
           <button onClick={retry} type="button">
             Practise again
@@ -331,6 +368,8 @@ function GuidedPractice({
           GUIDED {index + 1} / {content.practiceChecks.length}
         </span>
       </header>
+
+      <SessionProgress current={index + 1} label="Guided Practice" total={content.practiceChecks.length} />
 
       <article className="wvg-v16-prompt-card">
         <small>TRY IT BEFORE YOU REVEAL</small>
@@ -379,13 +418,14 @@ function ChoiceSession({
   readonly modeLabel: string;
   readonly mastery: number;
   readonly onBack: () => void;
-  readonly onComplete: (score: number) => void;
+  readonly onComplete: (score: number) => number;
 }) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<string | undefined>();
   const [answered, setAnswered] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [finalScore, setFinalScore] = useState<number | undefined>();
+  const [finalMastery, setFinalMastery] = useState<number | undefined>();
   const question = questions[index];
 
   function reset() {
@@ -394,6 +434,7 @@ function ChoiceSession({
     setAnswered(false);
     setCorrectCount(0);
     setFinalScore(undefined);
+    setFinalMastery(undefined);
   }
 
   function checkAnswer() {
@@ -407,8 +448,9 @@ function ChoiceSession({
     const scoreAfterQuestion = correctCount + (questionWasCorrect ? 1 : 0);
 
     if (index >= questions.length - 1) {
+      const savedResult = onComplete(scoreAfterQuestion);
+      setFinalMastery(savedResult);
       setFinalScore(scoreAfterQuestion);
-      onComplete(scoreAfterQuestion);
       return;
     }
 
@@ -419,6 +461,9 @@ function ChoiceSession({
   }
 
   if (finalScore !== undefined) {
+    const reviewCount = Math.max(0, questions.length - finalScore);
+    const resultMastery = finalMastery ?? clampMastery(mastery);
+
     return (
       <div className="wvg-v16-result" aria-live="polite">
         <span>{modeLabel.toLocaleUpperCase("en")} COMPLETE</span>
@@ -430,6 +475,16 @@ function ChoiceSession({
             ? "Excellent. You handled every decision correctly."
             : "Review the explanations you missed, then retry when you are ready."}
         </p>
+        <div className="wvg-v22-result-summary">
+          <article>
+            <span>SAVED MASTERY</span>
+            <strong>{resultMastery} / 5</strong>
+          </article>
+          <article>
+            <span>DECISIONS TO REVIEW</span>
+            <strong>{reviewCount === 0 ? "None" : reviewCount}</strong>
+          </article>
+        </div>
         <div>
           <button onClick={reset} type="button">
             Try again
@@ -455,6 +510,8 @@ function ChoiceSession({
           {modeLabel.toLocaleUpperCase("en")} {index + 1} / {questions.length}
         </span>
       </header>
+
+      <SessionProgress current={index + 1} label={modeLabel} total={questions.length} />
 
       <article className="wvg-v16-prompt-card">
         <small>{question.prompt}</small>
@@ -549,7 +606,11 @@ export function GrammarPracticeExperience({
         mastery={safeMastery}
         modeLabel="Quick Quiz"
         onBack={() => setMode("menu")}
-        onComplete={(score) => onMasteryChange(Math.max(safeMastery, clampMastery(score)))}
+        onComplete={(score) => {
+          const nextMastery = Math.max(safeMastery, clampMastery(score));
+          onMasteryChange(nextMastery);
+          return nextMastery;
+        }}
         questions={quickQuiz}
       />
     );
@@ -563,7 +624,9 @@ export function GrammarPracticeExperience({
         onBack={() => setMode("menu")}
         onComplete={(score) => {
           const earnedMastery = score >= 3 ? 5 : score === 2 ? 4 : score === 1 ? 3 : 0;
-          onMasteryChange(Math.max(safeMastery, earnedMastery));
+          const nextMastery = Math.max(safeMastery, earnedMastery);
+          onMasteryChange(nextMastery);
+          return nextMastery;
         }}
         questions={challenge}
       />
