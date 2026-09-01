@@ -369,7 +369,11 @@ function GuidedPractice({
         </span>
       </header>
 
-      <SessionProgress current={index + 1} label="Guided Practice" total={content.practiceChecks.length} />
+      <SessionProgress
+        current={index + 1}
+        label="Guided Practice"
+        total={content.practiceChecks.length}
+      />
 
       <article className="wvg-v16-prompt-card">
         <small>TRY IT BEFORE YOU REVEAL</small>
