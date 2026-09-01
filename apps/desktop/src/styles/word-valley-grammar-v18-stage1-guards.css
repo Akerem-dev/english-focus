@@ -71,3 +71,18 @@
   transform: translate(-50%, -47%) scale(1.08) !important;
   transform-origin: center !important;
 }
+
+/* Grammar owns the center slot between the canonical 318px sidebar and the
+ * right edge. Opening Wordie must overlay that slot, not replace width:auto
+ * with width:100% and accidentally add the sidebar width a second time. */
+#root
+  .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant.wvg-wordie-dock[data-open])
+  .application-frame--grammar-cleanroom
+  .wvg-page {
+  left: 318px !important;
+  right: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin-right: 0 !important;
+  transform: none !important;
+}
