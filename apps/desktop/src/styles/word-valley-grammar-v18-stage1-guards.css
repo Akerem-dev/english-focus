@@ -33,3 +33,41 @@
 #root .grammar-route-scope .wvg-v13-shelf__heading > button:focus-visible::after {
   color: #0f4f43;
 }
+
+/* V17's closed-state isolation selector is intentionally very specific. The
+ * final Stage 1 contract is a 62px launcher, so match that specificity here
+ * rather than allowing the legacy 58px geometry to win the cascade. */
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher.wvg-wordie-bubble[aria-label="Open Wordie"] {
+  right: 26px !important;
+  bottom: 26px !important;
+  width: 62px !important;
+  min-width: 62px !important;
+  max-width: 62px !important;
+  height: 62px !important;
+  min-height: 62px !important;
+  max-height: 62px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher.wvg-wordie-bubble[aria-label="Open Wordie"]
+  > .assistant-launcher__mascot {
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: 50% !important;
+  width: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+  height: 72px !important;
+  min-height: 72px !important;
+  max-height: 72px !important;
+  object-fit: contain !important;
+  object-position: 50% 48% !important;
+  transform: translate(-50%, -47%) scale(1.08) !important;
+  transform-origin: center !important;
+}
