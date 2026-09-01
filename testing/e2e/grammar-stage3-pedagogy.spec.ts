@@ -41,7 +41,10 @@ test("Stage 3 makes curated grammar reasoning visually explicit", async ({ page 
   expect(sentenceBackground).toContain("linear-gradient");
   expect(await pseudoContent(exampleReason)).toContain("WHY IT WORKS");
 
-  await page.locator(".wvg-v15-lesson-map button").filter({ hasText: /Mistake/i }).click();
+  await page
+    .locator(".wvg-v15-lesson-map button")
+    .filter({ hasText: /Mistake/i })
+    .click();
   const wrong = page.locator(".wvg-v15-mistake-list__wrong").first();
   const correct = page.locator(".wvg-v15-mistake-list__right").first();
   await expect(wrong).toBeVisible();
@@ -55,7 +58,10 @@ test("Stage 3 makes curated grammar reasoning visually explicit", async ({ page 
   ]);
   expect(wrongBackground).not.toBe(correctBackground);
 
-  await page.locator(".wvg-v15-lesson-map button").filter({ hasText: /Clue|Signal/i }).click();
+  await page
+    .locator(".wvg-v15-lesson-map button")
+    .filter({ hasText: /Clue|Signal/i })
+    .click();
   const clueCloud = page.locator(".wvg-v15-pattern-cloud");
   await expect(clueCloud).toBeVisible();
   const clueProcess = await pseudoContent(clueCloud);
@@ -63,7 +69,10 @@ test("Stage 3 makes curated grammar reasoning visually explicit", async ({ page 
   expect(clueProcess).toContain("CONFIRM THE MEANING");
   expect(clueProcess).toContain("BUILD THE FORM");
 
-  await page.locator(".wvg-v15-lesson-map button").filter({ hasText: /Quick Rule/i }).click();
+  await page
+    .locator(".wvg-v15-lesson-map button")
+    .filter({ hasText: /Quick Rule/i })
+    .click();
   const ruleList = page.locator(".wvg-v15-rule-list");
   await expect(ruleList).toBeVisible();
   expect(await pseudoContent(ruleList)).toContain("30-SECOND RECALL");
