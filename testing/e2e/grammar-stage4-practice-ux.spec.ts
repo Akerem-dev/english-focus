@@ -23,9 +23,7 @@ async function clearGrammarProgress(page: Page) {
 async function finishRemainingQuiz(page: Page) {
   for (let index = 1; index < QUICK_QUIZ_ANSWERS.length; index += 1) {
     await page.getByRole("button", { name: "Next question →", exact: true }).click();
-    await page
-      .getByRole("button", { name: escapeRegExp(QUICK_QUIZ_ANSWERS[index]!) })
-      .click();
+    await page.getByRole("button", { name: escapeRegExp(QUICK_QUIZ_ANSWERS[index]!) }).click();
     await page.getByRole("button", { name: "Check answer", exact: true }).click();
     await expect(page.getByText("✓ Correct", { exact: true })).toBeVisible();
   }
@@ -96,9 +94,9 @@ test("Stage 4 gives Practice a full-size readable learning flow", async ({ page 
 
   const result = page.locator(".wvg-v16-result");
   const resultBox = await result.boundingBox();
-  const scoreSize = await result.locator("> strong").evaluate((element) =>
-    Number.parseFloat(window.getComputedStyle(element).fontSize)
-  );
+  const scoreSize = await result
+    .locator("> strong")
+    .evaluate((element) => Number.parseFloat(window.getComputedStyle(element).fontSize));
   expect(resultBox).not.toBeNull();
   expect(resultBox!.width).toBeGreaterThan(850);
   expect(resultBox!.height).toBeGreaterThanOrEqual(300);
