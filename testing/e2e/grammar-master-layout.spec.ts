@@ -80,7 +80,6 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
     page.getByRole("heading", { name: "B1 · Express Yourself", level: 2 })
   ).toBeVisible();
 
-  // Stage 1 guard: do not render an empty future-level shelf as visible UI.
   await expect(page.locator(".wvg-v13-shelf--preview")).toBeHidden();
 
   await page.getByLabel("Filter by level").selectOption("A2");
@@ -361,7 +360,8 @@ test("Stage 1 locks Wordie overlay geometry, minimize behavior, and lesson scrol
   const nestedOverflow = await page.evaluate(() => {
     const selectors = [
       ".wvg-v15-paper",
-      ".wvg-v15-detail",
+      ".wvg-v15-detail-layout",
+      ".wvg-v15-lesson-map",
       ".wvg-v15-section-content",
       ".wvg-v15-teaching-stack"
     ];
@@ -382,7 +382,10 @@ test("Stage 1 locks Wordie overlay geometry, minimize behavior, and lesson scrol
     );
   }
 
-  await expect(page.locator(".wvg-v15-lesson")).toHaveCSS("overflow-y", "auto");
+  await expect(page.locator(".wvg-v15-lesson.wvg-v15-lesson--detail")).toHaveCSS(
+    "overflow-y",
+    "auto"
+  );
 
   const paper = page.locator(".wvg-v15-paper");
   const paperBeforeWordie = await paper.boundingBox();
