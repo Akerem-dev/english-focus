@@ -120,65 +120,74 @@ export function GrammarPage() {
     setSelectedLesson(lesson);
   }
 
-  function updateProgress(lessonId: string, nextProgress: number) {
-    setProgress((current) => {
-      const normalizedProgress = clampProgress(nextProgress);
-      const previousProgress = current[lessonId] ?? 0;
-      if (normalizedProgress <= previousProgress) return current;
+  function openCurriculum() {
+    setLessonFocus(undefined);
+    setSelectedLesson(undefined);
+  }
 
-      const updatedProgress = Object.freeze({ ...current, [lessonId]: normalizedProgress });
-      persistGrammarProgress(updatedProgress);
-      return updatedProgress;
+  function updateProgress(lessonId: string, value: number) {
+    const nextValue = clampProgress(value);
+
+    setProgress((current) => {
+      if (current[lessonId] === nextValue) return current;
+      const next = Object.freeze({ ...current, [lessonId]: nextValue });
+      persistGrammarProgress(next);
+      return next;
     });
   }
 
-  if (selectedLesson !== undefined) {
-    const lessonProgress = progress[selectedLesson.id] ?? selectedLesson.progress;
-    const sharedProps = {
-      lesson: selectedLesson,
-      onBack: () => setSelectedLesson(undefined),
-      onMasteryChange: (mastery: number) => updateProgress(selectedLesson.id, mastery),
-      progress: lessonProgress
-    };
-
-    if (hasRenderableCuratedContent(selectedLesson.id)) {
-      return (
-        <div
-          className="grammar-route-scope"
-          style={{ "--grammar-background": `url(${grammarBackground})` } as React.CSSProperties}
-        >
-          <CuratedGrammarLesson {...sharedProps} />
-        </div>
-      );
-    }
-
-    if (getA2GrammarTeachingContent(selectedLesson.id) !== undefined) {
-      return (
-        <div
-          className="grammar-route-scope"
-          style={{ "--grammar-background": `url(${grammarBackground})` } as React.CSSProperties}
-        >
-          <A2CuratedGrammarLesson {...sharedProps} />
-        </div>
-      );
-    }
-
-    return (
-      <div
-        className="grammar-route-scope"
-        style={{ "--grammar-background": `url(${grammarBackground})` } as React.CSSProperties}
-      >
-        <CompiledGrammarLesson {...sharedProps} />
-      </div>
-    );
+  function markComplete(lessonId: string) {
+    updateProgress(lessonId, 5);
   }
+
+  const selectedProgress =
+    selectedLesson === undefined
+      ? 0
+      : clampProgress(progress[selectedLesson.id] ?? selectedLesson.initialProgress);
+  const selectedUsesExpandedCuratedLesson =
+    selectedLesson?.level === "A2" || selectedLesson?.level === "B1";
+  const selectedHasCuratedContent =
+    selectedLesson !== undefined && hasRenderableCuratedContent(selectedLesson.id);
 
   return (
     <div
-      className="grammar-route-scope"
-      style={{ "--grammar-background": `url(${grammarBackground})` } as React.CSSProperties}
+      className="wvg-page"
+      data-grammar-view={selectedLesson === undefined ? "curriculum" : "lesson"}
     >
-      <GrammarCurriculumHome onOpenLesson={openLesson} progress={progress} />
+      <div
+        aria-hidden="true"
+        className="wvg-scene"
+        style={{ backgroundImage: `url("${grammarBackground}")` }}
+      />
+      <div aria-hidden="true" className="wvg-scene-veil" />
+
+      {selectedLesson === undefined ? (
+        <GrammarCurriculumHome onOpenLesson={openLesson} progress={progress} />
+      ) : selectedUsesExpandedCuratedLesson ? (
+        <A2CuratedGrammarLesson
+          key={`${selectedLesson.id}-${selectedLesson.initialSection ?? "overview"}`}
+          lesson={selectedLesson}
+          onBack={openCurriculum}
+          onMasteryChange={(mastery) => updateProgress(selectedLesson.id, mastery)}
+          progress={selectedProgress}
+        />
+      ) : selectedHasCuratedContent ? (
+        <CuratedGrammarLesson
+          key={`${selectedLesson.id}-${selectedLesson.initialSection ?? "overview"}`}
+          lesson={selectedLesson}
+          onBack={openCurriculum}
+          onMasteryChange={(mastery) => updateProgress(selectedLesson.id, mastery)}
+          progress={selectedProgress}
+        />
+      ) : (
+        <CompiledGrammarLesson
+          key={selectedLesson.id}
+          lesson={selectedLesson}
+          onBack={openCurriculum}
+          onMarkComplete={() => markComplete(selectedLesson.id)}
+          progress={selectedProgress}
+        />
+      )}
     </div>
   );
 }
