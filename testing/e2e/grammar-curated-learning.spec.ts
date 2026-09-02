@@ -10,7 +10,7 @@ async function box(locator: Locator) {
 
 async function openBeLesson(page: Page) {
   await page.goto("/#/grammar");
-  await page.getByRole("button", { name: /Be: am \/ is \/ are, 2 of 5 complete/i }).click();
+  await page.getByRole("button", { name: /Be: am \/ is \/ are, 0 of 5 complete/i }).click();
   await expect(page.getByRole("heading", { name: "Be: am / is / are", level: 1 })).toBeVisible();
 }
 
@@ -81,7 +81,7 @@ test("curated Be lesson teaches form meaning examples errors and real practice",
   await expect(
     page.getByRole("heading", { name: "Turn the rule into usable skill", level: 2 })
   ).toBeVisible();
-  await expect(page.getByLabel("Grammar mastery 2 of 5")).toBeVisible();
+  await expect(page.getByLabel("Grammar mastery 0 of 5")).toBeVisible();
   await expect(page.getByRole("button", { name: /Guided Practice/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Quick Quiz/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /Challenge/i })).toBeVisible();
