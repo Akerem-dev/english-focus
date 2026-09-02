@@ -10,6 +10,7 @@ test("a missing word opens the review-first Wordie helper", async ({ page }) => 
   const dialog = page.getByRole("dialog", { name: "Word helper" });
   const input = page.getByRole("textbox", { name: "Ask Wordie" });
 
+  await page.setViewportSize({ width: 1664, height: 936 });
   await page.goto("/");
   const homeAskWordie = page.getByRole("button", { name: "Ask Wordie", exact: true });
   await expect(homeAskWordie).toBeVisible();
