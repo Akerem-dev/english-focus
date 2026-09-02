@@ -522,3 +522,10 @@
   border-radius: 9px !important;
   font-size: 19px !important;
 }
+
+/* Search already has a persistent Wordie card. Keep the shared assistant session,
+   but remove the duplicate floating launcher and the decorative mascot outside the panel. */
+.application-frame--search-cleanroom .assistant-dock:not([data-open]) .wv84-assistant-launcher,
+.application-frame--search-cleanroom .wv84-assistant__ready-mascot {
+  display: none !important;
+}
