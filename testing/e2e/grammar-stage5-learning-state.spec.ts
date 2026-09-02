@@ -11,8 +11,8 @@ const QUICK_QUIZ_ANSWERS = Object.freeze([
   "Experience/result/unfinished time with a connection to now; no finished past time is named."
 ]);
 
-function exactAnswer(value: string): RegExp {
-  return new RegExp(`^${value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`);
+function answerPattern(value: string): RegExp {
+  return new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
 }
 
 async function clearGrammarProgress(page: Page) {
@@ -35,7 +35,7 @@ test("Stage 5 makes session progress and saved mastery consequences explicit", a
   await expect(page.getByText("1 of 5", { exact: true })).toBeVisible();
 
   for (let index = 0; index < QUICK_QUIZ_ANSWERS.length; index += 1) {
-    await page.getByRole("button", { name: exactAnswer(QUICK_QUIZ_ANSWERS[index]!) }).click();
+    await page.getByRole("button", { name: answerPattern(QUICK_QUIZ_ANSWERS[index]!) }).click();
     await page.getByRole("button", { name: "Check answer", exact: true }).click();
     await expect(page.getByText("✓ Correct", { exact: true })).toBeVisible();
 
