@@ -153,6 +153,8 @@ export function AppLayout({ children }: PropsWithChildren) {
 
         <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
           <div className="word-valley-stage">
+            {/* Search already exposes Wordie through its right-rail card; keep the shared
+                assistant session mounted for events without showing a second launcher/mascot. */}
             {isWordValleySearch ? <style>{SEARCH_WORDIE_SINGLE_ENTRY_STYLE}</style> : null}
             <SearchCleanShell>
               <RouteAccessibilityManager />
