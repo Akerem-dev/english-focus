@@ -94,9 +94,7 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await expect(
     page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })
   ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: /Past Simple, 0 of 5 complete/i })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: /Past Simple, 0 of 5 complete/i })).toBeVisible();
 
   await page.getByLabel("Filter by status").selectOption("all");
   await page.getByLabel("Filter by level").selectOption("all");
