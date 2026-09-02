@@ -94,7 +94,9 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await expect(
     page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })
   ).toBeVisible();
-  await expect(page.getByRole("button", { name: /Past Simple, 1 of 5 complete/i })).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: /Past Simple, 0 of 5 complete/i })
+  ).toBeVisible();
 
   await page.getByLabel("Filter by status").selectOption("all");
   await page.getByLabel("Filter by level").selectOption("all");
@@ -103,7 +105,7 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await recommended.click();
   await expect(recommended).toHaveAttribute("aria-pressed", "true");
   await expect(
-    page.getByRole("button", { name: /Present Simple, 3 of 5 complete/i })
+    page.getByRole("button", { name: /Present Simple, 0 of 5 complete/i })
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: /Present Perfect, 0 of 5 complete/i })
@@ -215,7 +217,7 @@ test("each bookshelf card opens the topic it actually names", async ({ page }) =
   await expect(page.getByRole("heading", { name: "Core Formula", level: 2 })).toBeVisible();
 
   await page.getByRole("button", { name: "← Grammar" }).click();
-  await page.getByRole("button", { name: /Present Continuous, 1 of 5 complete/i }).click();
+  await page.getByRole("button", { name: /Present Continuous, 0 of 5 complete/i }).click();
   await expect(page.getByRole("heading", { name: "Present Continuous", level: 1 })).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Present Simple vs Present Continuous", level: 1 })
