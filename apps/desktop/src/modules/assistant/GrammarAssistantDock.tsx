@@ -143,7 +143,9 @@ function GrammarAssistantSession() {
   const isWelcome = question === undefined && answerText === undefined;
 
   const focusLauncher = useCallback(() => {
-    window.requestAnimationFrame(() => launcherRef.current?.focus());
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => launcherRef.current?.focus());
+    });
   }, []);
 
   function openAssistant() {
