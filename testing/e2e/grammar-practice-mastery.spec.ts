@@ -124,7 +124,7 @@ test("A1 curated practice starts honestly at zero and persists real Be mastery",
     .getByRole("button", { name: "Be: am / is / are, 0 of 5 complete", exact: true })
     .click();
   await expect(page.getByRole("heading", { name: "Be: am / is / are", level: 1 })).toBeVisible();
-  await page.getByRole("button", { name: "Practice · 0/5", exact: true }).click();
+  await page.getByRole("button", { name: "Mastery 0/5 · Practice", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Practice", level: 1 })).toBeVisible();
   await expect(page.getByLabel("Grammar mastery 0 of 5")).toBeVisible();
 
