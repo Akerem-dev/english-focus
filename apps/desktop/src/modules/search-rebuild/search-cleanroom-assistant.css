@@ -522,16 +522,3 @@
   border-radius: 9px !important;
   font-size: 19px !important;
 }
-
-/* Vocabulary Search already has a persistent Wordie card. Keep the shared assistant
-   session, but remove only Search's duplicate floating launcher and decorative mascot. */
-.word-valley-stage:has(.wvsr-root)
-  .assistant-dock:not([data-open])
-  .wv84-assistant-launcher,
-.word-valley-stage:has(.wvsr-detail-root)
-  .assistant-dock:not([data-open])
-  .wv84-assistant-launcher,
-.word-valley-stage:has(.wvsr-root) .wv84-assistant__ready-mascot,
-.word-valley-stage:has(.wvsr-detail-root) .wv84-assistant__ready-mascot {
-  display: none !important;
-}
