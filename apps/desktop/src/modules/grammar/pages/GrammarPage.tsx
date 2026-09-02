@@ -38,30 +38,42 @@ import "../../../styles/word-valley-grammar-v21-stage4-practice.css";
 import "../../../styles/word-valley-grammar-v22-stage5-learning-state.css";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
+const LEGACY_DEMO_PROGRESS_IDS = Object.freeze([
+  "present-simple",
+  "be-am-is-are",
+  "present-continuous",
+  "past-simple"
+]);
 
 function clampProgress(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.max(0, Math.min(5, Math.round(value)));
 }
 
+function createEmptyGrammarProgress(): Record<string, number> {
+  return Object.fromEntries(LEGACY_DEMO_PROGRESS_IDS.map((lessonId) => [lessonId, 0]));
+}
+
 function readGrammarProgress(): GrammarProgressMap {
   try {
     const raw = window.localStorage.getItem(GRAMMAR_PROGRESS_KEY);
-    if (raw === null) return Object.freeze({});
+    if (raw === null) return Object.freeze(createEmptyGrammarProgress());
 
     const parsed: unknown = JSON.parse(raw);
     if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return Object.freeze({});
+      return Object.freeze(createEmptyGrammarProgress());
     }
 
-    const progress: Record<string, number> = {};
+    // Older Figma-backed catalog data carried non-zero showcase progress. Seed those
+    // lessons at zero so only real persisted learning activity can raise mastery.
+    const progress: Record<string, number> = createEmptyGrammarProgress();
     for (const [lessonId, value] of Object.entries(parsed)) {
       if (typeof value === "number") progress[lessonId] = clampProgress(value);
     }
 
     return Object.freeze(progress);
   } catch {
-    return Object.freeze({});
+    return Object.freeze(createEmptyGrammarProgress());
   }
 }
 
