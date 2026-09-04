@@ -113,6 +113,19 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
 
   const a1Shelf = page.locator(".wvg-v13-shelf").filter({ hasText: "A1 · Grammar Foundation" });
   const shelfToggle = a1Shelf.getByRole("button", { name: "Focus level" });
+  const shelfToggleVisual = await shelfToggle.evaluate((element) => {
+    const style = window.getComputedStyle(element);
+    const after = window.getComputedStyle(element, "::after");
+    return {
+      afterContent: after.content,
+      color: style.color,
+      fontSize: Number.parseFloat(style.fontSize)
+    };
+  });
+  expect(shelfToggleVisual.fontSize).toBeGreaterThan(0);
+  expect(shelfToggleVisual.color).not.toBe("rgba(0, 0, 0, 0)");
+  expect(shelfToggleVisual.afterContent).toBe("none");
+
   await shelfToggle.click();
   await expect(
     page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })
