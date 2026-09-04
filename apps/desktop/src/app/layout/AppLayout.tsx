@@ -21,6 +21,9 @@ import { AppTopBar } from "./AppTopBar";
 const WORD_VALLEY_STAGE_WIDTH = 1664;
 const WORD_VALLEY_STAGE_HEIGHT = 936;
 const WORD_VALLEY_MIN_SCALE = 0.45;
+const WORD_VALLEY_WORDIE_RAIL_WIDTH = 382;
+const SEARCH_WORDIE_SINGLE_ENTRY_STYLE =
+  ".word-valley-stage .assistant-dock:not(.wvg-wordie-dock) .wv84-assistant-launcher,.word-valley-stage .assistant-dock:not(.wvg-wordie-dock) .wv84-assistant__ready-mascot{display:none!important}";
 
 function hasAction(commands: readonly CommandDefinition[], action: AppCommandAction): boolean {
   return commands.some(
@@ -54,15 +57,8 @@ export function AppLayout({ children }: PropsWithChildren) {
     const updateScale = () => {
       window.cancelAnimationFrame(animationFrame);
       animationFrame = window.requestAnimationFrame(() => {
-        const visualViewport = window.visualViewport;
-        const viewportWidth = Math.max(
-          visualViewport?.width ?? document.documentElement.clientWidth ?? window.innerWidth,
-          1
-        );
-        const viewportHeight = Math.max(
-          visualViewport?.height ?? document.documentElement.clientHeight ?? window.innerHeight,
-          1
-        );
+        const viewportWidth = Math.max(window.innerWidth, 1);
+        const viewportHeight = Math.max(window.innerHeight, 1);
         const scale = Math.max(
           Math.min(
             viewportWidth / WORD_VALLEY_STAGE_WIDTH,
@@ -73,17 +69,19 @@ export function AppLayout({ children }: PropsWithChildren) {
 
         viewport.style.setProperty("--wv-stage-scale-x", String(scale));
         viewport.style.setProperty("--wv-stage-scale-y", String(scale));
+        viewport.style.setProperty(
+          "--wv-wordie-rail-stage-width",
+          `${WORD_VALLEY_WORDIE_RAIL_WIDTH / scale}px`
+        );
       });
     };
 
     updateScale();
     window.addEventListener("resize", updateScale);
-    window.visualViewport?.addEventListener("resize", updateScale);
 
     return () => {
       window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", updateScale);
-      window.visualViewport?.removeEventListener("resize", updateScale);
     };
   }, [isWordValleyCleanRoom]);
 
@@ -152,7 +150,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       <div
         className={`application-frame application-frame--search-cleanroom${
           isWordValleyCollections ? " application-frame--collections-cleanroom" : ""
-        }${isWordValleyGrammar ? " application-frame--grammar-cleanroom" : ""}`}
+        }`}
       >
         <a className="skip-link" href="#main-content">
           Skip to content
@@ -160,9 +158,18 @@ export function AppLayout({ children }: PropsWithChildren) {
 
         <div className="word-valley-stage-viewport" ref={wordValleyViewportRef}>
           <div className="word-valley-stage">
+            {/* Search already exposes Wordie through its right-rail card; keep the shared
+                assistant session mounted for events without showing a second launcher/mascot. */}
+            {isWordValleySearch ? <style>{SEARCH_WORDIE_SINGLE_ENTRY_STYLE}</style> : null}
             <SearchCleanShell>
               <RouteAccessibilityManager />
-              {children}
+              {isWordValleyGrammar ? (
+                <div className="application-frame--grammar-cleanroom grammar-route-scope">
+                  {children}
+                </div>
+              ) : (
+                children
+              )}
             </SearchCleanShell>
             {isWordValleySearch ? <AssistantDock /> : null}
             {isWordValleyGrammar ? <GrammarAssistantDock /> : null}

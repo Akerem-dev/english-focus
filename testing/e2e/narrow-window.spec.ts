@@ -28,9 +28,7 @@ test("all primary screens and a long detail state fit the minimum desktop window
   await expectNoDocumentOverflow(page);
 
   await page.goto("/#/grammar");
-  await expect(
-    page.getByRole("heading", { name: "Learn grammar in the right order.", level: 1 })
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Grammar Home", level: 1 })).toBeVisible();
   await expectNoDocumentOverflow(page);
 
   await page.goto("/#/library");
@@ -54,7 +52,7 @@ test("primary routes remain viewport-safe at common desktop and laptop resolutio
 
   const routes = [
     { path: "/", heading: "Discover a new word" },
-    { path: "/#/grammar", heading: "Learn grammar in the right order." },
+    { path: "/#/grammar", heading: "Grammar Home" },
     { path: "/#/library", heading: "Your Collections" },
     { path: "/#/settings", heading: "Settings" }
   ];

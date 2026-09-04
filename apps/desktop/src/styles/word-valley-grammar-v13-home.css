@@ -1,0 +1,634 @@
+/* Word Valley Grammar V13 home
+   Source of truth: Figma section 285:2 and responsive frames 286:4, 287:4, 288:4.
+   This file is intentionally scoped to Grammar so Search, Collections and the
+   shared Word Valley shell remain untouched. */
+
+#root .application-frame--grammar-cleanroom {
+  --wvg-v13-paper: #fbf8f1;
+  --wvg-v13-cream: #f7f2e8;
+  --wvg-v13-book: #faf5ea;
+  --wvg-v13-border: #d9cfbd;
+  --wvg-v13-ink: #102d27;
+  --wvg-v13-muted: #6a706b;
+  --wvg-v13-gold: #c69a3a;
+  --wvg-v13-gold-deep: #a87923;
+  --wvg-v13-green: #0b4b40;
+  --wvg-v13-green-action: #0a4a40;
+  --wvg-v13-progress: #2e7a63;
+  --wvg-v13-shelf: #6b4a2a;
+  --wvg-v13-shelf-highlight: #9a7042;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-home,
+#root .application-frame--grammar-cleanroom .wvg-v13-home * {
+  box-sizing: border-box;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-home {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 23px 0 25px;
+  color: var(--wvg-v13-ink);
+  font-family: "Inter", system-ui, sans-serif;
+  scrollbar-color: rgba(16, 45, 39, 0.24) transparent;
+  scrollbar-width: thin;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+  width: min(1054px, calc(100% - 24px));
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 20px 43px 28px 24px;
+  overflow: hidden;
+  border: 1px solid var(--wvg-v13-border);
+  border-radius: 14px;
+  background: var(--wvg-v13-paper);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-home__breadcrumb {
+  height: 18px;
+  margin: 0 0 9px;
+  color: var(--wvg-v13-muted);
+  font: 400 12px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero {
+  position: relative;
+  width: 100%;
+  height: 219px;
+  overflow: hidden;
+  border-radius: 11px;
+  background: var(--wvg-v13-green);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__wash {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 70%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 71, 61, 0.96) 0%,
+    rgba(6, 71, 61, 0.96) 79%,
+    rgba(6, 71, 61, 0.95) 80%,
+    rgba(6, 71, 61, 0) 100%
+  );
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__content {
+  position: absolute;
+  top: 23px;
+  left: 29px;
+  z-index: 1;
+  width: 540px;
+  color: var(--wvg-v13-cream);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__eyebrow {
+  height: 18px;
+  margin: 0;
+  color: var(--wvg-v13-gold);
+  font: 600 10px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero h2 {
+  height: 57px;
+  margin: 0;
+  color: var(--wvg-v13-cream);
+  font: 600 42px/57px "Cormorant Garamond", Georgia, serif;
+  letter-spacing: 0;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__copy {
+  height: 19px;
+  margin: -9px 0 0;
+  color: var(--wvg-v13-cream);
+  font: 400 14px/19px "Inter", system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions {
+  display: flex;
+  height: 42px;
+  align-items: center;
+  gap: 19px;
+  margin-top: 13px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions button {
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid var(--wvg-v13-gold);
+  border-radius: 8px;
+  background: var(--wvg-v13-green-action);
+  color: var(--wvg-v13-cream);
+  cursor: pointer;
+  font: 600 13px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions button:first-child {
+  width: 137px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions button:hover,
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions button:focus-visible {
+  background: #0c594c;
+  outline: 2px solid rgba(198, 154, 58, 0.35);
+  outline-offset: 2px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions .wvg-v13-hero__complete {
+  width: auto;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  font-weight: 400;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions .wvg-v13-hero__complete:hover,
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__actions .wvg-v13-hero__complete:focus-visible {
+  background: transparent;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__meta {
+  height: 18px;
+  margin: 8px 0 0;
+  color: var(--wvg-v13-cream);
+  font: 400 11px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-toolbar {
+  display: flex;
+  width: 100%;
+  height: 34px;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-search {
+  display: grid;
+  width: 392px;
+  height: 34px;
+  flex: 0 0 392px;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid var(--wvg-v13-border);
+  border-radius: 8px;
+  background: var(--wvg-v13-paper);
+  color: var(--wvg-v13-muted);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-search:focus-within {
+  border-color: var(--wvg-v13-gold);
+  box-shadow: 0 0 0 2px rgba(198, 154, 58, 0.12);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-search input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--wvg-v13-ink);
+  font: 400 12px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-search input::placeholder {
+  color: var(--wvg-v13-muted);
+  opacity: 1;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 14px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters button {
+  height: 28px;
+  padding: 0 16px;
+  border: 1px solid var(--wvg-v13-border);
+  border-radius: 14px;
+  background: var(--wvg-v13-paper);
+  color: var(--wvg-v13-muted);
+  cursor: pointer;
+  font: 400 10px/18px "Inter", system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters button:nth-child(1) {
+  width: 97px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters button:nth-child(2) {
+  width: 100px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters button:nth-child(3) {
+  width: 108px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters .wvg-v13-filters__recommended {
+  width: 125px;
+  margin-left: auto;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-filters button:hover,
+#root .application-frame--grammar-cleanroom .wvg-v13-filters button:focus-visible {
+  border-color: var(--wvg-v13-gold);
+  color: var(--wvg-v13-ink);
+  outline: none;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelves {
+  margin-top: 18px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf + .wvg-v13-shelf {
+  margin-top: 21px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading {
+  display: flex;
+  width: 100%;
+  height: 46px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading h2 {
+  height: 26px;
+  margin: 0;
+  color: var(--wvg-v13-ink);
+  font: 600 19px/26px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading p {
+  height: 18px;
+  margin: -4px 0 0;
+  color: var(--wvg-v13-muted);
+  font: 400 11px/18px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading > button {
+  width: 52px;
+  height: 18px;
+  margin-top: 7px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wvg-v13-ink);
+  cursor: pointer;
+  font: 400 11px/18px "Inter", system-ui, sans-serif;
+  text-align: right;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading > button:hover,
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading > button:focus-visible {
+  color: #0a594a;
+  text-decoration: underline;
+  outline: none;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+  display: grid;
+  width: calc(100% - 17px);
+  grid-template-columns: repeat(6, 158px);
+  gap: 4px;
+  margin-top: 1px;
+  margin-left: -4px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book {
+  position: relative;
+  display: block;
+  width: 158px;
+  height: 88px;
+  padding: 12px 12px 9px 18px;
+  overflow: hidden;
+  border: 1px solid var(--wvg-v13-border);
+  border-radius: 5px;
+  background: var(--wvg-v13-book);
+  color: var(--wvg-v13-ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book:not(:disabled):hover,
+#root .application-frame--grammar-cleanroom .wvg-v13-book:not(:disabled):focus-visible {
+  border-color: var(--wvg-v13-gold);
+  box-shadow: 0 3px 10px rgba(16, 45, 39, 0.08);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] {
+  border-color: var(--wvg-v13-border);
+  background: var(--wvg-v13-green);
+  color: var(--wvg-v13-cream);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__spine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7px;
+  border-radius: 2px;
+  background: #e6dcc9;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__spine {
+  background: var(--wvg-v13-gold-deep);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__title {
+  display: block;
+  width: 128px;
+  min-height: 19px;
+  padding-right: 12px;
+  overflow: hidden;
+  color: inherit;
+  font: 400 14px/19px "Cormorant Garamond", Georgia, serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__title {
+  font-weight: 600;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__subtitle {
+  display: block;
+  width: 128px;
+  height: 18px;
+  margin-top: 7px;
+  overflow: hidden;
+  color: var(--wvg-v13-muted);
+  font: 400 9px/18px "Inter", system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__subtitle {
+  color: #e6e7dd;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__status {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 14px;
+  height: 18px;
+  color: var(--wvg-v13-ink);
+  font: 400 13px/18px "Inter", system-ui, sans-serif;
+  text-align: center;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__status {
+  color: var(--wvg-v13-gold);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__track {
+  position: absolute;
+  bottom: 11px;
+  left: 18px;
+  width: 70px;
+  height: 4px;
+  overflow: hidden;
+  background: #e1d9cc;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__track > span {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--wvg-v13-progress);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__track {
+  background: #496e62;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__track > span {
+  background: var(--wvg-v13-gold);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book__count {
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+  width: 35px;
+  height: 18px;
+  color: var(--wvg-v13-muted);
+  font: 400 9px/18px "Inter", system-ui, sans-serif;
+  text-align: right;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-book[data-featured="true"] .wvg-v13-book__count {
+  color: var(--wvg-v13-cream);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__wood {
+  width: calc(100% + 20px);
+  height: 14px;
+  margin-top: -2px;
+  margin-left: -14px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to bottom,
+    var(--wvg-v13-shelf-highlight) 0 3px,
+    var(--wvg-v13-shelf) 3px 100%
+  );
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf--preview {
+  margin-top: 17px !important;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf--preview .wvg-v13-shelf__heading {
+  height: auto;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-empty {
+  display: grid;
+  min-height: 280px;
+  place-content: center;
+  gap: 10px;
+  color: var(--wvg-v13-muted);
+  text-align: center;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-empty strong {
+  color: var(--wvg-v13-ink);
+  font: 600 24px/30px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-empty button {
+  justify-self: center;
+  padding: 7px 12px;
+  border: 1px solid var(--wvg-v13-border);
+  border-radius: 14px;
+  background: var(--wvg-v13-paper);
+  color: var(--wvg-v13-ink);
+  cursor: pointer;
+}
+
+/* 1920×1080 master: exact 233px sidebar and 293px Wordie rail when open. */
+@media (min-width: 1500px) {
+  #root .application-frame--grammar-cleanroom {
+    --wvg-sidebar-width: 233px;
+    --wvg-rail-width: 293px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-home {
+    padding-bottom: 31px;
+  }
+
+  #root
+    .application-frame--grammar-cleanroom:has(.assistant-dock.wv84-assistant[data-open="true"])
+    .wvg-v13-home {
+    right: var(--wvg-rail-width);
+  }
+}
+
+/* 1366×768 laptop: 233px sidebar, fixed 1054px paper, Wordie collapsed. */
+@media (min-width: 1181px) and (max-width: 1499px) {
+  #root .application-frame--grammar-cleanroom {
+    --wvg-sidebar-width: 233px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    transform: translateX(2px);
+  }
+}
+
+/* 1180×760 default window: Figma collapses the sidebar to 72px while preserving the 1054px paper. */
+@media (max-width: 1180px) {
+  #root .application-frame--grammar-cleanroom {
+    --wvg-sidebar-width: 72px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand {
+    top: 20px !important;
+    width: 48px !important;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand img {
+    width: 48px !important;
+    height: 30px !important;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvclean-nav {
+    left: 8px !important;
+    width: 56px !important;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvclean-nav__item {
+    width: 56px !important;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    width: min(1054px, calc(100% - 24px));
+  }
+}
+
+/* Below the Figma default-window reference, preserve usability rather than scale the whole screen. */
+@media (max-width: 1120px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    width: 100%;
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-toolbar {
+    height: auto;
+    flex-wrap: wrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-search {
+    width: min(392px, 100%);
+    flex-basis: min(392px, 100%);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-filters {
+    flex: 1 1 100%;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-filters .wvg-v13-filters__recommended {
+    margin-left: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(158px, 1fr));
+    gap: 8px;
+    margin-left: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book {
+    width: 100%;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__wood {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding: 18px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero__content {
+    right: 20px;
+    left: 20px;
+    width: auto;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero h2 {
+    font-size: 36px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero__copy {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-book {
+    transition: none;
+  }
+}

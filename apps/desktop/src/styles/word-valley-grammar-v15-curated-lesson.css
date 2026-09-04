@@ -1,0 +1,1017 @@
+/* V15 curated lesson experience.
+   Fixed geometry prevents section-to-section jumps while the content pane scrolls internally. */
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson {
+  position: absolute;
+  inset: 46px 0 0 318px;
+  overflow: hidden;
+  padding: 22px 38px 28px;
+  color: #102d27;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-paper {
+  display: grid;
+  width: min(1104px, 100%);
+  height: min(842px, calc(100vh - 96px));
+  min-height: 620px;
+  margin: 0 auto;
+  padding: 18px 24px 20px;
+  overflow: hidden;
+  border: 1px solid rgba(217, 207, 189, 0.96);
+  border-radius: 14px;
+  background: #fbf8f1;
+  box-shadow: 0 18px 44px rgba(16, 45, 39, 0.14);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-paper--overview {
+  grid-template-rows: 28px 190px auto minmax(0, 1fr) auto;
+  gap: 12px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson--detail .wvg-v15-paper {
+  grid-template-rows: 28px 146px minmax(0, 1fr) 54px;
+  gap: 12px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  color: #6a706b;
+  font: 500 10px/16px "Inter", system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2d665b;
+  cursor: pointer;
+  font: 700 10px/16px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb strong,
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero,
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 11px;
+  background: #07594d;
+  isolation: isolate;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero > img,
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero > img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 48%;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero > span,
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero > span {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(6, 75, 64, 0.99) 0%, rgba(6, 75, 64, 0.94) 48%, rgba(6, 75, 64, 0.48) 72%, rgba(6, 75, 64, 0.08) 100%);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero > div {
+  display: grid;
+  width: min(720px, 70%);
+  gap: 3px;
+  padding: 21px 26px;
+  color: #f7f2e8;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero small,
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero small {
+  color: #d4ae50;
+  font: 800 9px/14px "Inter", system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero h1,
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero h1 {
+  margin: 0;
+  color: #fffaf0;
+  font: 600 38px/42px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero p {
+  max-width: 680px;
+  margin: 1px 0 5px;
+  color: rgba(255, 250, 240, 0.94);
+  font: 500 11px/17px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero > div > div {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero button {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 250, 240, 0.56);
+  border-radius: 7px;
+  background: rgba(4, 54, 46, 0.52);
+  color: #fffaf0;
+  cursor: pointer;
+  font: 700 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero button:first-child {
+  border-color: #d1a439;
+  box-shadow: inset 0 0 0 1px rgba(209, 164, 57, 0.25);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-hero em {
+  margin-top: 2px;
+  color: rgba(255, 250, 240, 0.76);
+  font: 500 9px/13px "Inter", system-ui, sans-serif;
+  font-style: normal;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  align-items: end;
+  gap: 20px;
+  padding: 2px 2px 0;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-intro span,
+#root .application-frame--grammar-cleanroom .wvg-v15-section-heading > span {
+  color: #9b6b13;
+  font: 800 8px/13px "Inter", system-ui, sans-serif;
+  letter-spacing: 0.09em;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-intro h2 {
+  margin: 1px 0 0;
+  color: #102d27;
+  font: 600 20px/25px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-intro p {
+  margin: 0;
+  color: #6a706b;
+  font: 400 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 10px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffdf8;
+  box-shadow: 0 3px 10px rgba(16, 45, 39, 0.035);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card > button {
+  display: grid;
+  width: 100%;
+  min-height: 36px;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 0;
+  border-bottom: 1px solid #eee5d6;
+  background: #f7f2e8;
+  color: #102d27;
+  cursor: pointer;
+  text-align: left;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card > button:hover,
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card > button:focus-visible {
+  background: #eff3ec;
+  outline: none;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__number {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 999px;
+  background: #07594d;
+  color: #fffaf0;
+  font: 700 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__title {
+  font: 700 11px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__open {
+  color: #9b6b13;
+  font: 700 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__body {
+  min-height: 74px;
+  padding: 10px 12px 11px;
+  color: #53645e;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__body p,
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__body ul {
+  margin: 0;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__body ul {
+  display: grid;
+  gap: 3px;
+  padding-left: 17px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-formula {
+  display: block;
+  margin-bottom: 5px;
+  color: #102d27;
+  font: 600 15px/19px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-examples,
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-mistake {
+  display: grid;
+  gap: 5px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-examples span,
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-mistake span {
+  overflow: hidden;
+  padding: 5px 7px;
+  border-radius: 5px;
+  background: #f7f2e8;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-mistake span:first-child {
+  background: #f8e7e2;
+  color: #8b4437;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-mistake span:last-child {
+  background: #eff3ec;
+  color: #2e7a63;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-preview-pills span {
+  padding: 4px 6px;
+  border: 1px solid #d9cfbd;
+  border-radius: 999px;
+  background: #f7f2e8;
+  color: #5d625f;
+  font-size: 8px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-memory {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 8px 13px;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+  background: #eff3ec;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-memory span {
+  color: #9b6b13;
+  font: 800 8px/12px "Inter", system-ui, sans-serif;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-memory strong {
+  color: #102d27;
+  font: 600 12px/17px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero > div {
+  position: absolute;
+  inset: 18px auto auto 24px;
+  width: min(650px, 65%);
+  color: #fffaf0;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero h1 {
+  margin-top: 2px;
+  font-size: 34px;
+  line-height: 39px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-hero p {
+  margin: 2px 0 0;
+  color: rgba(255, 250, 240, 0.86);
+  font: 600 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-layout {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 12px;
+  overflow: hidden;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map {
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffdf8;
+  scrollbar-gutter: stable;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map > header {
+  display: flex;
+  height: 38px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border-bottom: 1px solid #eee5d6;
+  color: #9b6b13;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map > header span,
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map > header small {
+  font: 800 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map button {
+  display: grid;
+  width: calc(100% - 10px);
+  min-height: 38px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  margin: 3px 5px;
+  padding: 4px 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #53645e;
+  cursor: pointer;
+  text-align: left;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map button > span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 999px;
+  background: #07594d;
+  color: #fffaf0;
+  font: 700 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map button strong {
+  min-width: 0;
+  font: 600 9px/13px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map button[aria-current="step"] {
+  background: #eff3ec;
+  box-shadow: inset 2px 0 #c69a3a;
+  color: #102d27;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-section-content {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 22px 24px 26px;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffdf8;
+  scrollbar-color: #c9bfad transparent;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-teaching-stack {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  width: min(860px, 100%);
+  margin: 0 auto;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-section-heading h2 {
+  margin: 2px 0 5px;
+  color: #102d27;
+  font: 600 27px/32px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-section-heading p {
+  max-width: 760px;
+  margin: 0;
+  color: #53645e;
+  font: 400 11px/17px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-banner {
+  display: grid;
+  min-height: 64px;
+  place-items: center;
+  padding: 12px 18px;
+  border: 1px solid #e3d6bd;
+  border-radius: 8px;
+  background: #f4ead4;
+  color: #102d27;
+  font: 600 21px/26px "Cormorant Garamond", Georgia, serif;
+  text-align: center;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-parts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-parts article {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 1px 7px;
+  padding: 12px;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+  background: #fbf8f1;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-parts article > span {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  grid-row: 1 / 3;
+  place-items: center;
+  border-radius: 999px;
+  background: #07594d;
+  color: #fffaf0;
+  font: 700 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-parts small {
+  color: #9b6b13;
+  font: 800 7px/10px "Inter", system-ui, sans-serif;
+  letter-spacing: 0.06em;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-parts strong {
+  color: #102d27;
+  font: 700 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-formula-parts p {
+  grid-column: 1 / -1;
+  margin: 7px 0 0;
+  color: #6a706b;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #42564f;
+  font: 500 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-table-wrap th,
+#root .application-frame--grammar-cleanroom .wvg-v15-table-wrap td {
+  padding: 9px 11px;
+  border-right: 1px solid #eee5d6;
+  border-bottom: 1px solid #eee5d6;
+  text-align: left;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-table-wrap thead th {
+  background: #eff3ec;
+  color: #102d27;
+  font-weight: 800;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-table-wrap tbody th {
+  background: #f7f2e8;
+  color: #102d27;
+  font-weight: 700;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-memory-callout,
+#root .application-frame--grammar-cleanroom .wvg-v15-warning-callout,
+#root .application-frame--grammar-cleanroom .wvg-v15-takeaway {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border: 1px solid #cdd8cd;
+  border-radius: 8px;
+  background: #eff3ec;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-warning-callout {
+  border-color: #e3d6bd;
+  background: #f7f2e8;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-memory-callout strong,
+#root .application-frame--grammar-cleanroom .wvg-v15-warning-callout strong,
+#root .application-frame--grammar-cleanroom .wvg-v15-takeaway strong {
+  color: #9b6b13;
+  font: 800 8px/12px "Inter", system-ui, sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-memory-callout p,
+#root .application-frame--grammar-cleanroom .wvg-v15-warning-callout p,
+#root .application-frame--grammar-cleanroom .wvg-v15-takeaway p {
+  margin: 0;
+  color: #314c44;
+  font: 600 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid article {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+  background: #fbf8f1;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid article > span {
+  color: #c69a3a;
+  font: 700 13px/18px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid h3 {
+  margin: 0 0 3px;
+  color: #102d27;
+  font: 700 11px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid p,
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid blockquote,
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid small {
+  margin: 0;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid p {
+  color: #6a706b;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid blockquote {
+  margin-top: 7px;
+  color: #102d27;
+  font-weight: 700;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-use-grid small,
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list em {
+  display: block;
+  margin-top: 2px;
+  color: #7c766d;
+  font-style: normal;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list {
+  display: grid;
+  gap: 7px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list article {
+  display: grid;
+  grid-template-columns: 26px minmax(230px, 0.9fr) minmax(220px, 1.1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid #e4dac7;
+  border-radius: 7px;
+  background: #fbf8f1;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list article > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: #eff3ec;
+  color: #07594d;
+  font: 800 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list__sentence small {
+  display: block;
+  color: #9b6b13;
+  font: 800 7px/10px "Inter", system-ui, sans-serif;
+  text-transform: uppercase;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list__sentence strong {
+  display: block;
+  margin-top: 1px;
+  color: #102d27;
+  font: 700 11px/16px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list__sentence em,
+#root .application-frame--grammar-cleanroom .wvg-v15-example-list article > p {
+  margin: 2px 0 0;
+  color: #6a706b;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid article {
+  min-height: 150px;
+  padding: 15px;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #eff3ec;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid article:nth-child(2) {
+  background: #f7f2e8;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid article > small {
+  color: #9b6b13;
+  font: 800 8px/12px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid h3 {
+  margin: 5px 0 12px;
+  color: #102d27;
+  font: 600 17px/21px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid blockquote {
+  margin: 0;
+  color: #102d27;
+  font: 700 11px/16px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid p {
+  margin: 4px 0 0;
+  color: #6a706b;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-compare-grid > span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #d9cfbd;
+  border-radius: 999px;
+  background: #fffdf8;
+  color: #102d27;
+  font: 800 8px/12px "Inter", system-ui, sans-serif;
+  transform: translate(-50%, -50%);
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list {
+  display: grid;
+  gap: 8px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list article {
+  display: grid;
+  grid-template-columns: 24px minmax(250px, 1fr) minmax(240px, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border: 1px solid #e4dac7;
+  border-radius: 7px;
+  background: #fbf8f1;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list article > span {
+  color: #c69a3a;
+  font: 700 13px/18px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list__wrong,
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list__right {
+  margin: 0;
+  padding: 5px 7px;
+  border-radius: 5px;
+  font: 600 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list__wrong {
+  background: #f8e7e2;
+  color: #8b4437;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list__right {
+  margin-top: 4px;
+  background: #eff3ec;
+  color: #2e7a63;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-mistake-list article > p {
+  margin: 0;
+  color: #53645e;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-pattern-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-pattern-cloud span {
+  padding: 7px 10px;
+  border: 1px solid #d9cfbd;
+  border-radius: 999px;
+  background: #f7f2e8;
+  color: #42564f;
+  font: 600 9px/13px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list {
+  display: grid;
+  gap: 8px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  overflow: hidden;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list header,
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list article > div {
+  padding: 11px 13px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list header {
+  background: #f7f2e8;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list header span,
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list article > div small {
+  display: block;
+  color: #9b6b13;
+  font: 800 7px/10px "Inter", system-ui, sans-serif;
+  letter-spacing: 0.05em;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list header strong,
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list article > div b {
+  display: block;
+  margin-top: 3px;
+  color: #102d27;
+  font: 700 10px/15px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-checkpoint-list article > div p {
+  margin: 3px 0 0;
+  color: #6a706b;
+  font: 400 9px/14px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-practice-roadmap {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-practice-roadmap span {
+  padding: 9px 11px;
+  border: 1px dashed #cdbf9e;
+  border-radius: 7px;
+  color: #53645e;
+  font: 700 9px/13px "Inter", system-ui, sans-serif;
+  text-align: center;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-rule-list {
+  display: grid;
+  gap: 9px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-rule-list article {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 62px;
+  padding: 9px 12px;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+  background: #fbf8f1;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-rule-list article > span {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: #07594d;
+  color: #fffaf0;
+  font: 700 11px/16px "Cormorant Garamond", Georgia, serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-rule-list p {
+  margin: 0;
+  color: #314c44;
+  font: 600 11px/16px "Inter", system-ui, sans-serif;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-memory-callout--large {
+  min-height: 76px;
+  align-content: center;
+  padding-inline: 18px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-memory-callout--large p {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 142px minmax(0, 1fr);
+  gap: 9px;
+  min-width: 0;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  gap: 1px;
+  padding: 5px 10px;
+  border: 1px solid #d9cfbd;
+  border-radius: 7px;
+  background: #fffdf8;
+  color: #102d27;
+  cursor: pointer;
+  text-align: left;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button:nth-child(2) {
+  place-items: center;
+  color: #6a706b;
+  font: 700 9px/13px "Inter", system-ui, sans-serif;
+  text-align: center;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button:last-child {
+  text-align: right;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button > span {
+  color: #9b6b13;
+  font: 800 7px/10px "Inter", system-ui, sans-serif;
+  letter-spacing: 0.04em;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button > strong {
+  overflow: hidden;
+  font: 700 9px/13px "Inter", system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button:disabled {
+  cursor: default;
+  opacity: 0.38;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button:not(:disabled):hover,
+#root .application-frame--grammar-cleanroom .wvg-v15-detail-footer button:not(:disabled):focus-visible {
+  border-color: #c69a3a;
+  outline: none;
+}
+
+@media (max-width: 1180px) {
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson {
+    padding: 18px 24px 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-detail-layout {
+    grid-template-columns: 178px minmax(0, 1fr);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-use-grid,
+  #root .application-frame--grammar-cleanroom .wvg-v15-formula-parts {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 980px) {
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson {
+    inset-left: 318px;
+    padding: 12px 16px 18px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-paper {
+    min-height: 540px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson-map {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-height: 112px;
+    overflow-y: auto;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson-map > header {
+    grid-column: 1 / -1;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson-map button {
+    min-width: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson-map button strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-example-list article,
+  #root .application-frame--grammar-cleanroom .wvg-v15-mistake-list article {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v15-example-list article > p,
+  #root .application-frame--grammar-cleanroom .wvg-v15-mistake-list article > p {
+    grid-column: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root .application-frame--grammar-cleanroom * {
+    scroll-behavior: auto !important;
+  }
+}

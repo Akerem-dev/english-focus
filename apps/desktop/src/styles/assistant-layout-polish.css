@@ -263,6 +263,27 @@
   }
 }
 
+/* Word Valley renders Wordie as a fixed rail. The legacy floating-panel
+   entrance briefly scales/translates the rail and causes visible geometry
+   drift, so paint it at its final coordinates from the first frame. */
+.application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Search already owns a persistent Wordie card in its context rail. Keep the
+   assistant session mounted for event-driven opening, but remove the duplicate
+   floating launcher and the decorative mascot that sat outside the open panel.
+   Grammar is excluded because its dedicated dock intentionally uses a small FAB. */
+.application-frame--search-cleanroom
+  .assistant-dock:not(.wvg-wordie-dock):not([data-open])
+  .assistant-launcher.wv84-assistant-launcher,
+.application-frame--search-cleanroom
+  .assistant-dock:not(.wvg-wordie-dock)
+  .wv84-assistant__ready-mascot {
+  display: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .assistant-panel {
     animation: none;
