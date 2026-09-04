@@ -5,33 +5,13 @@
   display: none !important;
 }
 
-/* The shelf toggle changes behavior between isolate/restore, but the visual label
- * stays consistent so users do not see View all / Show all terminology drift.
- * Match the real semantic shelf button instead of a legacy clear-button class. */
+/* Keep the real isolate/restore label visible; later polish owns its colour and
+ * width while this guard preserves a stable click target. */
 #root .grammar-route-scope .wvg-v13-shelf__heading > button {
   min-width: 72px !important;
   min-height: 30px !important;
   padding: 5px 9px !important;
   border-radius: 8px !important;
-  color: transparent !important;
-  font-size: 0 !important;
-  text-decoration: none !important;
-}
-
-#root .grammar-route-scope .wvg-v13-shelf__heading > button::after {
-  content: "View all";
-  color: #1b6659;
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-
-#root .grammar-route-scope .wvg-v13-shelf__heading > button:hover::after,
-#root .grammar-route-scope .wvg-v13-shelf__heading > button:focus-visible::after {
-  color: #0f4f43;
 }
 
 /* V17's closed-state isolation selector is intentionally very specific. The
