@@ -1,0 +1,397 @@
+/*
+ * V23 — Grammar polish pass after visual QA.
+ *
+ * Goals:
+ * - make Grammar Wordie reserve the same right rail as Search instead of covering content;
+ * - compact the empty Wordie state so actions sit directly under the welcome card;
+ * - keep the launcher optically centred and safely inset from the stage edge;
+ * - improve filter labels, lesson-map readability and overview-card hierarchy;
+ * - provide styling for the optional Guided Practice attempt field.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Wordie: real Search-style rail reflow                                       */
+/* -------------------------------------------------------------------------- */
+
+#root
+  .application-frame--search-cleanroom
+  .application-frame--grammar-cleanroom
+  .wvg-page {
+  transition: right 210ms cubic-bezier(0.2, 0.75, 0.25, 1) !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .application-frame--grammar-cleanroom
+  .wvg-page {
+  right: 382px !important;
+}
+
+/* The canonical Word Valley stage is 1664px. A 382px assistant rail leaves the
+   same 964px learning lane used by Search (1664 - 318 sidebar - 382 rail). */
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .grammar-route-scope
+  .wvg-v13-home {
+  padding-inline: 14px !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .grammar-route-scope
+  .wvg-v13-home__paper,
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .grammar-route-scope
+  .wvg-v15-paper {
+  width: calc(100% - 2px) !important;
+  max-width: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .grammar-route-scope
+  .wvg-v13-shelf__books {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .grammar-route-scope
+  .wvg-v15-detail-layout {
+  grid-template-columns: 168px minmax(0, 1fr) !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open])
+  .grammar-route-scope
+  .wvg-v15-section-content {
+  padding-inline: 25px !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Wordie panel: compact welcome state + stable composer                       */
+/* -------------------------------------------------------------------------- */
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  > .assistant-panel.wv84-assistant-panel {
+  grid-template-rows: 92px minmax(0, 1fr) 63px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  > .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
+  grid-template-rows: 92px auto minmax(0, 1fr) 63px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-assistant-panel__header {
+  grid-template-columns: 50px minmax(0, 1fr) 72px !important;
+  padding-right: 18px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wvg-wordie-panel__controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 4px !important;
+  min-width: 72px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wvg-wordie-panel__minimize {
+  display: grid !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: #164b42 !important;
+  cursor: pointer !important;
+  font: 800 18px/1 "Inter", system-ui, sans-serif !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wvg-wordie-panel__minimize:hover,
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wvg-wordie-panel__minimize:focus-visible {
+  background: #efe8da !important;
+  outline: 2px solid rgba(198, 154, 58, 0.34) !important;
+  outline-offset: 1px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]:has(.wv84-quick-actions--welcome)
+  .wv84-assistant-panel__conversation {
+  overflow: visible !important;
+  padding-bottom: 8px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-wordie-welcome {
+  min-height: 154px !important;
+  padding: 22px 20px 24px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-wordie-welcome p {
+  margin-top: 8px !important;
+  font-size: 13px !important;
+  line-height: 19px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome {
+  align-content: start !important;
+  gap: 8px !important;
+  max-height: none !important;
+  padding: 2px 25px 10px !important;
+  overflow-y: auto !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  > button {
+  width: 100% !important;
+  min-height: 64px !important;
+  height: auto !important;
+  padding: 10px 14px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions--welcome
+  .wv84-quick-actions__copy
+  strong {
+  font-size: 18px !important;
+  line-height: 20px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-assistant-composer {
+  align-self: center !important;
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Wordie launcher: safe edge inset + optical mascot centring                  */
+/* -------------------------------------------------------------------------- */
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wvg-wordie-dock:not([data-open])
+  > .wvg-wordie-bubble {
+  right: 22px !important;
+  bottom: 22px !important;
+  width: 62px !important;
+  min-width: 62px !important;
+  max-width: 62px !important;
+  height: 62px !important;
+  min-height: 62px !important;
+  max-height: 62px !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-bubble
+  > .assistant-launcher__mascot {
+  top: -1px !important;
+  right: -4px !important;
+  width: 70px !important;
+  height: 70px !important;
+  transform: scale(1.18) translateY(-1px) !important;
+}
+
+#root .application-frame--search-cleanroom .wvg-wordie-bubble__label {
+  right: 96px !important;
+  bottom: 43px !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Grammar Home polish                                                        */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v13-filters select {
+  height: 32px !important;
+  padding: 0 30px 0 12px !important;
+  border: 1px solid #d9cfbd !important;
+  border-radius: 16px !important;
+  background-color: #fbf8f1 !important;
+  color: #59655f !important;
+  font: 500 11px/18px "Inter", system-ui, sans-serif !important;
+  white-space: nowrap !important;
+}
+
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(1) {
+  width: 112px !important;
+  min-width: 112px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(2) {
+  width: 132px !important;
+  min-width: 132px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(3) {
+  width: 126px !important;
+  min-width: 126px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-shelf__heading > button {
+  width: auto !important;
+  min-width: 78px !important;
+  color: #176657 !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 3px !important;
+}
+
+#root
+  .grammar-route-scope
+  .wvg-v13-home__paper:has(.wvg-v13-shelves > .wvg-v13-shelf:only-child) {
+  min-height: auto !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Lesson overview + section navigation readability                           */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v15-overview-card__body {
+  color: #40564f !important;
+  font-size: 13.5px !important;
+  line-height: 1.48 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card__body p,
+#root .grammar-route-scope .wvg-v15-overview-card__body li,
+#root .grammar-route-scope .wvg-v15-overview-card__body span,
+#root .grammar-route-scope .wvg-v15-overview-card__body strong {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card__open {
+  min-width: 56px !important;
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  background: rgba(198, 154, 58, 0.11) !important;
+  color: #936814 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card > button:hover .wvg-v15-overview-card__open,
+#root .grammar-route-scope .wvg-v15-overview-card > button:focus-visible .wvg-v15-overview-card__open {
+  background: rgba(198, 154, 58, 0.2) !important;
+  color: #6f4a08 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-lesson-map button {
+  min-height: 42px !important;
+  padding-block: 7px !important;
+  font-size: 12.5px !important;
+  line-height: 1.28 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Guided Practice attempt field                                              */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v23-guided-attempt {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt label {
+  display: grid !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  color: #7d642b !important;
+  font: 700 10px/13px "Inter", system-ui, sans-serif !important;
+  letter-spacing: 0.06em !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  padding: 0 13px !important;
+  border: 1px solid #d9cfbd !important;
+  border-radius: 8px !important;
+  background: #fffdf8 !important;
+  color: #153f36 !important;
+  font: 500 13px/18px "Inter", system-ui, sans-serif !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt input:focus {
+  border-color: #c69a3a !important;
+  outline: 2px solid rgba(198, 154, 58, 0.16) !important;
+  outline-offset: 1px !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt > button {
+  align-self: end !important;
+  min-height: 42px !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt-summary {
+  display: grid !important;
+  gap: 3px !important;
+  margin: 14px 0 10px !important;
+  padding: 10px 12px !important;
+  border: 1px solid #ded5c6 !important;
+  border-radius: 8px !important;
+  background: #faf6ed !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt-summary span {
+  color: #876827 !important;
+  font: 800 9px/12px "Inter", system-ui, sans-serif !important;
+  letter-spacing: 0.07em !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt-summary strong {
+  color: #244a41 !important;
+  font: 600 13px/18px "Inter", system-ui, sans-serif !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root
+    .application-frame--search-cleanroom
+    .application-frame--grammar-cleanroom
+    .wvg-page {
+    transition: none !important;
+  }
+}

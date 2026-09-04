@@ -388,6 +388,13 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
       : undefined;
   const presentPerfectProgress =
     presentPerfectBook === undefined ? 0 : getBookProgress(presentPerfectBook, progress);
+  const filtersActive =
+    normalizedQuery.length > 0 ||
+    levelFilter !== "all" ||
+    topicFilter !== "all" ||
+    statusFilter !== "all" ||
+    recommendedOnly ||
+    isolatedShelfId !== undefined;
 
   function resetFilters() {
     setQuery("");
@@ -413,7 +420,11 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
   }
 
   return (
-    <main className="wvg-v13-home" aria-labelledby="grammar-home-title">
+    <main
+      className="wvg-v13-home"
+      aria-labelledby="grammar-home-title"
+      data-filtered={filtersActive || undefined}
+    >
       <section className="wvg-v13-home__paper">
         <h1 className="wvg-v13-home__breadcrumb" id="grammar-home-title">
           Grammar Home
@@ -559,7 +570,7 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
                     <p>{shelf.description}</p>
                   </div>
                   <button onClick={() => showShelf(shelf.id)} type="button">
-                    {isolatedShelfId === shelf.id ? "Show all" : "View all"}
+                    {isolatedShelfId === shelf.id ? "Show all levels" : "Focus level"}
                   </button>
                 </header>
 

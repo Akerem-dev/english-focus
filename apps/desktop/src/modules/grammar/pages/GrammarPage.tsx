@@ -36,6 +36,7 @@ import "../../../styles/word-valley-grammar-v19-stage2-geometry-guard.css";
 import "../../../styles/word-valley-grammar-v20-stage3-pedagogy.css";
 import "../../../styles/word-valley-grammar-v21-stage4-practice.css";
 import "../../../styles/word-valley-grammar-v22-stage5-learning-state.css";
+import "../../../styles/word-valley-grammar-v23-polish.css";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 const LEGACY_DEMO_PROGRESS_IDS = Object.freeze([

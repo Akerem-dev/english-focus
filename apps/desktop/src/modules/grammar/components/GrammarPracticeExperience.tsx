@@ -58,7 +58,6 @@ function buildQuickQuiz(content: GrammarTeachingContent): readonly ChoiceQuestio
       return Object.freeze({
         id: `mistake-${index}`,
         prompt: "Which sentence is correct?",
-        context: mistake.wrong,
         choices,
         correctAnswer: mistake.right,
         explanation: mistake.why
@@ -234,7 +233,7 @@ function ModeMenu({
         <div>
           <small>LEARN WITH FEEDBACK</small>
           <strong>Guided Practice</strong>
-          <p>Work through 3 checkpoints, reveal the answer, then self-check your understanding.</p>
+          <p>Work through 3 checkpoints, try an answer, reveal it, then self-check your understanding.</p>
         </div>
         <em>{mastery >= 2 ? "Reviewed" : "Build to 2/5"}</em>
       </button>
@@ -244,7 +243,7 @@ function ModeMenu({
         <div>
           <small>SCORE YOUR KNOWLEDGE</small>
           <strong>Quick Quiz</strong>
-          <p>Answer 5 objective questions. Your score becomes your saved mastery level.</p>
+          <p>Answer 5 objective questions. Your score can improve your best saved mastery.</p>
         </div>
         <em>{mastery > 0 ? `Best ${mastery}/5` : "5 questions"}</em>
       </button>
@@ -295,6 +294,7 @@ function GuidedPractice({
 }: GrammarPracticeExperienceProps & { readonly onBack: () => void }) {
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
+  const [attempt, setAttempt] = useState("");
   const [gotItCount, setGotItCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const check = content.practiceChecks[index];
@@ -314,11 +314,13 @@ function GuidedPractice({
 
     setIndex((current) => current + 1);
     setRevealed(false);
+    setAttempt("");
   }
 
   function retry() {
     setIndex(0);
     setRevealed(false);
+    setAttempt("");
     setGotItCount(0);
     setCompleted(false);
   }
@@ -336,7 +338,7 @@ function GuidedPractice({
         </p>
         <div className="wvg-v22-result-summary">
           <article>
-            <span>SAVED MASTERY</span>
+            <span>BEST MASTERY</span>
             <strong>{savedMastery} / 5</strong>
           </article>
           <article>
@@ -380,19 +382,40 @@ function GuidedPractice({
         <h3>{check.prompt}</h3>
 
         {revealed ? (
-          <div className="wvg-v16-guided-answer" aria-live="polite">
-            <span>ANSWER</span>
-            <strong>{check.answer}</strong>
-            <p>{check.explanation}</p>
-          </div>
+          <>
+            {attempt.trim().length === 0 ? null : (
+              <div className="wvg-v23-guided-attempt-summary">
+                <span>YOUR ATTEMPT</span>
+                <strong>{attempt.trim()}</strong>
+              </div>
+            )}
+            <div className="wvg-v16-guided-answer" aria-live="polite">
+              <span>ANSWER</span>
+              <strong>{check.answer}</strong>
+              <p>{check.explanation}</p>
+            </div>
+          </>
         ) : (
-          <button
-            className="wvg-v16-primary-action"
-            onClick={() => setRevealed(true)}
-            type="button"
-          >
-            Reveal answer
-          </button>
+          <div className="wvg-v23-guided-attempt">
+            <label>
+              YOUR ANSWER · OPTIONAL, BUT TRY FIRST
+              <input
+                aria-label="Your guided practice answer"
+                autoComplete="off"
+                onChange={(event) => setAttempt(event.currentTarget.value)}
+                placeholder="Type what you think the answer is..."
+                type="text"
+                value={attempt}
+              />
+            </label>
+            <button
+              className="wvg-v16-primary-action"
+              onClick={() => setRevealed(true)}
+              type="button"
+            >
+              Reveal answer
+            </button>
+          </div>
         )}
       </article>
 
@@ -481,7 +504,7 @@ function ChoiceSession({
         </p>
         <div className="wvg-v22-result-summary">
           <article>
-            <span>SAVED MASTERY</span>
+            <span>BEST MASTERY</span>
             <strong>{resultMastery} / 5</strong>
           </article>
           <article>
@@ -577,7 +600,7 @@ function ChoiceSession({
             Check answer
           </button>
         )}
-        <span>Current saved mastery: {clampMastery(mastery)} / 5</span>
+        <span>Current best mastery: {clampMastery(mastery)} / 5</span>
       </div>
     </div>
   );

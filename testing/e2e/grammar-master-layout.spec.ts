@@ -112,7 +112,7 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
   await recommended.click();
 
   const a1Shelf = page.locator(".wvg-v13-shelf").filter({ hasText: "A1 · Grammar Foundation" });
-  const shelfToggle = a1Shelf.getByRole("button", { name: "View all" });
+  const shelfToggle = a1Shelf.getByRole("button", { name: "Focus level" });
   await shelfToggle.click();
   await expect(
     page.getByRole("heading", { name: "A1 · Grammar Foundation", level: 2 })
@@ -121,14 +121,8 @@ test("Grammar Home controls work and lesson overview sections are real navigatio
     page.getByRole("heading", { name: "A2 · Building Confidence", level: 2 })
   ).toHaveCount(0);
 
-  const restoreToggle = a1Shelf.getByRole("button", { name: "Show all" });
+  const restoreToggle = a1Shelf.getByRole("button", { name: "Show all levels" });
   await expect(restoreToggle).toBeVisible();
-  await expect(restoreToggle).toHaveCSS("font-size", "0px");
-  await expect(restoreToggle).toHaveCSS("color", "rgba(0, 0, 0, 0)");
-  const visualToggleLabel = await restoreToggle.evaluate((element) =>
-    window.getComputedStyle(element, "::after").content.replaceAll('"', "")
-  );
-  expect(visualToggleLabel).toBe("View all");
   await restoreToggle.click();
 
   await expect(
@@ -340,7 +334,7 @@ test("Grammar Wordie uses the v18 bubble, grammar starters, and independent cont
   await expect(launcher).toBeVisible();
 });
 
-test("Stage 1 locks Wordie overlay geometry, minimize behavior, and lesson scroll ownership", async ({
+test("Stage 1 locks Wordie reflow geometry, minimize behavior, and lesson scroll ownership", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1180, height: 760 });
@@ -403,9 +397,11 @@ test("Stage 1 locks Wordie overlay geometry, minimize behavior, and lesson scrol
   await expect(helper).toBeVisible();
 
   const paperAfterWordie = await paper.boundingBox();
+  const helperBox = await helper.boundingBox();
   expect(paperAfterWordie).not.toBeNull();
-  expect(paperAfterWordie!.x).toBeCloseTo(paperBeforeWordie!.x, 1);
-  expect(paperAfterWordie!.width).toBeCloseTo(paperBeforeWordie!.width, 1);
+  expect(helperBox).not.toBeNull();
+  expect(paperAfterWordie!.width).toBeLessThan(paperBeforeWordie!.width);
+  expect(paperAfterWordie!.x + paperAfterWordie!.width).toBeLessThanOrEqual(helperBox!.x + 2);
 
   await page.getByRole("button", { name: "Minimize Wordie" }).click();
   await expect(helper).toHaveCount(0);
