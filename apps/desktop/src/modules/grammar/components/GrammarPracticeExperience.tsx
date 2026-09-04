@@ -233,7 +233,10 @@ function ModeMenu({
         <div>
           <small>LEARN WITH FEEDBACK</small>
           <strong>Guided Practice</strong>
-          <p>Work through 3 checkpoints, try an answer, reveal it, then self-check your understanding.</p>
+          <p>
+            Work through 3 checkpoints, try an answer, reveal it, then self-check your
+            understanding.
+          </p>
         </div>
         <em>{mastery >= 2 ? "Reviewed" : "Build to 2/5"}</em>
       </button>
