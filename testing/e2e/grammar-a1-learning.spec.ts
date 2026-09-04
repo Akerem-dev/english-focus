@@ -79,12 +79,16 @@ test("short A1 lessons generate distinct quiz and challenge reasoning prompts", 
 
   await page.getByRole("button", { name: /Quick Quiz/i }).click();
   await expect(page.getByText("QUICK QUIZ 1 / 5", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText("There is two cars outside.");
+  await expect(page.getByText("Which sentence is correct?", { exact: true })).toBeVisible();
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveCount(0);
+  await expect(page.locator(".wvg-v16-choice-list")).toContainText("There is two cars outside.");
   await answerCurrentChoice(page);
   await page.getByRole("button", { name: "Next question →", exact: true }).click();
 
   await expect(page.getByText("QUICK QUIZ 2 / 5", { exact: true })).toBeVisible();
-  await expect(page.locator(".wvg-v16-prompt-card h3")).toContainText("There have a bank here.");
+  await expect(page.getByText("Which sentence is correct?", { exact: true })).toBeVisible();
+  await expect(page.locator(".wvg-v16-prompt-card h3")).toHaveCount(0);
+  await expect(page.locator(".wvg-v16-choice-list")).toContainText("There have a bank here.");
   await answerCurrentChoice(page);
   await page.getByRole("button", { name: "Next question →", exact: true }).click();
 

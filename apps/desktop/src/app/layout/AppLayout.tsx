@@ -21,6 +21,7 @@ import { AppTopBar } from "./AppTopBar";
 const WORD_VALLEY_STAGE_WIDTH = 1664;
 const WORD_VALLEY_STAGE_HEIGHT = 936;
 const WORD_VALLEY_MIN_SCALE = 0.45;
+const WORD_VALLEY_WORDIE_RAIL_WIDTH = 382;
 const SEARCH_WORDIE_SINGLE_ENTRY_STYLE =
   ".word-valley-stage .assistant-dock:not(.wvg-wordie-dock) .wv84-assistant-launcher,.word-valley-stage .assistant-dock:not(.wvg-wordie-dock) .wv84-assistant__ready-mascot{display:none!important}";
 
@@ -68,6 +69,10 @@ export function AppLayout({ children }: PropsWithChildren) {
 
         viewport.style.setProperty("--wv-stage-scale-x", String(scale));
         viewport.style.setProperty("--wv-stage-scale-y", String(scale));
+        viewport.style.setProperty(
+          "--wv-wordie-rail-stage-width",
+          `${WORD_VALLEY_WORDIE_RAIL_WIDTH / scale}px`
+        );
       });
     };
 

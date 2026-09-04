@@ -20,7 +20,7 @@ async function clearGrammarProgress(page: Page) {
   await page.evaluate((key) => window.localStorage.removeItem(key), GRAMMAR_PROGRESS_KEY);
 }
 
-test("Stage 5 makes session progress and saved mastery consequences explicit", async ({ page }) => {
+test("Stage 5 makes session progress and best mastery consequences explicit", async ({ page }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await clearGrammarProgress(page);
   await page.goto("/#/grammar");
@@ -50,9 +50,9 @@ test("Stage 5 makes session progress and saved mastery consequences explicit", a
 
   const summary = page.locator(".wvg-v22-result-summary");
   await expect(summary).toBeVisible();
-  const savedMastery = summary.locator("article").filter({ hasText: "SAVED MASTERY" });
+  const bestMastery = summary.locator("article").filter({ hasText: "BEST MASTERY" });
   const reviewCount = summary.locator("article").filter({ hasText: "DECISIONS TO REVIEW" });
-  await expect(savedMastery).toContainText("5 / 5");
+  await expect(bestMastery).toContainText("5 / 5");
   await expect(reviewCount).toContainText("None");
 
   await page.getByRole("button", { name: "Practice menu", exact: true }).click();
