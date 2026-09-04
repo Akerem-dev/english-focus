@@ -87,9 +87,7 @@ test("curated Be lesson teaches form meaning examples errors and real practice",
   await expect(page.getByRole("button", { name: /Challenge/i })).toBeVisible();
 });
 
-test("curated lesson keeps horizontal geometry stable while sections use natural height", async ({
-  page
-}) => {
+test("curated lesson keeps section geometry stable and reflows for Wordie", async ({ page }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await openBeLesson(page);
   await page.getByRole("button", { name: "Open Core Formula section" }).click();
@@ -104,9 +102,16 @@ test("curated lesson keeps horizontal geometry stable while sections use natural
   const examplesGeometry = await readDetailGeometry(page);
   expectSameHorizontalGeometry(examplesGeometry, formulaGeometry);
 
-  const paperBeforeWordie = await box(page.locator(".wvg-v15-paper"));
+  const paper = page.locator(".wvg-v15-paper");
+  const paperBeforeWordie = await box(paper);
   await page.getByRole("button", { name: "Open Wordie" }).click();
-  await expect(page.getByRole("dialog", { name: "Grammar helper" })).toBeVisible();
-  const paperAfterWordie = await box(page.locator(".wvg-v15-paper"));
-  expect(paperAfterWordie).toEqual(paperBeforeWordie);
+
+  const helper = page.getByRole("dialog", { name: "Grammar helper" });
+  await expect(helper).toBeVisible();
+  const paperAfterWordie = await box(paper);
+  const helperBox = await box(helper);
+
+  expect(paperAfterWordie.x).toBeCloseTo(paperBeforeWordie.x, 1);
+  expect(paperAfterWordie.width).toBeLessThan(paperBeforeWordie.width);
+  expect(paperAfterWordie.x + paperAfterWordie.width).toBeLessThanOrEqual(helperBox.x + 2);
 });

@@ -1,8 +1,5 @@
-/* V23 — focused Grammar polish. Keep this layer small: it only carries the
-   post-QA overrides that are not already owned by earlier Grammar stages. */
+/* V23 — focused post-QA Grammar overrides. */
 
-/* Grammar Wordie is viewport-fixed while the canonical stage is scaled. Reserve
-   the equivalent stage-space so the lesson ends exactly where the rail begins. */
 #root
   .application-frame--search-cleanroom:has(
     .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
@@ -10,7 +7,6 @@
   .application-frame--grammar-cleanroom
   .wvg-page {
   right: var(--wv-wordie-rail-stage-width, 382px) !important;
-  transition: right 210ms cubic-bezier(0.2, 0.75, 0.25, 1) !important;
 }
 
 #root
@@ -23,25 +19,6 @@
   max-width: none !important;
 }
 
-#root
-  .application-frame--search-cleanroom:has(
-    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
-  )
-  .grammar-route-scope
-  .wvg-v13-shelf__books {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-}
-
-#root
-  .application-frame--search-cleanroom:has(
-    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
-  )
-  .grammar-route-scope
-  .wvg-v15-detail-layout {
-  grid-template-columns: 168px minmax(0, 1fr) !important;
-}
-
-/* Compact the Grammar welcome state without changing Search Wordie. */
 #root
   .application-frame--search-cleanroom
   .assistant-panel[aria-label="Grammar helper"]:has(.wv84-quick-actions--welcome) {
@@ -111,7 +88,6 @@
   min-height: 64px !important;
 }
 
-/* Keep filter text readable without rebuilding the existing control styling. */
 #root .grammar-route-scope .wvg-v13-filters select:nth-of-type(1) {
   width: 112px !important;
 }
@@ -124,7 +100,6 @@
   width: 126px !important;
 }
 
-/* Stage 1 used a fixed ::after label. Restore the real dynamic shelf action. */
 #root .grammar-route-scope .wvg-v13-shelf__heading > button {
   min-width: 92px !important;
   color: #176657 !important;
@@ -136,23 +111,6 @@
   content: none !important;
 }
 
-#root
-  .grammar-route-scope
-  .wvg-v13-home__paper:has(.wvg-v13-shelves > .wvg-v13-shelf:only-child) {
-  min-height: auto !important;
-}
-
-#root .grammar-route-scope .wvg-v15-overview-card__body {
-  font-size: 13.5px !important;
-  line-height: 1.48 !important;
-}
-
-#root .grammar-route-scope .wvg-v15-lesson-map button strong {
-  font-size: 12px !important;
-  line-height: 1.28 !important;
-}
-
-/* Guided Practice now lets learners commit to an answer before revealing it. */
 #root .grammar-route-scope .wvg-v23-guided-attempt {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -178,12 +136,8 @@
   border-radius: 8px !important;
   background: #fffdf8 !important;
   color: #153f36 !important;
-  font: inherit !important;
-}
-
-#root .grammar-route-scope .wvg-v23-guided-attempt input:focus {
-  border-color: #c69a3a !important;
-  outline: 2px solid rgba(198, 154, 58, 0.16) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
 }
 
 #root .grammar-route-scope .wvg-v23-guided-attempt > button {
@@ -192,20 +146,8 @@
 }
 
 #root .grammar-route-scope .wvg-v23-guided-attempt-summary {
-  display: grid !important;
-  gap: 3px !important;
   margin: 14px 0 10px !important;
   padding: 10px 12px !important;
-  border: 1px solid #ded5c6 !important;
   border-radius: 8px !important;
   background: #faf6ed !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #root
-    .application-frame--search-cleanroom
-    .application-frame--grammar-cleanroom
-    .wvg-page {
-    transition: none !important;
-  }
 }
