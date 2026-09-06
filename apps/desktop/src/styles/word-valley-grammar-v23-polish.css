@@ -19,6 +19,34 @@
   max-width: none !important;
 }
 
+/* Grammar Wordie uses the same edge-to-edge right rail language as Search.
+ * The dock owns the rail; the panel itself must not look like a floating card. */
+#root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] {
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: hidden !important;
+  border-left: 1px solid rgba(217, 207, 189, 0.92) !important;
+  background: #fbf8f1 !important;
+  box-shadow: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  > .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fbf8f1 !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
 #root
   .application-frame--search-cleanroom
   .assistant-panel[aria-label="Grammar helper"]:has(.wv84-quick-actions--welcome) {
@@ -86,6 +114,16 @@
   > button {
   height: 64px !important;
   min-height: 64px !important;
+  grid-template-columns: 28px minmax(0, 1fr) !important;
+}
+
+/* No decorative chevrons in Grammar quick actions. The whole card is already
+ * an action target and the old arrows drifted outside their grid cells. */
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  .wv84-quick-actions__arrow {
+  display: none !important;
 }
 
 #root .grammar-route-scope .wvg-v13-filters select:nth-of-type(1) {
@@ -109,6 +147,126 @@
 
 #root .grammar-route-scope .wvg-v13-shelf__heading > button::after {
   content: none !important;
+}
+
+/* The lesson overview hero contains category, title, intro, two actions and a
+ * meta line. The old fixed 190px grid row clipped that final line underneath
+ * Resume learning. Give the hero enough real height and keep the footer inside. */
+#root .grammar-route-scope .wvg-v15-paper--overview {
+  grid-template-rows: 28px 218px auto minmax(0, 1fr) auto !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero {
+  min-height: 218px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero > div {
+  padding-bottom: 22px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero em {
+  display: block !important;
+  min-height: 16px !important;
+  margin-top: 7px !important;
+  color: rgba(255, 250, 240, 0.88) !important;
+  line-height: 16px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Completed/recommended cards stay parchment. Completion is communicated by a
+ * check, not by turning the whole card dark green and sacrificing readability. */
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"],
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] {
+  border-color: rgba(46, 122, 99, 0.42) !important;
+  background: #faf5ea !important;
+  color: #102d27 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__spine,
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__spine {
+  background: #c69a3a !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__subtitle,
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__count,
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__subtitle {
+  color: #59655f !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__track,
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__track {
+  background: #e1d9cc !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__track > span,
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__track > span {
+  background: #2e7a63 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__status {
+  top: 50% !important;
+  right: 13px !important;
+  width: 58px !important;
+  height: 58px !important;
+  color: #23725d !important;
+  font-size: 54px !important;
+  font-weight: 800 !important;
+  line-height: 58px !important;
+  opacity: 0.16 !important;
+  transform: translateY(-50%) !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__count {
+  color: #23725d !important;
+  font-weight: 800 !important;
+}
+
+/* Match the thin, quiet Word Valley scrollbar instead of the platform default. */
+#root .grammar-route-scope :is(.wvg-v13-home, .wvg-v15-lesson),
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome) {
+  scrollbar-color: rgba(22, 75, 66, 0.42) transparent !important;
+  scrollbar-width: thin !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v13-home, .wvg-v15-lesson)::-webkit-scrollbar,
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v13-home, .wvg-v15-lesson)::-webkit-scrollbar-track,
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v13-home, .wvg-v15-lesson)::-webkit-scrollbar-thumb,
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb {
+  border: 2px solid transparent !important;
+  border-radius: 999px !important;
+  background: rgba(22, 75, 66, 0.34) !important;
+  background-clip: padding-box !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v13-home, .wvg-v15-lesson)::-webkit-scrollbar-thumb:hover,
+#root
+  .application-frame--search-cleanroom
+  .assistant-panel[aria-label="Grammar helper"]
+  :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb:hover {
+  background: rgba(22, 75, 66, 0.54) !important;
+  background-clip: padding-box !important;
 }
 
 #root .grammar-route-scope .wvg-v23-guided-attempt {
