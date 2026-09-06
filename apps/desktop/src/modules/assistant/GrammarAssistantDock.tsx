@@ -8,6 +8,7 @@ import {
   AssistantPanelMascot,
   type AssistantMascotState
 } from "./AssistantMascot";
+import { buildGrammarAssistantLocalAnswer } from "./grammarAssistantLocalAnswers";
 
 import "../../styles/word-valley-grammar-reference-rail.css";
 import "../../styles/word-valley-grammar-v17-wordie.css";
@@ -211,6 +212,7 @@ function GrammarAssistantSession() {
       composer.focus();
       composer.setSelectionRange(starter.length, starter.length);
     });
+    void submitGrammarQuestion(starter);
   }
 
   async function submitGrammarQuestion(prompt: string): Promise<void> {
@@ -221,6 +223,18 @@ function GrammarAssistantSession() {
     setAnswerText(undefined);
     setAssistantMessage("Let me work through that…");
     setMascotState("thinking");
+
+    const curatedAnswer = buildGrammarAssistantLocalAnswer(
+      prompt,
+      lessonFocus?.id,
+      lessonFocus?.title
+    );
+    if (curatedAnswer !== undefined) {
+      setAnswerText(curatedAnswer.answerText);
+      setAssistantMessage(curatedAnswer.message);
+      setMascotState("ready");
+      return;
+    }
 
     try {
       const result = await answerGrammarQuestion(prompt);
@@ -240,7 +254,9 @@ function GrammarAssistantSession() {
       }
 
       setAssistantMessage(
-        "I’m not confident enough to answer that precisely. Try asking about the rule, a comparison, or an example."
+        lessonFocus === undefined
+          ? "Choose a grammar lesson first, or include the grammar topic in your question."
+          : "I’m not confident enough to answer that precisely. Try asking about the rule, a comparison, an example, a quiz, or a common mistake."
       );
       setMascotState("confused");
     } catch {
@@ -359,6 +375,7 @@ function GrammarAssistantSession() {
               {starters.map((starter) => (
                 <button
                   aria-label={starter.title}
+                  disabled={isBusy}
                   key={starter.title}
                   onClick={() => focusStarter(starter.prompt)}
                   type="button"
@@ -370,7 +387,6 @@ function GrammarAssistantSession() {
                     <strong>{starter.title}</strong>
                     <small>{starter.description}</small>
                   </span>
-                  <AppIcon className="wv84-quick-actions__arrow" name="chevron-right" size={18} />
                 </button>
               ))}
             </div>
