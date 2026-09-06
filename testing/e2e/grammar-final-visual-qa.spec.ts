@@ -26,7 +26,9 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   await expect(markComplete).toBeVisible();
   await markComplete.click();
   await expect(markComplete).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "✓ Mastered · Review", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "✓ Mastered · Review", exact: true })
+  ).toBeVisible();
 
   const launcher = page.getByRole("button", { name: "Open Wordie", exact: true });
   await launcher.click();
@@ -50,7 +52,9 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   await expect(helper.locator(".wv84-quick-actions__arrow")).toHaveCount(0);
 
   await helper.getByRole("button", { name: "Explain this rule", exact: true }).click();
-  await expect(helper.getByText(/Formula: Subject \+ am \/ is \/ are \+ complement/i)).toBeVisible();
+  await expect(
+    helper.getByText(/Formula: Subject \+ am \/ is \/ are \+ complement/i)
+  ).toBeVisible();
   await expect(helper.getByText(/Why it works:/i)).toBeVisible();
   await expect(helper.getByText(/not confident enough/i)).toHaveCount(0);
 
