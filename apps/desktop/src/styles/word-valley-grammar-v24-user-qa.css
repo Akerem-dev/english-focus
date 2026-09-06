@@ -200,3 +200,86 @@
   border-radius: 8px !important;
   background: #faf6ed !important;
 }
+
+/*
+ * V24.1 — Search-style Wordie geometry lock.
+ * Historical Grammar layers intentionally treated Wordie as an overlay. The
+ * product now uses the same interaction model as Search: a true right rail
+ * that owns 382 physical pixels while open and gives that space back on close.
+ */
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open] {
+  position: fixed !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: var(--wv-wordie-rail-stage-width, 382px) !important;
+  min-width: var(--wv-wordie-rail-stage-width, 382px) !important;
+  max-width: var(--wv-wordie-rail-stage-width, 382px) !important;
+  height: auto !important;
+  overflow: hidden !important;
+  border-left: 1px solid rgba(217, 207, 189, 0.92) !important;
+  border-radius: 0 !important;
+  background: #fbf8f1 !important;
+  box-shadow: -18px 0 42px rgba(8, 47, 41, 0.13) !important;
+  transform: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+  > .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+  position: absolute !important;
+  inset: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fbf8f1 !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+  )
+  .application-frame--grammar-cleanroom
+  .wvg-page.wvg-page {
+  right: auto !important;
+  width: calc(100% - 318px - var(--wv-wordie-rail-stage-width, 382px)) !important;
+  max-width: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+  )
+  .application-frame--grammar-cleanroom
+  .wvg-page.wvg-page
+  .wvg-v15-lesson.wvg-v15-lesson {
+  inset: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+#root
+  .application-frame--search-cleanroom:has(
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+  )
+  .application-frame--grammar-cleanroom
+  :is(.wvg-v13-home__paper, .wvg-v15-paper) {
+  width: calc(100% - 2px) !important;
+  max-width: none !important;
+}
