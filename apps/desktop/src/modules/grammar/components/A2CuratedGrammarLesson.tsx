@@ -560,6 +560,15 @@ export function A2CuratedGrammarLesson({
               <button onClick={() => setSelectedSection("practice")} type="button">
                 {progress >= 5 ? "✓ Mastered · Review" : `Mastery ${progress}/5 · Practice`}
               </button>
+              {progress >= 5 ? null : (
+                <button
+                  className="wvg-v15-mark-complete"
+                  onClick={() => onMasteryChange(5)}
+                  type="button"
+                >
+                  ✓ Mark complete
+                </button>
+              )}
             </div>
             <em>
               Level {lesson.level} · {lessonBand(lesson)} · ~15 min · 8 sections
