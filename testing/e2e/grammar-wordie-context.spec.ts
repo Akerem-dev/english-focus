@@ -95,10 +95,7 @@ test("lesson overview keeps its metadata visible and completion uses a readable 
   });
   await expect(completedCard).toBeVisible();
   await expect(completedCard).toHaveCSS("background-color", "rgb(250, 245, 234)");
-  await expect(completedCard.locator(".wvg-v13-book__title")).toHaveCSS(
-    "color",
-    "rgb(16, 45, 39)"
-  );
+  await expect(completedCard.locator(".wvg-v13-book__title")).toHaveCSS("color", "rgb(16, 45, 39)");
   await expect(completedCard.locator(".wvg-v13-book__status")).toHaveText("✓");
   await expect(completedCard.locator(".wvg-v13-book__status")).toBeVisible();
 });
