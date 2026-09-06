@@ -18,8 +18,7 @@ function teachingContentForLesson(lessonId: string): GrammarTeachingContent | un
 
 function examplesAnswer(content: GrammarTeachingContent): string {
   const examples = content.examples.slice(0, 3).map((example, index) => {
-    const translation =
-      example.translationTr === undefined ? "" : `\nTR: ${example.translationTr}`;
+    const translation = example.translationTr === undefined ? "" : `\nTR: ${example.translationTr}`;
     return `${index + 1}. ${example.sentence}${translation}\nWhy: ${example.note}`;
   });
 
