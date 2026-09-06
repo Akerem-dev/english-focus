@@ -2,10 +2,6 @@ import { expect, test } from "./app.fixture";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
 
-async function resetGrammar(page: Parameters<typeof test>[0] extends never ? never : never) {
-  void page;
-}
-
 test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polished", async ({
   page
 }) => {
