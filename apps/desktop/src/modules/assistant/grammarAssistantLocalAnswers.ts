@@ -9,6 +9,9 @@ export interface GrammarAssistantLocalAnswer {
   readonly message: string;
 }
 
+const HOME_DEFAULT_LESSON_ID = "present-perfect";
+const HOME_DEFAULT_LESSON_TITLE = "Present Perfect";
+
 function teachingContentForLesson(lessonId: string): GrammarTeachingContent | undefined {
   return getGrammarTeachingContent(lessonId) ?? getA2GrammarTeachingContent(lessonId);
 }
@@ -20,9 +23,11 @@ function examplesAnswer(content: GrammarTeachingContent): string {
     return `${index + 1}. ${example.sentence}${translation}\nWhy: ${example.note}`;
   });
 
-  return ["Here are three lesson-grounded examples:", ...examples, `Memory hook: ${content.memoryHook}`].join(
-    "\n\n"
-  );
+  return [
+    "Here are three lesson-grounded examples:",
+    ...examples,
+    `Memory hook: ${content.memoryHook}`
+  ].join("\n\n");
 }
 
 function comparisonAnswer(content: GrammarTeachingContent): string {
@@ -101,9 +106,9 @@ export function buildGrammarAssistantLocalAnswer(
   lessonId: string | undefined,
   lessonTitle: string | undefined
 ): GrammarAssistantLocalAnswer | undefined {
-  if (lessonId === undefined || lessonTitle === undefined) return undefined;
-
-  const content = teachingContentForLesson(lessonId);
+  const targetLessonId = lessonId ?? HOME_DEFAULT_LESSON_ID;
+  const targetLessonTitle = lessonTitle ?? HOME_DEFAULT_LESSON_TITLE;
+  const content = teachingContentForLesson(targetLessonId);
   if (content === undefined) return undefined;
 
   const normalized = prompt.toLocaleLowerCase("tr-TR");
@@ -127,6 +132,9 @@ export function buildGrammarAssistantLocalAnswer(
 
   return Object.freeze({
     answerText,
-    message: `Here’s a lesson-grounded answer for ${lessonTitle}.`
+    message:
+      lessonId === undefined
+        ? `Grammar Home example — ${targetLessonTitle}. Pick a lesson to make Wordie topic-specific.`
+        : `Here’s a lesson-grounded answer for ${targetLessonTitle}.`
   });
 }
