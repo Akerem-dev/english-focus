@@ -1,67 +1,20 @@
-/* V24 — user screenshot QA fixes.
- * This file is intentionally last in the Grammar cascade. It resolves legacy
- * floating-assistant and featured-card rules that can otherwise win at runtime.
- */
+/* Final Grammar QA layer. Keep this compact: it replaces the older V23 polish import. */
 
-/* -------------------------------------------------------------------------- */
-/* 1. Lesson overview hero: keep the metadata below Resume learning visible.   */
-/* -------------------------------------------------------------------------- */
-
-#root .grammar-route-scope .wvg-v15-paper--overview {
-  grid-template-rows: 28px 248px auto minmax(0, 1fr) auto !important;
+#root .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open]) .application-frame--grammar-cleanroom .wvg-page {
+  right: var(--wv-wordie-rail-stage-width, 382px) !important;
 }
 
-#root .grammar-route-scope .wvg-v15-overview-hero {
-  min-height: 248px !important;
-  overflow: hidden !important;
+#root .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open]) .grammar-route-scope :is(.wvg-v13-home__paper, .wvg-v15-paper) {
+  width: calc(100% - 2px) !important;
+  max-width: none !important;
 }
 
-#root .grammar-route-scope .wvg-v15-overview-hero > div {
-  box-sizing: border-box !important;
-  width: min(760px, 72%) !important;
-  height: 100% !important;
-  min-height: 248px !important;
-  align-content: start !important;
-  gap: 4px !important;
-  padding: 22px 28px 24px !important;
-  overflow: visible !important;
-}
-
-#root .grammar-route-scope .wvg-v15-overview-hero > div > div {
-  flex-wrap: wrap !important;
-  margin-top: 5px !important;
-}
-
-#root .grammar-route-scope .wvg-v15-overview-hero em {
-  position: static !important;
-  display: block !important;
-  min-height: 16px !important;
-  margin-top: 8px !important;
-  overflow: visible !important;
-  color: rgba(255, 250, 240, 0.92) !important;
-  font-size: 9px !important;
-  line-height: 16px !important;
-  white-space: normal !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* -------------------------------------------------------------------------- */
-/* 2–4. Grammar Wordie: Search-style rail, no stray chevrons, live buttons.     */
-/* -------------------------------------------------------------------------- */
-
-#root
-  .application-frame--search-cleanroom
-  .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open] {
+#root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] {
   position: fixed !important;
   inset: 46px 0 0 auto !important;
   z-index: 95 !important;
-  box-sizing: border-box !important;
   width: 382px !important;
-  min-width: 382px !important;
-  max-width: 382px !important;
   height: auto !important;
-  min-height: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
@@ -74,19 +27,12 @@
   transform: none !important;
 }
 
-#root
-  .application-frame--search-cleanroom
-  .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
-  > .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+#root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] > .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
   position: absolute !important;
   inset: 0 !important;
-  box-sizing: border-box !important;
   display: grid !important;
   width: 100% !important;
-  min-width: 0 !important;
-  max-width: none !important;
   height: 100% !important;
-  min-height: 0 !important;
   max-height: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -100,222 +46,145 @@
   transform: none !important;
 }
 
-/* Match Search: the open rail occupies the right column and the Grammar canvas
- * ends before it instead of sitting underneath a rounded floating card. */
-#root
-  .application-frame--search-cleanroom:has(
-    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
-  )
-  .application-frame--grammar-cleanroom
-  .wvg-page {
-  right: 382px !important;
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"]:has(.wv84-quick-actions--welcome) {
+  grid-template-rows: 92px auto minmax(0, 1fr) 63px !important;
 }
 
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  :is(.wv84-assistant-panel__header, .wv84-assistant-panel__conversation, .wv84-quick-actions, .wv84-assistant-composer) {
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-assistant-panel__header {
+  grid-template-columns: 50px minmax(0, 1fr) 72px !important;
+  padding-right: 18px !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wvg-wordie-panel__controls {
+  display: flex !important;
+  min-width: 72px !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 4px !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wvg-wordie-panel__minimize {
+  display: grid !important;
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: #164b42 !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-wordie-welcome {
+  min-height: 154px !important;
+  padding: 22px 20px 24px !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome {
+  gap: 8px !important;
+  max-height: none !important;
+  padding: 2px 25px 10px !important;
+}
+
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome > button {
   position: relative !important;
   z-index: 2 !important;
-  min-width: 0 !important;
-  pointer-events: auto !important;
-}
-
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome
-  > button {
-  position: relative !important;
-  z-index: 3 !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  grid-template-columns: 28px minmax(0, 1fr) !important;
   pointer-events: auto !important;
   cursor: pointer !important;
 }
 
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome
-  > button::after,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome
-  > button::before,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions__arrow {
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome > button::before,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome > button::after,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions__arrow {
   display: none !important;
   content: none !important;
 }
 
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome
-  > button:disabled {
-  cursor: progress !important;
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(1) {
+  width: 112px !important;
 }
 
-/* -------------------------------------------------------------------------- */
-/* 5. One quiet scrollbar treatment for every Grammar-owned scroll surface.    */
-/* -------------------------------------------------------------------------- */
-
-#root .application-frame--grammar-cleanroom,
-#root .application-frame--grammar-cleanroom .grammar-route-scope,
-#root .application-frame--grammar-cleanroom .wvg-page,
-#root .application-frame--grammar-cleanroom .wvg-v13-home,
-#root .application-frame--grammar-cleanroom .wvg-v15-paper--overview,
-#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map,
-#root .application-frame--grammar-cleanroom .wvg-v15-section-content,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-assistant-panel__conversation,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome {
-  scrollbar-color: rgba(22, 75, 66, 0.38) transparent !important;
-  scrollbar-width: thin !important;
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(2) {
+  width: 132px !important;
 }
 
-#root .application-frame--grammar-cleanroom::-webkit-scrollbar,
-#root .application-frame--grammar-cleanroom .grammar-route-scope::-webkit-scrollbar,
-#root .application-frame--grammar-cleanroom .wvg-page::-webkit-scrollbar,
-#root .application-frame--grammar-cleanroom .wvg-v13-home::-webkit-scrollbar,
-#root .application-frame--grammar-cleanroom .wvg-v15-paper--overview::-webkit-scrollbar,
-#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map::-webkit-scrollbar,
-#root .application-frame--grammar-cleanroom .wvg-v15-section-content::-webkit-scrollbar,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-assistant-panel__conversation::-webkit-scrollbar,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome::-webkit-scrollbar {
-  width: 8px !important;
-  height: 8px !important;
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(3) {
+  width: 126px !important;
 }
 
-#root .application-frame--grammar-cleanroom::-webkit-scrollbar-track,
-#root .application-frame--grammar-cleanroom .grammar-route-scope::-webkit-scrollbar-track,
-#root .application-frame--grammar-cleanroom .wvg-page::-webkit-scrollbar-track,
-#root .application-frame--grammar-cleanroom .wvg-v13-home::-webkit-scrollbar-track,
-#root .application-frame--grammar-cleanroom .wvg-v15-paper--overview::-webkit-scrollbar-track,
-#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map::-webkit-scrollbar-track,
-#root .application-frame--grammar-cleanroom .wvg-v15-section-content::-webkit-scrollbar-track,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-assistant-panel__conversation::-webkit-scrollbar-track,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome::-webkit-scrollbar-track {
-  background: transparent !important;
+#root .grammar-route-scope .wvg-v13-shelf__heading > button {
+  min-width: 92px !important;
+  color: #176657 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
 }
 
-#root .application-frame--grammar-cleanroom::-webkit-scrollbar-thumb,
-#root .application-frame--grammar-cleanroom .grammar-route-scope::-webkit-scrollbar-thumb,
-#root .application-frame--grammar-cleanroom .wvg-page::-webkit-scrollbar-thumb,
-#root .application-frame--grammar-cleanroom .wvg-v13-home::-webkit-scrollbar-thumb,
-#root .application-frame--grammar-cleanroom .wvg-v15-paper--overview::-webkit-scrollbar-thumb,
-#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map::-webkit-scrollbar-thumb,
-#root .application-frame--grammar-cleanroom .wvg-v15-section-content::-webkit-scrollbar-thumb,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-assistant-panel__conversation::-webkit-scrollbar-thumb,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome::-webkit-scrollbar-thumb {
-  border: 2px solid transparent !important;
-  border-radius: 999px !important;
-  background: rgba(22, 75, 66, 0.34) !important;
-  background-clip: padding-box !important;
+#root .grammar-route-scope .wvg-v13-shelf__heading > button::after {
+  content: none !important;
 }
 
-#root .application-frame--grammar-cleanroom::-webkit-scrollbar-thumb:hover,
-#root .application-frame--grammar-cleanroom .grammar-route-scope::-webkit-scrollbar-thumb:hover,
-#root .application-frame--grammar-cleanroom .wvg-page::-webkit-scrollbar-thumb:hover,
-#root .application-frame--grammar-cleanroom .wvg-v13-home::-webkit-scrollbar-thumb:hover,
-#root .application-frame--grammar-cleanroom .wvg-v15-paper--overview::-webkit-scrollbar-thumb:hover,
-#root .application-frame--grammar-cleanroom .wvg-v15-lesson-map::-webkit-scrollbar-thumb:hover,
-#root .application-frame--grammar-cleanroom .wvg-v15-section-content::-webkit-scrollbar-thumb:hover,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-assistant-panel__conversation::-webkit-scrollbar-thumb:hover,
-#root
-  .application-frame--search-cleanroom
-  .assistant-panel[aria-label="Grammar helper"]
-  .wv84-quick-actions--welcome::-webkit-scrollbar-thumb:hover {
-  background: rgba(22, 75, 66, 0.56) !important;
-  background-clip: padding-box !important;
+#root .grammar-route-scope .wvg-v15-paper--overview {
+  grid-template-rows: 28px 248px auto minmax(0, 1fr) auto !important;
 }
 
-/* -------------------------------------------------------------------------- */
-/* 6. Recommendation is not completion. Keep every book readable; completion   */
-/*    gets a large explicit tick instead of a dark green selected card.         */
-/* -------------------------------------------------------------------------- */
+#root .grammar-route-scope .wvg-v15-overview-hero {
+  min-height: 248px !important;
+}
 
-#root .application-frame--grammar-cleanroom .grammar-route-scope .wvg-v13-book[data-featured="true"],
-#root .application-frame--grammar-cleanroom .grammar-route-scope .wvg-v13-book[data-status="complete"] {
-  border-color: #d9cfbd !important;
+#root .grammar-route-scope .wvg-v15-overview-hero > div {
+  box-sizing: border-box !important;
+  height: 100% !important;
+  min-height: 248px !important;
+  padding-bottom: 24px !important;
+  overflow: visible !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero > div > div {
+  flex-wrap: wrap !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero em {
+  position: static !important;
+  display: block !important;
+  min-height: 16px !important;
+  margin-top: 8px !important;
+  overflow: visible !important;
+  color: rgba(255, 250, 240, 0.92) !important;
+  font-size: 9px !important;
+  line-height: 16px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"],
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] {
+  border-color: rgba(46, 122, 99, 0.42) !important;
   background: #faf5ea !important;
   color: #102d27 !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-featured="true"]
-  :is(.wvg-v13-book__title, .wvg-v13-book__subtitle, .wvg-v13-book__count),
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-status="complete"]
-  :is(.wvg-v13-book__title, .wvg-v13-book__subtitle, .wvg-v13-book__count) {
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] :is(.wvg-v13-book__title, .wvg-v13-book__count),
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] :is(.wvg-v13-book__title, .wvg-v13-book__count) {
   color: #102d27 !important;
   opacity: 1 !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-featured="true"]
-  .wvg-v13-book__subtitle,
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-status="complete"]
-  .wvg-v13-book__subtitle {
+#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__subtitle,
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__subtitle {
   color: #59655f !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-featured="true"]:not([data-status="complete"])
-  .wvg-v13-book__status,
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book:not([data-status="complete"])
-  .wvg-v13-book__status {
+#root .grammar-route-scope .wvg-v13-book:not([data-status="complete"]) .wvg-v13-book__status {
   display: none !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-status="complete"]
-  .wvg-v13-book__status {
-  position: absolute !important;
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__status {
   top: 50% !important;
   right: 10px !important;
   display: grid !important;
@@ -323,23 +192,85 @@
   height: 52px !important;
   place-items: center !important;
   color: #19705b !important;
-  font: 900 46px/1 "Inter", system-ui, sans-serif !important;
+  font-size: 46px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
   opacity: 0.72 !important;
   transform: translateY(-50%) !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-status="complete"] {
-  border-color: rgba(25, 112, 91, 0.48) !important;
-  box-shadow: inset 0 0 0 1px rgba(25, 112, 91, 0.08) !important;
+#root .grammar-route-scope .wvg-v13-book:is([data-featured="true"], [data-status="complete"]) .wvg-v13-book__spine {
+  background: #c69a3a !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .grammar-route-scope
-  .wvg-v13-book[data-status="complete"]
-  .wvg-v13-book__spine {
-  background: #c69a3a !important;
+#root .grammar-route-scope *,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome) {
+  scrollbar-color: rgba(22, 75, 66, 0.4) transparent !important;
+  scrollbar-width: thin !important;
+}
+
+#root .grammar-route-scope *::-webkit-scrollbar,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+#root .grammar-route-scope *::-webkit-scrollbar-track,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+#root .grammar-route-scope *::-webkit-scrollbar-thumb,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb {
+  border: 2px solid transparent !important;
+  border-radius: 999px !important;
+  background: rgba(22, 75, 66, 0.34) !important;
+  background-clip: padding-box !important;
+}
+
+#root .grammar-route-scope *::-webkit-scrollbar-thumb:hover,
+#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb:hover {
+  background: rgba(22, 75, 66, 0.56) !important;
+  background-clip: padding-box !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  margin-top: 18px !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt label {
+  display: grid !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  color: #7d642b !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 42px !important;
+  padding: 0 13px !important;
+  border: 1px solid #d9cfbd !important;
+  border-radius: 8px !important;
+  background: #fffdf8 !important;
+  color: #153f36 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt > button {
+  align-self: end !important;
+  min-height: 42px !important;
+}
+
+#root .grammar-route-scope .wvg-v23-guided-attempt-summary {
+  margin: 14px 0 10px !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  background: #faf6ed !important;
 }
