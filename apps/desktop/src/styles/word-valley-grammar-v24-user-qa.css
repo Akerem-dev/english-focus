@@ -1,15 +1,15 @@
-/* Final Grammar QA layer. Keep this compact: it replaces the older V23 polish import. */
+/* Final Grammar QA layer. Keep selectors compact: this file replaces V23 polish. */
 
-#root .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open]) .application-frame--grammar-cleanroom .wvg-page {
+#root:has(.wvg-wordie-dock[data-open]) .application-frame--grammar-cleanroom .wvg-page {
   right: var(--wv-wordie-rail-stage-width, 382px) !important;
 }
 
-#root .application-frame--search-cleanroom:has(.wvg-wordie-dock[data-open]) .grammar-route-scope :is(.wvg-v13-home__paper, .wvg-v15-paper) {
+#root:has(.wvg-wordie-dock[data-open]) .grammar-route-scope :is(.wvg-v13-home__paper, .wvg-v15-paper) {
   width: calc(100% - 2px) !important;
   max-width: none !important;
 }
 
-#root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] {
+#root .wvg-wordie-dock[data-open] {
   position: fixed !important;
   inset: 46px 0 0 auto !important;
   z-index: 95 !important;
@@ -27,7 +27,7 @@
   transform: none !important;
 }
 
-#root .application-frame--search-cleanroom .wvg-wordie-dock[data-open] > .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+#root .wvg-wordie-dock[data-open] > .wv84-assistant-panel[aria-label="Grammar helper"] {
   position: absolute !important;
   inset: 0 !important;
   display: grid !important;
@@ -46,16 +46,16 @@
   transform: none !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"]:has(.wv84-quick-actions--welcome) {
+#root .wvg-wordie-dock .wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
   grid-template-rows: 92px auto minmax(0, 1fr) 63px !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-assistant-panel__header {
+#root .wvg-wordie-dock .wv84-assistant-panel__header {
   grid-template-columns: 50px minmax(0, 1fr) 72px !important;
   padding-right: 18px !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wvg-wordie-panel__controls {
+#root .wvg-wordie-dock .wvg-wordie-panel__controls {
   display: flex !important;
   min-width: 72px !important;
   align-items: center !important;
@@ -63,7 +63,7 @@
   gap: 4px !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wvg-wordie-panel__minimize {
+#root .wvg-wordie-dock .wvg-wordie-panel__minimize {
   display: grid !important;
   width: 32px !important;
   height: 32px !important;
@@ -78,18 +78,18 @@
   font-weight: 800 !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-wordie-welcome {
+#root .wvg-wordie-dock .wv84-wordie-welcome {
   min-height: 154px !important;
   padding: 22px 20px 24px !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome {
+#root .wvg-wordie-dock .wv84-quick-actions--welcome {
   gap: 8px !important;
   max-height: none !important;
   padding: 2px 25px 10px !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome > button {
+#root .wvg-wordie-dock .wv84-quick-actions--welcome > button {
   position: relative !important;
   z-index: 2 !important;
   height: 64px !important;
@@ -99,24 +99,16 @@
   cursor: pointer !important;
 }
 
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome > button::before,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions--welcome > button::after,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] .wv84-quick-actions__arrow {
+#root .wvg-wordie-dock .wv84-quick-actions--welcome > button::before,
+#root .wvg-wordie-dock .wv84-quick-actions--welcome > button::after,
+#root .wvg-wordie-dock .wv84-quick-actions__arrow {
   display: none !important;
   content: none !important;
 }
 
-#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(1) {
-  width: 112px !important;
-}
-
-#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(2) {
-  width: 132px !important;
-}
-
-#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(3) {
-  width: 126px !important;
-}
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(1) { width: 112px !important; }
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(2) { width: 132px !important; }
+#root .grammar-route-scope .wvg-v13-filters select:nth-of-type(3) { width: 126px !important; }
 
 #root .grammar-route-scope .wvg-v13-shelf__heading > button {
   min-width: 92px !important;
@@ -125,29 +117,25 @@
   font-weight: 800 !important;
 }
 
-#root .grammar-route-scope .wvg-v13-shelf__heading > button::after {
-  content: none !important;
-}
+#root .grammar-route-scope .wvg-v13-shelf__heading > button::after { content: none !important; }
 
 #root .grammar-route-scope .wvg-v15-paper--overview {
   grid-template-rows: 28px 248px auto minmax(0, 1fr) auto !important;
 }
 
-#root .grammar-route-scope .wvg-v15-overview-hero {
+#root .grammar-route-scope .wvg-v15-overview-hero,
+#root .grammar-route-scope .wvg-v15-overview-hero > div {
   min-height: 248px !important;
 }
 
 #root .grammar-route-scope .wvg-v15-overview-hero > div {
   box-sizing: border-box !important;
   height: 100% !important;
-  min-height: 248px !important;
   padding-bottom: 24px !important;
   overflow: visible !important;
 }
 
-#root .grammar-route-scope .wvg-v15-overview-hero > div > div {
-  flex-wrap: wrap !important;
-}
+#root .grammar-route-scope .wvg-v15-overview-hero > div > div { flex-wrap: wrap !important; }
 
 #root .grammar-route-scope .wvg-v15-overview-hero em {
   position: static !important;
@@ -162,27 +150,22 @@
   opacity: 1 !important;
 }
 
-#root .grammar-route-scope .wvg-v13-book[data-featured="true"],
-#root .grammar-route-scope .wvg-v13-book[data-status="complete"] {
+#root .grammar-route-scope .wvg-v13-book:is([data-featured="true"], [data-status="complete"]) {
   border-color: rgba(46, 122, 99, 0.42) !important;
   background: #faf5ea !important;
   color: #102d27 !important;
 }
 
-#root .grammar-route-scope .wvg-v13-book[data-featured="true"] :is(.wvg-v13-book__title, .wvg-v13-book__count),
-#root .grammar-route-scope .wvg-v13-book[data-status="complete"] :is(.wvg-v13-book__title, .wvg-v13-book__count) {
+#root .grammar-route-scope .wvg-v13-book:is([data-featured="true"], [data-status="complete"]) :is(.wvg-v13-book__title, .wvg-v13-book__count) {
   color: #102d27 !important;
   opacity: 1 !important;
 }
 
-#root .grammar-route-scope .wvg-v13-book[data-featured="true"] .wvg-v13-book__subtitle,
-#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__subtitle {
+#root .grammar-route-scope .wvg-v13-book:is([data-featured="true"], [data-status="complete"]) .wvg-v13-book__subtitle {
   color: #59655f !important;
 }
 
-#root .grammar-route-scope .wvg-v13-book:not([data-status="complete"]) .wvg-v13-book__status {
-  display: none !important;
-}
+#root .grammar-route-scope .wvg-v13-book:not([data-status="complete"]) .wvg-v13-book__status { display: none !important; }
 
 #root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__status {
   top: 50% !important;
@@ -204,24 +187,24 @@
 }
 
 #root .grammar-route-scope *,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome) {
+#root .wvg-wordie-dock :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome) {
   scrollbar-color: rgba(22, 75, 66, 0.4) transparent !important;
   scrollbar-width: thin !important;
 }
 
 #root .grammar-route-scope *::-webkit-scrollbar,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar {
+#root .wvg-wordie-dock :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar {
   width: 8px !important;
   height: 8px !important;
 }
 
 #root .grammar-route-scope *::-webkit-scrollbar-track,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-track {
+#root .wvg-wordie-dock :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-track {
   background: transparent !important;
 }
 
 #root .grammar-route-scope *::-webkit-scrollbar-thumb,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb {
+#root .wvg-wordie-dock :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb {
   border: 2px solid transparent !important;
   border-radius: 999px !important;
   background: rgba(22, 75, 66, 0.34) !important;
@@ -229,7 +212,7 @@
 }
 
 #root .grammar-route-scope *::-webkit-scrollbar-thumb:hover,
-#root .application-frame--search-cleanroom .assistant-panel[aria-label="Grammar helper"] :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb:hover {
+#root .wvg-wordie-dock :is(.wv84-assistant-panel__conversation, .wv84-quick-actions--welcome)::-webkit-scrollbar-thumb:hover {
   background: rgba(22, 75, 66, 0.56) !important;
   background-clip: padding-box !important;
 }
