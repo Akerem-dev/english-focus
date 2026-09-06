@@ -8,7 +8,6 @@ import {
   AssistantPanelMascot,
   type AssistantMascotState
 } from "./AssistantMascot";
-import { buildGrammarAssistantLocalAnswer } from "./grammarAssistantLocalAnswers";
 
 import "../../styles/word-valley-grammar-reference-rail.css";
 import "../../styles/word-valley-grammar-v17-wordie.css";
@@ -224,19 +223,22 @@ function GrammarAssistantSession() {
     setAssistantMessage("Let me work through that…");
     setMascotState("thinking");
 
-    const curatedAnswer = buildGrammarAssistantLocalAnswer(
-      prompt,
-      lessonFocus?.id,
-      lessonFocus?.title
-    );
-    if (curatedAnswer !== undefined) {
-      setAnswerText(curatedAnswer.answerText);
-      setAssistantMessage(curatedAnswer.message);
-      setMascotState("ready");
-      return;
-    }
-
     try {
+      const { buildGrammarAssistantLocalAnswer } = await import("./grammarAssistantLocalAnswers");
+      if (requestSequence.current !== sequence) return;
+
+      const curatedAnswer = buildGrammarAssistantLocalAnswer(
+        prompt,
+        lessonFocus?.id,
+        lessonFocus?.title
+      );
+      if (curatedAnswer !== undefined) {
+        setAnswerText(curatedAnswer.answerText);
+        setAssistantMessage(curatedAnswer.message);
+        setMascotState("ready");
+        return;
+      }
+
       const result = await answerGrammarQuestion(prompt);
       if (requestSequence.current !== sequence) return;
 
