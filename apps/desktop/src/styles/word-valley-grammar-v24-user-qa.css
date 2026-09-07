@@ -590,3 +590,32 @@
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/* V24.3 — final Grammar Home alignment polish                                */
+/* -------------------------------------------------------------------------- */
+
+/* Keep the scenic art visually weighted to the right so the transparent/soft
+   left side of the PNG sits beneath the green wash instead of creating a muddy
+   seam behind the title copy. */
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__art {
+  object-position: 60% center !important;
+}
+
+/* Align the recommendation copy with the left rhythm of the page. */
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__content {
+  left: 18px !important;
+}
+
+/* Give the book cards a little breathing room before the wooden divider. */
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__wood {
+  margin-top: 5px !important;
+}
+
+/* Keep the action label on one line and aligned with the shelf heading. */
+#root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading > button {
+  width: auto !important;
+  min-width: 78px !important;
+  margin-top: 4px !important;
+  white-space: nowrap !important;
+}
+
