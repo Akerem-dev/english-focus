@@ -291,7 +291,6 @@ function BookCard({
     <button
       aria-label={`${book.title}, ${progress} of 5 complete`}
       className="wvg-v13-book"
-      data-featured={book.featured || undefined}
       data-status={progress === 5 ? "complete" : progress > 0 ? "in-progress" : "not-started"}
       disabled={selection === undefined}
       onClick={() => {
@@ -303,7 +302,7 @@ function BookCard({
       <span className="wvg-v13-book__title">{book.title}</span>
       <span className="wvg-v13-book__subtitle">{book.subtitle}</span>
       <span aria-hidden="true" className="wvg-v13-book__status">
-        {progress === 5 ? "✓" : book.featured ? "★" : "◉"}
+        {progress === 5 ? "✓" : ""}
       </span>
       <span aria-hidden="true" className="wvg-v13-book__track">
         <span style={{ width: progressPercent }} />

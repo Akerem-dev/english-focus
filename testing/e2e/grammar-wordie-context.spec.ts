@@ -30,11 +30,17 @@ test("Grammar Wordie stays grammar-only, uses the Search rail, and answers start
     expect(Math.abs(railBox.height - 890)).toBeLessThanOrEqual(2);
   }
 
-  await expect(homeHelper.getByRole("button", { name: /Explain a rule/i })).toBeVisible();
+  const explainAtHome = homeHelper.getByRole("button", { name: /Explain a rule/i });
+  await expect(explainAtHome).toBeVisible();
+  await expect(explainAtHome).toBeEnabled();
   await expect(homeHelper.getByRole("button", { name: /Compare grammar points/i })).toBeVisible();
   await expect(homeHelper.getByText("Explain a word", { exact: true })).toHaveCount(0);
   await expect(homeHelper.getByText("Explore in context", { exact: true })).toHaveCount(0);
   await expect(homeHelper.locator(".wv84-quick-actions__arrow")).toHaveCount(0);
+
+  await explainAtHome.click();
+  await expect(homeHelper.locator(".wv84-wordie-answer__body")).toBeVisible();
+  await expect(homeHelper.locator(".wv84-wordie-answer__body")).toContainText(/Present Perfect/i);
   await page.getByRole("button", { name: "Close Wordie", exact: true }).click();
 
   await page.getByRole("button", { name: /Resume lesson/i }).click();

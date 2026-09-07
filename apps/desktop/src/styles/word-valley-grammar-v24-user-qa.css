@@ -283,3 +283,310 @@
   width: calc(100% - 2px) !important;
   max-width: none !important;
 }
+
+/* -------------------------------------------------------------------------- */
+/* V24.2 — user QA regressions: hero, Wordie rail, actions, scroll, completion */
+/* -------------------------------------------------------------------------- */
+
+/* Keep the metadata line inside the scenic lesson hero. Earlier layers gave
+   the copy box 100% height plus padding as content-box, so the final row could
+   extend below the clipped hero. Make the copy box consume the hero height
+   including its padding and keep every row in normal flow. */
+#root .grammar-route-scope .wvg-v15-overview-hero {
+  min-height: 248px !important;
+  overflow: hidden !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero > div {
+  box-sizing: border-box !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  align-content: center !important;
+  padding: 18px 26px 16px !important;
+  overflow: hidden !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero > div > div {
+  min-height: 34px !important;
+  flex-wrap: wrap !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero em {
+  position: static !important;
+  display: block !important;
+  min-height: 16px !important;
+  margin-top: 6px !important;
+  overflow: visible !important;
+  color: rgba(255, 250, 240, 0.94) !important;
+  line-height: 16px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Grammar Wordie uses the exact Search rail geometry while open: flush with
+   the topbar/right/bottom edges, fixed 382px stage width and no floating-card
+   radius, gap or shadow. */
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open] {
+  position: fixed !important;
+  top: 46px !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  z-index: 95 !important;
+  box-sizing: border-box !important;
+  width: 382px !important;
+  min-width: 382px !important;
+  max-width: 382px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-left: 1px solid rgba(217, 207, 189, 0.92) !important;
+  border-radius: 0 !important;
+  background: #fbf8f1 !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+  > .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+  position: absolute !important;
+  inset: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #fbf8f1 !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Search owns its right rail rather than covering the center scene. Grammar
+   now follows the same rule while Wordie is open. */
+#root
+  .application-frame--search-cleanroom:has(
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+  )
+  .application-frame--grammar-cleanroom
+  .wvg-page {
+  right: 382px !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* Grammar starters are real controls. Search-specific pseudo labels/arrows must
+   never cover them, and all non-busy starter buttons remain interactive. */
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  .wv84-quick-actions--welcome {
+  position: relative !important;
+  z-index: 2 !important;
+  max-height: min(420px, 48vh) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  pointer-events: auto !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  .wv84-quick-actions--welcome
+  > button {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  visibility: visible !important;
+  min-height: 64px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock[data-open]
+  .wv84-quick-actions--welcome
+  > button:disabled {
+  opacity: 0.58 !important;
+  pointer-events: none !important;
+  cursor: wait !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions--welcome
+  > button::before,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions--welcome
+  > button::after,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__arrow,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy::before,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy::after,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy
+  strong::before,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy
+  strong::after,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy
+  small::before,
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy
+  small::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy
+  strong {
+  color: #102d27 !important;
+  font:
+    600 17px/20px "Cormorant Garamond",
+    Georgia,
+    serif !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .wvg-wordie-dock
+  .wv84-quick-actions__copy
+  small {
+  color: #59655f !important;
+  font:
+    400 11px/15px "Inter",
+    system-ui,
+    sans-serif !important;
+}
+
+/* The overview and detail views share the same modern, unobtrusive scrollbar.
+   Suppress legacy WebView scrollbar buttons so the far-right rail matches the
+   rest of Word Valley. */
+#root .grammar-route-scope :is(.wvg-v15-lesson, .wvg-v15-paper--overview) {
+  scrollbar-color: rgba(22, 75, 66, 0.42) transparent !important;
+  scrollbar-width: thin !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-lesson, .wvg-v15-paper--overview)::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-lesson, .wvg-v15-paper--overview)::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-lesson, .wvg-v15-paper--overview)::-webkit-scrollbar-thumb {
+  min-height: 42px !important;
+  border: 2px solid transparent !important;
+  border-radius: 999px !important;
+  background: rgba(22, 75, 66, 0.42) !important;
+  background-clip: padding-box !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-lesson, .wvg-v15-paper--overview)::-webkit-scrollbar-thumb:hover {
+  background: rgba(22, 75, 66, 0.62) !important;
+  background-clip: padding-box !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-lesson, .wvg-v15-paper--overview)::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* No curriculum card is selected by painting the whole card green. Completion
+   is communicated by a large check while the original paper palette remains
+   readable. */
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] {
+  border-color: rgba(46, 122, 99, 0.42) !important;
+  background: #faf5ea !important;
+  color: #102d27 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] :is(
+  .wvg-v13-book__title,
+  .wvg-v13-book__subtitle,
+  .wvg-v13-book__count
+) {
+  color: #102d27 !important;
+  opacity: 1 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book:not([data-status="complete"]) .wvg-v13-book__status {
+  display: none !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book[data-status="complete"] .wvg-v13-book__status {
+  top: 50% !important;
+  right: 10px !important;
+  display: grid !important;
+  width: 56px !important;
+  height: 56px !important;
+  place-items: center !important;
+  color: #19705b !important;
+  font-size: 52px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  opacity: 0.82 !important;
+  transform: translateY(-50%) !important;
+}
+
+@media (max-width: 1180px) {
+  #root
+    .application-frame--search-cleanroom
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open] {
+    width: min(382px, calc(100vw - 318px)) !important;
+    min-width: 0 !important;
+    max-width: 382px !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom:has(
+      .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+    )
+    .application-frame--grammar-cleanroom
+    .wvg-page {
+    right: min(382px, calc(100vw - 318px)) !important;
+  }
+}
+
