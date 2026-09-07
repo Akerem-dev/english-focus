@@ -371,26 +371,26 @@ function GrammarAssistantSession() {
             )}
           </div>
 
-            <div className="wv84-quick-actions wv84-quick-actions--welcome">
-              <span className="wv84-quick-actions__label">TRY ASKING ME</span>
-              {starters.map((starter) => (
-                <button
-                  aria-label={starter.title}
-                  disabled={isBusy}
-                  key={starter.title}
-                  onClick={() => focusStarter(starter.prompt)}
-                  type="button"
-                >
-                  <span className="wv84-quick-actions__icon">
-                    <AppIcon name={starter.icon} size={22} />
-                  </span>
-                  <span className="wv84-quick-actions__copy">
-                    <strong>{starter.title}</strong>
-                    <small>{starter.description}</small>
-                  </span>
-                </button>
-              ))}
-            </div>
+          <div className="wv84-quick-actions wv84-quick-actions--welcome">
+            <span className="wv84-quick-actions__label">TRY ASKING ME</span>
+            {starters.map((starter) => (
+              <button
+                aria-label={starter.title}
+                disabled={isBusy}
+                key={starter.title}
+                onClick={() => focusStarter(starter.prompt)}
+                type="button"
+              >
+                <span className="wv84-quick-actions__icon">
+                  <AppIcon name={starter.icon} size={22} />
+                </span>
+                <span className="wv84-quick-actions__copy">
+                  <strong>{starter.title}</strong>
+                  <small>{starter.description}</small>
+                </span>
+              </button>
+            ))}
+          </div>
 
           <form
             aria-busy={isBusy || undefined}
