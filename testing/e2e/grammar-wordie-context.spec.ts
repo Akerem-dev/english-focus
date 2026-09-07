@@ -3,10 +3,17 @@ import type { Page } from "@playwright/test";
 import { expect, test } from "./app.fixture";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
+const GRAMMAR_COMPLETION_KEY = "word-valley:grammar:completion-v1";
 
 async function clearGrammarProgress(page: Page) {
   await page.goto("/");
-  await page.evaluate((key) => window.localStorage.removeItem(key), GRAMMAR_PROGRESS_KEY);
+  await page.evaluate(
+    ([progressKey, completionKey]) => {
+      window.localStorage.removeItem(progressKey);
+      window.localStorage.removeItem(completionKey);
+    },
+    [GRAMMAR_PROGRESS_KEY, GRAMMAR_COMPLETION_KEY]
+  );
 }
 
 test("Grammar Wordie stays grammar-only, uses the Search rail, and answers starters", async ({
@@ -41,6 +48,9 @@ test("Grammar Wordie stays grammar-only, uses the Search rail, and answers start
   await explainAtHome.click();
   await expect(homeHelper.locator(".wv84-wordie-answer__body")).toBeVisible();
   await expect(homeHelper.locator(".wv84-wordie-answer__body")).toContainText(/Present Perfect/i);
+  await expect(explainAtHome).toBeVisible();
+  await expect(explainAtHome).toBeEnabled();
+  await expect(homeHelper.getByRole("button", { name: /Compare grammar points/i })).toBeEnabled();
   await page.getByRole("button", { name: "Close Wordie", exact: true }).click();
 
   await page.getByRole("button", { name: /Resume lesson/i }).click();
@@ -58,10 +68,16 @@ test("Grammar Wordie stays grammar-only, uses the Search rail, and answers start
 
   const composer = lessonHelper.getByPlaceholder("Ask about this grammar...");
   await expect(composer).toBeVisible();
-  await lessonHelper.getByRole("button", { name: /Explain this rule/i }).click();
+  const explainThisRule = lessonHelper.getByRole("button", { name: /Explain this rule/i });
+  await explainThisRule.click();
   await expect(composer).toHaveValue("Present Perfect kuralını kısa Türkçe mantıkla açıkla.");
   await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toBeVisible();
   await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(/Present Perfect/i);
+  await expect(explainThisRule).toBeVisible();
+  await expect(explainThisRule).toBeEnabled();
+  await expect(
+    lessonHelper.getByRole("button", { name: /Compare with Past Simple/i })
+  ).toBeEnabled();
 });
 
 test("lesson overview keeps its metadata visible and completion uses a readable tick", async ({
@@ -92,16 +108,35 @@ test("lesson overview keeps its metadata visible and completion uses a readable 
     expect(metadataBox.y + metadataBox.height).toBeLessThanOrEqual(heroBox.y + heroBox.height);
   }
 
-  await page.getByRole("button", { name: /Mark complete/i }).click();
+  const markComplete = page.getByRole("button", { name: "✓ Mark complete", exact: true });
+  await markComplete.click();
+  const undoComplete = page.getByRole("button", { name: "✓ Completed · Undo", exact: true });
+  await expect(undoComplete).toBeVisible();
+
+  await undoComplete.click();
+  await expect(markComplete).toBeVisible();
+  await markComplete.click();
   await page.getByRole("button", { name: "← Grammar", exact: true }).click();
 
   const completedCard = page.getByRole("button", {
-    name: "Present Simple, 5 of 5 complete",
+    name: "Present Simple, 0 of 5 complete",
     exact: true
   });
   await expect(completedCard).toBeVisible();
+  await expect(completedCard).toHaveAttribute("data-status", "complete");
   await expect(completedCard).toHaveCSS("background-color", "rgb(250, 245, 234)");
   await expect(completedCard.locator(".wvg-v13-book__title")).toHaveCSS("color", "rgb(16, 45, 39)");
   await expect(completedCard.locator(".wvg-v13-book__status")).toHaveText("✓");
   await expect(completedCard.locator(".wvg-v13-book__status")).toBeVisible();
+
+  await completedCard.click();
+  await page.getByRole("button", { name: "✓ Completed · Undo", exact: true }).click();
+  await page.getByRole("button", { name: "← Grammar", exact: true }).click();
+
+  const unmarkedCard = page.getByRole("button", {
+    name: "Present Simple, 0 of 5 complete",
+    exact: true
+  });
+  await expect(unmarkedCard).toHaveAttribute("data-status", "not-started");
+  await expect(unmarkedCard.locator(".wvg-v13-book__status")).toBeHidden();
 });
