@@ -198,11 +198,17 @@ function templateAnswer(
   if (turkish) {
     const uses = content.uses
       .slice(0, 3)
-      .map(\n        (use) =>\n          `• ${use.title}: ${use.example}${use.translationTr === undefined ? "" : ` — ${use.translationTr}`}`\n      )
+      .map(
+        (use) =>
+          `• ${use.title}: ${use.example}${use.translationTr === undefined ? "" : ` — ${use.translationTr}`}`
+      )
       .join("\n");
     const examples = content.examples
       .slice(0, 3)
-      .map(\n        (example) =>\n          `• ${example.sentence}${example.translationTr === undefined ? "" : ` — ${example.translationTr}`}`\n      )
+      .map(
+        (example) =>
+          `• ${example.sentence}${example.translationTr === undefined ? "" : ` — ${example.translationTr}`}`
+      )
       .join("\n");
     const mistakes = content.mistakes
       .slice(0, 3)
