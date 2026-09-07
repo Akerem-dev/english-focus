@@ -47,7 +47,8 @@ test("Grammar Wordie stays grammar-only, uses the Search rail, and answers start
 
   await explainAtHome.click();
   await expect(homeHelper.locator(".wv84-wordie-answer__body")).toBeVisible();
-  await expect(homeHelper.locator(".wv84-wordie-answer__body")).toContainText(/Present Perfect/i);
+  await expect(homeHelper.locator(".wv84-wordie-answer__body")).toContainText(/Kısa mantık:/i);
+  await expect(homeHelper.locator(".wv84-wordie-answer__body")).toContainText(/have\/has \+ V3/i);
   await expect(explainAtHome).toBeVisible();
   await expect(explainAtHome).toBeEnabled();
   await expect(homeHelper.getByRole("button", { name: /Compare grammar points/i })).toBeEnabled();
@@ -70,9 +71,10 @@ test("Grammar Wordie stays grammar-only, uses the Search rail, and answers start
   await expect(composer).toBeVisible();
   const explainThisRule = lessonHelper.getByRole("button", { name: /Explain this rule/i });
   await explainThisRule.click();
-  await expect(composer).toHaveValue("Present Perfect kuralını kısa Türkçe mantıkla açıkla.");
+  await expect(composer).toHaveValue("");
   await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toBeVisible();
-  await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(/Present Perfect/i);
+  await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(/Kısa mantık:/i);
+  await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(/bitmiş bir zaman/i);
   await expect(explainThisRule).toBeVisible();
   await expect(explainThisRule).toBeEnabled();
   await expect(
