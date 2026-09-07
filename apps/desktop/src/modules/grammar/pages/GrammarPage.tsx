@@ -7,6 +7,7 @@ import { CompiledGrammarLesson } from "../components/CompiledGrammarLesson";
 import { CuratedGrammarLesson } from "../components/CuratedGrammarLesson";
 import {
   GrammarCurriculumHome,
+  type GrammarCompletionMap,
   type GrammarLessonSelection,
   type GrammarProgressMap
 } from "../components/GrammarCurriculumHome";
@@ -39,6 +40,7 @@ import "../../../styles/word-valley-grammar-v22-stage5-learning-state.css";
 import "../../../styles/word-valley-grammar-v24-user-qa.css";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
+const GRAMMAR_COMPLETION_KEY = "word-valley:grammar:completion-v1";
 const LEGACY_DEMO_PROGRESS_IDS = Object.freeze([
   "present-simple",
   "be-am-is-are",
@@ -86,6 +88,45 @@ function persistGrammarProgress(progress: GrammarProgressMap): void {
   }
 }
 
+function completionFromProgress(progress: GrammarProgressMap): GrammarCompletionMap {
+  return Object.freeze(
+    Object.fromEntries(
+      Object.entries(progress)
+        .filter(([, value]) => clampProgress(value) === 5)
+        .map(([lessonId]) => [lessonId, true])
+    )
+  );
+}
+
+function readGrammarCompletion(progress: GrammarProgressMap): GrammarCompletionMap {
+  try {
+    const raw = window.localStorage.getItem(GRAMMAR_COMPLETION_KEY);
+    if (raw === null) return completionFromProgress(progress);
+
+    const parsed: unknown = JSON.parse(raw);
+    if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return completionFromProgress(progress);
+    }
+
+    const completed: Record<string, boolean> = {};
+    for (const [lessonId, value] of Object.entries(parsed)) {
+      if (typeof value === "boolean") completed[lessonId] = value;
+    }
+
+    return Object.freeze(completed);
+  } catch {
+    return completionFromProgress(progress);
+  }
+}
+
+function persistGrammarCompletion(completed: GrammarCompletionMap): void {
+  try {
+    window.localStorage.setItem(GRAMMAR_COMPLETION_KEY, JSON.stringify(completed));
+  } catch {
+    // Completion remains usable in memory when storage is unavailable.
+  }
+}
+
 function hasRenderableCuratedContent(lessonId: string): boolean {
   const content = getGrammarTeachingContent(lessonId);
   if (content === undefined) return false;
@@ -110,6 +151,10 @@ export function GrammarPage() {
   const { setLessonFocus } = useGrammar();
   const [selectedLesson, setSelectedLesson] = useState<GrammarLessonSelection | undefined>();
   const [progress, setProgress] = useState<GrammarProgressMap>(() => readGrammarProgress());
+  const [completedLessons, setCompletedLessons] = useState<GrammarCompletionMap>(() => {
+    const storedProgress = readGrammarProgress();
+    return readGrammarCompletion(storedProgress);
+  });
 
   useEffect(() => {
     if (selectedLesson === undefined) {
@@ -142,6 +187,15 @@ export function GrammarPage() {
     setSelectedLesson(undefined);
   }
 
+  function setLessonCompleted(lessonId: string, completed: boolean) {
+    setCompletedLessons((current) => {
+      if ((current[lessonId] ?? false) === completed) return current;
+      const next = Object.freeze({ ...current, [lessonId]: completed });
+      persistGrammarCompletion(next);
+      return next;
+    });
+  }
+
   function updateProgress(lessonId: string, value: number) {
     const nextValue = clampProgress(value);
 
@@ -151,16 +205,16 @@ export function GrammarPage() {
       persistGrammarProgress(next);
       return next;
     });
-  }
 
-  function markComplete(lessonId: string) {
-    updateProgress(lessonId, 5);
+    if (nextValue === 5) setLessonCompleted(lessonId, true);
   }
 
   const selectedProgress =
     selectedLesson === undefined
       ? 0
       : clampProgress(progress[selectedLesson.id] ?? selectedLesson.initialProgress);
+  const selectedCompleted =
+    selectedLesson === undefined ? false : (completedLessons[selectedLesson.id] ?? false);
   const selectedUsesExpandedCuratedLesson =
     selectedLesson?.level === "A2" || selectedLesson?.level === "B1";
   const selectedHasCuratedContent =
@@ -179,29 +233,38 @@ export function GrammarPage() {
       <div aria-hidden="true" className="wvg-scene-veil" />
 
       {selectedLesson === undefined ? (
-        <GrammarCurriculumHome onOpenLesson={openLesson} progress={progress} />
+        <GrammarCurriculumHome
+          completedLessons={completedLessons}
+          onOpenLesson={openLesson}
+          progress={progress}
+        />
       ) : selectedUsesExpandedCuratedLesson ? (
         <A2CuratedGrammarLesson
+          completed={selectedCompleted}
           key={`${selectedLesson.id}-${selectedLesson.initialSection ?? "overview"}`}
           lesson={selectedLesson}
           onBack={openCurriculum}
+          onCompletionChange={(completed) => setLessonCompleted(selectedLesson.id, completed)}
           onMasteryChange={(mastery) => updateProgress(selectedLesson.id, mastery)}
           progress={selectedProgress}
         />
       ) : selectedHasCuratedContent ? (
         <CuratedGrammarLesson
+          completed={selectedCompleted}
           key={`${selectedLesson.id}-${selectedLesson.initialSection ?? "overview"}`}
           lesson={selectedLesson}
           onBack={openCurriculum}
+          onCompletionChange={(completed) => setLessonCompleted(selectedLesson.id, completed)}
           onMasteryChange={(mastery) => updateProgress(selectedLesson.id, mastery)}
           progress={selectedProgress}
         />
       ) : (
         <CompiledGrammarLesson
+          completed={selectedCompleted}
           key={selectedLesson.id}
           lesson={selectedLesson}
           onBack={openCurriculum}
-          onMarkComplete={() => markComplete(selectedLesson.id)}
+          onCompletionChange={(completed) => setLessonCompleted(selectedLesson.id, completed)}
           progress={selectedProgress}
         />
       )}
