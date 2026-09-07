@@ -13,6 +13,7 @@ import "../../../styles/word-valley-grammar-v13-home.css";
 import "../../../styles/word-valley-grammar-v13-interactions.css";
 
 export type GrammarProgressMap = Readonly<Record<string, number>>;
+export type GrammarCompletionMap = Readonly<Record<string, boolean>>;
 
 export interface GrammarLessonSelection extends GrammarKnowledgeLesson {
   readonly initialProgress: number;
@@ -23,6 +24,7 @@ export interface GrammarLessonSelection extends GrammarKnowledgeLesson {
 }
 
 interface GrammarCurriculumHomeProps {
+  readonly completedLessons: GrammarCompletionMap;
   readonly progress: GrammarProgressMap;
   readonly onOpenLesson: (lesson: GrammarLessonSelection) => void;
 }
@@ -267,20 +269,22 @@ function bookMatches(
   return searchable.includes(query);
 }
 
-function statusMatches(progress: number, status: StatusFilter): boolean {
-  if (status === "not-started") return progress === 0;
-  if (status === "in-progress") return progress > 0 && progress < 5;
-  if (status === "complete") return progress === 5;
+function statusMatches(progress: number, completed: boolean, status: StatusFilter): boolean {
+  if (status === "not-started") return !completed && progress === 0;
+  if (status === "in-progress") return !completed && progress > 0;
+  if (status === "complete") return completed;
   return true;
 }
 
 function BookCard({
   book,
+  completed,
   progress,
   selection,
   onOpenLesson
 }: {
   readonly book: V13Book;
+  readonly completed: boolean;
   readonly progress: number;
   readonly selection: GrammarLessonSelection | undefined;
   readonly onOpenLesson: (lesson: GrammarLessonSelection) => void;
@@ -291,7 +295,7 @@ function BookCard({
     <button
       aria-label={`${book.title}, ${progress} of 5 complete`}
       className="wvg-v13-book"
-      data-status={progress === 5 ? "complete" : progress > 0 ? "in-progress" : "not-started"}
+      data-status={completed ? "complete" : progress > 0 ? "in-progress" : "not-started"}
       disabled={selection === undefined}
       onClick={() => {
         if (selection !== undefined) onOpenLesson(selection);
@@ -302,7 +306,7 @@ function BookCard({
       <span className="wvg-v13-book__title">{book.title}</span>
       <span className="wvg-v13-book__subtitle">{book.subtitle}</span>
       <span aria-hidden="true" className="wvg-v13-book__status">
-        {progress === 5 ? "✓" : ""}
+        {completed ? "✓" : ""}
       </span>
       <span aria-hidden="true" className="wvg-v13-book__track">
         <span style={{ width: progressPercent }} />
@@ -312,7 +316,11 @@ function BookCard({
   );
 }
 
-export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurriculumHomeProps) {
+export function GrammarCurriculumHome({
+  completedLessons,
+  onOpenLesson,
+  progress
+}: GrammarCurriculumHomeProps) {
   const [query, setQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState("all");
   const [topicFilter, setTopicFilter] = useState("all");
@@ -353,20 +361,22 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
         books: shelf.books
           .map((book) => ({
             book,
+            completed: completedLessons[book.id] ?? false,
             selection: buildLessonSelection(book, shelf),
             progress: getBookProgress(book, progress)
           }))
-          .filter(({ book, selection, progress: bookProgress }) => {
+          .filter(({ book, completed, selection, progress: bookProgress }) => {
             if (isolatedShelfId !== undefined && shelf.id !== isolatedShelfId) return false;
             if (levelFilter !== "all" && shelf.level !== levelFilter) return false;
             if (!bookMatches(book, selection, normalizedQuery)) return false;
             if (topicFilter !== "all" && selection?.category !== topicFilter) return false;
-            if (!statusMatches(bookProgress, statusFilter)) return false;
+            if (!statusMatches(bookProgress, completed, statusFilter)) return false;
             if (recommendedOnly && !book.recommended && !book.featured) return false;
             return true;
           })
       })).filter((shelf) => shelf.books.length > 0),
     [
+      completedLessons,
       isolatedShelfId,
       levelFilter,
       normalizedQuery,
@@ -387,6 +397,8 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
       : undefined;
   const presentPerfectProgress =
     presentPerfectBook === undefined ? 0 : getBookProgress(presentPerfectBook, progress);
+  const presentPerfectCompleted =
+    presentPerfectBook === undefined ? false : (completedLessons[presentPerfectBook.id] ?? false);
   const filtersActive =
     normalizedQuery.length > 0 ||
     levelFilter !== "all" ||
@@ -465,10 +477,14 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
                 }}
                 type="button"
               >
-                <span aria-hidden="true">{presentPerfectProgress === 5 ? "✓" : "◎"}</span>{" "}
+                <span aria-hidden="true">
+                  {presentPerfectCompleted || presentPerfectProgress === 5 ? "✓" : "◎"}
+                </span>{" "}
                 {presentPerfectProgress === 5
                   ? "Mastered · Review"
-                  : `Practice · ${presentPerfectProgress}/5`}
+                  : presentPerfectCompleted
+                    ? `Completed · ${presentPerfectProgress}/5`
+                    : `Practice · ${presentPerfectProgress}/5`}
               </button>
             </div>
             <p className="wvg-v13-hero__meta">
@@ -574,9 +590,10 @@ export function GrammarCurriculumHome({ onOpenLesson, progress }: GrammarCurricu
                 </header>
 
                 <div className="wvg-v13-shelf__books">
-                  {shelf.books.map(({ book, progress: bookProgress, selection }) => (
+                  {shelf.books.map(({ book, completed, progress: bookProgress, selection }) => (
                     <BookCard
                       book={book}
+                      completed={completed}
                       key={`${shelf.id}-${book.id}`}
                       onOpenLesson={onOpenLesson}
                       progress={bookProgress}
