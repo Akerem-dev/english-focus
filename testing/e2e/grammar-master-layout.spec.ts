@@ -414,8 +414,9 @@ test("Stage 1 locks Wordie reflow geometry, minimize behavior, and lesson scroll
   const helperBox = await helper.boundingBox();
   expect(paperAfterWordie).not.toBeNull();
   expect(helperBox).not.toBeNull();
-  expect(paperAfterWordie!.width).toBeLessThan(paperBeforeWordie!.width);
-  expect(paperAfterWordie!.x + paperAfterWordie!.width).toBeLessThanOrEqual(helperBox!.x + 2);
+  expect(paperAfterWordie!.x).toBeCloseTo(paperBeforeWordie!.x, 1);
+  expect(paperAfterWordie!.width).toBeCloseTo(paperBeforeWordie!.width, 1);
+  expect(helperBox!.x + helperBox!.width).toBeCloseTo(1180, 1);
 
   await page.getByRole("button", { name: "Minimize Wordie" }).click();
   await expect(helper).toHaveCount(0);
