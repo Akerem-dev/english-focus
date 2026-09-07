@@ -12,8 +12,10 @@ import { getGrammarLessonArtwork } from "../knowledge/grammarLessonArtwork";
 import "../../../styles/word-valley-grammar-v15-curated-lesson.css";
 
 interface A2CuratedGrammarLessonProps {
+  readonly completed: boolean;
   readonly lesson: GrammarLessonSelection;
   readonly onBack: () => void;
+  readonly onCompletionChange: (completed: boolean) => void;
   readonly onMasteryChange: (mastery: number) => void;
   readonly progress: number;
   readonly teachingContent?: GrammarTeachingContent;
@@ -413,8 +415,10 @@ function previewForSection(content: GrammarTeachingContent, sectionId: GrammarTe
 }
 
 export function A2CuratedGrammarLesson({
+  completed,
   lesson,
   onBack,
+  onCompletionChange,
   onMasteryChange,
   progress,
   teachingContent
@@ -560,15 +564,14 @@ export function A2CuratedGrammarLesson({
               <button onClick={() => setSelectedSection("practice")} type="button">
                 {progress >= 5 ? "✓ Mastered · Review" : `Mastery ${progress}/5 · Practice`}
               </button>
-              {progress >= 5 ? null : (
-                <button
-                  className="wvg-v15-mark-complete"
-                  onClick={() => onMasteryChange(5)}
-                  type="button"
-                >
-                  ✓ Mark complete
-                </button>
-              )}
+              <button
+                aria-pressed={completed}
+                className="wvg-v15-mark-complete"
+                onClick={() => onCompletionChange(!completed)}
+                type="button"
+              >
+                {completed ? "✓ Completed · Undo" : "✓ Mark complete"}
+              </button>
             </div>
             <em>
               Level {lesson.level} · {lessonBand(lesson)} · ~15 min · 8 sections
