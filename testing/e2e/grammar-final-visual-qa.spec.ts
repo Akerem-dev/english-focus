@@ -22,7 +22,7 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   const firstShelfWood = page.locator(".wvg-v13-shelf__wood").first();
   const focusLevel = page.getByRole("button", { name: "Focus level", exact: true }).first();
   await expect(homeHeroArt).toHaveCSS("object-position", "60% 50%");
-  await expect(homeHeroContent).toHaveCSS("left", "18px");
+  await expect(homeHeroContent).toHaveCSS("left", "8px");
   await expect(firstShelfWood).toHaveCSS("margin-top", "5px");
   await expect(focusLevel).toHaveCSS("white-space", "nowrap");
 
