@@ -12,7 +12,6 @@ interface CompiledGrammarLessonProps {
   readonly lesson: GrammarLessonSelection;
   readonly onBack: () => void;
   readonly onCompletionChange: (completed: boolean) => void;
-  readonly progress: number;
 }
 
 interface LoadedGrammarAnswer {
@@ -156,8 +155,7 @@ export function CompiledGrammarLesson({
   completed,
   lesson,
   onBack,
-  onCompletionChange,
-  progress
+  onCompletionChange
 }: CompiledGrammarLessonProps) {
   const { answerGrammarQuestion } = useGrammar();
   const artwork = getGrammarLessonArtwork(lesson.sourceLessonId);
