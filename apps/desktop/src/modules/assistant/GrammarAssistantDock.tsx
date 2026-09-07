@@ -204,13 +204,8 @@ function GrammarAssistantSession() {
   }, [closeAssistant, open]);
 
   function focusStarter(starter: string) {
-    setInput(starter);
-    window.requestAnimationFrame(() => {
-      const composer = inputRef.current;
-      if (composer === null) return;
-      composer.focus();
-      composer.setSelectionRange(starter.length, starter.length);
-    });
+    setInput("");
+    window.requestAnimationFrame(() => inputRef.current?.focus());
     void submitGrammarQuestion(starter);
   }
 
