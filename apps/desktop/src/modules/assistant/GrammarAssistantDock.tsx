@@ -371,7 +371,6 @@ function GrammarAssistantSession() {
             )}
           </div>
 
-          {isWelcome ? (
             <div className="wv84-quick-actions wv84-quick-actions--welcome">
               <span className="wv84-quick-actions__label">TRY ASKING ME</span>
               {starters.map((starter) => (
@@ -392,7 +391,6 @@ function GrammarAssistantSession() {
                 </button>
               ))}
             </div>
-          ) : null}
 
           <form
             aria-busy={isBusy || undefined}
