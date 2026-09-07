@@ -74,7 +74,9 @@ test("Grammar Wordie stays grammar-only, uses the Search rail, and answers start
   await expect(composer).toHaveValue("");
   await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toBeVisible();
   await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(/Kısa mantık:/i);
-  await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(/bitmiş bir zaman/i);
+  await expect(lessonHelper.locator(".wv84-wordie-answer__body")).toContainText(
+    /bitmiş bir zaman/i
+  );
   await expect(explainThisRule).toBeVisible();
   await expect(explainThisRule).toBeEnabled();
   await expect(
