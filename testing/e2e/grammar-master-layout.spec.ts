@@ -339,8 +339,9 @@ test("Grammar Wordie uses the v18 bubble, grammar starters, and independent cont
 
   await page.getByRole("button", { name: "Draft lesson template", exact: true }).click();
   const composer = page.getByLabel("Ask Wordie a grammar question");
-  await expect(composer).toHaveValue(/Present Perfect.*8 bölümü/s);
-  await expect(composer).toHaveValue(/Core formula.*Common mistakes.*Quick rule/s);
+  await expect(composer).toHaveValue("");
+  await expect(helper.locator(".wv84-wordie-answer__body")).toContainText(/1\) Anlam/i);
+  await expect(helper.locator(".wv84-wordie-answer__body")).toContainText(/8\) Hızlı kural/i);
 
   await page.getByRole("button", { name: "Close Wordie" }).click();
   await expect(helper).toHaveCount(0);
