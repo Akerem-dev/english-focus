@@ -17,6 +17,15 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   );
   await page.goto("/#/grammar");
 
+  const homeHeroArt = page.locator(".wvg-v13-hero__art");
+  const homeHeroContent = page.locator(".wvg-v13-hero__content");
+  const firstShelfWood = page.locator(".wvg-v13-shelf__wood").first();
+  const focusLevel = page.getByRole("button", { name: "Focus level", exact: true }).first();
+  await expect(homeHeroArt).toHaveCSS("object-position", "60% 50%");
+  await expect(homeHeroContent).toHaveCSS("left", "18px");
+  await expect(firstShelfWood).toHaveCSS("margin-top", "5px");
+  await expect(focusLevel).toHaveCSS("white-space", "nowrap");
+
   await page.getByRole("button", { name: /Be: am \/ is \/ are, 0 of 5 complete/i }).click();
   await expect(page.getByRole("heading", { name: "Be: am / is / are", level: 1 })).toBeVisible();
 
@@ -59,10 +68,8 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   await expect(helper.locator(".wv84-quick-actions__arrow")).toHaveCount(0);
 
   await helper.getByRole("button", { name: "Explain this rule", exact: true }).click();
-  await expect(
-    helper.getByText(/Formula: Subject \+ am \/ is \/ are \+ complement/i)
-  ).toBeVisible();
-  await expect(helper.getByText(/Why it works:/i)).toBeVisible();
+  await expect(helper.getByText(/Kısa mantık:/i)).toBeVisible();
+  await expect(helper.getByText(/Formül: Subject \+ am \/ is \/ are \+ complement/i)).toBeVisible();
   await expect(helper.getByText(/not confident enough/i)).toHaveCount(0);
 
   await page.getByRole("button", { name: "Close Wordie", exact: true }).click();
