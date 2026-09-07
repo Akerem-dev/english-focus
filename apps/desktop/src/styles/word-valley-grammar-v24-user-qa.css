@@ -639,7 +639,7 @@
       .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
     )
     .application-frame--grammar-cleanroom
-    .wvg-page {
+    .wvg-page.wvg-page {
     right: 0 !important;
     width: auto !important;
     max-width: none !important;
@@ -672,8 +672,10 @@
   #root
     .application-frame--search-cleanroom
     .application-frame--grammar-cleanroom
-    .wvg-page {
+    .wvg-page.wvg-page {
     left: 72px !important;
+    right: 0 !important;
+    width: auto !important;
   }
 
   #root
