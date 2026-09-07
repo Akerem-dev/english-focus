@@ -12,7 +12,6 @@ export interface GrammarAssistantLocalAnswer {
 const HOME_DEFAULT_LESSON_ID = "present-perfect";
 const HOME_DEFAULT_LESSON_TITLE = "Present Perfect";
 
-
 const TURKISH_LOGIC_BY_LESSON: Readonly<Record<string, string>> = Object.freeze({
   "present-simple":
     "Rutinleri, alışkanlıkları ve genel doğruları anlatır. He/she/it ile olumlu cümlede fiile genellikle -s/-es gelir.",
@@ -113,7 +112,9 @@ function comparisonAnswer(
 
   if (turkish) {
     const leftTranslation =
-      comparison.left.translationTr === undefined ? "" : `\nTürkçesi: ${comparison.left.translationTr}`;
+      comparison.left.translationTr === undefined
+        ? ""
+        : `\nTürkçesi: ${comparison.left.translationTr}`;
     const rightTranslation =
       comparison.right.translationTr === undefined
         ? ""
@@ -197,11 +198,11 @@ function templateAnswer(
   if (turkish) {
     const uses = content.uses
       .slice(0, 3)
-      .map((use) => `• ${use.title}: ${use.example}${use.translationTr === undefined ? "" : ` — ${use.translationTr}`}`)
+      .map(\n        (use) =>\n          `• ${use.title}: ${use.example}${use.translationTr === undefined ? "" : ` — ${use.translationTr}`}`\n      )
       .join("\n");
     const examples = content.examples
       .slice(0, 3)
-      .map((example) => `• ${example.sentence}${example.translationTr === undefined ? "" : ` — ${example.translationTr}`}`)
+      .map(\n        (example) =>\n          `• ${example.sentence}${example.translationTr === undefined ? "" : ` — ${example.translationTr}`}`\n      )
       .join("\n");
     const mistakes = content.mistakes
       .slice(0, 3)
