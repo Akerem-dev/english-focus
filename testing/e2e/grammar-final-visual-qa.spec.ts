@@ -32,8 +32,12 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   const markComplete = page.getByRole("button", { name: "✓ Mark complete", exact: true });
   await expect(markComplete).toBeVisible();
   await markComplete.click();
-  await expect(\n    page.getByRole("button", { name: "✓ Completed · Undo", exact: true })\n  ).toBeVisible();
-  await expect(\n    page.getByRole("button", { name: "Mastery 0/5 · Practice", exact: true })\n  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "✓ Completed · Undo", exact: true })
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Mastery 0/5 · Practice", exact: true })
+  ).toBeVisible();
 
   const launcher = page.getByRole("button", { name: "Open Wordie", exact: true });
   await launcher.click();
