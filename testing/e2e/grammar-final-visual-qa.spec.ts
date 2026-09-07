@@ -1,13 +1,20 @@
 import { expect, test } from "./app.fixture";
 
 const GRAMMAR_PROGRESS_KEY = "word-valley:grammar:progress-v1";
+const GRAMMAR_COMPLETION_KEY = "word-valley:grammar:completion-v1";
 
 test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polished", async ({
   page
 }) => {
   await page.setViewportSize({ width: 1664, height: 936 });
   await page.goto("/");
-  await page.evaluate((key) => window.localStorage.removeItem(key), GRAMMAR_PROGRESS_KEY);
+  await page.evaluate(
+    ([progressKey, completionKey]) => {
+      window.localStorage.removeItem(progressKey);
+      window.localStorage.removeItem(completionKey);
+    },
+    [GRAMMAR_PROGRESS_KEY, GRAMMAR_COMPLETION_KEY]
+  );
   await page.goto("/#/grammar");
 
   await page.getByRole("button", { name: /Be: am \/ is \/ are, 0 of 5 complete/i }).click();
@@ -25,10 +32,8 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   const markComplete = page.getByRole("button", { name: "✓ Mark complete", exact: true });
   await expect(markComplete).toBeVisible();
   await markComplete.click();
-  await expect(markComplete).toHaveCount(0);
-  await expect(
-    page.getByRole("button", { name: "✓ Mastered · Review", exact: true })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "✓ Completed · Undo", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Mastery 0/5 · Practice", exact: true })).toBeVisible();
 
   const launcher = page.getByRole("button", { name: "Open Wordie", exact: true });
   await launcher.click();
