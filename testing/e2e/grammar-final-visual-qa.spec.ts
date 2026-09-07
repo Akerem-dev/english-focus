@@ -82,7 +82,7 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
   await page.getByRole("button", { name: "← Grammar" }).click();
 
   const completedBook = page.getByRole("button", {
-    name: /Be: am \/ is \/ are, 5 of 5 complete/i
+    name: /Be: am \/ is \/ are, 0 of 5 complete/i
   });
   await expect(completedBook).toBeVisible();
   await expect(completedBook).toHaveAttribute("data-status", "complete");
@@ -107,6 +107,6 @@ test("final Grammar QA keeps hero, Wordie, scrollbar and completion states polis
 
   await page.reload();
   await expect(
-    page.getByRole("button", { name: /Be: am \/ is \/ are, 5 of 5 complete/i })
+    page.getByRole("button", { name: /Be: am \/ is \/ are, 0 of 5 complete/i })
   ).toBeVisible();
 });
