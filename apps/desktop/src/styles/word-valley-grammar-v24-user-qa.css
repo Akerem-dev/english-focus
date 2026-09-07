@@ -619,3 +619,68 @@
   white-space: nowrap !important;
 }
 
+/* -------------------------------------------------------------------------- */
+/* V24.4 — compact-window Wordie overlay + tighter hero alignment              */
+/* -------------------------------------------------------------------------- */
+
+/* The recommendation block intentionally sits very close to the scenic card's
+   left edge. The green wash provides the breathing room; extra content inset
+   made the whole group look optically shifted to the right. */
+#root .application-frame--grammar-cleanroom .wvg-v13-hero__content {
+  left: 8px !important;
+}
+
+/* At compact desktop widths Wordie must overlay the Grammar canvas instead of
+   subtracting another 382px from an already narrow content slot. Search uses
+   the same compact-window interaction model. */
+@media (max-width: 1180px) {
+  #root
+    .application-frame--search-cleanroom:has(
+      .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+    )
+    .application-frame--grammar-cleanroom
+    .wvg-page {
+    right: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom:has(
+      .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open]
+    )
+    .application-frame--grammar-cleanroom
+    :is(.wvg-v13-home__paper, .wvg-v15-paper) {
+    width: calc(100% - 2px) !important;
+    max-width: none !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open] {
+    width: min(382px, calc(100vw - 318px)) !important;
+    min-width: 0 !important;
+    max-width: 382px !important;
+    box-shadow: -18px 0 42px rgba(8, 47, 41, 0.12) !important;
+  }
+}
+
+/* Search collapses the shared navigation to a 72px icon rail below 1050px.
+   Grammar must use that same origin instead of retaining the legacy 318px
+   desktop offset. */
+@media (max-width: 1050px) {
+  #root
+    .application-frame--search-cleanroom
+    .application-frame--grammar-cleanroom
+    .wvg-page {
+    left: 72px !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom
+    .assistant-dock.wv84-assistant.wvg-wordie-dock[data-open] {
+    width: min(360px, calc(100vw - 72px)) !important;
+    max-width: 360px !important;
+  }
+}
+
