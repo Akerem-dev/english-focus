@@ -265,7 +265,6 @@ export function GrammarPage() {
           lesson={selectedLesson}
           onBack={openCurriculum}
           onCompletionChange={(completed) => setLessonCompleted(selectedLesson.id, completed)}
-          progress={selectedProgress}
         />
       )}
     </div>
