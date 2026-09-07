@@ -8,9 +8,10 @@ import "../../../styles/word-valley-grammar-v13-lesson.css";
 import "../../../styles/word-valley-grammar-v14-section-navigation.css";
 
 interface CompiledGrammarLessonProps {
+  readonly completed: boolean;
   readonly lesson: GrammarLessonSelection;
   readonly onBack: () => void;
-  readonly onMarkComplete: () => void;
+  readonly onCompletionChange: (completed: boolean) => void;
   readonly progress: number;
 }
 
@@ -152,16 +153,16 @@ function SectionCard({ className, id, number, onOpen, title, children }: Section
 }
 
 export function CompiledGrammarLesson({
+  completed,
   lesson,
   onBack,
-  onMarkComplete,
+  onCompletionChange,
   progress
 }: CompiledGrammarLessonProps) {
   const { answerGrammarQuestion } = useGrammar();
   const artwork = getGrammarLessonArtwork(lesson.sourceLessonId);
   const [selectedSection, setSelectedSection] = useState<OverviewSectionId>();
   const isPresentPerfect = lesson.id === "present-perfect";
-  const isComplete = progress >= 5;
   const sections = useMemo(() => sectionDefinitions(isPresentPerfect), [isPresentPerfect]);
 
   const requests = useMemo(
@@ -581,9 +582,13 @@ export function CompiledGrammarLesson({
               <button onClick={resumeLesson} type="button">
                 Start lesson <span aria-hidden="true">›</span>
               </button>
-              <button aria-pressed={isComplete} onClick={onMarkComplete} type="button">
-                <span aria-hidden="true">{isComplete ? "✓" : "◉"}</span>{" "}
-                {isComplete ? "Completed" : "Mark as complete"}
+              <button
+                aria-pressed={completed}
+                onClick={() => onCompletionChange(!completed)}
+                type="button"
+              >
+                <span aria-hidden="true">{completed ? "✓" : "◉"}</span>{" "}
+                {completed ? "Completed · Undo" : "Mark as complete"}
               </button>
             </div>
             <small>
