@@ -1,4 +1,5 @@
 import valleyBackground from "../../../assets/background/home-background-static.png";
+import { PRACTICE_ARTWORK } from "../practiceAssets";
 
 /**
  * Stage 1 foundation for the Practice feature.
@@ -20,6 +21,11 @@ export function PracticePage() {
 
       <main aria-label="Practice" className="wvp-shell">
         <section className="wvp-foundation-card">
+          <div
+            aria-hidden="true"
+            className="wvp-foundation-card__art"
+            style={{ backgroundImage: `url("${PRACTICE_ARTWORK.northernTrail}")` }}
+          />
           <p className="wvp-eyebrow">PRACTICE · WORD VALLEY EXPEDITIONS</p>
           <h1>Practice</h1>
           <p>
