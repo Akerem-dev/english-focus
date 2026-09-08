@@ -1463,3 +1463,298 @@
   margin: 0;
   font: 600 36px/40px "Cormorant Garamond", Georgia, serif;
 }
+
+
+/* Stage 6 — Context Bridge + Phrase Falls + Mistake Mine */
+
+.wvp-context-card__prompt {
+  margin: 12px 0 0;
+  color: #66736d;
+  font: 400 15px/19px Inter, system-ui, sans-serif;
+}
+
+.wvp-context-sentence,
+.wvp-phrase-stem,
+.wvp-mistake-retry {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid #d9cfbd;
+  border-radius: 12px;
+  background: #f3efe4;
+  color: #102d27;
+  font: 600 22px/28px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-context-sentence {
+  min-height: 88px;
+}
+
+.wvp-phrase-stem {
+  min-height: 86px;
+}
+
+.wvp-context-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.wvp-context-options button {
+  display: grid;
+  min-height: 60px;
+  align-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffaf1;
+  color: #102d27;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wvp-context-options button strong {
+  font: 600 17px/20px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-context-options button small {
+  overflow: hidden;
+  color: #66736d;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wvp-context-options button[data-state="selected"],
+.wvp-mistake-options button[data-state="selected"] {
+  border-color: #c69a3a;
+}
+
+.wvp-context-options button[data-state="correct"],
+.wvp-mistake-options button[data-state="correct"] {
+  border-color: #5f9a7d;
+  background: #edf6ef;
+}
+
+.wvp-context-options button[data-state="incorrect"],
+.wvp-mistake-options button[data-state="incorrect"] {
+  border-color: #bf7364;
+  background: #faefec;
+}
+
+.wvp-context-feedback {
+  margin: 12px 0 0;
+  color: #8e4c3d;
+  font: 500 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-context-feedback[data-correct] {
+  color: #31705d;
+}
+
+.wvp-mode-footnote {
+  max-width: 360px;
+  align-self: center;
+  color: #66736d;
+  font: 400 10px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-context-clues {
+  display: grid;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.wvp-context-clues > div {
+  padding-bottom: 13px;
+  border-bottom: 1px solid #ddd4c4;
+}
+
+.wvp-context-clues span,
+.wvp-compare-panel > span,
+.wvp-phrase-partners > span,
+.wvp-mistake-fingerprint > span {
+  display: block;
+  color: #b18424;
+  font: 700 9px/12px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-context-clues strong {
+  display: block;
+  margin-top: 6px;
+  color: #102d27;
+  font: 600 12px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-compare-panel,
+.wvp-phrase-partners {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f2eedf;
+}
+
+.wvp-compare-panel strong,
+.wvp-phrase-partners strong {
+  display: block;
+  margin-top: 7px;
+  color: #102d27;
+  font: 600 16px/20px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-compare-panel p {
+  margin: 7px 0 0;
+  color: #31564c;
+  font: 400 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-phrase-partners strong {
+  max-height: 40px;
+  overflow: hidden;
+}
+
+.wvp-mode-hero--mine .wvp-mode-hero__shade {
+  background: rgba(33, 26, 12, 0.58);
+}
+
+.wvp-mistake-card h3 {
+  margin-top: 16px;
+}
+
+.wvp-mistake-signal {
+  display: grid;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #e0c1b8;
+  border-radius: 10px;
+  background: #faefec;
+}
+
+.wvp-mistake-signal > span {
+  color: #ad594a;
+  font: 700 9px/12px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-mistake-signal > strong {
+  margin-top: 5px;
+  color: #ad594a;
+  font: 600 20px/23px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mistake-signal > small {
+  margin-top: 2px;
+  color: #66736d;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+}
+
+.wvp-mistake-explanation {
+  display: grid;
+  gap: 5px;
+  margin-top: 9px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f2eedf;
+}
+
+.wvp-mistake-explanation > div {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px;
+}
+
+.wvp-mistake-explanation strong {
+  color: #102d27;
+  font: 600 16px/20px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mistake-explanation span {
+  overflow: hidden;
+  color: #31564c;
+  font: 400 10px/14px Inter, system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wvp-mistake-retry-label {
+  margin-top: 12px;
+}
+
+.wvp-mistake-retry {
+  min-height: 46px;
+  margin-top: 7px;
+  padding: 11px 14px;
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.wvp-mistake-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.wvp-mistake-options button {
+  min-width: 100px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffaf1;
+  color: #102d27;
+  cursor: pointer;
+  font: 600 14px/17px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mistake-fingerprint {
+  display: grid;
+  gap: 7px;
+  margin-top: 25px;
+}
+
+.wvp-mistake-fingerprint strong {
+  color: #102d27;
+  font: 600 14px/18px Inter, system-ui, sans-serif;
+}
+
+.wvp-mistake-fingerprint small {
+  margin-top: 3px;
+  color: #66736d;
+  font: 400 10px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-repair-steps {
+  margin-top: 25px;
+  padding-top: 19px;
+  border-top: 1px solid #ddd4c4;
+}
+
+.wvp-repair-steps h3 {
+  margin: 0 0 13px;
+  color: #102d27;
+  font: 600 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-repair-steps p {
+  display: flex;
+  margin: 9px 0 0;
+  align-items: center;
+  gap: 11px;
+  color: #66736d;
+  font: 400 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-repair-steps b {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f2eedf;
+  color: #b18424;
+  font: 700 10px/12px Inter, system-ui, sans-serif;
+}
