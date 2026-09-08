@@ -18,11 +18,7 @@ function replaceTarget(sentence: string, word: string): string {
   return pattern.test(sentence) ? sentence.replace(pattern, "______") : sentence + "  ______";
 }
 
-export function PracticeContextBridge({
-  deck,
-  entries,
-  onExit
-}: PracticeContextBridgeProps) {
+export function PracticeContextBridge({ deck, entries, onExit }: PracticeContextBridgeProps) {
   const [index, setIndex] = useState(0);
   const [selectedWord, setSelectedWord] = useState<string | undefined>();
   const [checked, setChecked] = useState(false);
@@ -59,8 +55,7 @@ export function PracticeContextBridge({
     );
   }
 
-  const example =
-    entry.examples[0]?.sentenceEn ?? "Choose the word that best fits this context.";
+  const example = entry.examples[0]?.sentenceEn ?? "Choose the word that best fits this context.";
   const sentence = replaceTarget(example, entry.word);
 
   const decoys = deckEntries
@@ -169,9 +164,7 @@ export function PracticeContextBridge({
           ) : null}
 
           <footer className="wvp-mode-card__footer">
-            <span className="wvp-mode-footnote">
-              Wordie explains the nuance after you commit.
-            </span>
+            <span className="wvp-mode-footnote">Wordie explains the nuance after you commit.</span>
             {checked ? (
               <button className="wvp-question-submit" onClick={next} type="button">
                 {complete ? "Finish" : "Next sentence"}
