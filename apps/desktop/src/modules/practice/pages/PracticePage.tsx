@@ -3,7 +3,10 @@ import { useState, type SyntheticEvent } from "react";
 import valleyBackground from "../../../assets/background/home-background-static.png";
 import { AppIcon, type AppIconName } from "../../../design-system";
 import type { PracticeFocus } from "../application/practiceEngine";
+import { PracticeContextBridge } from "../components/PracticeContextBridge";
 import { PracticeExpedition } from "../components/PracticeExpedition";
+import { PracticeMistakeMine } from "../components/PracticeMistakeMine";
+import { PracticePhraseFalls } from "../components/PracticePhraseFalls";
 import { PracticeMemoryGrove } from "../components/PracticeMemoryGrove";
 import { PracticeWordForge } from "../components/PracticeWordForge";
 import { usePracticeHomeModel } from "../hooks/usePracticeHomeModel";
@@ -86,18 +89,24 @@ export function PracticePage() {
   const [scope, setScope] = useState("all");
   const [duration, setDuration] = useState<PracticeDuration>(5);
   const [announcement, setAnnouncement] = useState("");
-  const [view, setView] = useState<"home" | "expedition" | "memory-grove" | "word-forge">("home");
+  const [view, setView] = useState<
+    | "home"
+    | "expedition"
+    | "memory-grove"
+    | "word-forge"
+    | "context-bridge"
+    | "phrase-falls"
+    | "mistake-mine"
+  >("home");
   const { deck, entries, loading, signals, stats } = usePracticeHomeModel(focus, duration);
 
   function openTrainingGround(ground: TrainingGround) {
-    if (ground.id === "memory-grove" || ground.id === "word-forge") {
-      setView(ground.id);
+    if (ground.id === "recall-summit") {
+      setAnnouncement("Recall Summit opens in the next Practice stage.");
       return;
     }
 
-    setAnnouncement(
-      `${ground.title} selected. Its interactive session opens in the next Practice stage.`
-    );
+    setView(ground.id);
   }
 
   function handleArtworkError(event: SyntheticEvent<HTMLImageElement>) {
@@ -149,9 +158,25 @@ export function PracticePage() {
       practiceView = (
         <PracticeMemoryGrove deck={deck} entries={entries} onExit={() => setView("home")} />
       );
-    } else {
+    } else if (view === "word-forge") {
       practiceView = (
         <PracticeWordForge deck={deck} entries={entries} onExit={() => setView("home")} />
+      );
+    } else if (view === "context-bridge") {
+      practiceView = (
+        <PracticeContextBridge deck={deck} entries={entries} onExit={() => setView("home")} />
+      );
+    } else if (view === "phrase-falls") {
+      practiceView = (
+        <PracticePhraseFalls deck={deck} entries={entries} onExit={() => setView("home")} />
+      );
+    } else {
+      practiceView = (
+        <PracticeMistakeMine
+          entries={entries}
+          onExit={() => setView("home")}
+          signals={signals}
+        />
       );
     }
 
