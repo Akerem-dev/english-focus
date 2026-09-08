@@ -74,7 +74,7 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
     [deckEntries, entry]
   );
 
-  if (entry === undefined) {
+  if (signal === undefined || entry === undefined) {
     return (
       <section className="wvp-mode-screen">
         <button className="wvp-back-button" onClick={onExit} type="button">← Practice Home</button>
