@@ -12,11 +12,7 @@ interface PracticeMemoryGroveProps {
 }
 
 function translationFor(entry: VocabularyEntry): string {
-  return (
-    entry.meanings[0]?.translationsTr[0] ??
-    entry.meanings[0]?.definitionEn ??
-    entry.word
-  );
+  return entry.meanings[0]?.translationsTr[0] ?? entry.meanings[0]?.definitionEn ?? entry.word;
 }
 
 function createChoices(
@@ -31,7 +27,11 @@ function createChoices(
     .filter((value, index, all) => all.indexOf(value) === index)
     .slice(0, 3);
 
-  const fallback = ["bir şeyi korumak", "bir şeyi yeniden yapmak", "bir şeyi geçici olarak durdurmak"];
+  const fallback = [
+    "bir şeyi korumak",
+    "bir şeyi yeniden yapmak",
+    "bir şeyi geçici olarak durdurmak"
+  ];
   for (const value of fallback) {
     if (decoys.length >= 3) break;
     if (value !== correct && !decoys.includes(value)) decoys.push(value);
@@ -77,10 +77,14 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
   if (signal === undefined || entry === undefined) {
     return (
       <section className="wvp-mode-screen">
-        <button className="wvp-back-button" onClick={onExit} type="button">← Practice Home</button>
+        <button className="wvp-back-button" onClick={onExit} type="button">
+          ← Practice Home
+        </button>
         <div className="wvp-mode-empty">
           <h1>Memory Grove needs a few words first.</h1>
-          <button className="wvp-primary-action" onClick={onExit} type="button">Return to Practice</button>
+          <button className="wvp-primary-action" onClick={onExit} type="button">
+            Return to Practice
+          </button>
         </div>
       </section>
     );
@@ -90,7 +94,8 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
   const progress = Math.round(((index + 1) / deck.length) * 100);
   const complete = index >= deck.length - 1;
   const pronunciation = entry.pronunciations[0]?.ipa;
-  const meaningScore = signal.learningStatus === "known" ? 88 : signal.learningStatus === "learning" ? 64 : 42;
+  const meaningScore =
+    signal.learningStatus === "known" ? 88 : signal.learningStatus === "learning" ? 64 : 42;
   const speedScore = Math.min(90, 42 + signal.viewCount * 8);
   const confidenceScore = signal.favorite ? 72 : signal.weak ? 48 : 60;
 
@@ -108,8 +113,16 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
   return (
     <section className="wvp-mode-screen" aria-labelledby="memory-grove-title">
       <header className="wvp-mode-topline">
-        <div><button className="wvp-back-button" onClick={onExit} type="button">← Practice Home</button><span>›</span><span>Memory Grove</span></div>
-        <span className="wvp-mode-progress-badge">{index + 1} of {deck.length} words</span>
+        <div>
+          <button className="wvp-back-button" onClick={onExit} type="button">
+            ← Practice Home
+          </button>
+          <span>›</span>
+          <span>Memory Grove</span>
+        </div>
+        <span className="wvp-mode-progress-badge">
+          {index + 1} of {deck.length} words
+        </span>
       </header>
 
       <div className="wvp-mode-heading">
@@ -125,12 +138,16 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
           <h2>See the word. Reach for the meaning.</h2>
           <p>Choose before opening a clue. Fast guesses are less useful than a real attempt.</p>
         </div>
-        <div className="wvp-mode-hero__track"><i style={{ width: `${progress}%` }} /></div>
+        <div className="wvp-mode-hero__track">
+          <i style={{ width: `${progress}%` }} />
+        </div>
       </section>
 
       <div className="wvp-mode-layout">
         <section className="wvp-mode-card">
-          <p className="wvp-card-eyebrow">WORD {index + 1} · {entry.cefr}</p>
+          <p className="wvp-card-eyebrow">
+            WORD {index + 1} · {entry.cefr}
+          </p>
           <h2 className="wvp-mode-card__word">{entry.word}</h2>
           <p className="wvp-mode-card__meta">
             {entry.meanings[0]?.partOfSpeech ?? entry.partsOfSpeech[0] ?? "word"}
@@ -203,13 +220,20 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
               ["Confidence", confidenceScore, confidenceScore >= 70 ? "Strong" : "Growing"]
             ].map(([label, score, state]) => (
               <div key={String(label)}>
-                <header><strong>{label}</strong><span>{state}</span></header>
-                <div><i style={{ width: `${score}%` }} /></div>
+                <header>
+                  <strong>{label}</strong>
+                  <span>{state}</span>
+                </header>
+                <div>
+                  <i style={{ width: `${score}%` }} />
+                </div>
               </div>
             ))}
           </div>
 
-          <p className="wvp-mode-side__note">A word that keeps returning here will graduate to Word Forge.</p>
+          <p className="wvp-mode-side__note">
+            A word that keeps returning here will graduate to Word Forge.
+          </p>
           <div className="wvp-wordie-inline">Wordie can explain close meanings.</div>
         </aside>
       </div>
