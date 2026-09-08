@@ -43,8 +43,9 @@ export function AppLayout({ children }: PropsWithChildren) {
   const isWordValleySearch = location.pathname === ROUTE_PATHS.vocabulary;
   const isWordValleyGrammar = location.pathname === ROUTE_PATHS.grammar;
   const isWordValleyCollections = location.pathname === ROUTE_PATHS.library;
+  const isWordValleyPractice = location.pathname === ROUTE_PATHS.practice;
   const isWordValleyCleanRoom =
-    isWordValleySearch || isWordValleyGrammar || isWordValleyCollections;
+    isWordValleySearch || isWordValleyGrammar || isWordValleyCollections || isWordValleyPractice;
 
   useEffect(() => {
     if (!isWordValleyCleanRoom) return;
@@ -150,7 +151,7 @@ export function AppLayout({ children }: PropsWithChildren) {
       <div
         className={`application-frame application-frame--search-cleanroom${
           isWordValleyCollections ? " application-frame--collections-cleanroom" : ""
-        }`}
+        }${isWordValleyPractice ? " application-frame--practice-cleanroom" : ""}`}
       >
         <a className="skip-link" href="#main-content">
           Skip to content
@@ -167,11 +168,13 @@ export function AppLayout({ children }: PropsWithChildren) {
                 <div className="application-frame--grammar-cleanroom grammar-route-scope">
                   {children}
                 </div>
+              ) : isWordValleyPractice ? (
+                <div className="practice-route-scope">{children}</div>
               ) : (
                 children
               )}
             </SearchCleanShell>
-            {isWordValleySearch ? <AssistantDock /> : null}
+            {isWordValleySearch || isWordValleyPractice ? <AssistantDock /> : null}
             {isWordValleyGrammar ? <GrammarAssistantDock /> : null}
           </div>
         </div>
