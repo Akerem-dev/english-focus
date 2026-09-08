@@ -34,11 +34,7 @@ export function PracticeSessionSummary({
       Math.max(35, Math.min(94, accuracy - 8 + stats.due)),
       accuracy >= 75 ? "Steady" : "Growing"
     ],
-    [
-      "Spelling",
-      Math.max(38, Math.min(92, accuracy - 2)),
-      accuracy >= 78 ? "Steady" : "Growing"
-    ],
+    ["Spelling", Math.max(38, Math.min(92, accuracy - 2)), accuracy >= 78 ? "Steady" : "Growing"],
     [
       "Context use",
       Math.max(40, Math.min(95, accuracy + 4)),
@@ -61,8 +57,8 @@ export function PracticeSessionSummary({
             : result.mode + " is complete."}
         </h1>
         <span>
-          You strengthened {result.correct} {result.correct === 1 ? "word" : "words"}.{" "}
-          {stats.weak} still need attention.
+          You strengthened {result.correct} {result.correct === 1 ? "word" : "words"}. {stats.weak}{" "}
+          still need attention.
         </span>
       </header>
 
@@ -106,8 +102,8 @@ export function PracticeSessionSummary({
           </div>
 
           <div className="wvp-summary-insight">
-            Best today: {accuracy >= 80 ? "meaning recognition" : "steady practice"} · Next
-            focus: {stats.weak > 0 ? "weak words" : "active recall"}
+            Best today: {accuracy >= 80 ? "meaning recognition" : "steady practice"} · Next focus:{" "}
+            {stats.weak > 0 ? "weak words" : "active recall"}
           </div>
         </section>
 
