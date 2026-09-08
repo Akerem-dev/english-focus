@@ -87,7 +87,7 @@ export function PracticeRecallSummit({
   function next() {
     if (!checked) return;
 
-    const nextCorrectCount = correct ? correctCount + 1 : correctCount;
+    const nextCorrectCount = correctCount;
 
     if (complete) {
       finish(nextCorrectCount);
