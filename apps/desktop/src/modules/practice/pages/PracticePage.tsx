@@ -198,7 +198,11 @@ export function PracticePage() {
                   onChange={(event) => {
                     const nextScope = event.currentTarget.value;
                     setScope(nextScope);
-                    if (nextScope === "weak" || nextScope === "favorites" || nextScope === "recent") {
+                    if (
+                      nextScope === "weak" ||
+                      nextScope === "favorites" ||
+                      nextScope === "recent"
+                    ) {
                       setFocus(nextScope);
                     }
                   }}
@@ -298,12 +302,7 @@ export function PracticePage() {
                 onClick={() => openTrainingGround(ground)}
                 type="button"
               >
-                <img
-                  alt=""
-                  draggable={false}
-                  onError={handleArtworkError}
-                  src={ground.artwork}
-                />
+                <img alt="" draggable={false} onError={handleArtworkError} src={ground.artwork} />
                 <span className="wvp-training-card__body">
                   <span className="wvp-training-card__title">
                     <AppIcon name={ground.icon} size={20} />
@@ -356,7 +355,9 @@ export function PracticePage() {
                   <span>strengthened</span>
                 </div>
                 <div>
-                  <strong>{signals.filter((item) => item.learningStatus === "known").length}</strong>
+                  <strong>
+                    {signals.filter((item) => item.learningStatus === "known").length}
+                  </strong>
                   <span>moved to strong recall</span>
                 </div>
                 <div>
