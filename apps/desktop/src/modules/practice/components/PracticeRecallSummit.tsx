@@ -74,7 +74,7 @@ export function PracticeRecallSummit({
       mode: "Recall Summit",
       attempted: deck.length,
       correct: nextCorrectCount,
-      durationSeconds: Math.max(1, Math.round((Date.now() - (startedAt.current ?? Date.now())) / 1000)),
+      durationSeconds: Math.max(\n          1,\n          Math.round((Date.now() - (startedAt.current ?? Date.now())) / 1000)\n        ),
       completedAt: new Date().toISOString()
     });
   }
