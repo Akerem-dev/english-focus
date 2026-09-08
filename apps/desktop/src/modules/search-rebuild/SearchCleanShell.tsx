@@ -35,7 +35,7 @@ const NAV_ITEMS: readonly CleanNavItem[] = Object.freeze([
   { label: "Search", icon: "search", to: ROUTE_PATHS.vocabulary },
   { label: "Grammar", icon: "book-open", to: ROUTE_PATHS.grammar },
   { label: "Collections", icon: "bookmark", to: ROUTE_PATHS.library },
-  { label: "Practice", icon: "edit" },
+  { label: "Practice", icon: "edit", to: ROUTE_PATHS.practice },
   { label: "Favorites", icon: "star" },
   { label: "Settings", icon: "settings", to: ROUTE_PATHS.settings }
 ]);
