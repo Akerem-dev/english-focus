@@ -2239,3 +2239,44 @@
     transform-origin: top center;
   }
 }
+
+
+/* Stage 8 — compact shell parity */
+
+@media (max-width: 1050px) {
+  #root
+    .application-frame--search-cleanroom
+    .application-frame--practice-cleanroom
+    .wvp-page {
+    left: 72px !important;
+    right: 0 !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom
+    .application-frame--practice-cleanroom
+    .wvp-shell {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    transform: scale(0.72) !important;
+    transform-origin: top center !important;
+  }
+
+  #root
+    .application-frame--search-cleanroom
+    .application-frame--practice-cleanroom
+    .assistant-dock.wv84-assistant[data-open] {
+    width: min(360px, calc(100vw - 72px)) !important;
+    max-width: 360px !important;
+  }
+}
+
+@media (max-height: 650px) {
+  #root
+    .application-frame--search-cleanroom
+    .application-frame--practice-cleanroom
+    .wvp-shell {
+    transform: scale(0.68) !important;
+    transform-origin: top center !important;
+  }
+}
