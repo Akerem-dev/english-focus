@@ -3,10 +3,13 @@ import { useState, type SyntheticEvent } from "react";
 import valleyBackground from "../../../assets/background/home-background-static.png";
 import { AppIcon, type AppIconName } from "../../../design-system";
 import type { PracticeFocus } from "../application/practiceEngine";
+import type { PracticeSessionResult } from "../application/practiceSession";
 import { PracticeContextBridge } from "../components/PracticeContextBridge";
 import { PracticeExpedition } from "../components/PracticeExpedition";
 import { PracticeMistakeMine } from "../components/PracticeMistakeMine";
 import { PracticePhraseFalls } from "../components/PracticePhraseFalls";
+import { PracticeRecallSummit } from "../components/PracticeRecallSummit";
+import { PracticeSessionSummary } from "../components/PracticeSessionSummary";
 import { PracticeMemoryGrove } from "../components/PracticeMemoryGrove";
 import { PracticeWordForge } from "../components/PracticeWordForge";
 import { usePracticeHomeModel } from "../hooks/usePracticeHomeModel";
@@ -97,16 +100,19 @@ export function PracticePage() {
     | "context-bridge"
     | "phrase-falls"
     | "mistake-mine"
+    | "recall-summit"
+    | "summary"
   >("home");
   const { deck, entries, loading, signals, stats } = usePracticeHomeModel(focus, duration);
+  const [sessionResult, setSessionResult] = useState<PracticeSessionResult | undefined>();
 
   function openTrainingGround(ground: TrainingGround) {
-    if (ground.id === "recall-summit") {
-      setAnnouncement("Recall Summit opens in the next Practice stage.");
-      return;
-    }
-
     setView(ground.id);
+  }
+
+  function finishSession(result: PracticeSessionResult) {
+    setSessionResult(result);
+    setView("summary");
   }
 
   function handleArtworkError(event: SyntheticEvent<HTMLImageElement>) {
@@ -150,6 +156,7 @@ export function PracticePage() {
         <PracticeExpedition
           deck={deck}
           entries={entries}
+          onComplete={finishSession}
           onExit={() => setView("home")}
           stats={stats}
         />
@@ -170,7 +177,7 @@ export function PracticePage() {
       practiceView = (
         <PracticePhraseFalls deck={deck} entries={entries} onExit={() => setView("home")} />
       );
-    } else {
+    } else if (view === "mistake-mine") {
       practiceView = (
         <PracticeMistakeMine
           entries={entries}
@@ -178,6 +185,29 @@ export function PracticePage() {
           signals={signals}
         />
       );
+    } else if (view === "recall-summit") {
+      practiceView = (
+        <PracticeRecallSummit
+          deck={deck}
+          entries={entries}
+          onComplete={finishSession}
+          onExit={() => setView("home")}
+        />
+      );
+    } else {
+      practiceView =
+        sessionResult === undefined ? null : (
+          <PracticeSessionSummary
+            onHome={() => setView("home")}
+            onReviewWeak={() => {
+              setFocus("weak");
+              setView("mistake-mine");
+            }}
+            result={sessionResult}
+            signals={signals}
+            stats={stats}
+          />
+        );
     }
 
     return (
