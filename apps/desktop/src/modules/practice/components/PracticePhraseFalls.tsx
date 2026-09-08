@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant/assistantEvents";
 import type { PracticeSignal } from "../application/practiceEngine";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -205,9 +206,13 @@ export function PracticePhraseFalls({ deck, entries, onExit }: PracticePhraseFal
             <p>Meaning may fit, but a phrase can still sound unnatural.</p>
           </div>
 
-          <div className="wvp-wordie-inline">
+          <button
+            className="wvp-wordie-inline wvp-wordie-inline--button"
+            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+            type="button"
+          >
             Wordie can explain why two word combinations differ.
-          </div>
+          </button>
         </aside>
       </div>
     </section>
