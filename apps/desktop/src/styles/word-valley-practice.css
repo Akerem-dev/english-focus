@@ -1758,3 +1758,484 @@
   color: #b18424;
   font: 700 10px/12px Inter, system-ui, sans-serif;
 }
+
+
+/* Stage 7 — Recall Summit + Session Summary */
+
+.wvp-wordie-inline--button {
+  display: block;
+  width: 100%;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wvp-wordie-inline--button:hover {
+  background: #ebe4d2;
+  color: #174c40;
+}
+
+.wvp-wordie-inline--button:focus-visible {
+  outline: 2px solid #c69a3a;
+  outline-offset: 2px;
+}
+
+.wvp-summit-card__prompt {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: #102d27;
+  font: 600 31px/35px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-summit-input {
+  display: block;
+  width: 100%;
+  height: 126px;
+  margin-top: 24px;
+  padding: 16px 18px;
+  resize: none;
+  border: 1px solid #d9cfbd;
+  border-radius: 11px;
+  outline: 0;
+  background: #fffdf8;
+  color: #102d27;
+  font: 500 16px/23px Inter, system-ui, sans-serif;
+}
+
+.wvp-summit-input:focus {
+  border-color: #c69a3a;
+  box-shadow: 0 0 0 2px rgba(198, 154, 58, 0.16);
+}
+
+.wvp-summit-counter {
+  display: block;
+  margin-top: 5px;
+  color: #8a918c;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+  text-align: right;
+}
+
+.wvp-summit-chips {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.wvp-summit-chips span {
+  display: inline-flex;
+  height: 27px;
+  align-items: center;
+  padding: 0 11px;
+  border: 1px solid #ddd4c4;
+  border-radius: 14px;
+  background: #f3efe4;
+  color: #66736d;
+  font: 500 10px/13px Inter, system-ui, sans-serif;
+}
+
+.wvp-summit-criteria {
+  display: grid;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.wvp-summit-criteria > div {
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+}
+
+.wvp-summit-criteria span {
+  display: inline-flex;
+  width: 23px;
+  height: 23px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d6ccba;
+  border-radius: 50%;
+  background: #f2eedf;
+  color: #9a9e98;
+  font: 700 12px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-summit-criteria span[data-passed] {
+  border-color: #6b9e86;
+  background: #edf6ef;
+  color: #31705d;
+}
+
+.wvp-summit-criteria strong {
+  color: #31564c;
+  font: 600 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary {
+  position: relative;
+  width: 1112px;
+  height: 820px;
+  padding: 26px 28px 24px;
+  overflow: hidden;
+  border: 1px solid rgba(205, 191, 164, 0.82);
+  border-radius: 18px;
+  background: #fbf8f1;
+  box-shadow: 0 12px 30px rgba(16, 45, 39, 0.12);
+}
+
+.wvp-summary__heading {
+  height: 108px;
+}
+
+.wvp-summary__heading > p {
+  margin: 0 0 5px;
+  color: #b18424;
+  font: 700 10px/13px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-summary__heading h1 {
+  margin: 0;
+  color: #102d27;
+  font: 600 38px/40px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-summary__heading > span {
+  display: block;
+  margin-top: 5px;
+  color: #66736d;
+  font: 400 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-hero {
+  position: relative;
+  width: 1056px;
+  height: 168px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0b3c34;
+}
+
+.wvp-summary-hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 48%;
+}
+
+.wvp-summary-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 59, 50, 0.94), rgba(4, 59, 50, 0.52) 56%, rgba(4, 59, 50, 0.18)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.18));
+}
+
+.wvp-summary-hero__copy {
+  position: absolute;
+  top: 21px;
+  left: 29px;
+  z-index: 2;
+  color: #fffdf4;
+}
+
+.wvp-summary-hero__copy > span {
+  color: #e0b442;
+  font: 700 10px/13px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-summary-hero__copy > div {
+  display: flex;
+  margin-top: 8px;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.wvp-summary-hero__copy > div strong {
+  font: 600 48px/48px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-summary-hero__copy > div p {
+  margin: 0;
+  font: 600 16px/20px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-hero__copy > small {
+  display: block;
+  margin-top: 2px;
+  color: #ecf0e7;
+  font: 400 11px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-route {
+  position: absolute;
+  right: 54px;
+  bottom: 22px;
+  z-index: 2;
+  display: grid;
+  width: 430px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.wvp-summary-route::before {
+  position: absolute;
+  top: 12px;
+  right: 45px;
+  left: 45px;
+  height: 2px;
+  background: rgba(245, 239, 208, 0.8);
+  content: "";
+}
+
+.wvp-summary-route > span {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  color: #fffdf4;
+}
+
+.wvp-summary-route i {
+  z-index: 1;
+  display: inline-flex;
+  width: 25px;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #f3e8b8;
+  border-radius: 50%;
+  background: #d3a232;
+  color: #fff;
+  font: 700 11px/13px Inter, system-ui, sans-serif;
+  font-style: normal;
+}
+
+.wvp-summary-route small {
+  font: 500 10px/13px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-grid {
+  display: grid;
+  width: 1056px;
+  height: 372px;
+  margin-top: 18px;
+  grid-template-columns: 650px 388px;
+  gap: 18px;
+}
+
+.wvp-summary-mastery,
+.wvp-summary-next {
+  height: 372px;
+  padding: 20px 22px;
+  border: 1px solid #d9cfbd;
+  border-radius: 13px;
+  background: #fffaf1;
+}
+
+.wvp-summary-mastery h2,
+.wvp-summary-next h2 {
+  margin: 0;
+  color: #102d27;
+  font: 600 23px/26px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-summary-mastery > p,
+.wvp-summary-next > p {
+  margin: 3px 0 0;
+  color: #66736d;
+  font: 400 11px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-bars {
+  display: grid;
+  gap: 13px;
+  margin-top: 22px;
+}
+
+.wvp-summary-bars > div {
+  display: grid;
+  grid-template-columns: 155px minmax(0, 1fr) 58px;
+  align-items: center;
+  gap: 12px;
+}
+
+.wvp-summary-bars strong {
+  color: #31564c;
+  font: 600 11px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-bars > div > div {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #e1dbce;
+}
+
+.wvp-summary-bars i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #478c76;
+}
+
+.wvp-summary-bars span {
+  color: #66736d;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+  text-align: right;
+}
+
+.wvp-summary-insight {
+  margin-top: 22px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: #f2eedf;
+  color: #31564c;
+  font: 500 11px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-weak {
+  display: grid;
+  gap: 8px;
+  margin-top: 19px;
+}
+
+.wvp-summary-weak > span {
+  color: #b18424;
+  font: 700 9px/12px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-summary-weak > div {
+  display: flex;
+  height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  border: 1px solid #ddd4c4;
+  border-radius: 8px;
+  background: #fdf9f0;
+}
+
+.wvp-summary-weak > strong {
+  color: #66736d;
+  font: 500 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-weak div strong {
+  color: #102d27;
+  font: 600 14px/17px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-summary-weak div small {
+  color: #8b6b28;
+  font: 500 9px/12px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-wordie {
+  margin-top: 15px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f2eedf;
+}
+
+.wvp-summary-wordie strong {
+  color: #102d27;
+  font: 600 11px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-wordie p {
+  margin: 4px 0 0;
+  color: #31564c;
+  font: 400 10px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.wvp-summary-actions button {
+  height: 38px;
+  flex: 1;
+  border: 1px solid #0d4339;
+  border-radius: 8px;
+  background: #0d4339;
+  color: #fffdf5;
+  cursor: pointer;
+  font: 600 10px/13px Inter, system-ui, sans-serif;
+}
+
+.wvp-summary-actions button:first-child {
+  border-color: #d2c7b5;
+  background: #fffaf1;
+  color: #31564c;
+}
+
+.wvp-summary-actions button:disabled {
+  cursor: default;
+  opacity: 0.42;
+}
+
+.wvp-summary-stats {
+  display: grid;
+  width: 1056px;
+  height: 82px;
+  margin-top: 17px;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1px solid #d9cfbd;
+  border-radius: 12px;
+  background: #fffaf1;
+}
+
+.wvp-summary-stats > div {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+}
+
+.wvp-summary-stats > div + div::before {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 0;
+  width: 1px;
+  background: #ddd4c4;
+  content: "";
+}
+
+.wvp-summary-stats strong {
+  color: #102d27;
+  font: 600 23px/25px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-summary-stats span {
+  margin-top: 2px;
+  color: #66736d;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+}
+
+/* The shared clean-room shell keeps the left navigation fixed.
+   Practice scales only its parchment stage instead of collapsing the sidebar. */
+@media (max-width: 1480px) {
+  .wvp-shell {
+    transform: scale(0.91);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 1370px) {
+  .wvp-shell {
+    transform: scale(0.82);
+  }
+}
+
+@media (max-height: 880px) {
+  .wvp-shell {
+    transform: scale(0.88);
+    transform-origin: top center;
+  }
+}
