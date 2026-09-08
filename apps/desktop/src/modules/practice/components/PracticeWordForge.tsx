@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant/assistantEvents";
 import type { PracticeSignal } from "../application/practiceEngine";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -197,7 +198,13 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
             </div>
           </div>
 
-          <div className="wvp-wordie-inline">Typos become spelling practice.</div>
+          <button
+            className="wvp-wordie-inline wvp-wordie-inline--button"
+            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+            type="button"
+          >
+            Ask Wordie about spelling or word form.
+          </button>
         </aside>
       </div>
     </section>
