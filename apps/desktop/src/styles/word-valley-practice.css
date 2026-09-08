@@ -1,0 +1,79 @@
+/* Word Valley Practice — Stage 1 foundation
+   -------------------------------------------------
+   Practice reuses SearchCleanShell for the global top bar/sidebar. This stylesheet
+   only owns the route content area so the final Figma screens can be implemented
+   without duplicating application chrome. */
+
+.application-frame--practice-cleanroom {
+  position: relative;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.wvp-page {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  color: #0b3c34;
+}
+
+.wvp-page__scene,
+.wvp-page__mist {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wvp-page__scene {
+  background-position: center;
+  background-size: cover;
+  opacity: 0.2;
+}
+
+.wvp-page__mist {
+  background:
+    linear-gradient(180deg, rgba(248, 243, 228, 0.64), rgba(248, 243, 228, 0.82)),
+    radial-gradient(circle at 55% 18%, rgba(255, 255, 255, 0.3), transparent 42%);
+}
+
+.wvp-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1112px, calc(100% - 72px));
+  min-height: 820px;
+  margin: 18px auto 40px;
+}
+
+.wvp-foundation-card {
+  box-sizing: border-box;
+  min-height: 820px;
+  padding: 40px;
+  border: 1px solid rgba(163, 151, 122, 0.62);
+  border-radius: 18px;
+  background: rgba(252, 248, 237, 0.96);
+  box-shadow: 0 12px 30px rgba(8, 47, 41, 0.12);
+}
+
+.wvp-eyebrow {
+  margin: 0 0 8px;
+  color: #b18424;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.wvp-foundation-card h1 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 44px;
+  line-height: 1;
+  color: #0b3c34;
+}
+
+.wvp-foundation-card > p:last-child {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: #5a665f;
+  font-size: 15px;
+  line-height: 1.6;
+}
