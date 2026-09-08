@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 
-import { useActivity, useVocabularyMetadata, useVocabularyRepository } from "../../../app/providers";
+import {
+  useActivity,
+  useVocabularyMetadata,
+  useVocabularyRepository
+} from "../../../app/providers";
 import {
   buildPracticeDeck,
   createPracticeSignals,
@@ -30,8 +34,6 @@ export function usePracticeHomeModel(focus: PracticeFocus, durationMinutes: 5 | 
     signals,
     stats,
     loading:
-      vocabularyStatus === "loading" ||
-      metadataStatus === "loading" ||
-      activityStatus === "loading"
+      vocabularyStatus === "loading" || metadataStatus === "loading" || activityStatus === "loading"
   };
 }
