@@ -568,3 +568,444 @@
     transform: none;
   }
 }
+
+
+/* Stage 4 — Northern Trail Expedition */
+
+.wvp-expedition-screen {
+  position: relative;
+  width: 1112px;
+  height: 820px;
+  padding: 22px 28px 28px;
+  overflow: hidden;
+  border: 1px solid rgba(205, 191, 164, 0.82);
+  border-radius: 18px;
+  background: #fbf8f1;
+  box-shadow: 0 12px 30px rgba(16, 45, 39, 0.12);
+}
+
+.wvp-expedition-screen__topline {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  color: #66736d;
+  font: 600 12px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-expedition-screen__topline > div {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wvp-back-button,
+.wvp-end-session {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.wvp-back-button {
+  padding: 0;
+}
+
+.wvp-back-button:hover,
+.wvp-end-session:hover {
+  color: #0f5146;
+}
+
+.wvp-end-session {
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffaf1;
+}
+
+.wvp-expedition-screen__heading {
+  height: 68px;
+}
+
+.wvp-expedition-screen__heading h1 {
+  margin: 0;
+  color: #102d27;
+  font: 600 35px/37px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-expedition-screen__heading p {
+  margin: 3px 0 0;
+  color: #66736d;
+  font: 400 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-route-banner {
+  position: relative;
+  width: 1056px;
+  height: 128px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0b3c34;
+}
+
+.wvp-route-banner > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wvp-route-banner__shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 58, 49, 0.74);
+}
+
+.wvp-route-banner__copy {
+  position: absolute;
+  top: 18px;
+  left: 26px;
+  z-index: 2;
+}
+
+.wvp-route-banner__copy p {
+  margin: 0;
+  color: #d1a52d;
+  font: 700 10px/14px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-route-banner__copy strong {
+  display: block;
+  margin-top: 7px;
+  color: #fffdf4;
+  font: 600 17px/20px Inter, system-ui, sans-serif;
+}
+
+.wvp-route-banner__track {
+  position: absolute;
+  z-index: 2;
+  right: 26px;
+  bottom: 48px;
+  left: 26px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(236, 238, 220, 0.58);
+}
+
+.wvp-route-banner__track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #e0a92d;
+}
+
+.wvp-route-banner__stops {
+  position: absolute;
+  right: 26px;
+  bottom: 10px;
+  left: 26px;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.wvp-route-banner__stops > span {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  color: #fffdf4;
+}
+
+.wvp-route-banner__stops i {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #f4f1dc;
+  border-radius: 50%;
+  background: #0b493e;
+}
+
+.wvp-route-banner__stops span[data-active] i {
+  background: #e0a92d;
+}
+
+.wvp-route-banner__stops small {
+  font: 400 10px/12px Inter, system-ui, sans-serif;
+}
+
+.wvp-expedition-layout {
+  display: grid;
+  width: 1056px;
+  height: 474px;
+  margin-top: 20px;
+  grid-template-columns: 720px 318px;
+  gap: 18px;
+}
+
+.wvp-question-card,
+.wvp-session-deck {
+  height: 474px;
+  border: 1px solid #d9cfbd;
+  border-radius: 14px;
+  background: #fffaf1;
+}
+
+.wvp-question-card {
+  position: relative;
+  padding: 20px 24px 18px;
+}
+
+.wvp-card-eyebrow {
+  margin: 0;
+  color: #b18424;
+  font: 700 10px/13px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-question-card__prompt {
+  margin: 12px 0 0;
+  color: #66736d;
+  font: 400 15px/19px Inter, system-ui, sans-serif;
+}
+
+.wvp-question-card h2 {
+  margin: 8px 0 0;
+  color: #102d27;
+  font: 600 46px/48px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-question-card__meta {
+  margin: 2px 0 0;
+  color: #66736d;
+  font: 400 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-answer-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.wvp-answer-option {
+  position: relative;
+  display: grid;
+  min-height: 46px;
+  grid-template-columns: 24px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid #d9cfbd;
+  border-radius: 9px;
+  background: #fffaf1;
+  color: #102d27;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wvp-answer-option > span {
+  color: #b18424;
+  font: 700 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-answer-option > strong {
+  font: 500 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-answer-option[data-state="selected"] {
+  border-color: #c69a3a;
+  box-shadow: inset 0 0 0 1px rgba(198, 154, 58, 0.24);
+}
+
+.wvp-answer-option[data-state="correct"] {
+  border-color: #5f9a7d;
+  background: #edf6ef;
+}
+
+.wvp-answer-option[data-state="incorrect"] {
+  border-color: #bf7364;
+  background: #faefec;
+}
+
+.wvp-question-card__footer {
+  position: absolute;
+  right: 24px;
+  bottom: 16px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wvp-secondary-action,
+.wvp-question-submit {
+  height: 38px;
+  border-radius: 9px;
+  cursor: pointer;
+  font: 600 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-secondary-action {
+  min-width: 130px;
+  border: 1px solid #d9cfbd;
+  background: #fffaf1;
+  color: #66736d;
+}
+
+.wvp-question-submit {
+  display: inline-flex;
+  min-width: 170px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  background: #0d4339;
+  color: #fffdf5;
+}
+
+.wvp-question-submit:disabled,
+.wvp-secondary-action:disabled,
+.wvp-primary-action:disabled {
+  cursor: default;
+  opacity: 0.46;
+}
+
+.wvp-question-feedback {
+  position: absolute;
+  right: 24px;
+  bottom: 62px;
+  left: 24px;
+  margin: 0;
+  color: #8e4c3d;
+  font: 500 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-question-feedback[data-correct] {
+  color: #31705d;
+}
+
+.wvp-session-deck {
+  padding: 20px;
+}
+
+.wvp-session-deck h2 {
+  margin: 0;
+  color: #102d27;
+  font: 600 23px/25px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-session-deck > p {
+  margin: 3px 0 0;
+  color: #66736d;
+  font: 400 11px/14px Inter, system-ui, sans-serif;
+}
+
+.wvp-session-deck__signals {
+  display: grid;
+  margin-top: 22px;
+}
+
+.wvp-session-deck__signals > div {
+  display: grid;
+  min-height: 64px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #ddd4c4;
+}
+
+.wvp-session-deck__signals svg {
+  color: #b18424;
+}
+
+.wvp-session-deck__signals span {
+  display: grid;
+  gap: 3px;
+}
+
+.wvp-session-deck__signals strong {
+  color: #102d27;
+  font: 600 13px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-session-deck__signals small {
+  color: #69756f;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+}
+
+.wvp-session-deck__score {
+  display: flex;
+  margin-top: 18px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wvp-session-deck__score span,
+.wvp-wordie-plan > span {
+  color: #b18424;
+  font: 700 9px/12px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-session-deck__score strong {
+  color: #102d27;
+  font: 600 13px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-wordie-plan {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #f2eedf;
+}
+
+.wvp-wordie-plan p {
+  margin: 7px 0 0;
+  color: #31564c;
+  font: 400 12px/18px Inter, system-ui, sans-serif;
+}
+
+.wvp-expedition-screen__tip {
+  margin: 14px 0 0;
+  color: #66736d;
+  font: 400 12px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-expedition-empty {
+  display: grid;
+  height: 700px;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.wvp-expedition-empty h1 {
+  margin: 0;
+  font: 600 38px/42px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-expedition-empty p {
+  margin: 10px 0 0;
+  color: #66736d;
+  font: 400 14px/19px Inter, system-ui, sans-serif;
+}
+
+.wvp-expedition-empty .wvp-primary-action {
+  margin-top: 20px;
+}
+
+@media (max-width: 1420px) {
+  .wvp-shell {
+    transform: scale(0.94);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 1340px) {
+  .wvp-shell {
+    transform: scale(0.86);
+  }
+}
