@@ -134,15 +134,11 @@ export function PracticeRecallSummit({
 
       <div className="wvp-mode-layout">
         <section className="wvp-mode-card wvp-summit-card">
-          <p className="wvp-card-eyebrow">
-            CHALLENGE {index + 1} · FREE PRODUCTION
-          </p>
+          <p className="wvp-card-eyebrow">CHALLENGE {index + 1} · FREE PRODUCTION</p>
           <h2 className="wvp-summit-card__prompt">
             Use “{entry.word}” in a natural English sentence.
           </h2>
-          <p className="wvp-mode-card__meta">
-            Make the meaning clear from context · {entry.cefr}
-          </p>
+          <p className="wvp-mode-card__meta">Make the meaning clear from context · {entry.cefr}</p>
 
           <textarea
             className="wvp-summit-input"
