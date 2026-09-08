@@ -3,6 +3,7 @@ import { useState, type SyntheticEvent } from "react";
 import valleyBackground from "../../../assets/background/home-background-static.png";
 import { AppIcon, type AppIconName } from "../../../design-system";
 import type { PracticeFocus } from "../application/practiceEngine";
+import { PracticeExpedition } from "../components/PracticeExpedition";
 import { usePracticeHomeModel } from "../hooks/usePracticeHomeModel";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -83,7 +84,8 @@ export function PracticePage() {
   const [scope, setScope] = useState("all");
   const [duration, setDuration] = useState<PracticeDuration>(5);
   const [announcement, setAnnouncement] = useState("");
-  const { deck, loading, signals, stats } = usePracticeHomeModel(focus, duration);
+  const [view, setView] = useState<"home" | "expedition">("home");
+  const { deck, entries, loading, signals, stats } = usePracticeHomeModel(focus, duration);
 
   function announceTrainingGround(ground: TrainingGround) {
     setAnnouncement(
@@ -123,6 +125,22 @@ export function PracticePage() {
   const expeditionLabel = loading
     ? "Preparing your review deck…"
     : `${expeditionWordCount} words chosen for review today`;
+
+  if (view === "expedition") {
+    return (
+      <div className="wvp-page">
+        <div
+          aria-hidden="true"
+          className="wvp-page__scene"
+          style={{ backgroundImage: `url("${valleyBackground}")` }}
+        />
+        <div aria-hidden="true" className="wvp-page__mist" />
+        <main aria-label="Practice expedition" className="wvp-shell">
+          <PracticeExpedition deck={deck} entries={entries} onExit={() => setView("home")} stats={stats} />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="wvp-page">
@@ -210,13 +228,14 @@ export function PracticePage() {
               <button
                 className="wvp-primary-action"
                 disabled={loading || expeditionWordCount === 0}
-                onClick={() =>
-                  setAnnouncement(
-                    expeditionWordCount === 0
-                      ? "Add or review vocabulary before starting an expedition."
-                      : `The Northern Trail selected with ${expeditionWordCount} words.`
-                  )
-                }
+                onClick={() => {
+                  if (expeditionWordCount === 0) {
+                    setAnnouncement("Add or review vocabulary before starting an expedition.");
+                    return;
+                  }
+                  setAnnouncement(`The Northern Trail selected with ${expeditionWordCount} words.`);
+                  setView("expedition");
+                }}
                 type="button"
               >
                 Begin expedition
