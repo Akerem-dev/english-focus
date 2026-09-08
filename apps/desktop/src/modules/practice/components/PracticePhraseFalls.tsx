@@ -119,9 +119,7 @@ export function PracticePhraseFalls({ deck, entries, onExit }: PracticePhraseFal
 
       <div className="wvp-mode-layout">
         <section className="wvp-mode-card wvp-phrase-card">
-          <p className="wvp-card-eyebrow">
-            PHRASE {index + 1} · WORD PARTNER
-          </p>
+          <p className="wvp-card-eyebrow">PHRASE {index + 1} · WORD PARTNER</p>
           <p className="wvp-context-card__prompt">
             Which word naturally completes this phrase or sentence?
           </p>
