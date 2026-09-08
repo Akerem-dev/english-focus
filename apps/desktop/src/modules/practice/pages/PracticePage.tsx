@@ -179,11 +179,7 @@ export function PracticePage() {
       );
     } else if (view === "mistake-mine") {
       practiceView = (
-        <PracticeMistakeMine
-          entries={entries}
-          onExit={() => setView("home")}
-          signals={signals}
-        />
+        <PracticeMistakeMine entries={entries} onExit={() => setView("home")} signals={signals} />
       );
     } else if (view === "recall-summit") {
       practiceView = (
