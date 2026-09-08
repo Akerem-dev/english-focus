@@ -2,11 +2,13 @@ import { useState, type SyntheticEvent } from "react";
 
 import valleyBackground from "../../../assets/background/home-background-static.png";
 import { AppIcon, type AppIconName } from "../../../design-system";
+import type { PracticeFocus } from "../application/practiceEngine";
+import { usePracticeHomeModel } from "../hooks/usePracticeHomeModel";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
 import "../../../styles/word-valley-practice.css";
 
-type PracticeFocus = "weak" | "favorites" | "recent" | "collection" | "tag";
+type PracticeDuration = 5 | 10 | 15;
 
 interface TrainingGround {
   readonly id:
@@ -18,7 +20,6 @@ interface TrainingGround {
     | "recall-summit";
   readonly title: string;
   readonly subtitle: string;
-  readonly meta: string;
   readonly icon: AppIconName;
   readonly artwork: string;
 }
@@ -28,7 +29,6 @@ const TRAINING_GROUNDS: readonly TrainingGround[] = Object.freeze([
     id: "memory-grove",
     title: "Memory Grove",
     subtitle: "Meaning & recognition",
-    meta: "8 words",
     icon: "bookmark",
     artwork: PRACTICE_ARTWORK.memoryGrove
   },
@@ -36,7 +36,6 @@ const TRAINING_GROUNDS: readonly TrainingGround[] = Object.freeze([
     id: "word-forge",
     title: "Word Forge",
     subtitle: "Type the word from memory",
-    meta: "6 due",
     icon: "edit",
     artwork: PRACTICE_ARTWORK.wordForge
   },
@@ -44,7 +43,6 @@ const TRAINING_GROUNDS: readonly TrainingGround[] = Object.freeze([
     id: "context-bridge",
     title: "Context Bridge",
     subtitle: "Choose the right word in context",
-    meta: "10 words",
     icon: "books",
     artwork: PRACTICE_ARTWORK.contextBridge
   },
@@ -52,7 +50,6 @@ const TRAINING_GROUNDS: readonly TrainingGround[] = Object.freeze([
     id: "phrase-falls",
     title: "Phrase Falls",
     subtitle: "Collocations & word partners",
-    meta: "7 phrases",
     icon: "book-open",
     artwork: PRACTICE_ARTWORK.phraseFalls
   },
@@ -60,7 +57,6 @@ const TRAINING_GROUNDS: readonly TrainingGround[] = Object.freeze([
     id: "mistake-mine",
     title: "Mistake Mine",
     subtitle: "Repair recent mistakes",
-    meta: "3 review",
     icon: "warning",
     artwork: PRACTICE_ARTWORK.mistakeMine
   },
@@ -68,7 +64,6 @@ const TRAINING_GROUNDS: readonly TrainingGround[] = Object.freeze([
     id: "recall-summit",
     title: "Recall Summit",
     subtitle: "Hard mode · no easy clues",
-    meta: "Recommended",
     icon: "star",
     artwork: PRACTICE_ARTWORK.recallSummit
   }
@@ -83,15 +78,12 @@ const FOCUS_OPTIONS: readonly { readonly id: PracticeFocus; readonly label: stri
     { id: "tag", label: "Tag" }
   ]);
 
-/**
- * Stage 2 keeps the Figma-authored Practice Home isolated from the later quiz engine.
- * That gives us a pixel-stable home while Stage 3+ can evolve session logic behind it.
- */
 export function PracticePage() {
   const [focus, setFocus] = useState<PracticeFocus>("weak");
   const [scope, setScope] = useState("all");
-  const [duration, setDuration] = useState(5);
+  const [duration, setDuration] = useState<PracticeDuration>(5);
   const [announcement, setAnnouncement] = useState("");
+  const { deck, loading, signals, stats } = usePracticeHomeModel(focus, duration);
 
   function announceTrainingGround(ground: TrainingGround) {
     setAnnouncement(
@@ -109,6 +101,28 @@ export function PracticePage() {
   function cycleDuration() {
     setDuration((current) => (current === 5 ? 10 : current === 10 ? 15 : 5));
   }
+
+  function trainingMeta(ground: TrainingGround): string {
+    switch (ground.id) {
+      case "memory-grove":
+        return `${Math.max(stats.weak, Math.min(deck.length, 8))} words`;
+      case "word-forge":
+        return `${stats.due} due`;
+      case "context-bridge":
+        return `${Math.max(0, Math.min(signals.length, 10))} words`;
+      case "phrase-falls":
+        return `${Math.max(0, Math.min(signals.length, 7))} phrases`;
+      case "mistake-mine":
+        return `${stats.weak} review`;
+      case "recall-summit":
+        return stats.weak > 0 ? "Recommended" : "Ready";
+    }
+  }
+
+  const expeditionWordCount = deck.length;
+  const expeditionLabel = loading
+    ? "Preparing your review deck…"
+    : `${expeditionWordCount} words chosen for review today`;
 
   return (
     <div className="wvp-page">
@@ -135,7 +149,13 @@ export function PracticePage() {
                 <AppIcon name="book-open" size={18} />
                 <select
                   aria-label="Practice word scope"
-                  onChange={(event) => setScope(event.currentTarget.value)}
+                  onChange={(event) => {
+                    const nextScope = event.currentTarget.value;
+                    setScope(nextScope);
+                    if (nextScope === "weak" || nextScope === "favorites" || nextScope === "recent") {
+                      setFocus(nextScope);
+                    }
+                  }}
                   value={scope}
                 >
                   <option value="all">All Words</option>
@@ -170,26 +190,33 @@ export function PracticePage() {
             <div className="wvp-expedition-card__copy">
               <p>TODAY'S EXPEDITION</p>
               <h2>The Northern Trail</h2>
-              <strong>12 words chosen for review today</strong>
+              <strong>{expeditionLabel}</strong>
 
               <div className="wvp-expedition-card__chips" aria-label="Today's review mix">
                 <span>
                   <AppIcon name="clock" size={15} />
-                  5 due
+                  {stats.due} due
                 </span>
                 <span>
                   <AppIcon name="warning" size={15} />
-                  3 weak
+                  {stats.weak} weak
                 </span>
                 <span>
                   <AppIcon name="bookmark" size={15} />
-                  4 recent
+                  {stats.recent} recent
                 </span>
               </div>
 
               <button
                 className="wvp-primary-action"
-                onClick={() => setAnnouncement("The Northern Trail expedition selected.")}
+                disabled={loading || expeditionWordCount === 0}
+                onClick={() =>
+                  setAnnouncement(
+                    expeditionWordCount === 0
+                      ? "Add or review vocabulary before starting an expedition."
+                      : `The Northern Trail selected with ${expeditionWordCount} words.`
+                  )
+                }
                 type="button"
               >
                 Begin expedition
@@ -236,7 +263,7 @@ export function PracticePage() {
                     <strong>{ground.title}</strong>
                   </span>
                   <small>{ground.subtitle}</small>
-                  <span className="wvp-training-card__meta">{ground.meta}</span>
+                  <span className="wvp-training-card__meta">{trainingMeta(ground)}</span>
                   <AppIcon className="wvp-training-card__arrow" name="arrow-right" size={17} />
                 </span>
               </button>
@@ -278,15 +305,15 @@ export function PracticePage() {
 
               <div className="wvp-week-stats">
                 <div>
-                  <strong>18</strong>
+                  <strong>{Math.max(0, stats.total - stats.weak)}</strong>
                   <span>strengthened</span>
                 </div>
                 <div>
-                  <strong>6</strong>
+                  <strong>{signals.filter((item) => item.learningStatus === "known").length}</strong>
                   <span>moved to strong recall</span>
                 </div>
                 <div>
-                  <strong>3</strong>
+                  <strong>{stats.weak}</strong>
                   <span>need attention</span>
                 </div>
               </div>
