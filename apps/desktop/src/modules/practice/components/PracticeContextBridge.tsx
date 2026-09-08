@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant/assistantEvents";
 import type { PracticeSignal } from "../application/practiceEngine";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -217,9 +218,13 @@ export function PracticeContextBridge({
             </strong>
           </div>
 
-          <div className="wvp-wordie-inline">
+          <button
+            className="wvp-wordie-inline wvp-wordie-inline--button"
+            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+            type="button"
+          >
             Ask Wordie why the closest alternative does not fit.
-          </div>
+          </button>
         </aside>
       </div>
     </section>
