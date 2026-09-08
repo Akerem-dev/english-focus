@@ -54,6 +54,15 @@
   box-shadow: 0 12px 30px rgba(8, 47, 41, 0.12);
 }
 
+.wvp-foundation-card__art {
+  height: 220px;
+  margin: -16px -16px 30px;
+  border-radius: 14px;
+  background-position: center;
+  background-size: cover;
+  box-shadow: inset 0 0 0 1px rgba(163, 151, 122, 0.28);
+}
+
 .wvp-eyebrow {
   margin: 0 0 8px;
   color: #b18424;
