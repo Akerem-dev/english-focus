@@ -1,14 +1,16 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
 import type { PracticeHomeStats, PracticeSignal } from "../application/practiceEngine";
+import type { PracticeSessionResult } from "../application/practiceSession";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
 interface PracticeExpeditionProps {
   readonly deck: readonly PracticeSignal[];
   readonly entries: readonly VocabularyEntry[];
   readonly stats: PracticeHomeStats;
+  readonly onComplete: (result: PracticeSessionResult) => void;
   readonly onExit: () => void;
 }
 
@@ -76,11 +78,18 @@ function stageFor(
   return { label: "RECALL SUMMIT", number: 4 };
 }
 
-export function PracticeExpedition({ deck, entries, stats, onExit }: PracticeExpeditionProps) {
+export function PracticeExpedition({
+  deck,
+  entries,
+  stats,
+  onComplete,
+  onExit
+}: PracticeExpeditionProps) {
   const [index, setIndex] = useState(0);
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const [checked, setChecked] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
+  const startedAt = useRef(Date.now());
 
   const entryByWord = useMemo(
     () => new Map(entries.map((entry) => [entry.normalizedWord, entry] as const)),
@@ -140,7 +149,13 @@ export function PracticeExpedition({ deck, entries, stats, onExit }: PracticeExp
     if (!checked) return;
 
     if (complete) {
-      onExit();
+      onComplete({
+        mode: "Northern Trail",
+        attempted: deck.length,
+        correct: correctCount,
+        durationSeconds: Math.max(1, Math.round((Date.now() - startedAt.current) / 1000)),
+        completedAt: new Date().toISOString()
+      });
       return;
     }
 
