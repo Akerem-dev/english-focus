@@ -65,7 +65,10 @@ function createQuestionOptions(
   return Object.freeze([...options.slice(rotation), ...options.slice(0, rotation)]);
 }
 
-function stageFor(index: number, total: number): { readonly label: string; readonly number: number } {
+function stageFor(
+  index: number,
+  total: number
+): { readonly label: string; readonly number: number } {
   const ratio = total <= 1 ? 0 : index / total;
   if (ratio < 0.25) return { label: "MEMORY GROVE", number: 1 };
   if (ratio < 0.5) return { label: "WORD FORGE", number: 2 };
@@ -305,9 +308,7 @@ export function PracticeExpedition({ deck, entries, stats, onExit }: PracticeExp
 
           <div className="wvp-wordie-plan">
             <span>WORDIE'S PLAN</span>
-            <p>
-              Start with recognition, then raise the difficulty when your recall looks secure.
-            </p>
+            <p>Start with recognition, then raise the difficulty when your recall looks secure.</p>
           </div>
         </aside>
       </div>
