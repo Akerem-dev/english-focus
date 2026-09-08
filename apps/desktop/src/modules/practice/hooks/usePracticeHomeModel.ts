@@ -26,6 +26,7 @@ export function usePracticeHomeModel(focus: PracticeFocus, durationMinutes: 5 | 
 
   return {
     deck,
+    entries,
     signals,
     stats,
     loading:
