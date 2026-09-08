@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant/assistantEvents";
 import type { PracticeSignal } from "../application/practiceEngine";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -234,7 +235,13 @@ export function PracticeMemoryGrove({ deck, entries, onExit }: PracticeMemoryGro
           <p className="wvp-mode-side__note">
             A word that keeps returning here will graduate to Word Forge.
           </p>
-          <div className="wvp-wordie-inline">Wordie can explain close meanings.</div>
+          <button
+            className="wvp-wordie-inline wvp-wordie-inline--button"
+            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+            type="button"
+          >
+            Wordie can explain close meanings.
+          </button>
         </aside>
       </div>
     </section>
