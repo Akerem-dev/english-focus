@@ -34,10 +34,10 @@ test("Practice home exposes adaptive expedition and every silent training ground
     await expect(page.getByRole("button", { name: new RegExp(mode, "i") })).toBeVisible();
   }
 
-  await expect(page.locator('audio')).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /listen|play audio|pronunciation audio/i })).toHaveCount(
-    0
-  );
+  await expect(page.locator("audio")).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: /listen|play audio|pronunciation audio/i })
+  ).toHaveCount(0);
 
   const dueChip = page.locator(".wvp-expedition-card__chips span").first();
   await expect(dueChip).toContainText(/\d+ due/);
