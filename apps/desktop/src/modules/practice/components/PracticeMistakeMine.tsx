@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
+import { dispatchAssistantRequest } from "../../assistant/assistantEvents";
 import type { PracticeSignal } from "../application/practiceEngine";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -221,9 +222,13 @@ export function PracticeMistakeMine({ signals, entries, onExit }: PracticeMistak
             </p>
           </div>
 
-          <div className="wvp-wordie-inline">
+          <button
+            className="wvp-wordie-inline wvp-wordie-inline--button"
+            onClick={() => dispatchAssistantRequest({ kind: "open", word: entry.word })}
+            type="button"
+          >
             Wordie can explain the exact distinction without penalizing the session.
-          </div>
+          </button>
         </aside>
       </div>
     </section>
