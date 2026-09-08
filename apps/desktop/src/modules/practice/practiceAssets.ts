@@ -22,4 +22,3 @@ export const PRACTICE_ARTWORK = Object.freeze({
   mistakeMine,
   recallSummit
 });
-
