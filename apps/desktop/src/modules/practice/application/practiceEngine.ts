@@ -164,9 +164,7 @@ export function createPracticeSignals(
   );
 }
 
-export function summarizePracticeSignals(
-  signals: readonly PracticeSignal[]
-): PracticeHomeStats {
+export function summarizePracticeSignals(signals: readonly PracticeSignal[]): PracticeHomeStats {
   return {
     due: signals.filter((item) => item.due).length,
     weak: signals.filter((item) => item.weak).length,
