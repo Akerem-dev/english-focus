@@ -36,7 +36,7 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
   const signal = deck[index];
   const entry = signal === undefined ? undefined : entryByWord.get(signal.normalizedWord);
 
-  if (entry === undefined) {
+  if (signal === undefined || entry === undefined) {
     return (
       <section className="wvp-mode-screen">
         <button className="wvp-back-button" onClick={onExit} type="button">← Practice Home</button>
