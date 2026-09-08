@@ -1,6 +1,8 @@
+import type { Page } from "@playwright/test";
+
 import { expect, test } from "./app.fixture";
 
-async function expectNoDocumentOverflow(page: import("@playwright/test").Page) {
+async function expectNoDocumentOverflow(page: Page) {
   const dimensions = await page.evaluate(() => ({
     clientHeight: document.documentElement.clientHeight,
     clientWidth: document.documentElement.clientWidth,
