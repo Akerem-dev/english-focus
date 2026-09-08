@@ -1009,3 +1009,457 @@
     transform: scale(0.86);
   }
 }
+
+
+/* Stage 5 — Memory Grove + Word Forge */
+
+.wvp-mode-screen {
+  position: relative;
+  width: 1112px;
+  height: 820px;
+  padding: 22px 28px 28px;
+  overflow: hidden;
+  border: 1px solid rgba(205, 191, 164, 0.82);
+  border-radius: 18px;
+  background: #fbf8f1;
+  box-shadow: 0 12px 30px rgba(16, 45, 39, 0.12);
+}
+
+.wvp-mode-topline {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: space-between;
+  color: #66736d;
+  font: 600 12px/16px Inter, system-ui, sans-serif;
+}
+
+.wvp-mode-topline > div {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wvp-mode-progress-badge {
+  display: inline-flex;
+  height: 38px;
+  min-width: 136px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid #d9cfbd;
+  border-radius: 19px;
+  background: #fffaf1;
+  color: #66736d;
+}
+
+.wvp-mode-heading {
+  height: 68px;
+}
+
+.wvp-mode-heading h1 {
+  margin: 0;
+  color: #102d27;
+  font: 600 35px/37px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mode-heading p {
+  margin: 3px 0 0;
+  color: #66736d;
+  font: 400 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-mode-hero {
+  position: relative;
+  width: 1056px;
+  height: 170px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0c443a;
+}
+
+.wvp-mode-hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wvp-mode-hero__shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 58, 49, 0.48);
+}
+
+.wvp-mode-hero--forge .wvp-mode-hero__shade {
+  background: rgba(70, 37, 12, 0.58);
+}
+
+.wvp-mode-hero__copy {
+  position: absolute;
+  top: 22px;
+  left: 28px;
+  z-index: 2;
+  color: #fffdf4;
+}
+
+.wvp-mode-hero__copy > span {
+  color: #d1a52d;
+  font: 700 10px/13px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-mode-hero__copy h2 {
+  margin: 7px 0 0;
+  color: #fffdf4;
+  font: 600 31px/34px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mode-hero__copy p {
+  margin: 7px 0 0;
+  color: #f2f4e8;
+  font: 400 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-mode-hero__track {
+  position: absolute;
+  right: 30px;
+  bottom: 32px;
+  left: 30px;
+  z-index: 2;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(237, 239, 220, 0.58);
+}
+
+.wvp-mode-hero__track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #e0a92d;
+}
+
+.wvp-mode-layout {
+  display: grid;
+  width: 1056px;
+  height: 420px;
+  margin-top: 24px;
+  grid-template-columns: 720px 318px;
+  gap: 18px;
+}
+
+.wvp-mode-card,
+.wvp-mode-side {
+  height: 420px;
+  border: 1px solid #d9cfbd;
+  border-radius: 14px;
+  background: #fffaf1;
+}
+
+.wvp-mode-card {
+  position: relative;
+  padding: 20px 24px 18px;
+}
+
+.wvp-mode-card__word {
+  margin: 15px 0 0;
+  color: #102d27;
+  font: 600 50px/50px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mode-card__meta {
+  margin: 4px 0 0;
+  color: #66736d;
+  font: 400 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-mode-card h3 {
+  margin: 19px 0 0;
+  color: #102d27;
+  font: 600 15px/19px Inter, system-ui, sans-serif;
+}
+
+.wvp-memory-choices {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.wvp-memory-choices button {
+  display: grid;
+  min-height: 42px;
+  grid-template-columns: 22px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+  background: #fffaf1;
+  color: #102d27;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wvp-memory-choices button > span {
+  color: #b18424;
+  font: 700 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-memory-choices button > strong {
+  font: 500 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-memory-choices button[data-state="selected"] {
+  border-color: #c69a3a;
+}
+
+.wvp-memory-choices button[data-state="correct"] {
+  border-color: #5f9a7d;
+  background: #edf6ef;
+}
+
+.wvp-memory-choices button[data-state="incorrect"] {
+  border-color: #bf7364;
+  background: #faefec;
+}
+
+.wvp-mode-card__footer {
+  position: absolute;
+  right: 24px;
+  bottom: 16px;
+  left: 24px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.wvp-mode-side {
+  padding: 20px;
+}
+
+.wvp-mode-side h2 {
+  margin: 0;
+  color: #102d27;
+  font: 600 22px/25px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-mode-side > p {
+  margin: 5px 0 0;
+  color: #66736d;
+  font: 400 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-mastery-bars {
+  display: grid;
+  gap: 19px;
+  margin-top: 26px;
+}
+
+.wvp-mastery-bars header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wvp-mastery-bars header strong {
+  color: #102d27;
+  font: 600 12px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-mastery-bars header span {
+  color: #66736d;
+  font: 400 10px/13px Inter, system-ui, sans-serif;
+}
+
+.wvp-mastery-bars > div > div {
+  height: 5px;
+  margin-top: 9px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #e1dbce;
+}
+
+.wvp-mastery-bars i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #3f8b75;
+}
+
+.wvp-mode-side__note {
+  margin-top: 28px !important;
+  color: #68756f !important;
+  font: 400 14px/19px "Cormorant Garamond", Georgia, serif !important;
+}
+
+.wvp-wordie-inline {
+  margin-top: 22px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f2eedf;
+  color: #31564c;
+  font: 500 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-forge-card__meaning {
+  max-width: 610px;
+  margin: 17px 0 0;
+  color: #102d27;
+  font: 600 29px/32px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-forge-input-label {
+  display: block;
+  margin-top: 31px;
+  color: #102d27;
+  font: 600 14px/18px Inter, system-ui, sans-serif;
+}
+
+.wvp-forge-input-wrap {
+  position: relative;
+  display: flex;
+  height: 70px;
+  margin-top: 12px;
+  align-items: center;
+  border: 1px solid #d9cfbd;
+  border-radius: 10px;
+  background: #fffdf8;
+}
+
+.wvp-forge-input-wrap input {
+  width: 100%;
+  height: 100%;
+  padding: 0 52px 0 20px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #102d27;
+  font: 500 22px/26px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-forge-input-wrap svg {
+  position: absolute;
+  right: 18px;
+  color: #3f8b75;
+}
+
+.wvp-forge-input-wrap[data-state="correct"] {
+  border-color: #5f9a7d;
+  background: #edf6ef;
+}
+
+.wvp-forge-input-wrap[data-state="incorrect"] {
+  border-color: #bf7364;
+  background: #faefec;
+}
+
+.wvp-letter-slots {
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wvp-letter-slots span {
+  display: inline-flex;
+  width: 42px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9cfbd;
+  border-radius: 8px;
+  background: #f2eedf;
+  color: #68756f;
+  font: 600 16px/20px Inter, system-ui, sans-serif;
+}
+
+.wvp-forge-feedback {
+  margin: 13px 0 0;
+  color: #8e4c3d;
+  font: 500 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-forge-feedback[data-correct] {
+  color: #31705d;
+}
+
+.wvp-side-kicker {
+  margin-top: 26px !important;
+  color: #b18424 !important;
+  font: 700 9px/12px Inter, system-ui, sans-serif !important;
+  letter-spacing: 0.08em;
+}
+
+.wvp-forge-form {
+  display: block;
+  margin-top: 8px;
+  color: #102d27;
+  font: 600 18px/22px "Cormorant Garamond", Georgia, serif;
+}
+
+.wvp-forge-rules {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd4c4;
+}
+
+.wvp-forge-rules h3 {
+  margin: 0 0 12px;
+  color: #102d27;
+  font: 600 13px/17px Inter, system-ui, sans-serif;
+}
+
+.wvp-forge-rules p {
+  display: flex;
+  margin: 9px 0 0;
+  align-items: center;
+  gap: 9px;
+  color: #66736d;
+  font: 400 11px/15px Inter, system-ui, sans-serif;
+}
+
+.wvp-forge-rules svg {
+  color: #3f8b75;
+}
+
+.wvp-forge-heat {
+  margin-top: 24px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f2eedf;
+}
+
+.wvp-forge-heat > span {
+  color: #b18424;
+  font: 700 9px/12px Inter, system-ui, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.wvp-forge-heat > div {
+  height: 5px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #ddd4c4;
+}
+
+.wvp-forge-heat i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #cf741e;
+}
+
+.wvp-mode-empty {
+  display: grid;
+  height: 700px;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.wvp-mode-empty h1 {
+  margin: 0;
+  font: 600 36px/40px "Cormorant Garamond", Georgia, serif;
+}
