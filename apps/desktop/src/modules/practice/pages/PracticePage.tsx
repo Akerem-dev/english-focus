@@ -4,6 +4,8 @@ import valleyBackground from "../../../assets/background/home-background-static.
 import { AppIcon, type AppIconName } from "../../../design-system";
 import type { PracticeFocus } from "../application/practiceEngine";
 import { PracticeExpedition } from "../components/PracticeExpedition";
+import { PracticeMemoryGrove } from "../components/PracticeMemoryGrove";
+import { PracticeWordForge } from "../components/PracticeWordForge";
 import { usePracticeHomeModel } from "../hooks/usePracticeHomeModel";
 import { PRACTICE_ARTWORK } from "../practiceAssets";
 
@@ -84,10 +86,15 @@ export function PracticePage() {
   const [scope, setScope] = useState("all");
   const [duration, setDuration] = useState<PracticeDuration>(5);
   const [announcement, setAnnouncement] = useState("");
-  const [view, setView] = useState<"home" | "expedition">("home");
+  const [view, setView] = useState<"home" | "expedition" | "memory-grove" | "word-forge">("home");
   const { deck, entries, loading, signals, stats } = usePracticeHomeModel(focus, duration);
 
-  function announceTrainingGround(ground: TrainingGround) {
+  function openTrainingGround(ground: TrainingGround) {
+    if (ground.id === "memory-grove" || ground.id === "word-forge") {
+      setView(ground.id);
+      return;
+    }
+
     setAnnouncement(
       `${ground.title} selected. Its interactive session opens in the next Practice stage.`
     );
@@ -126,7 +133,28 @@ export function PracticePage() {
     ? "Preparing your review deck…"
     : `${expeditionWordCount} words chosen for review today`;
 
-  if (view === "expedition") {
+  if (view !== "home") {
+    let practiceView;
+
+    if (view === "expedition") {
+      practiceView = (
+        <PracticeExpedition
+          deck={deck}
+          entries={entries}
+          onExit={() => setView("home")}
+          stats={stats}
+        />
+      );
+    } else if (view === "memory-grove") {
+      practiceView = (
+        <PracticeMemoryGrove deck={deck} entries={entries} onExit={() => setView("home")} />
+      );
+    } else {
+      practiceView = (
+        <PracticeWordForge deck={deck} entries={entries} onExit={() => setView("home")} />
+      );
+    }
+
     return (
       <div className="wvp-page">
         <div
@@ -135,8 +163,8 @@ export function PracticePage() {
           style={{ backgroundImage: `url("${valleyBackground}")` }}
         />
         <div aria-hidden="true" className="wvp-page__mist" />
-        <main aria-label="Practice expedition" className="wvp-shell">
-          <PracticeExpedition deck={deck} entries={entries} onExit={() => setView("home")} stats={stats} />
+        <main aria-label="Practice session" className="wvp-shell">
+          {practiceView}
         </main>
       </div>
     );
@@ -267,7 +295,7 @@ export function PracticePage() {
               <button
                 className="wvp-training-card"
                 key={ground.id}
-                onClick={() => announceTrainingGround(ground)}
+                onClick={() => openTrainingGround(ground)}
                 type="button"
               >
                 <img
