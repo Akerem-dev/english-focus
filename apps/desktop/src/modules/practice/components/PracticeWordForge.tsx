@@ -12,11 +12,7 @@ interface PracticeWordForgeProps {
 }
 
 function promptFor(entry: VocabularyEntry): string {
-  return (
-    entry.meanings[0]?.translationsTr[0] ??
-    entry.meanings[0]?.definitionEn ??
-    entry.word
-  );
+  return entry.meanings[0]?.translationsTr[0] ?? entry.meanings[0]?.definitionEn ?? entry.word;
 }
 
 function normalize(value: string): string {
@@ -39,10 +35,14 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
   if (signal === undefined || entry === undefined) {
     return (
       <section className="wvp-mode-screen">
-        <button className="wvp-back-button" onClick={onExit} type="button">← Practice Home</button>
+        <button className="wvp-back-button" onClick={onExit} type="button">
+          ← Practice Home
+        </button>
         <div className="wvp-mode-empty">
           <h1>Word Forge needs a few words first.</h1>
-          <button className="wvp-primary-action" onClick={onExit} type="button">Return to Practice</button>
+          <button className="wvp-primary-action" onClick={onExit} type="button">
+            Return to Practice
+          </button>
         </div>
       </section>
     );
@@ -52,7 +52,10 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
   const complete = index >= deck.length - 1;
   const correct = normalize(answer) === normalize(entry.word);
   const revealed = hintUsed ? entry.word.slice(0, 1) : "";
-  const heat = Math.max(28, Math.min(92, 42 + signal.viewCount * 7 + (signal.learningStatus === "known" ? 24 : 0)));
+  const heat = Math.max(
+    28,
+    Math.min(92, 42 + signal.viewCount * 7 + (signal.learningStatus === "known" ? 24 : 0))
+  );
 
   function next() {
     if (!checked) return;
@@ -69,8 +72,16 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
   return (
     <section className="wvp-mode-screen" aria-labelledby="word-forge-title">
       <header className="wvp-mode-topline">
-        <div><button className="wvp-back-button" onClick={onExit} type="button">← Practice Home</button><span>›</span><span>Word Forge</span></div>
-        <span className="wvp-mode-progress-badge">{index + 1} of {deck.length}</span>
+        <div>
+          <button className="wvp-back-button" onClick={onExit} type="button">
+            ← Practice Home
+          </button>
+          <span>›</span>
+          <span>Word Forge</span>
+        </div>
+        <span className="wvp-mode-progress-badge">
+          {index + 1} of {deck.length}
+        </span>
       </header>
 
       <div className="wvp-mode-heading">
@@ -86,17 +97,26 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
           <h2>Shape the word from memory.</h2>
           <p>No answer choices. Pull the English word out of memory, then check the form.</p>
         </div>
-        <div className="wvp-mode-hero__track"><i style={{ width: `${progress}%` }} /></div>
+        <div className="wvp-mode-hero__track">
+          <i style={{ width: `${progress}%` }} />
+        </div>
       </section>
 
       <div className="wvp-mode-layout">
         <section className="wvp-mode-card wvp-forge-card">
           <p className="wvp-card-eyebrow">WORD {index + 1} · ENGLISH FROM TURKISH</p>
           <h2 className="wvp-forge-card__meaning">{promptFor(entry)}</h2>
-          <p className="wvp-mode-card__meta">{entry.meanings[0]?.partOfSpeech ?? "word"} · {entry.cefr}</p>
+          <p className="wvp-mode-card__meta">
+            {entry.meanings[0]?.partOfSpeech ?? "word"} · {entry.cefr}
+          </p>
 
-          <label className="wvp-forge-input-label" htmlFor="word-forge-answer">Type the English word</label>
-          <div className="wvp-forge-input-wrap" data-state={checked ? (correct ? "correct" : "incorrect") : undefined}>
+          <label className="wvp-forge-input-label" htmlFor="word-forge-answer">
+            Type the English word
+          </label>
+          <div
+            className="wvp-forge-input-wrap"
+            data-state={checked ? (correct ? "correct" : "incorrect") : undefined}
+          >
             <input
               autoComplete="off"
               disabled={checked}
@@ -156,14 +176,25 @@ export function PracticeWordForge({ deck, entries, onExit }: PracticeWordForgePr
 
           <div className="wvp-forge-rules">
             <h3>What counts as strong recall?</h3>
-            <p><AppIcon name="check" size={14} />Correct without a hint</p>
-            <p><AppIcon name="check" size={14} />Spelling is exact</p>
-            <p><AppIcon name="check" size={14} />Response is reasonably quick</p>
+            <p>
+              <AppIcon name="check" size={14} />
+              Correct without a hint
+            </p>
+            <p>
+              <AppIcon name="check" size={14} />
+              Spelling is exact
+            </p>
+            <p>
+              <AppIcon name="check" size={14} />
+              Response is reasonably quick
+            </p>
           </div>
 
           <div className="wvp-forge-heat">
             <span>FORGE HEAT</span>
-            <div><i style={{ width: `${heat}%` }} /></div>
+            <div>
+              <i style={{ width: `${heat}%` }} />
+            </div>
           </div>
 
           <div className="wvp-wordie-inline">Typos become spelling practice.</div>
