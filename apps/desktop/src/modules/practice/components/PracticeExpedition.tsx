@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { VocabularyEntry } from "@platform/domain";
 
 import { AppIcon } from "../../../design-system";
@@ -89,7 +89,11 @@ export function PracticeExpedition({
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const [checked, setChecked] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-  const startedAt = useRef(Date.now());
+  const startedAt = useRef<number | null>(null);
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   const entryByWord = useMemo(
     () => new Map(entries.map((entry) => [entry.normalizedWord, entry] as const)),
@@ -153,7 +157,7 @@ export function PracticeExpedition({
         mode: "Northern Trail",
         attempted: deck.length,
         correct: correctCount,
-        durationSeconds: Math.max(1, Math.round((Date.now() - startedAt.current) / 1000)),
+        durationSeconds: Math.max(1, Math.round((Date.now() - (startedAt.current ?? Date.now())) / 1000)),
         completedAt: new Date().toISOString()
       });
       return;
