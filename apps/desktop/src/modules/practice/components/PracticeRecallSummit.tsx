@@ -75,9 +75,9 @@ export function PracticeRecallSummit({
       attempted: deck.length,
       correct: nextCorrectCount,
       durationSeconds: Math.max(
-          1,
-          Math.round((Date.now() - (startedAt.current ?? Date.now())) / 1000)
-        ),
+        1,
+        Math.round((Date.now() - (startedAt.current ?? Date.now())) / 1000)
+      ),
       completedAt: new Date().toISOString()
     });
   }
