@@ -23,4 +23,3 @@ export const PRACTICE_ARTWORK = Object.freeze({
   recallSummit
 });
 
-export type PracticeArtworkKey = keyof typeof PRACTICE_ARTWORK;
