@@ -23,7 +23,7 @@ function isWordValleyCompanionRoute(): boolean {
     ? window.location.hash.slice(1)
     : window.location.hash;
   const pathname = rawHash.split("?", 1)[0] ?? "";
-  return pathname === "/" || pathname === "" || pathname === "/grammar";
+  return pathname === "/" || pathname === "" || pathname === "/grammar" || pathname === "/practice";
 }
 
 function getPanelVisual(state: AssistantMascotState): MascotVisual {
