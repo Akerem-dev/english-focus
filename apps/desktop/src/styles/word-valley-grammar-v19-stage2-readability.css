@@ -1,0 +1,692 @@
+/*
+ * V19 — Stage 2: size + readability.
+ *
+ * The shared Word Valley chrome remains untouched. This layer only expands the
+ * Grammar reading canvas and strengthens its type hierarchy so Home, Overview,
+ * and Section Detail feel like a focused learning surface rather than a small
+ * embedded web page.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Grammar Home: larger paper, larger books, calmer but stronger hierarchy.   */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v13-home {
+  padding: 14px clamp(12px, 1.25vw, 22px) 24px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-home__paper {
+  width: min(1460px, calc(100% - 2px)) !important;
+  max-width: 1460px !important;
+  min-height: min(880px, calc(100vh - 72px)) !important;
+  padding: 22px 28px 30px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-home__breadcrumb {
+  margin-bottom: 12px !important;
+  color: #4e625c !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero {
+  min-height: 208px !important;
+  border-radius: 14px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero__content {
+  width: min(760px, 67%) !important;
+  padding: 26px 30px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero__eyebrow {
+  font-size: 10px !important;
+  letter-spacing: 0.09em !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero h2 {
+  margin-top: 4px !important;
+  font-size: clamp(42px, 3.15vw, 56px) !important;
+  line-height: 0.94 !important;
+  letter-spacing: -0.025em !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero__copy {
+  max-width: 680px !important;
+  margin-top: 7px !important;
+  font-size: 15px !important;
+  line-height: 1.48 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero__actions {
+  gap: 10px !important;
+  margin-top: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero__actions button {
+  min-height: 40px !important;
+  padding-inline: 15px !important;
+  font-size: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-hero__meta {
+  margin-top: 10px !important;
+  font-size: 10.5px !important;
+  line-height: 1.4 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-toolbar {
+  gap: 14px !important;
+  padding-block: 17px 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-search {
+  min-height: 42px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-search input,
+#root .grammar-route-scope .wvg-v13-filters select,
+#root .grammar-route-scope .wvg-v13-filters__recommended {
+  font-size: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-filters select,
+#root .grammar-route-scope .wvg-v13-filters__recommended {
+  min-height: 38px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-shelf {
+  margin-top: 22px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-shelf__heading {
+  min-height: 48px !important;
+  align-items: end !important;
+}
+
+#root .grammar-route-scope .wvg-v13-shelf__heading h2 {
+  font-size: clamp(24px, 1.7vw, 29px) !important;
+  line-height: 1 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-shelf__heading p {
+  max-width: 620px !important;
+  margin-top: 5px !important;
+  color: #415851 !important;
+  font-size: 12.5px !important;
+  line-height: 1.45 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-shelf__books {
+  gap: 12px !important;
+  padding-top: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book {
+  min-height: 148px !important;
+  padding: 17px 16px 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book__title {
+  font-size: clamp(18px, 1.25vw, 21px) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.01em !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v13-book__subtitle, .wvg-v13-book__formula, .wvg-v13-book__description) {
+  color: #40564f !important;
+  font-size: 11.5px !important;
+  line-height: 1.42 !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book__track {
+  height: 6px !important;
+  margin-top: 13px !important;
+}
+
+#root .grammar-route-scope .wvg-v13-book__count {
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Lesson shell: maximise the available centre canvas and keep one scroll.    */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v15-lesson {
+  padding: 12px clamp(12px, 1.35vw, 24px) 30px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-paper {
+  width: min(1490px, calc(100% - 2px)) !important;
+  max-width: 1490px !important;
+  min-height: min(890px, calc(100vh - 70px)) !important;
+  padding: 20px 26px 24px !important;
+  border-radius: 19px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-paper--overview {
+  gap: 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-breadcrumb {
+  min-height: 34px !important;
+  gap: 9px !important;
+  color: #52635e !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-breadcrumb button {
+  min-height: 32px !important;
+  padding: 6px 11px !important;
+  font-size: 11px !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Overview: larger hero + preview cards that are actually readable.          */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v15-overview-hero {
+  min-height: 218px !important;
+  border-radius: 13px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero > div {
+  width: min(850px, 72%) !important;
+  gap: 5px !important;
+  padding: 27px 31px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero small {
+  font-size: 10px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero h1 {
+  font-size: clamp(44px, 3.35vw, 58px) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.025em !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero p {
+  max-width: 780px !important;
+  margin-block: 4px 7px !important;
+  color: rgba(255, 250, 240, 0.97) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero button {
+  min-height: 39px !important;
+  padding-inline: 15px !important;
+  font-size: 11px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-hero em {
+  margin-top: 4px !important;
+  font-size: 10.5px !important;
+  line-height: 1.4 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-intro {
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr) !important;
+  gap: 26px !important;
+  padding-block: 5px 2px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-intro span {
+  font-size: 9px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-intro h2 {
+  margin-top: 3px !important;
+  font-size: clamp(27px, 2vw, 34px) !important;
+  line-height: 1.05 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-intro p {
+  color: #455b54 !important;
+  font-size: 12px !important;
+  line-height: 1.52 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-grid {
+  gap: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card {
+  min-height: 136px !important;
+  border-radius: 10px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card > button {
+  min-height: 44px !important;
+  grid-template-columns: 28px minmax(0, 1fr) auto !important;
+  gap: 9px !important;
+  padding: 7px 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card__number {
+  width: 25px !important;
+  height: 25px !important;
+  font-size: 9px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card__title {
+  font-size: 12.5px !important;
+  line-height: 1.25 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card__open {
+  font-size: 9.5px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-card__body {
+  min-height: 88px !important;
+  padding: 12px 14px 14px !important;
+  color: #425850 !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-preview-formula {
+  margin-bottom: 7px !important;
+  font-size: 18px !important;
+  line-height: 1.25 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-preview-pills span {
+  padding: 5px 8px !important;
+  font-size: 9.5px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-memory {
+  min-height: 54px !important;
+  padding: 11px 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-memory span {
+  font-size: 9px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-overview-memory strong {
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Detail: reading content gets priority over navigation furniture.           */
+/* -------------------------------------------------------------------------- */
+
+#root .grammar-route-scope .wvg-v15-detail-hero {
+  min-height: 190px !important;
+  border-radius: 13px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-hero > div {
+  inset: 25px auto auto 31px !important;
+  width: min(820px, 72%) !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-hero small {
+  font-size: 10px !important;
+  letter-spacing: 0.09em !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-hero h1 {
+  margin-top: 5px !important;
+  font-size: clamp(43px, 3.2vw, 56px) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.025em !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-hero p {
+  margin-top: 6px !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-layout {
+  grid-template-columns: 176px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  min-height: 560px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-lesson-map > header {
+  height: 42px !important;
+  padding-inline: 11px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-lesson-map > header :is(span, small) {
+  font-size: 8.5px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-lesson-map button {
+  width: calc(100% - 10px) !important;
+  min-height: 43px !important;
+  grid-template-columns: 25px minmax(0, 1fr) !important;
+  gap: 7px !important;
+  margin-block: 4px !important;
+  padding: 6px 7px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-lesson-map button > span {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 9px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-lesson-map button strong {
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-section-content {
+  min-height: 560px !important;
+  padding: clamp(28px, 2.2vw, 38px) clamp(30px, 3vw, 50px) !important;
+  border-radius: 11px !important;
+}
+
+/* V15 limited the real teaching column to 860px even when the paper was much
+ * wider. Removing that hidden cap is the key Stage 2 readability change. */
+#root .grammar-route-scope .wvg-v15-teaching-stack {
+  width: 100% !important;
+  max-width: none !important;
+  gap: 19px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-section-heading {
+  margin-bottom: 3px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-section-heading > span {
+  font-size: 9.5px !important;
+  letter-spacing: 0.09em !important;
+}
+
+#root .grammar-route-scope .wvg-v15-section-heading h2 {
+  max-width: 1050px !important;
+  margin: 4px 0 7px !important;
+  font-size: clamp(32px, 2.35vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.022em !important;
+}
+
+#root .grammar-route-scope .wvg-v15-section-heading p {
+  max-width: 1020px !important;
+  color: #354f47 !important;
+  font-size: 14.5px !important;
+  line-height: 1.62 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-formula-banner {
+  min-height: 78px !important;
+  padding: 16px 22px !important;
+  font-size: clamp(24px, 1.8vw, 31px) !important;
+  line-height: 1.24 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-formula-parts {
+  gap: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-formula-parts article {
+  min-height: 126px !important;
+  padding: 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-formula-parts small {
+  font-size: 8.5px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-formula-parts strong {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-formula-parts p {
+  margin-top: 9px !important;
+  color: #455951 !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-table-wrap table {
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-table-wrap :is(th, td) {
+  padding: 12px 14px !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-memory-callout, .wvg-v15-warning-callout, .wvg-v15-takeaway) {
+  gap: 5px !important;
+  padding: 15px 17px !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-memory-callout, .wvg-v15-warning-callout, .wvg-v15-takeaway) strong {
+  font-size: 9px !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-memory-callout, .wvg-v15-warning-callout, .wvg-v15-takeaway) p {
+  font-size: 12.5px !important;
+  line-height: 1.52 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-use-grid {
+  gap: 12px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-use-grid article {
+  min-height: 160px !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  gap: 11px !important;
+  padding: 16px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-use-grid h3 {
+  font-size: 13.5px !important;
+  line-height: 1.35 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-use-grid :is(p, blockquote, small) {
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-use-grid blockquote {
+  margin-top: 9px !important;
+  font-size: 12.5px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-example-list {
+  gap: 9px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-example-list article {
+  grid-template-columns: 30px minmax(260px, 0.95fr) minmax(260px, 1.05fr) !important;
+  gap: 12px !important;
+  padding: 13px 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-example-list__sentence small {
+  font-size: 8.5px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-example-list__sentence strong {
+  margin-top: 2px !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+#root .grammar-route-scope :is(.wvg-v15-example-list__sentence em, .wvg-v15-example-list article > p) {
+  color: #465a53 !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-compare-grid {
+  gap: 14px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-compare-grid article {
+  min-height: 180px !important;
+  padding: 18px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-compare-grid h3 {
+  font-size: 22px !important;
+  line-height: 1.15 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-compare-grid blockquote {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-mistake-list article {
+  min-height: 92px !important;
+  gap: 12px !important;
+  padding: 12px 14px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-mistake-list :is(.wvg-v15-mistake-list__wrong, .wvg-v15-mistake-list__right) {
+  padding: 7px 9px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-mistake-list article > p:last-child {
+  color: #3f554e !important;
+  font-size: 11.5px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-pattern-cloud {
+  gap: 8px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-pattern-cloud span {
+  min-height: 34px !important;
+  padding: 8px 12px !important;
+  font-size: 11px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-rule-list {
+  gap: 11px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-rule-list article {
+  min-height: 62px !important;
+  padding: 12px 15px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-rule-list article > p {
+  font-size: 12.5px !important;
+  line-height: 1.5 !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-footer {
+  min-height: 58px !important;
+  gap: 10px !important;
+}
+
+#root .grammar-route-scope .wvg-v15-detail-footer button {
+  min-height: 52px !important;
+  padding: 8px 12px !important;
+  font-size: 10px !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive: preserve the full shared sidebar but scale Grammar itself.     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1450px) {
+  #root .grammar-route-scope .wvg-v13-home__paper,
+  #root .grammar-route-scope .wvg-v15-paper {
+    width: 100% !important;
+  }
+
+  #root .grammar-route-scope .wvg-v13-shelf__books {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-detail-layout {
+    grid-template-columns: 168px minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 1220px) {
+  #root .grammar-route-scope .wvg-v13-home,
+  #root .grammar-route-scope .wvg-v15-lesson {
+    padding-inline: 10px !important;
+  }
+
+  #root .grammar-route-scope .wvg-v13-home__paper,
+  #root .grammar-route-scope .wvg-v15-paper {
+    padding-inline: 18px !important;
+  }
+
+  #root .grammar-route-scope .wvg-v13-shelf__books {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-detail-layout {
+    grid-template-columns: 158px minmax(0, 1fr) !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-section-content {
+    padding-inline: 26px !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-section-heading h2 {
+    font-size: 32px !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-section-heading p {
+    font-size: 13.5px !important;
+  }
+}
+
+@media (max-width: 980px) {
+  #root .grammar-route-scope .wvg-v13-shelf__books {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-detail-layout {
+    grid-template-columns: 144px minmax(0, 1fr) !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-section-content {
+    padding: 22px !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-overview-intro {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+@media (max-width: 760px) {
+  #root .grammar-route-scope .wvg-v13-shelf__books,
+  #root .grammar-route-scope .wvg-v15-overview-grid,
+  #root .grammar-route-scope .wvg-v15-formula-parts,
+  #root .grammar-route-scope .wvg-v15-use-grid,
+  #root .grammar-route-scope .wvg-v15-compare-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-detail-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-lesson-map {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  #root .grammar-route-scope .wvg-v15-lesson-map > header {
+    grid-column: 1 / -1 !important;
+  }
+}

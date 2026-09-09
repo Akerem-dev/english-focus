@@ -1,0 +1,189 @@
+/* Wide-desktop and shared-shell responsive sizing for the V13 Grammar experience.
+   Keeps the shared Word Valley chrome untouched and only adapts Grammar content
+   to the center slot that remains after the canonical 318px sidebar. */
+
+/* The first breadcrumb item is the real back action. Make that affordance
+   obvious without changing the shared shell or the Figma-derived hierarchy. */
+#root .application-frame--grammar-cleanroom .wvg-v13-lesson__breadcrumb button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0a4a40;
+  font-weight: 600;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v13-lesson__breadcrumb button::before {
+  content: "←";
+  font: 600 13px/18px "Inter", system-ui, sans-serif;
+}
+
+@media (min-width: 1500px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper,
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__paper {
+    width: min(1400px, calc(100% - 32px));
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 7px;
+    margin-left: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book {
+    width: 100%;
+    min-width: 0;
+    height: 96px;
+    padding: 13px 13px 10px 19px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__title,
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__subtitle {
+    width: auto;
+    max-width: none;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__heading {
+    height: 50px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf + .wvg-v13-shelf {
+    margin-top: 23px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__paper {
+    min-height: 100%;
+    padding: 20px 38px 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__hero {
+    height: 250px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__hero-copy {
+    top: 28px;
+    left: 34px;
+    width: min(540px, 50%);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-lesson__grid {
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--formula,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--uses,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--examples {
+    min-height: 220px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--comparison,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--mistake {
+    min-height: 168px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--signals,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--practice,
+  #root .application-frame--grammar-cleanroom .wvg-v13-overview-card--quick-rule {
+    min-height: 138px;
+  }
+}
+
+/* With the shared 318px sidebar, the 1366px window has 85px less content width
+   than the standalone Figma laptop frame. Recover that room from paper padding so
+   the six 158px books still fit without clipping into the right edge. */
+@media (min-width: 1281px) and (max-width: 1499px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding-right: 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* The approved 1180px Figma frame uses a 72px icon-only sidebar. Word Valley's
+   actual application shell intentionally keeps the full 318px sidebar instead,
+   so Grammar must adapt inside the smaller center slot rather than collapsing
+   shared navigation. */
+@media (max-width: 1280px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-home__paper {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-toolbar {
+    height: auto;
+    flex-wrap: wrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-search {
+    width: min(392px, 100%);
+    flex-basis: min(392px, 100%);
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-filters {
+    flex: 1 1 100%;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-filters .wvg-v13-filters__recommended {
+    margin-left: auto;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin-left: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__title,
+  #root .application-frame--grammar-cleanroom .wvg-v13-book__subtitle {
+    width: auto;
+    max-width: none;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__wood {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 1120px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero__content {
+    right: 20px;
+    left: 20px;
+    width: auto;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero h2 {
+    font-size: 36px;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-hero__copy {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  #root .application-frame--grammar-cleanroom .wvg-v13-shelf__books {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

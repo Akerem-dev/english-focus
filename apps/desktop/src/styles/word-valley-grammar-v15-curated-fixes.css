@@ -1,0 +1,9 @@
+#root .application-frame--grammar-cleanroom .wvg-v15-overview-card__title {
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  #root .application-frame--grammar-cleanroom .wvg-v15-lesson {
+    left: 318px;
+  }
+}

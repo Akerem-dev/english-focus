@@ -1,250 +1,34 @@
-/* Grammar-only Wordie rail alignment for the final reference lesson. */
+/*
+ * Grammar intentionally inherits the canonical Word Valley Wordie presentation
+ * from the shared `.application-frame--search-cleanroom` assistant styles.
+ *
+ * Do not add Grammar-specific panel geometry, spacing, colors or typography
+ * here. Grammar-specific behavior and copy belong in GrammarAssistantDock; the
+ * open visual shell must remain identical to Search and Collections.
+ *
+ * Search has an in-page “Ask Wordie” card that can open its otherwise hidden
+ * dock launcher. Grammar has no equivalent context-rail card while the lesson
+ * uses the full center canvas, so its closed launcher must remain reachable.
+ */
 
-#root .application-frame--grammar-cleanroom .assistant-dock.wv84-assistant[data-open="true"] {
-  position: absolute !important;
-  top: 46px !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 344px !important;
-  height: 890px !important;
-  pointer-events: none !important;
-}
-
-#root
-  .application-frame--grammar-cleanroom
-  .assistant-dock.wv84-assistant[data-open="true"]
-  > * {
-  pointer-events: auto !important;
-}
-
-#root .application-frame--grammar-cleanroom .assistant-dock.wv84-assistant:not([data-open="true"]) {
-  position: absolute !important;
-  top: auto !important;
-  right: 22px !important;
-  bottom: 22px !important;
-  width: 154px !important;
-  height: 112px !important;
-  pointer-events: none !important;
-}
-
-#root
-  .application-frame--grammar-cleanroom
-  .assistant-dock.wv84-assistant:not([data-open="true"])
-  .assistant-launcher.wv84-assistant-launcher {
-  position: absolute !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  display: block !important;
-  width: 154px !important;
-  height: 112px !important;
+.application-frame--search-cleanroom
+  > .word-valley-stage-viewport
+  .word-valley-stage
+  > .assistant-dock.wv84-assistant:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher {
+  display: grid !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
 }
 
-#root
-  .application-frame--grammar-cleanroom
-  .assistant-dock.wv84-assistant:not([data-open="true"])
-  .assistant-launcher__mascot {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
+/*
+ * The legacy floating assistant animates in with scale(.985) + translateY().
+ * Grammar uses a fixed Word Valley rail, so that entrance creates a visible
+ * geometry jump and briefly makes the rail differ from Search. Paint the rail
+ * at its final geometry from the first frame instead.
+ */
+.application-frame--search-cleanroom .assistant-panel.wv84-assistant-panel[aria-label="Grammar helper"] {
+  animation: none !important;
   transform: none !important;
-}
-
-#root .application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel,
-#root
-  .application-frame--grammar-cleanroom
-  .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
-  display: grid !important;
-  width: 344px !important;
-  height: 890px !important;
-  max-height: 890px !important;
-  grid-template-rows: 84px 210px minmax(0, 1fr) 61px !important;
-  overflow: hidden !important;
-  border-radius: 0 !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-assistant-panel__header {
-  height: 84px !important;
-  min-height: 84px !important;
-  padding: 12px 16px 9px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-assistant-panel__conversation {
-  min-height: 0 !important;
-  overflow: hidden !important;
-  padding: 12px 16px 10px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-wordie-welcome {
-  min-height: 188px !important;
-  padding: 22px 20px 20px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-wordie-welcome p {
-  max-width: 268px !important;
-  margin-top: 9px !important;
-  font-size: 13px !important;
-  line-height: 19px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome {
-  position: static !important;
-  display: grid !important;
-  width: 100% !important;
-  height: 300px !important;
-  min-height: 300px !important;
-  max-height: none !important;
-  grid-template-columns: 1fr !important;
-  grid-template-rows: 14px repeat(3, 82px) !important;
-  grid-auto-flow: row !important;
-  align-self: start !important;
-  align-content: start !important;
-  gap: 10px !important;
-  padding: 0 16px 10px !important;
-  overflow: visible !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button {
-  position: relative !important;
-  display: grid !important;
-  width: 312px !important;
-  height: 82px !important;
-  min-height: 82px !important;
-  max-height: 82px !important;
-  grid-template-columns: 28px minmax(0, 1fr) 18px !important;
-  align-items: center !important;
-  gap: 12px !important;
-  padding: 0 16px 0 19px !important;
-  overflow: visible !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* Search cleanroom owns the shared shell and hides its third welcome shortcut.
-   Grammar intentionally renders all three approved Figma shortcuts, so this
-   route-local selector must outrank that legacy presentation rule. */
-#root
-  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
-  .assistant-dock.wv84-assistant[data-open="true"]
-  .assistant-panel.wv84-assistant-panel
-  .wv84-quick-actions.wv84-quick-actions--welcome
-  > button:nth-of-type(1),
-#root
-  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
-  .assistant-dock.wv84-assistant[data-open="true"]
-  .assistant-panel.wv84-assistant-panel
-  .wv84-quick-actions.wv84-quick-actions--welcome
-  > button:nth-of-type(2),
-#root
-  .application-frame--search-cleanroom.application-frame--grammar-cleanroom
-  .assistant-dock.wv84-assistant[data-open="true"]
-  .assistant-panel.wv84-assistant-panel
-  .wv84-quick-actions.wv84-quick-actions--welcome
-  > button:nth-of-type(3) {
-  display: grid !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-quick-actions__label {
-  margin: 0 !important;
-  font-size: 11px !important;
-  line-height: 14px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-quick-actions__copy strong {
-  font-size: 17px !important;
-  line-height: 20px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-quick-actions__copy small {
-  max-width: 190px !important;
-  font-size: 11px !important;
-  line-height: 15px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-quick-actions__arrow {
-  align-self: center !important;
-  justify-self: end !important;
-  color: #173a32 !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-assistant-panel__header h2,
-#root .application-frame--grammar-cleanroom .wv84-wordie-welcome h3,
-#root .application-frame--grammar-cleanroom .wv84-quick-actions__copy strong {
-  color: #102f28 !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-assistant-composer {
-  width: 312px !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-assistant-composer button {
-  background: #0a493e !important;
-  color: #d6a740 !important;
-}
-
-@media (max-height: 760px) {
-  #root .application-frame--grammar-cleanroom .assistant-dock.wv84-assistant[data-open="true"] {
-    top: 46px !important;
-    bottom: 0 !important;
-    height: calc(100vh - 46px) !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel,
-  #root
-    .application-frame--grammar-cleanroom
-    .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
-    height: calc(100vh - 46px) !important;
-    max-height: none !important;
-    grid-template-rows: 72px 154px minmax(0, 1fr) 52px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-assistant-panel__header {
-    height: 72px !important;
-    min-height: 72px !important;
-    padding: 9px 16px 8px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-assistant-panel__conversation {
-    padding: 8px 16px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-wordie-welcome {
-    min-height: 138px !important;
-    padding: 15px 20px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-wordie-welcome p {
-    margin-top: 6px !important;
-    font-size: 12px !important;
-    line-height: 16px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome {
-    height: 239px !important;
-    min-height: 239px !important;
-    grid-template-rows: 14px repeat(3, 68px) !important;
-    gap: 7px !important;
-    padding: 0 16px 7px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button {
-    height: 68px !important;
-    min-height: 68px !important;
-    max-height: 68px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-assistant-composer {
-    height: 44px !important;
-  }
 }
