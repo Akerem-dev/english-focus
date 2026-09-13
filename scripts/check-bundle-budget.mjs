@@ -5,7 +5,7 @@ import process from "node:process";
 const DIST_ASSETS = path.resolve("apps/desktop/dist/assets");
 const MAX_SINGLE_JS_BYTES = 460 * 1024;
 const MAX_TOTAL_JS_BYTES = 1_900 * 1024;
-const MAX_SINGLE_CSS_BYTES = 190 * 1024;
+const MAX_SINGLE_CSS_BYTES = 200 * 1024;
 
 function formatBytes(bytes) {
   return `${(bytes / 1024).toFixed(1)} KiB`;

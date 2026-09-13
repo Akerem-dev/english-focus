@@ -1,0 +1,47 @@
+/* V12 lesson/Wordie seam guard.
+   The grammar shell already exposes --wvg-rail-width at each desktop breakpoint.
+   Keep the lesson reservation and the live Wordie rail on that same token so
+   1920/1536/1366 layouts cannot drift apart. */
+
+#root
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-v12-lesson {
+  transition: none;
+}
+
+@media (min-width: 901px) {
+  #root
+    .application-frame--grammar-cleanroom:has(
+      .assistant-dock.wv84-assistant[data-open="true"]
+    )
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-v12-lesson {
+    right: var(--wvg-rail-width, 344px);
+  }
+}
+
+#root .application-frame--grammar-cleanroom .assistant-dock.wv84-assistant[data-open="true"],
+#root .application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel,
+#root
+  .application-frame--grammar-cleanroom
+  .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
+  width: var(--wvg-rail-width, 344px) !important;
+}
+
+#root .application-frame--grammar-cleanroom .wv84-wordie-welcome,
+#root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button,
+#root .application-frame--grammar-cleanroom .wv84-assistant-composer {
+  width: calc(var(--wvg-rail-width, 344px) - 50px) !important;
+  max-width: calc(100% - 32px) !important;
+}
+
+/* At the minimum desktop width Wordie intentionally becomes an overlay. */
+@media (max-width: 900px) {
+  #root
+    .application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-v12-lesson {
+    right: 0;
+  }
+}

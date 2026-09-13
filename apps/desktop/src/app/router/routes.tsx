@@ -20,6 +20,11 @@ const LibraryPage = lazy(async () => {
   return { default: module.LibraryPage };
 });
 
+const PracticePage = lazy(async () => {
+  const module = await import("../../modules/practice/pages");
+  return { default: module.PracticePage };
+});
+
 const SettingsPage = lazy(async () => {
   const module = await import("../../modules/settings/pages");
   return { default: module.SettingsPage };
@@ -66,6 +71,14 @@ export const APP_ROUTES = [
     title: "Collections",
     icon: "books",
     element: createRouteElement("Collections", <LibraryPage />)
+  },
+  {
+    id: "practice",
+    path: ROUTE_PATHS.practice,
+    label: "Practice",
+    title: "Practice",
+    icon: "edit",
+    element: createRouteElement("Practice", <PracticePage />)
   },
   {
     id: "settings",

@@ -1,0 +1,301 @@
+/* Practice corrective pass from Figma + windowed-mode QA.
+   Keep canonical 1664x936 geometry exact; responsive changes live in media queries. */
+
+/* Canonical Practice Home geometry from Figma. */
+.wvp-home__header {
+  height: 105px;
+}
+
+.wvp-home__heading > p:last-child {
+  margin-top: 4px;
+}
+
+.wvp-expedition-card__copy {
+  top: 26px;
+}
+
+.wvp-expedition-card__copy h2 {
+  margin-top: 12px;
+}
+
+.wvp-expedition-card__copy > strong {
+  margin-top: 8px;
+}
+
+.wvp-expedition-card__chips {
+  margin-top: 10px;
+}
+
+.wvp-expedition-route {
+  right: auto;
+  bottom: 21px;
+  left: 389px;
+  width: 480px;
+}
+
+.wvp-expedition-route::before {
+  right: 60px;
+  left: 60px;
+}
+
+.wvp-home__bottom {
+  margin-top: 28px;
+}
+
+.wvp-focus-panel,
+.wvp-week-panel {
+  overflow: hidden;
+}
+
+.wvp-focus-panel {
+  padding: 8px 18px;
+}
+
+.wvp-focus-pills {
+  bottom: 6px;
+}
+
+.wvp-focus-pills button:nth-child(1) {
+  width: 100px;
+}
+
+.wvp-focus-pills button:nth-child(2) {
+  width: 84px;
+}
+
+.wvp-focus-pills button:nth-child(3) {
+  width: 116px;
+}
+
+.wvp-focus-pills button:nth-child(4) {
+  width: 94px;
+}
+
+.wvp-focus-pills button:nth-child(5) {
+  width: 62px;
+}
+
+.wvp-mode-card,
+.wvp-context-layout,
+.wvp-phrase-layout,
+.wvp-mode-sidebar,
+.wvp-context-clues,
+.wvp-word-partners {
+  min-width: 0;
+}
+
+.wvp-mode-sidebar,
+.wvp-context-clues,
+.wvp-word-partners {
+  overflow: hidden;
+}
+
+.wvp-mode-sidebar *,
+.wvp-context-clues *,
+.wvp-word-partners * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.wvp-memory-actions,
+.wvp-mode-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.wvp-memory-actions .wvp-primary-action,
+.wvp-mode-actions .wvp-primary-action {
+  margin-left: auto;
+}
+
+@media (max-width: 1450px), (max-height: 850px) {
+  .wvp-page {
+    overflow: auto;
+  }
+
+  .wvp-shell {
+    width: min(1112px, calc(100% - 40px));
+    height: auto;
+    min-height: 0;
+    margin: 12px auto 28px;
+  }
+
+  .wvp-home,
+  .wvp-mode-screen,
+  .wvp-summary-screen {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .wvp-home__header,
+  .wvp-expedition-card,
+  .wvp-training-grid,
+  .wvp-home__bottom {
+    width: 100%;
+  }
+
+  .wvp-home__bottom {
+    height: auto;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+    margin-top: 20px;
+  }
+
+  .wvp-focus-panel,
+  .wvp-week-panel {
+    height: auto;
+    min-height: 88px;
+  }
+
+  .wvp-focus-panel {
+    display: grid;
+    grid-template-columns: minmax(150px, 0.8fr) minmax(250px, 1.2fr);
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+  }
+
+  .wvp-focus-pills {
+    position: static;
+    justify-content: flex-end;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .wvp-focus-pills button {
+    width: auto !important;
+    min-width: 0;
+    height: 30px;
+    padding: 0 12px;
+  }
+
+  .wvp-week-panel {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+  }
+
+  .wvp-week-panel > header {
+    display: grid;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .wvp-week-panel > header p {
+    margin: 0;
+  }
+
+  .wvp-week-stats {
+    height: 54px;
+    margin: 0;
+  }
+
+  .wvp-week-stats > div {
+    min-width: 0;
+    padding: 0 8px;
+    text-align: center;
+  }
+
+  .wvp-week-stats span {
+    max-width: 92px;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .wvp-expedition-route {
+    right: 36px;
+    left: auto;
+    width: min(43%, 480px);
+  }
+}
+
+@media (max-width: 1180px) {
+  .wvp-page {
+    left: 272px;
+  }
+
+  .wvp-home {
+    padding: 22px;
+  }
+
+  .wvp-home__header {
+    height: auto;
+    min-height: 105px;
+    gap: 18px;
+  }
+
+  .wvp-home__heading h1 {
+    font-size: 34px;
+    line-height: 37px;
+  }
+
+  .wvp-training-grid {
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 12px;
+  }
+
+  .wvp-training-card {
+    width: 100%;
+  }
+
+  .wvp-home__bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .wvp-focus-panel {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .wvp-context-layout,
+  .wvp-phrase-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 32%);
+  }
+}
+
+@media (max-width: 980px) {
+  .wvp-page {
+    left: 72px;
+  }
+
+  .wvp-shell {
+    width: calc(100% - 28px);
+  }
+
+  .wvp-home__header {
+    flex-direction: column;
+  }
+
+  .wvp-home__controls {
+    width: 100%;
+    padding: 0;
+  }
+
+  .wvp-control--scope {
+    width: min(190px, 60%);
+  }
+
+  .wvp-expedition-route {
+    right: 24px;
+    width: min(42%, 330px);
+  }
+
+  .wvp-focus-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .wvp-focus-pills {
+    justify-content: flex-start;
+  }
+
+  .wvp-context-layout,
+  .wvp-phrase-layout {
+    grid-template-columns: 1fr;
+  }
+}

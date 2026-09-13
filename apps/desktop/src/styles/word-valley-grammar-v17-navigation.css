@@ -1,0 +1,75 @@
+/* V17 — make Grammar back/navigation actions read as controls, not faint breadcrumb copy. */
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb {
+  min-height: 38px !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb > button {
+  display: inline-flex !important;
+  min-width: 0 !important;
+  min-height: 32px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 11px !important;
+  border: 1px solid rgba(21, 87, 75, 0.28) !important;
+  border-radius: 999px !important;
+  background: rgba(242, 246, 239, 0.88) !important;
+  color: #0b5b4d !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+  cursor: pointer !important;
+  font:
+    750 10px/14px "Inter",
+    system-ui,
+    sans-serif !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease,
+    transform 120ms ease !important;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb > button:hover {
+  border-color: #b88d2f !important;
+  background: #fff9e9 !important;
+  color: #073f37 !important;
+  transform: translateX(-1px) !important;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb > button:focus-visible {
+  outline: 3px solid rgba(198, 154, 58, 0.4) !important;
+  outline-offset: 2px !important;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb > span,
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb > strong {
+  color: #5c6862 !important;
+  opacity: 0.9 !important;
+  font:
+    600 9px/13px "Inter",
+    system-ui,
+    sans-serif !important;
+}
+
+#root .application-frame--grammar-cleanroom .wvg-v15-breadcrumb > strong {
+  color: #203e37 !important;
+  font-weight: 750 !important;
+}
+
+/* Keep the legacy fallback lesson navigable if a future bookshelf item does
+   not yet have curated content. */
+#root .application-frame--grammar-cleanroom .wvg-v13-lesson__breadcrumb button,
+#root .application-frame--grammar-cleanroom .wvg-v13-lesson__breadcrumb a {
+  min-height: 32px !important;
+  padding: 0 11px !important;
+  border: 1px solid rgba(21, 87, 75, 0.28) !important;
+  border-radius: 999px !important;
+  background: rgba(242, 246, 239, 0.88) !important;
+  color: #0b5b4d !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+}

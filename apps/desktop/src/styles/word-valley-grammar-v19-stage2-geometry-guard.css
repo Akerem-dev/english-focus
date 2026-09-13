@@ -1,0 +1,35 @@
+/*
+ * V19 Stage 2 geometry guard.
+ *
+ * `.wvg-page` already owns the canonical Word Valley content slot after the
+ * 318px shared sidebar and 46px topbar. V15 predated that shared shell and
+ * applied the same offsets a second time to `.wvg-v15-lesson`, shrinking the
+ * reading canvas by another full sidebar width. Keep the lesson positioned
+ * inside its parent page instead of reserving a second sidebar / topbar.
+ */
+
+#root
+  .application-frame--search-cleanroom
+  .application-frame--grammar-cleanroom
+  .wvg-page
+  .wvg-v15-lesson {
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+/* Wordie remains a fixed overlay. Its open state must never reclaim horizontal
+ * layout space from the now-full-width Grammar lesson canvas. */
+#root
+  .application-frame--search-cleanroom:has(.assistant-dock.wv84-assistant.wvg-wordie-dock[data-open])
+  .application-frame--grammar-cleanroom
+  .wvg-page
+  .wvg-v15-lesson {
+  inset: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin-right: 0 !important;
+}

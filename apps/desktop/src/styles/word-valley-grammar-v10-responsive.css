@@ -1,81 +1,16 @@
-/* V10 Grammar responsive shell.
-   Grammar is no longer rendered as a scaled 1664px poster. The route uses the
-   actual application viewport so the paper, lesson and Wordie rail meet cleanly
-   on 1920×1080, high-DPI laptops and narrower desktop windows. */
+/*
+ * Grammar content responsiveness only.
+ *
+ * Shared Word Valley chrome (topbar, sidebar, navigation, progress and Wordie)
+ * is owned exclusively by SearchCleanShell and its shared styles. Do not add
+ * route-specific chrome geometry here.
+ */
 
-#root .application-frame--grammar-cleanroom {
-  --wvg-sidebar-width: 272px;
-  --wvg-rail-width: 344px;
-}
-
-#root .application-frame--grammar-cleanroom .word-valley-stage-viewport {
-  overflow: hidden !important;
-}
-
-#root .application-frame--grammar-cleanroom .word-valley-stage {
+#root
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-reference-lesson {
   top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  transform: none !important;
-  transform-origin: top left !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-main {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-sidebar {
-  width: var(--wvg-sidebar-width) !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-sidebar__brand {
-  left: 50% !important;
-  width: min(198px, calc(var(--wvg-sidebar-width) - 32px)) !important;
-  transform: translateX(-50%);
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-nav {
-  left: 18px !important;
-  width: calc(var(--wvg-sidebar-width) - 36px) !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-nav__item {
-  width: 100% !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-sidebar__divider {
-  left: 22px !important;
-  width: calc(var(--wvg-sidebar-width) - 44px) !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-progress {
-  top: auto !important;
-  right: 22px !important;
-  bottom: 28px !important;
-  left: 22px !important;
-  width: auto !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvclean-progress__card {
-  width: 100% !important;
-}
-
-#root .application-frame--grammar-cleanroom .wvg-page {
-  top: 46px !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  left: var(--wvg-sidebar-width) !important;
-  width: auto !important;
-  height: auto !important;
-  overflow: hidden !important;
-}
-
-/* Lesson paper consumes every pixel between the sidebar and Wordie. */
-#root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-lesson {
-  top: 0 !important;
-  right: var(--wvg-rail-width) !important;
   bottom: 0 !important;
   left: 0 !important;
   width: auto !important;
@@ -88,117 +23,41 @@
   transform: none !important;
 }
 
-#root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-hero,
-#root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-grid {
+#root
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-reference-hero,
+#root
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-reference-grid {
   width: min(1100px, 100%) !important;
   margin-right: auto !important;
   margin-left: auto !important;
 }
 
-#root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-tip {
+#root
+  .application-frame--grammar-cleanroom
+  .wvg-page[data-grammar-view="lesson"]
+  .wvg-reference-tip {
   margin-right: auto !important;
   margin-left: auto !important;
 }
 
-/* Wordie is a fixed companion column on lessons, never a floating gap away. */
-#root .application-frame--grammar-cleanroom .assistant-dock.wv84-assistant[data-open="true"] {
-  top: 46px !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: var(--wvg-rail-width) !important;
-  height: auto !important;
-  max-height: none !important;
-}
-
-#root .application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel,
-#root .application-frame--grammar-cleanroom .assistant-panel.wv84-assistant-panel:has(.wv84-quick-actions--welcome) {
-  width: var(--wvg-rail-width) !important;
-  height: 100% !important;
-  max-height: none !important;
-}
-
-#root .application-frame--grammar-cleanroom .wv84-wordie-welcome,
-#root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome > button,
-#root .application-frame--grammar-cleanroom .wv84-assistant-composer {
-  width: calc(var(--wvg-rail-width) - 50px) !important;
-  max-width: calc(100% - 32px) !important;
-}
-
 @media (max-width: 1550px) {
-  #root .application-frame--grammar-cleanroom {
-    --wvg-sidebar-width: 236px;
-    --wvg-rail-width: 300px;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand strong {
-    font-size: 25px !important;
-    line-height: 30px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-nav__item {
-    font-size: 17px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-progress {
-    right: 18px !important;
-    left: 18px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-lesson {
+  #root
+    .application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-reference-lesson {
     padding: 32px 38px 30px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-assistant-panel__header {
-    padding-right: 14px !important;
-    padding-left: 16px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wv84-quick-actions--welcome {
-    padding-right: 16px !important;
-    padding-left: 16px !important;
   }
 }
 
 @media (max-width: 1280px) {
-  #root .application-frame--grammar-cleanroom {
-    --wvg-sidebar-width: 92px;
-    --wvg-rail-width: 286px;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand {
-    top: 26px !important;
-    width: 64px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand img {
-    width: 62px !important;
-    height: 44px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand strong,
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand span,
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand i,
-  #root .application-frame--grammar-cleanroom .wvclean-nav__item > span,
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__divider,
-  #root .application-frame--grammar-cleanroom .wvclean-progress {
-    display: none !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-nav {
-    top: 150px !important;
-    left: 12px !important;
-    width: 68px !important;
-    gap: 8px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-nav__item {
-    width: 68px !important;
-    grid-template-columns: 1fr !important;
-    justify-items: center !important;
-    padding: 0 !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-lesson {
+  #root
+    .application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-reference-lesson {
     padding: 26px 28px 30px !important;
   }
 
@@ -217,21 +76,10 @@
 }
 
 @media (max-width: 900px) {
-  #root .application-frame--grammar-cleanroom {
-    --wvg-sidebar-width: 76px;
-    --wvg-rail-width: min(286px, 42vw);
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-nav {
-    left: 8px !important;
-    width: 60px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-nav__item {
-    width: 60px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-lesson {
+  #root
+    .application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-reference-lesson {
     padding: 22px 20px 28px !important;
   }
 
@@ -255,19 +103,10 @@
 }
 
 @media (max-height: 780px) {
-  #root .application-frame--grammar-cleanroom .wvclean-sidebar__brand {
-    top: 12px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-nav {
-    top: 154px !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvclean-progress {
-    display: none !important;
-  }
-
-  #root .application-frame--grammar-cleanroom .wvg-page[data-grammar-view="lesson"] .wvg-reference-lesson {
+  #root
+    .application-frame--grammar-cleanroom
+    .wvg-page[data-grammar-view="lesson"]
+    .wvg-reference-lesson {
     padding-top: 24px !important;
   }
 }

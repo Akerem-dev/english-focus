@@ -1,0 +1,65 @@
+/* Final V17 isolation layer.
+   The shared Search assistant and Grammar assistant intentionally reuse the same
+   visual shell classes, but their closed states are different products:
+   Search has an in-page Ask Wordie card; Grammar has a small floating bubble. */
+
+/* Search/default assistant: suppress only its own legacy floating launcher.
+   Explicitly exclude the Grammar dock so route-transition DOM cannot hide it. */
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant:not(.wvg-wordie-dock):not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher {
+  display: none !important;
+}
+
+/* Closed Grammar dock itself carries no rail geometry at all. The button below
+   is fixed to the viewport and is therefore the only visible/clickable object. */
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock:not([data-open]) {
+  position: fixed !important;
+  top: auto !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+}
+
+#root
+  .application-frame--search-cleanroom
+  .assistant-dock.wv84-assistant.wvg-wordie-dock:not([data-open])
+  > .assistant-launcher.wv84-assistant-launcher.wvg-wordie-bubble {
+  position: fixed !important;
+  top: auto !important;
+  right: 24px !important;
+  bottom: 24px !important;
+  left: auto !important;
+  display: grid !important;
+  visibility: visible !important;
+  width: 58px !important;
+  min-width: 58px !important;
+  max-width: 58px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  max-height: 58px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 1180px) {
+  #root
+    .application-frame--search-cleanroom
+    .assistant-dock.wv84-assistant.wvg-wordie-dock:not([data-open])
+    > .assistant-launcher.wv84-assistant-launcher.wvg-wordie-bubble {
+    right: 18px !important;
+    bottom: 18px !important;
+  }
+}

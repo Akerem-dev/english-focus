@@ -19,12 +19,13 @@ function renderRoute(path: string) {
 }
 
 describe("application routes", () => {
-  it("defines exactly four primary routes", () => {
-    expect(APP_ROUTES).toHaveLength(4);
+  it("defines exactly five primary routes", () => {
+    expect(APP_ROUTES).toHaveLength(5);
     expect(APP_ROUTES.map((route) => route.path)).toEqual([
       ROUTE_PATHS.vocabulary,
       ROUTE_PATHS.grammar,
       ROUTE_PATHS.library,
+      ROUTE_PATHS.practice,
       ROUTE_PATHS.settings
     ]);
   });
@@ -58,6 +59,16 @@ describe("application routes", () => {
 
     expect(markup).toContain("Loading Collections");
     expect(markup).toContain("Collections page loaded");
+    expect(markup).toContain('aria-label="Window controls"');
+  });
+
+  it("renders the practice route loading boundary inside the shared Word Valley shell", () => {
+    const markup = renderRoute(ROUTE_PATHS.practice);
+
+    expect(markup).toContain("Loading Practice");
+    expect(markup).toContain("Practice page loaded");
+    expect(markup).toContain("application-frame--practice-cleanroom");
+    expect(markup).toContain("wvclean-sidebar");
     expect(markup).toContain('aria-label="Window controls"');
   });
 

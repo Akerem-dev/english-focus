@@ -40,7 +40,11 @@ const QUICK_ACTION_STARTERS: Readonly<Record<QuickAction, string>> = Object.free
 });
 
 function supportsAssistant(pathname: string): boolean {
-  return pathname === ROUTE_PATHS.vocabulary || pathname === ROUTE_PATHS.library;
+  return (
+    pathname === ROUTE_PATHS.vocabulary ||
+    pathname === ROUTE_PATHS.library ||
+    pathname === ROUTE_PATHS.practice
+  );
 }
 
 function cleanHeadwordCandidate(value: string): string | undefined {

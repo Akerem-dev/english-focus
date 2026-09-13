@@ -5,7 +5,7 @@ import {
   type FocusEvent,
   type PropsWithChildren
 } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import type { ActivityRecord } from "@platform/domain";
 
@@ -35,7 +35,7 @@ const NAV_ITEMS: readonly CleanNavItem[] = Object.freeze([
   { label: "Search", icon: "search", to: ROUTE_PATHS.vocabulary },
   { label: "Grammar", icon: "book-open", to: ROUTE_PATHS.grammar },
   { label: "Collections", icon: "bookmark", to: ROUTE_PATHS.library },
-  { label: "Practice", icon: "edit" },
+  { label: "Practice", icon: "edit", to: ROUTE_PATHS.practice },
   { label: "Favorites", icon: "star" },
   { label: "Settings", icon: "settings", to: ROUTE_PATHS.settings }
 ]);
@@ -159,10 +159,8 @@ function SearchCleanTopBar() {
 }
 
 function SearchCleanSidebar() {
-  const location = useLocation();
   const { activity, status: activityStatus } = useActivity();
   const { contentSource, status: vocabularyStatus } = useVocabularyRepository();
-  const grammarActive = location.pathname === ROUTE_PATHS.grammar;
 
   const progress = useMemo(() => {
     const today = localDayKey(new Date());
@@ -274,16 +272,7 @@ function SearchCleanSidebar() {
               <span>day streak</span>
             </div>
           </div>
-          {grammarActive ? (
-            <Link className="wvclean-progress__continue" to={ROUTE_PATHS.grammar}>
-              <AppIcon name="book-open" size={18} />
-              <span>
-                <small>CONTINUE LEARNING</small>
-                <strong>Present Perfect</strong>
-              </span>
-              <span aria-hidden="true">→</span>
-            </Link>
-          ) : continueWord === undefined ? null : (
+          {continueWord === undefined ? null : (
             <Link
               className="wvclean-progress__continue"
               to={buildVocabularyEntryPath(continueWord.normalizedWord)}
